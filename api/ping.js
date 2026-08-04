@@ -29,7 +29,8 @@ const NHAN = {
   vao_ho_so:     'Bấm vào đọc hồ sơ',
   ho_so_mo:      'Vào trong hồ sơ',
   trang_ho_so:   'Xem trang hồ sơ',
-  ho_so_dong:    'Rời hồ sơ'
+  ho_so_dong:    'Rời hồ sơ',
+  gui_form:      'ĐÃ GỬI BIỂU MẪU VỀ CĂN CỨ'
 };
 
 function gioVN(iso) {
@@ -41,16 +42,22 @@ function gioVN(iso) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
+  let d = {};
+
+  if (req.method === 'GET') {
+    /* Đường cứu cánh: trang gọi bằng request ảnh khi fetch/beacon bị chặn.
+       Phải trả về ảnh thật, nếu không trình duyệt báo lỗi tải ảnh. */
+    d = { ev: req.query.ev, detail: req.query.detail, at: new Date().toISOString() };
+  } else if (req.method === 'POST') {
+    d = req.body;
+    if (typeof d === 'string') {
+      try { d = JSON.parse(d); } catch (e) { d = {}; }
+    }
+    d = d || {};
+  } else {
     res.status(405).json({ ok: false });
     return;
   }
-
-  let d = req.body;
-  if (typeof d === 'string') {
-    try { d = JSON.parse(d); } catch (e) { d = {}; }
-  }
-  d = d || {};
 
   const ev = String(d.ev || '').slice(0, 40);
   const detail = String(d.detail || '').slice(0, 80);
@@ -88,5 +95,14 @@ module.exports = async (req, res) => {
     console.log('[PING] gửi thất bại:', e && e.message);
   }
 
+  if (req.method === 'GET') {
+    /* GIF trong suốt 1x1 */
+    const gif = Buffer.from(
+      'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
+    res.setHeader('Content-Type', 'image/gif');
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.status(200).send(gif);
+    return;
+  }
   res.status(204).end();
 };

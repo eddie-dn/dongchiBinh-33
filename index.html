@@ -106,24 +106,18 @@ a{color:inherit;text-decoration:none}
   padding:56px clamp(20px,6vw,28px) 0;max-height:300px;
   transition:max-height .6s cubic-bezier(.66,.02,.22,1),opacity .38s,padding-top .6s}
 .frame[data-state="focus"] .head{max-height:0;padding-top:0;opacity:0;pointer-events:none}
-.eyebrow{display:flex;align-items:center;gap:11px}
-/* cờ gắn trên một miếng vá, rồi một gạch dẫn kéo hết bề ngang khối chữ —
-   cờ có chỗ tựa, đồng thời thành đường kẻ đầu trang cho tiêu đề bên dưới */
-.patch{flex:none;display:inline-flex;padding:3px;border-radius:5px;
-  border:1px solid rgba(234,240,247,.2);background:rgba(6,16,31,.55);
-  box-shadow:0 2px 9px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.04)}
-.flag{width:26px;height:17.3px;display:block;border-radius:2.5px;
-  box-shadow:0 1px 3px rgba(0,0,0,.55)}
+.eyebrow{display:flex;align-items:center;gap:10px}
+/* Không còn huy hiệu ở tiêu đề. Lá cờ nhỏ hơi cong, để mờ, chỉ xuất hiện
+   ở chân trang: cuối dòng bản quyền và ngay trước tem Last updated. */
+.vf{width:15px;height:9.7px;flex:none;opacity:.42;vertical-align:-1px}
+.crt{display:inline}
+.crt .vf{margin-left:4px}
 .eyebrow::after{content:"";flex:1;height:1px;
   background:linear-gradient(90deg,rgba(242,180,65,.6) 0%,rgba(242,180,65,.22) 28%,
     rgba(234,240,247,.04) 100%)}
 .eyebrow .sq{flex:none;display:inline-flex;align-items:center;gap:7px;
-  font-family:"Oswald";font-size:8.5px;font-weight:500;letter-spacing:.2em;
-  text-transform:uppercase;color:rgba(234,240,247,.62)}
-.eyebrow .sq b{font-weight:700;font-size:8px;letter-spacing:.18em;color:#E8734F;
-  border:1.5px solid rgba(232,115,79,.55);border-radius:3px;padding:3px 7px;
-  transform:rotate(-3deg);text-shadow:0 0 9px rgba(232,115,79,.3);
-  box-shadow:inset 0 0 12px rgba(232,115,79,.09)}
+  font-family:"Oswald";font-size:8.5px;font-weight:500;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--amber)}
 h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-height:1;
   margin:10px 0 0;font-size:clamp(25px,7.4vw,33px);letter-spacing:.005em;
   text-shadow:0 4px 20px rgba(0,0,0,.5);user-select:none}
@@ -155,6 +149,7 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .mapwrap{position:relative;z-index:3;flex:1;min-height:0;display:flex;
   align-items:center;justify-content:center;padding:6px 0 0}
 .mapstage{position:relative;width:100%;height:100%}
+.vf.sv{transform:rotate(90deg);opacity:1;color:inherit;margin:0 0 9px}
 .stamp{position:absolute;left:9px;bottom:6px;z-index:4;
   writing-mode:vertical-rl;transform:rotate(180deg);
   font-family:"Oswald";font-size:8px;font-weight:500;letter-spacing:.24em;
@@ -468,13 +463,7 @@ a.file:active{background:rgba(242,180,65,.07)}
 
   <header class="head">
     <div class="eyebrow">
-      <span class="patch">
-        <svg class="flag" viewBox="0 0 30 20" role="img" aria-label="Cờ Việt Nam">
-          <rect width="30" height="20" rx="2" fill="#DA251D"/>
-          <path d="M15.00,4.50 L16.34,8.36 L20.42,8.44 L17.17,10.90 L18.35,14.81 L15.00,12.48 L11.65,14.81 L12.83,10.90 L9.58,8.44 L13.66,8.36 Z" fill="#FFCD00"/>
-        </svg>
-      </span>
-      <span class="sq">Tài liệu Phi đoàn <b>Tối mật</b></span>
+      <span class="sq">Tài liệu Phi đoàn</span>
     </div>
     <h1 class="title" id="title">Bản đồ tác chiến</h1>
     <p class="lead">Chạm vào một điểm sáng để hạ cánh.</p>
@@ -571,7 +560,7 @@ a.file:active{background:rgba(242,180,65,.07)}
         </g>
       </svg>
 
-      <span class="stamp">Last updated 04-Aug-2026 · V10.04</span>
+      <span class="stamp"><svg class="vf sv" viewBox="0 0 34 22" aria-hidden="true"><path fill-rule="evenodd" fill="currentColor" d="M1,4 C8,0.8 16,6.5 24,3.8 C28,2.4 31,2.8 33,3.4 L33,17.6 C31,17 28,16.6 24,18 C16,20.7 8,15 1,18.2 Z M17.00,6.10 L18.20,9.55 L21.85,9.62 L18.94,11.83 L20.00,15.33 L17.00,13.24 L14.00,15.33 L15.06,11.83 L12.15,9.62 L15.80,9.55 Z"/></svg>Last updated 04-Aug-2026 · V10.08</span>
       <button class="beacon" data-bcn="HN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HN</span><span class="city">Hà Nội</span></span>
       </button>
@@ -596,7 +585,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <span class="pz-txt" id="pzTxt"></span>
     </span>
     <span class="readout idle" id="readout">Chờ chọn toạ độ</span>
-    <span class="cr">© Bản quyền · Dongchi Bình &amp; Honghandangiu<span class="rc" id="rc"></span></span>
+    <span class="cr"><span class="crt">© Bản quyền · Dongchi Bình &amp; Honghandangiu<svg class="vf" viewBox="0 0 34 22" aria-hidden="true"><path fill="#DA251D" d="M1,4 C8,0.8 16,6.5 24,3.8 C28,2.4 31,2.8 33,3.4 L33,17.6 C31,17 28,16.6 24,18 C16,20.7 8,15 1,18.2 Z"/><path fill="#FFCD00" d="M17.00,6.10 L18.20,9.55 L21.85,9.62 L18.94,11.83 L20.00,15.33 L17.00,13.24 L14.00,15.33 L15.06,11.83 L12.15,9.62 L15.80,9.55 Z"/></svg></span><span class="rc" id="rc"></span></span>
   </footer>
 
   <div class="scrim" id="scrim"></div>
@@ -1001,11 +990,16 @@ function ping(ev, detail, onlyOnce){
       ev: ev, detail: detail||'', at: new Date().toISOString(),
       solved: Object.keys(solved), ua: navigator.userAgent.slice(0,120)
     });
-    if(navigator.sendBeacon)
-      navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}));
-    else
-      fetch('/api/ping',{method:'POST',body:body,keepalive:true,
-        headers:{'Content-Type':'application/json'}}).catch(()=>{});
+    if(navigator.sendBeacon &&
+       navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))) return;
+    fetch('/api/ping',{method:'POST',body:body,keepalive:true,
+      headers:{'Content-Type':'application/json'}})
+      .catch(()=>{                       /* bị chặn thì thử đường request ảnh */
+        try{
+          new Image().src = '/api/ping?ev='+encodeURIComponent(ev)+
+            '&detail='+encodeURIComponent((detail||'').slice(0,80))+'&t='+Date.now();
+        }catch(e){}
+      });
   }catch(e){}
 }
 function nSolved(){ return NODES.filter(n=>solved[n.code]).length; }

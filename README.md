@@ -372,7 +372,7 @@ git add . && git commit -m "Thêm trang chủ bản đồ" && git push
 
 ## 9. Phiên bản
 
-Dòng **Last updated 04-Aug-2026 · V10.04** chạy dọc mép trái bản đồ (class `.stamp`), tự ẩn khi zoom.
+Dòng **Last updated 04-Aug-2026 · V10.08** chạy dọc mép trái bản đồ (class `.stamp`), tự ẩn khi zoom.
 Đánh số: **số lớn** tăng khi thay đổi cấu trúc/luật chơi, **hai số nhỏ** tăng theo bản vá.
 Lịch sử: V1 bản đồ đầu tiên → V2 đếm ngược + zoom → V3 khung hẹp + khung phụ → V4 quần
 đảo đúng vị trí + hộp mật thư → V5 ô chữ + lời khen + sóng biển → V6 kênh bắt sóng + tên
@@ -507,72 +507,100 @@ Bấm lần đầu ở trạng thái *Reo* chỉ để lộ dòng chữ; **nhữ
 để chơi lại. Cờ `missionShown` lưu cùng tiến độ, reset thì về `false` nên vòng reo lặp lại
 đúng một lần cho mỗi lượt chơi.
 
-## 13. Lockup cờ Việt Nam
+## 13. Cờ Việt Nam ở chân trang
 
-Trước đây lá cờ đứng trơ một mình trên đầu tiêu đề, không neo vào đâu. Nay nó là một
-**lockup ba phần**: miếng vá (`.patch` — nền tối, viền mảnh, đổ bóng như phù hiệu khâu
-trên áo) → nhãn **PHI ĐOÀN 950109** → **gạch dẫn gradient amber** kéo hết bề ngang khối
-chữ. Gạch dẫn vừa cho lá cờ một đường chân đế, vừa thành đường kẻ đầu trang cho tiêu đề
-bên dưới — hết cảm giác lửng lơ mà không phải thêm chi tiết trang trí nào.
+Đầu trang không còn biểu tượng nào — chỉ **TÀI LIỆU PHI ĐOÀN** + gạch dẫn gradient amber
+kéo hết bề ngang khối chữ, làm luôn đường kẻ đầu trang cho tiêu đề. Con dấu "Tối mật" đã
+bỏ ở V10.07.
+
+Lá cờ (`.vf`) vẽ **hơi cong như đang bay** — hai đường Bézier lượn ở mép trên và mép dưới,
+không phải chữ nhật phẳng; ở cỡ 15px thì nếp cong là thứ duy nhất giúp nhận ra ngay đó là
+lá cờ. Nó xuất hiện hai chỗ, mỗi chỗ một kiểu:
+
+| Vị trí | Kiểu |
+|---|---|
+| Cuối dòng bản quyền | Đủ màu (đỏ + sao vàng), `opacity .42`, dính sát chữ "Honghandangiu" nhờ bọc chung `.crt` để khoảng `gap` của flex không đẩy ra |
+| Trước tem Last updated | **Đơn sắc, ăn theo màu chữ** (`fill:currentColor`) và **sao rỗng** — một path duy nhất gộp thân cờ + ngôi sao với `fill-rule="evenodd"` nên ngôi sao bị khoét thủng. Xoay `90deg` để nằm dọc cùng hàng với dòng chữ |
+
+## 18. Đọc được tem phân loại ở mọi trang hồ sơ
+
+`#topScrim` là dải gradient tối, đặt `z-index:4`. Tem phân loại và nút `← Bản đồ` được đẩy
+lên `z-index:7` và `9`, đồng thời tăng độ đục nền lên `.9` và tăng tương phản chữ/viền.
+Cần vậy vì các trang trong hồ sơ có ảnh nền sáng tối khác nhau — nếu để nền tem mờ như cũ
+thì trang nền sáng sẽ nuốt mất chữ.
 
 
----
+## 19. Tracking riêng cho file hồ sơ (V10.07)
 
-## 14. Trạng thái điểm sáng (V10.02)
-
-Ổ khoá / màu sắc **chỉ nói về mã morse**, không nói về hồ sơ:
-
-| Điểm | Lúc mới vào | Sau khi bắt được sóng |
-|---|---|---|
-| `XG` (có hồ sơ) | Xám thép, giữ **icon máy bay**, quầng sáng **thở nhẹ** mời gọi | Amber, hết thở |
-| `HN` `GR` `HZM` | Xám thép, **ổ khoá**, đứng yên | Amber, mất ổ khoá |
-
-Nhịp thở (`.bcn.hint`, `@keyframes haloPulse` + `tagPulse`) chỉ gắn cho điểm **có hồ sơ mà
-chưa bắt sóng** — nó là mũi tên chỉ đường duy nhất trên bản đồ, nên tắt ngay khi hết cần.
-
-## 15. Deploy tách riêng file hồ sơ
-
-`xg/950109-a/index.html` chạy độc lập được. Đầu đoạn tracking có hằng:
+`xg/950109-a/index.html` deploy độc lập được, nên nó có đường báo riêng. Đầu đoạn tracking
+có khối cấu hình:
 
 ```js
-var PING = '/api/ping';
+var TRACK = {
+  mode:     'endpoint',    // 'endpoint' | 'telegram'
+  endpoint: 'https://dongchi-binh-33.vercel.app/api/ping',
+  tgToken:  '',
+  tgChat:   ''
+};
 ```
 
-Cùng domain với bản đồ thì để nguyên. Nếu upload sang **domain khác**, đổi thành URL
-tuyệt đối, ví dụ `'https://dongchi-binh-33.vercel.app/api/ping'` — endpoint đã trả
-`204` và không kiểm tra origin nên gọi chéo domain vẫn nhận được tín hiệu.
+- **`endpoint`** (mặc định, khuyên dùng) — gửi qua `/api/ping` của trang bản đồ. Đang để
+  URL tuyệt đối nên chạy được kể cả khi file này nằm ở domain khác.
+- **`telegram`** — bắn thẳng lên Telegram, không cần server nào. Đổi `mode` và điền
+  `tgToken` + `tgChat` là xong.
+
+> **Cảnh báo bảo mật:** ở chế độ `telegram`, token nằm lộ trong mã nguồn trang — ai bấm
+> "xem nguồn" cũng đọc được và có thể nhắn tin giả danh bot hoặc đọc lịch sử chat của nó.
+> Nếu dùng, hãy tạo **một bot rác riêng** chỉ để làm việc này, đừng dùng chung với bot nào
+> khác. Chế độ `endpoint` giấu token trong biến môi trường của Vercel nên an toàn hơn hẳn.
+
+Sự kiện file này bắn: `ho_so_mo` (mở hồ sơ) · `trang_ho_so` (lật tới trang nào, kèm tiêu
+đề, một lần mỗi trang) · `gui_form` (bấm nút **Gửi về căn cứ**) · `ho_so_dong` (rời trang,
+kèm số trang đã xem và số giây ở lại).
 
 
----
+## 20. Trình chặn quảng cáo chặn được tới đâu? (V10.08)
 
-## 16. Ba tối ưu của V10.03
+Câu trả lời ngắn: **chặn được một phần, và mình đã dựng ba tầng dự phòng.**
 
-- **Preload font** — bộ Google Fonts nạp qua `rel="preload" as="style"` cộng thủ thuật
-  `media="print" onload` nên không còn chặn dựng trang, kèm `<noscript>` dự phòng. Vẫn
-  còn một nhịp đổi font rất ngắn (FOUT) vì URL file `.woff2` của Google thay đổi theo
-  phiên bản, không hardcode preload được; muốn triệt tiêu hẳn thì phải tải font về
-  self-host.
-- **Ảnh chia sẻ** — `og.png` 1200×630 ở gốc repo, khai qua thẻ `og:` và `twitter:`.
-  Ảnh dựng lại đúng từ dữ liệu bản đồ thật (cùng path SVG, cùng bảng màu), nên gửi link
-  qua Messenger/Zalo là ra tấm ra món. Đổi ảnh thì thay file, giữ nguyên tên.
-- **Nhắc nhẹ khi ngồi im** — **lượt ghé đầu tiên không nhắc gì cả**, để người xem tự mò
-  ra cơ chế; đó mới là phần thưởng. Từ **lượt ghé thứ hai** trở đi, ngồi im 6 giây thì
-  dòng lead đổi thành `Double-tap / Double-click to start mission` màu neon nhấp nháy
-  (`visits` đếm theo phiên, lưu cùng tiến độ). Chạm hoặc gõ phím bất kỳ là trả về câu
-  gốc. Không nhắc nữa khi đã bắt được mã morse. Sự kiện `nhac_goi_y` bắn về Telegram để
-  bạn biết ai đang bí.
+### Cái gần như chắc chắn bị chặn
 
+`/_vercel/insights/script.js` và `/_vercel/speed-insights/script.js` — hai script này nằm
+trong danh sách lọc của uBlock Origin, EasyPrivacy, AdGuard, và bị Brave chặn mặc định.
+Mất chúng thì mất số liệu trong dashboard Vercel, **không ảnh hưởng** tới `/api/ping`.
 
-## 17. Dải chrome trên của trang hồ sơ
+### `/api/ping` — khó bị chặn hơn nhiều
 
-Nút `← Bản đồ` và tem phân loại nằm `position:absolute` ở đỉnh khung, còn `.content` thì
-cuộn được — nên chữ chui xuống dưới hai thứ đó. Bản vá gồm hai phần, đều nằm trong đoạn
-inject cuối `xg/950109-a/index.html`:
+Đây là **request first-party** (cùng domain với trang), đường dẫn không chứa từ khoá
+"analytics", "track", "collect", "telemetry" nên không khớp mẫu lọc thông dụng. Trình
+chặn hiếm khi đụng vào. Ba tầng dự phòng, tầng trước hỏng thì rơi xuống tầng sau:
 
-- `.content{padding-top:62px !important}` chừa sẵn chỗ cho dải chrome. Trang nào có
-  `justify-content:center` thì thêm `padding-bottom:62px` cho cân đối trục dọc.
-- `#topScrim` — dải gradient tối 70px phủ ngang đỉnh (`z-index:4`, nằm trên nội dung
-  nhưng dưới tem và nút), để chữ cuộn qua thì mờ dần đi thay vì cắt ngang thô.
+1. `navigator.sendBeacon` — chạy nền, sống sót cả khi đang rời trang
+2. `fetch` với `keepalive:true`
+3. **Request ảnh** — `new Image().src = '/api/ping?ev=...'`. Endpoint nhận cả `GET` và trả
+   về GIF trong suốt 1×1, nên trình duyệt coi đây là tải ảnh bình thường. Đây là đường
+   sống sót cao nhất, vì môi trường nào chặn được cả ảnh first-party thì cũng đã hỏng nhiều
+   thứ khác của trang rồi.
 
-Chép sang sub-page mới thì mang theo cả hai, nếu sub-page đó cũng dùng khung `.frame` và
-`.content` cuộn được.
+### Chế độ `telegram` — rủi ro cao hơn
+
+`api.telegram.org` là **domain bên thứ ba**. Không nằm trong danh sách lọc quảng cáo,
+nhưng bị chặn ở tầng khác: mạng công ty, DNS lọc, và **một số nhà mạng ở vài quốc gia chặn
+thẳng Telegram**. Nếu chú Bình dùng Wi-Fi công ty hoặc VPN có lọc thì tin không tới.
+
+> **Lỗi đã sửa ở V10.08:** bản trước gửi Telegram bằng `Content-Type: application/json`,
+> kiểu này kích hoạt **preflight `OPTIONS`** chéo domain và rất hay hỏng — nghĩa là chế độ
+> `telegram` gần như không chạy. Nay đổi sang `URLSearchParams` +
+> `application/x-www-form-urlencoded`, tức "simple request", không preflight, đi thẳng.
+
+### Cái không bao giờ chặn được
+
+Bản thân việc **tải trang** thì luôn để lại dấu ở tầng hạ tầng: mục **Observability** của
+Vercel đếm request tới `/` và `/xg/950109-a` bất kể trình duyệt chặn gì. Không chi tiết
+bằng ping, nhưng đủ để biết "có người vào" và vào lúc nào.
+
+### Kết luận thực dụng
+
+Với một người xem là bạn trai/bạn gái dùng điện thoại cá nhân, khả năng mất tín hiệu là
+**rất thấp**. Nếu muốn chắc hơn nữa thì dùng `mode: 'endpoint'` (mặc định) thay vì
+`telegram`, vì nó là first-party và có đủ ba tầng dự phòng.
