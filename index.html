@@ -655,19 +655,34 @@ render();
                     (NHAN[ev] || ev) + (detail ? ' — ' + detail : ''),
                     new Date().toLocaleString('vi-VN', {timeZone:'Asia/Ho_Chi_Minh'}),
                     navigator.userAgent.slice(0,110)].join('\n');
-        fetch('https://api.telegram.org/bot' + TRACK.tgToken + '/sendMessage', {
-          method:'POST', keepalive:true, headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ chat_id: TRACK.tgChat, text: text })
+        /* Dùng form-urlencoded chứ KHÔNG dùng JSON: JSON kích hoạt preflight OPTIONS,
+           mà preflight chéo domain rất hay hỏng — gửi kiểu này là "simple request",
+           không preflight, nên đi thẳng. */
+        var url = 'https://api.telegram.org/bot' + TRACK.tgToken + '/sendMessage';
+        var qs = new URLSearchParams({ chat_id: TRACK.tgChat, text: text });
+        if(navigator.sendBeacon && navigator.sendBeacon(url, qs)) return;
+        fetch(url, { method:'POST', mode:'no-cors', keepalive:true,
+          headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: qs
         }).catch(function(){});
         return;
       }
       var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
         solved:[], ua:navigator.userAgent.slice(0,120) });
-      if(navigator.sendBeacon)
-        navigator.sendBeacon(TRACK.endpoint, new Blob([body],{type:'application/json'}));
-      else
-        fetch(TRACK.endpoint,{method:'POST',body:body,keepalive:true,
-          headers:{'Content-Type':'application/json'}}).catch(function(){});
+      if(navigator.sendBeacon &&
+         navigator.sendBeacon(TRACK.endpoint, new Blob([body],{type:'application/json'}))) return;
+      fetch(TRACK.endpoint,{method:'POST',body:body,keepalive:true,
+        headers:{'Content-Type':'application/json'}})
+        .catch(function(){ anhFallback(ev, detail); });
+    }catch(e){}
+  }
+  /* Cứu cánh cuối: request ảnh. Nhiều môi trường chặn fetch/beacon nhưng vẫn cho
+     tải ảnh, nên đây là đường sống sót cao nhất. */
+  function anhFallback(ev, detail){
+    try{
+      var i = new Image();
+      i.src = TRACK.endpoint + '?ev=' + encodeURIComponent(ev) +
+              '&detail=' + encodeURIComponent((detail||'').slice(0,80)) +
+              '&t=' + Date.now();
     }catch(e){}
   }
   window.__hsPing = ping;      /* để nút gửi biểu mẫu gọi được */
