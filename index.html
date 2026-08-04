@@ -619,22 +619,58 @@ render();
 <!-- ↓ Tracking tiến độ đọc hồ sơ (gửi về /api/ping) -->
 <script>
 (function(){
-  /* Nếu file này được deploy TÁCH khỏi trang bản đồ (khác domain), đổi PING
-     thành URL tuyệt đối tới endpoint, ví dụ 'https://dongchi-binh-33.vercel.app/api/ping'.
-     Cùng domain thì để nguyên. */
-  var PING = '/api/ping';
+  /* ================= CẤU HÌNH TRACKING RIÊNG CHO FILE NÀY =================
+     File hồ sơ này deploy được độc lập, nên có đường báo riêng.
+
+     mode 'endpoint'  → gửi qua /api/ping của trang bản đồ (khuyên dùng).
+                        Cùng domain thì để '/api/ping'; khác domain thì điền
+                        URL tuyệt đối, ví dụ:
+                        'https://dongchi-binh-33.vercel.app/api/ping'
+     mode 'telegram'  → bắn THẲNG lên Telegram, không cần server nào cả.
+                        Điền tgToken + tgChat bên dưới.
+                        LƯU Ý: token nằm lộ trong mã nguồn trang, ai xem
+                        source cũng đọc được. Chỉ dùng bot rác, đừng dùng
+                        chung bot với việc khác.
+     ======================================================================= */
+  var TRACK = {
+    mode:     'endpoint',
+    endpoint: 'https://dongchi-binh-33.vercel.app/api/ping',
+    tgToken:  '',
+    tgChat:   ''
+  };
+
   var TAG = 'XG-950109-A', bat = Date.now(), seen = {}, sau = 0;
+
+  var NHAN = {
+    ho_so_mo:    'Vào trong hồ sơ',
+    trang_ho_so: 'Xem trang hồ sơ',
+    ho_so_dong:  'Rời hồ sơ',
+    gui_form:    'ĐÃ GỬI BIỂU MẪU VỀ CĂN CỨ'
+  };
+
   function ping(ev, detail){
     try{
+      if(TRACK.mode === 'telegram' && TRACK.tgToken && TRACK.tgChat){
+        var text = ['HỒ SƠ ' + TAG,
+                    (NHAN[ev] || ev) + (detail ? ' — ' + detail : ''),
+                    new Date().toLocaleString('vi-VN', {timeZone:'Asia/Ho_Chi_Minh'}),
+                    navigator.userAgent.slice(0,110)].join('\n');
+        fetch('https://api.telegram.org/bot' + TRACK.tgToken + '/sendMessage', {
+          method:'POST', keepalive:true, headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ chat_id: TRACK.tgChat, text: text })
+        }).catch(function(){});
+        return;
+      }
       var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
         solved:[], ua:navigator.userAgent.slice(0,120) });
       if(navigator.sendBeacon)
-        navigator.sendBeacon(PING, new Blob([body],{type:'application/json'}));
+        navigator.sendBeacon(TRACK.endpoint, new Blob([body],{type:'application/json'}));
       else
-        fetch(PING,{method:'POST',body:body,keepalive:true,
+        fetch(TRACK.endpoint,{method:'POST',body:body,keepalive:true,
           headers:{'Content-Type':'application/json'}}).catch(function(){});
     }catch(e){}
   }
+  window.__hsPing = ping;      /* để nút gửi biểu mẫu gọi được */
   var deck = document.getElementById('deck');
   var TOTAL = deck ? deck.children.length : 5;
   function ten(i){
@@ -650,6 +686,11 @@ render();
   }
   ping('ho_so_mo', TAG);
   xem(0);
+  /* bấm nút gửi biểu mẫu → báo riêng một tin */
+  var sb = document.getElementById('submitBtn');
+  if(sb) sb.addEventListener('click', function(){
+    ping('gui_form', TAG + ' · vừa bấm nút gửi');
+  }, true);
   var _go = window.go;
   if(typeof _go === 'function'){
     window.go = function(n){
@@ -669,8 +710,15 @@ render();
 /* chừa chỗ cho dải chrome trên (nút Bản đồ + tem phân loại) để chữ không chui xuống dưới */
 .content{padding-top:62px !important}
 .content[style*="justify-content:center"]{padding-bottom:62px !important}
-#topScrim{position:absolute;top:0;left:0;right:0;height:70px;z-index:4;pointer-events:none;
-  background:linear-gradient(180deg,rgba(6,16,31,.94) 0%,rgba(6,16,31,.72) 46%,rgba(6,16,31,0) 100%)}
+#topScrim{position:absolute;top:0;left:0;right:0;height:72px;z-index:4;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,16,31,.92) 0%,rgba(6,16,31,.66) 52%,rgba(6,16,31,0) 100%)}
+/* tem phân loại phải đọc rõ ở MỌI trang, kể cả trang nền ảnh sáng */
+.classtag{z-index:7 !important;background:rgba(7,18,34,.9) !important;
+  color:rgba(234,240,247,.95) !important;border-color:rgba(234,240,247,.42) !important;
+  box-shadow:0 3px 12px rgba(0,0,0,.5)}
+#backHome{z-index:9 !important;background:rgba(7,18,34,.9) !important;
+  border-color:rgba(234,240,247,.4) !important;color:rgba(234,240,247,.95) !important;
+  box-shadow:0 3px 12px rgba(0,0,0,.5)}
 #backHome{position:absolute;top:13px;left:13px;z-index:9;display:inline-flex;
   align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
   border:1px solid var(--line);background:rgba(6,16,31,.55);backdrop-filter:blur(4px);
