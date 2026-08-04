@@ -48,10 +48,10 @@ a{color:inherit;text-decoration:none}
 .frame[data-state="focus"] .classtag{opacity:0}
 
 /* huy hiệu: 4 tên lửa, sáng dần theo số mật thư đã giải */
-.pz{display:none;align-items:center;gap:7px;padding:4px 12px;border-radius:99px;
+.pz{display:none;align-items:center;justify-content:center;gap:8px;padding:5px 13px;border-radius:99px;
   border:1px solid rgba(127,180,235,.22);background:rgba(6,16,31,.45)}
 .pz.on{display:inline-flex}
-.rk svg{width:15px;height:16.3px;display:block}
+.rk svg{width:17px;height:18.4px;display:block}
 .rk{opacity:.85}
 .rk .rk-body{fill:url(#metal)}
 .rk .rk-nose{fill:none}
@@ -70,9 +70,10 @@ a{color:inherit;text-decoration:none}
 .rk:nth-child(2){animation-delay:.2s}.rk:nth-child(3){animation-delay:.4s}
 .rk:nth-child(4){animation-delay:.6s}
 @keyframes rkblink{0%,100%{opacity:.28}50%{opacity:.9;filter:drop-shadow(0 0 5px rgba(110,205,255,.5))}}
-.pz-txt{font-family:"Oswald";font-size:8.5px;font-weight:700;letter-spacing:.24em;
+.pz-txt:empty{display:none}
+.pz-txt{font-family:"Oswald";font-size:9.5px;font-weight:700;letter-spacing:.24em;
   text-transform:uppercase;color:var(--amber);white-space:nowrap}
-.pz.done{border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08)}
+.pz.done{border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08);cursor:pointer}
 
 /* ---------- header ---------- */
 .head{position:relative;z-index:4;flex:none;overflow:hidden;
@@ -108,6 +109,12 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .mapwrap{position:relative;z-index:3;flex:1;min-height:0;display:flex;
   align-items:center;justify-content:center;padding:6px 0 0}
 .mapstage{position:relative;width:100%;height:100%}
+.stamp{position:absolute;left:9px;bottom:6px;z-index:4;
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:"Oswald";font-size:8px;font-weight:500;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(234,240,247,.30);pointer-events:none;
+  transition:opacity .4s}
+.frame[data-state="focus"] .stamp{opacity:0}
 .mapstage svg.map{display:block;width:100%;height:100%;overflow:hidden}
 #cam{transform-box:view-box;transform-origin:0 0;
   transition:transform .78s cubic-bezier(.66,.02,.22,1)}
@@ -143,17 +150,17 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .frame.placed .beacon{visibility:visible}
 .frame[data-state="focus"] .beacon{opacity:0;pointer-events:none}
 .frame[data-state="focus"] .beacon.is-active{opacity:1}
-.beacon .tag{position:absolute;left:26px;top:50%;transform:translateY(-50%);
+.beacon .tag{position:absolute;left:32px;top:50%;transform:translateY(-50%);
   display:flex;flex-direction:column;align-items:flex-start;gap:4px;
   white-space:nowrap;line-height:1}
-.beacon.tl .tag{left:auto;right:26px;align-items:flex-end}
+.beacon.tl .tag{left:auto;right:32px;align-items:flex-end}
 .beacon .code{display:flex;align-items:center;gap:4px;font-family:"Oswald";font-size:10px;
   font-weight:600;letter-spacing:.16em;color:var(--amber);line-height:1}
 .beacon .city{font-family:"Oswald";font-size:8px;letter-spacing:.13em;
   color:rgba(234,240,247,.58);line-height:1;text-transform:uppercase}
 .beacon[data-locked="1"] .code{color:rgba(174,201,228,.8)}
 .lk{width:8px;height:9.5px;flex:none;color:currentColor}
-.pl{width:12px;height:6.2px;flex:none;fill:currentColor}
+.pl{width:12px;height:6.2px;flex:none;fill:currentColor;margin-right:2px}
 
 /* ---------- hud ---------- */
 .hud{position:relative;z-index:6;flex:none;padding:6px clamp(18px,5vw,26px) 32px;
@@ -165,10 +172,18 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .frame.hot .readout.code,
 .frame.hot .sheet-coord.code{cursor:pointer;color:#8BE0FF;
   animation:mglow 2.4s ease-in-out infinite}
+/* mã morse đang ghim: viền mảnh gợi ý "bấm được vào đây" */
+.readout{border:1px solid transparent;border-radius:99px;padding:5px 13px}
+.readout.code{border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
 @keyframes mglow{
   0%,100%{opacity:.85;text-shadow:0 0 7px rgba(56,189,248,.35)}
   50%{opacity:1;text-shadow:0 0 17px rgba(56,189,248,.85)}}
-.cr{font-size:7px;letter-spacing:.14em;color:rgba(234,240,247,.3)}
+.cr{font-size:7.7px;letter-spacing:.15em;line-height:1.5;color:rgba(234,240,247,.34);
+  display:flex;align-items:center;gap:9px}
+.rc{display:none;font-family:"Oswald";font-size:7.7px;letter-spacing:.1em;
+  color:rgba(201,162,75,.6);border:1px solid rgba(201,162,75,.3);border-radius:99px;
+  padding:1px 7px}
+.rc.on{display:inline-block}
 
 /* ---------- sheet ---------- */
 .scrim{position:absolute;inset:0;z-index:7;background:rgba(4,11,24,.2);
@@ -320,7 +335,8 @@ a.file:active{background:rgba(242,180,65,.07)}
 .cx-won-s{margin:5px 0 0;font-size:12px;color:rgba(219,230,243,.75)}
 .cx-hint{font-family:"Oswald";font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;
   color:rgba(234,240,247,.4);margin:11px 0 0;text-align:center;min-height:1.4em}
-.cx-hint.bad{color:#ff8f7a}
+.cx-hint.bad{color:#ff8f7a;font-family:"Be Vietnam Pro",system-ui,sans-serif;
+  font-size:12.5px;font-weight:600;letter-spacing:.01em;text-transform:none}
 .cx-hint.good{color:var(--brass)}
 .cxp.shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}
@@ -409,7 +425,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <svg class="cd-ico" viewBox="0 0 62 32" aria-hidden="true"><use href="#jet"/></svg>
       <span class="cd-txt">
         <span class="cd-cap">Phi vụ tiếp theo</span>
-        <span class="cd-sub" id="cdSub">Hồ sơ mật sẽ mở trong</span>
+        <span class="cd-sub" id="cdSub">Hồ sơ mật sẽ pật mí trong</span>
       </span>
       <span class="cd-num" id="cdNum"><b id="cdD">--</b><i>ngày</i><b id="cdT">--:--:--</b></span>
     </div>
@@ -497,6 +513,7 @@ a.file:active{background:rgba(242,180,65,.07)}
         </g>
       </svg>
 
+      <span class="stamp">Last updated 04-Aug-2026 · V9.20</span>
       <button class="beacon" data-bcn="HN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HN</span><span class="city">Hà Nội</span></span>
       </button>
@@ -521,7 +538,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <span class="pz-txt" id="pzTxt"></span>
     </span>
     <span class="readout idle" id="readout">Chờ chọn toạ độ</span>
-    <span class="cr">© Bản quyền · Dongchi Bình &amp; Honghandangiu</span>
+    <span class="cr">© Bản quyền · Dongchi Bình &amp; Honghandangiu<span class="rc" id="rc"></span></span>
   </footer>
 
   <div class="scrim" id="scrim"></div>
@@ -607,6 +624,14 @@ const SPOT = { HN:[222.8,160.3], XG:[358.8,459.2], GR:[417.4,595.1], HZM:[267.7,
 const VBW = 746, VBH = 966, ZOOM = 2.5, FOCUS_Y = 0.24;
 
 /* lời khen bật ra khi giải đúng — chọn ngẫu nhiên */
+/* câu báo sai — đi lần lượt rồi vòng lại; reset thì đếm lại từ đầu */
+const WRONGS = [
+  'Trừi ưi, chú Bình thử lại iiii ⪩ ⪨ ꠹~',
+  'Tứk giựn (˶˃⤙˂˶)!!',
+  'Ẳng rìiiii /•᷅‎‎•᷄\\੭',
+  'Tét munggg ∘ ∘ ∘ ( °ヮ° ) ?'
+];
+
 const PRAISE = [
   'Dữ zạ ₍^. .^₎⟆',
   'Quá đỉnk ⚞^. .^⚟',
@@ -616,11 +641,11 @@ const PRAISE = [
 
 const CALLS = [
   'Đang tiếp nhiên liệu','Đang cập nhật hành trình bay','Chuẩn bị cất cánh',
-  'Kiểm tra tiền bay','Đang xin huấn lệnh không lưu','Đã nhận huấn lệnh từ đài chỉ huy',
-  'Đang lăn ra đường băng','Kiểm tra động cơ và cánh tà','Cân bằng trọng tải khoang',
+  'Kiểm tra trước chuyến bay','Đang xin huấn lệnh không lưu','Đã nhận huấn lệnh từ đài chỉ huy',
+  'Đang lăn ra đường băng','Kiểm tra động cơ và cánh tà','Cân bằng trọng tải trong khoang',
   'Đóng cửa khoang, kiểm tra áp suất','Đang liên lạc đài kiểm soát','Thiết lập độ cao hành trình',
   'Kiểm tra thời tiết dọc tuyến','Đang nạp hồ sơ lên khoang','Hiệu chỉnh la bàn từ',
-  'Xác nhận đường băng trống','Bật đèn hiệu dẫn đường','Khoá càng, sẵn sàng rời mặt đất'
+  'Xác nhận đường băng trống','Bật đèn hiệu dẫn đường','Khoá càng đáp, sẵn sàng rời mặt đất'
 ];
 
 /* Tự đếm nhịp gõ: e.detail không đáng tin trên mobile (double-tap
@@ -648,17 +673,37 @@ const coordOf = n => n.lat.toFixed(3)+'°N · '+n.lon.toFixed(3)+'°E';
 const nodeOf = c => NODES.find(n=>n.code===c);
 
 /* Hai ô hiển thị độc lập:
-   - #readout (ngoài màn hình chính): toạ độ khi rê chuột / mở hồ sơ,
-     đổi sang mã morse khi double-click vào điểm sáng (biến `sticky`).
+   - #readout (ngoài màn hình chính): toạ độ khi rê chuột / mở hồ sơ;
+     toạ độ đã bắt sóng (kênh map) thì rê tới là morse tự hiện.
    - #sheetCoord (trong hộp hồ sơ): toạ độ, đổi sang morse khi double-click
      vào chính nó — chỉ khi kênh bắt sóng là 'sheet'.
    Vào hộp pí mật từ ô nào cũng được, đầu ra như nhau. */
 /* `channel` là kênh bắt sóng, chốt ngay lần đầu người xem tìm ra mã morse:
    'map'   → về sau chỉ bản đồ chính mới nhả mã; hồ sơ giữ nguyên toạ độ.
    'sheet' → về sau chỉ trong hồ sơ mới nhả mã; ngoài bản đồ im lặng.
-   `unlocked` ghi từng toạ độ đã bắt được sóng — hộp pí mật chỉ hiện mã của toạ độ đã mở. */
-let hoverNode = null, sticky = null, morseSeen = false;
-let channel = null, unlocked = {};
+   `unlocked` ghi từng toạ độ đã bắt được sóng.
+   `pinned` là toạ độ đang được GHIM: chỉ khi ghim thì mã morse mới đứng yên
+   trên HUD để bấm vào mà mở hộp pí mật. Rê chuột thường chỉ ra kinh–vĩ độ,
+   kể cả toạ độ đã mở — muốn xem lại mã phải gõ đúp lần nữa. */
+let hoverNode = null, pinned = null, morseSeen = false;
+let channel = null, unlocked = {}, wrongCount = 0, resetCount = 0;
+
+/* toạ độ đã bắt sóng (hoặc đã có hồ sơ) thì bỏ ổ khoá và sáng màu amber */
+function refreshBeacons(){
+  NODES.forEach(n=>{
+    const open = n.subs.length > 0 || !!unlocked[n.code];
+    const btn = document.querySelector('.beacon[data-bcn="'+n.code+'"]');
+    const grp = document.querySelector('.bcn[data-bcn="'+n.code+'"]');
+    if(grp) grp.setAttribute('data-locked', open ? '0' : '1');
+    if(!btn) return;
+    btn.setAttribute('data-locked', open ? '0' : '1');
+    const code = btn.querySelector('.code');
+    const ico = n.subs.length
+      ? '<svg class="pl"><use href="#jet"/></svg>'          /* có hồ sơ để đọc */
+      : (open ? '' : '<svg class="lk"><use href="#lockIco"/></svg>');
+    if(code) code.innerHTML = ico + n.code;
+  });
+}
 
 function unlockNode(code, via){
   if(channel && channel !== via) return false;      /* sai kênh */
@@ -667,7 +712,7 @@ function unlockNode(code, via){
     unlocked[code] = true;
     if(!morseSeen){ morseSeen = true; frame.classList.add('hot'); }
     pzOn = true;
-    save(); showPz();
+    save(); showPz(); refreshBeacons();
     ping('mo_khoa_morse', code+' · '+(via==='map' ? 'từ bản đồ' : 'từ hồ sơ'), true);
   }
   return true;
@@ -683,13 +728,15 @@ function flash(msg){
 
 function paint(){
   clearTimeout(flashT);
-  const n = sticky || (current ? nodeOf(current) : null) || hoverNode;
+  if(pinned && channel === 'map'){          /* đang ghim → mã morse đứng yên */
+    readout.textContent = pinned.morse;
+    readout.classList.remove('idle'); readout.classList.add('code');
+    paintSheet(); return;
+  }
+  const n = (current ? nodeOf(current) : null) || hoverNode;
   if(!n){
     readout.textContent = 'Chờ chọn toạ độ';
     readout.classList.add('idle'); readout.classList.remove('code');
-  }else if(channel === 'map' && unlocked[n.code]){
-    readout.textContent = n.morse;
-    readout.classList.remove('idle'); readout.classList.add('code');
   }else{
     readout.textContent = n.code+' · '+coordOf(n);
     readout.classList.remove('idle'); readout.classList.remove('code');
@@ -812,7 +859,7 @@ function place(){
     b.style.top  = (s.y - box.top)+'px';
     if(b.dataset.side !== 'left'){
       const w = b.querySelector('.tag').offsetWidth;
-      b.classList.toggle('tl', x + 26 + w > box.width - 6);
+      b.classList.toggle('tl', x + 32 + w > box.width - 6);
     }
   });
   frame.classList.add('placed');
@@ -858,13 +905,16 @@ const store = {
   solved = s.solved || {};
   unlocked = s.unlocked || {};
   channel = s.channel || null;
+  wrongCount = s.wrongCount || 0;
+  resetCount = s.resetCount || 0;
+  showRc();
   pzOn = !!s.pzOn;
   morseSeen = !!s.morseSeen;
   if(morseSeen) frame.classList.add('hot');
-  showPz();
+  showPz(); refreshBeacons();
 })();
 
-function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked }); }
+function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -889,6 +939,11 @@ function ping(ev, detail, onlyOnce){
   }catch(e){}
 }
 function nSolved(){ return NODES.filter(n=>solved[n.code]).length; }
+function showRc(){
+  const el = $('rc');
+  el.classList.toggle('on', resetCount > 0);
+  el.textContent = '\u21bb '+resetCount;
+}
 function showPz(){
   const pz = $('pz');
   pz.classList.toggle('on', !!pzOn);
@@ -1098,7 +1153,8 @@ function guess(){
     if(nSolved() === NODES.length) ping('hoan_thanh', '', true);
   }else{
     hint.className = 'cx-hint bad';
-    hint.textContent = 'Chưa đúng — thử giải lại chuỗi morse';
+    hint.textContent = WRONGS[wrongCount % WRONGS.length];
+    wrongCount++; save();
     ping('giai_sai', cxCode, true);
     cxp.classList.remove('shake'); void cxp.offsetWidth; cxp.classList.add('shake');
   }
@@ -1111,10 +1167,14 @@ $('cxChips').addEventListener('click', e=>{
 });
 $('cxGo').addEventListener('click', guess);
 $('cxInput').addEventListener('keydown', e=>{ if(e.key==='Enter') guess(); });
+$('pz').addEventListener('click', ()=>{
+  if($('pz').classList.contains('done')) openCx(null);
+});
 $('cxReset').addEventListener('click', ()=>{
   solved = {}; unlocked = {}; channel = null; morseSeen = false; pzOn = false;
-  sticky = null;
-  save(); showPz();
+  wrongCount = 0; pinned = null;
+  resetCount++; showRc();
+  save(); showPz(); refreshBeacons();
   frame.classList.remove('hot');
   try{ localStorage.removeItem('mtping'); }catch(e){}
   ping('reset','');
@@ -1127,7 +1187,7 @@ cxw.addEventListener('click', e=>{ if(e.target===cxw) closeCx(); });
 readout.addEventListener('click', e=>{
   if(!multiTap(e, readout) || !readout.classList.contains('code')) return;
   e.preventDefault();
-  const n = sticky || hoverNode || (current ? nodeOf(current) : null);
+  const n = pinned || hoverNode || (current ? nodeOf(current) : null);
   openCx(n ? n.code : null);
 });
 /* Ô trong hộp hồ sơ: cú đầu bắt sóng, cú sau vào giải mã */
@@ -1150,14 +1210,13 @@ document.querySelectorAll('.beacon').forEach(btn=>{
   btn.addEventListener('click', e=>{
     clearTimeout(hold);
     if(multiTap(e, btn)){           /* double / triple: bắt sóng tại chỗ, không zoom */
-      hoverNode = null;
       if(channel === 'sheet'){
         if(current) close();
         flash('Kênh bản đồ đã niêm phong — mở hồ sơ mới bắt được sóng');
         return;
       }
-      unlockNode(node.code, 'map');
-      sticky = node;
+      if(!unlocked[node.code]) unlockNode(node.code, 'map');
+      pinned = node;                 /* ghim lại để còn bấm vào mã morse */
       if(current) close(); else paint();
       return;
     }
@@ -1168,10 +1227,12 @@ document.querySelectorAll('.beacon').forEach(btn=>{
   btn.addEventListener('focus', ()=>{ hoverNode = node; paint(); });
   btn.addEventListener('blur',  ()=>{ hoverNode = null; paint(); });
 });
-/* double click / double tap ra chỗ khác thì bỏ ghim, quay lại "Chờ chọn toạ độ" */
-frame.addEventListener('dblclick', e=>{
-  if(e.target.closest('.beacon, #readout, .cxw, .sheet')) return;
-  if(sticky){ sticky = null; paint(); }
+/* gõ đúp ra chỗ trống (né chuỗi morse và điểm sáng) → bỏ ghim, về màn hình thường */
+frame.addEventListener('click', e=>{
+  if(!pinned) return;
+  if(e.target.closest('#readout, .beacon, .sheet, .cxw, .pz')) return;
+  if(!multiTap(e, frame)) return;
+  pinned = null; paint();
 });
 scrim.addEventListener('click', close);
 $('grip').addEventListener('click', close);

@@ -206,8 +206,9 @@ sang hồ sơ khung không nhảy một pixel nào.
 |---|---|
 | Rê chuột / `Tab` tới | Dòng HUD hiện **toạ độ** của điểm đó, rời ra thì trả về |
 | **1 click** | Zoom vào thành phố, mở bảng hồ sơ như bình thường |
-| **2–3 click** | **Không zoom.** Ghim **mã morse** ở HUD trang chính, giữ nguyên đó |
-| **Double-click ra chỗ khác** | Bỏ ghim, HUD trở lại "Chờ chọn toạ độ" |
+| **2–3 click** (toạ độ chưa bắt sóng) | **Không zoom.** Bắt sóng toạ độ đó — từ nay rê tới là morse tự hiện |
+| **2–3 click** (toạ độ đã bắt sóng) | Ghim mã morse lên HUD để bấm vào |
+| **2–3 click ra chỗ trống** | Bỏ ghim, HUD về "Chờ chọn toạ độ" |
 | **2–3 click vào chính chuỗi morse** | Mở hộp mật thư |
 
 Vì phải phân biệt một cú với hai cú, click đơn có độ trễ **250 ms** trước khi mở hồ sơ —
@@ -220,7 +221,7 @@ trước sẽ **chốt kênh vĩnh viễn** (biến `channel`), đường còn l
 
 | Kênh | Chốt bằng | Về sau |
 |---|---|---|
-| `map` | 2–3 click vào điểm sáng trên bản đồ | Toạ độ nào **đã bắt sóng** thì chỉ cần **rê chuột / lướt qua** là hiện mã. Toạ độ chưa bắt vẫn hiện kinh–vĩ độ. Dòng toạ độ trong hồ sơ **niêm phong vĩnh viễn**, thao tác gì cũng không đổi. |
+| `map` | 2–3 click vào điểm sáng trên bản đồ | Mỗi lần muốn xem mã của một toạ độ đã bắt sóng đều phải **gõ đúp lại** — gõ xong mã **ghim đứng yên** (`pinned`) để còn bấm vào mà mở hộp. Rê chuột thường luôn chỉ ra kinh–vĩ độ. Gõ đúp ra chỗ trống thì bỏ ghim. Dòng toạ độ trong hồ sơ **niêm phong vĩnh viễn**. |
 | `sheet` | Mở hồ sơ rồi 2–3 click vào dòng toạ độ | Phải **vào hồ sơ từng địa điểm** rồi lặp lại đúng thao tác đó. Ngoài bản đồ im lặng hoàn toàn, 2–3 click chỉ báo "kênh đã niêm phong". |
 
 Dù đi kênh nào, người xem vẫn **phải thao tác riêng cho từng địa điểm** — mở được `XG`
@@ -235,7 +236,9 @@ Toạ độ **đã giải xong** thì ô nhập và nút Giải biến mất, th
 "Đã chinh phục toạ độ (๑ > ᴗ < ๑) — Vui lòng liên hệ Hội đồng Meowmeow để nhận thưởng!"
 (sửa chữ ở khối `#cxWon` trong HTML).
 
-Ở cả hai chỗ, cú double/triple click **tiếp theo** lên chính chuỗi morse sẽ mở hộp giải mã.
+**Cửa duy nhất vào hộp pí mật là bấm double/triple lên chính chuỗi morse** — ở mọi trang,
+không có lối tắt nào khác. (Ngoại lệ có chủ đích: huy hiệu MISSION COMPLETED sau khi giải
+đủ 4/4 cũng bấm vào được, để mở hộp mà bấm nút chơi lại.)
 
 - **Không copy được** — cả hai ô morse và dòng morse trong hộp giải mã đều đặt
   `user-select:none`, người xem buộc phải tự đọc và gõ lại.
@@ -262,9 +265,25 @@ Toạ độ **đã giải xong** thì ô nhập và nút Giải biến mất, th
   (`snow` / `sea` / `wind` / `fire`; `rain` vẫn còn trong engine nếu cần dùng lại).
 - **Lời khen không trùng nhau**: `pickPraise()` chỉ bốc trong số câu **chưa dùng**, nên
   bốn đáp án ra bốn câu khác nhau, thứ tự vẫn ngẫu nhiên.
-- **Giải hết 4/4** → nút **Chơi lại từ đầu** hiện dưới đáy hộp. Bấm vào là **xoá sạch**:
-  tiến độ, kênh bắt sóng, danh sách đã bắt, huy hiệu tên lửa, cả lịch sử ping. Vòng chơi
-  quay về đúng lúc chưa ai biết mã morse tồn tại — chọn lại kênh từ đầu.
+- **Nhập sai** → câu trêu đi lần lượt theo mảng `WRONGS` rồi vòng lại: "Trừi ưi, chú Bình
+  thử lại iiii" → "Tứk giựn" → "Ẳng rìiiii" → "Tét munggg". Bộ đếm `wrongCount` lưu cùng
+  tiến độ nên tắt web mở lại vẫn đi tiếp đúng thứ tự. Câu trêu hiển thị bằng font
+  Be Vietnam Pro cỡ 12.5px — Oswald thiếu glyph nên kaomoji sẽ vỡ nếu dùng.
+- **Giải hết 4/4** → huy hiệu chuyển thành **MISSION COMPLETED** và **bấm vào được**: mở
+  hộp pí mật, trong đó có nút **Chơi lại từ đầu**. Bấm reset là **xoá sạch**: tiến độ,
+  kênh bắt sóng, danh sách đã bắt, huy hiệu tên lửa, bộ đếm câu sai, cả lịch sử ping —
+  chọn lại kênh từ đầu. Riêng **bộ đếm số lần reset** thì giữ lại và cộng dồn, hiện thành
+  con số nhỏ `↻ n` cạnh dòng bản quyền (chỉ hiện khi đã reset ít nhất một lần).
+
+### Tiến trình có mất không?
+
+Toàn bộ trạng thái nằm trong `localStorage` của trình duyệt — **không có hạn tự hết**,
+tắt máy mở lại vẫn còn, kể cả sau nhiều tuần. Ba trường hợp duy nhất bị mất:
+chế độ ẩn danh (đóng cửa sổ là bay), người dùng tự xoá dữ liệu trang, và **Safari/iOS**
+có cơ chế dọn storage của website **không được ghé lại trong ~7 ngày** liên tục dùng
+Safari. Tiến trình cũng gắn với **từng máy + từng trình duyệt** — đổi máy là bắt đầu lại.
+Với kèo sinh nhật một người chơi trong vài tuần thì mức này ổn; muốn chắc tuyệt đối thì
+phải lưu server (Vercel KV), hiện chưa cần.
 - Đáp án khai báo ở `answers`, bản chữ hiển thị ở `plain`. So khớp sau khi bỏ dấu tiếng
   Việt, bỏ khoảng trắng và hạ chữ thường, nên gõ "Con Đường Hạnh Phúc" hay
   "conduonghanhphuc" đều được. Tiến độ lưu bằng `localStorage` (bọc `try/catch`, không có
@@ -351,7 +370,16 @@ git add . && git commit -m "Thêm trang chủ bản đồ" && git push
 
 ---
 
-## 9. Ghi chú kỹ thuật
+## 9. Phiên bản
+
+Dòng **Last updated 04-Aug-2026 · V9.20** chạy dọc mép trái bản đồ (class `.stamp`), tự ẩn khi zoom.
+Đánh số: **số lớn** tăng khi thay đổi cấu trúc/luật chơi, **hai số nhỏ** tăng theo bản vá.
+Lịch sử: V1 bản đồ đầu tiên → V2 đếm ngược + zoom → V3 khung hẹp + khung phụ → V4 quần
+đảo đúng vị trí + hộp mật thư → V5 ô chữ + lời khen + sóng biển → V6 kênh bắt sóng + tên
+lửa → V7 khối chinh phục → V8 vá tên lửa đen + double-tap mobile → **V9** bỏ ghim morse +
+câu trêu xoay vòng, **V9.20** ghim lại mã morse + toạ độ mở khoá sáng lên. Khi sửa tiếp, nhớ cập nhật chuỗi trong `.stamp`.
+
+## 9b. Ghi chú kỹ thuật
 
 - **Đường bờ biển** lấy từ Natural Earth 1:50m, đã đơn giản hoá bằng thuật toán
   Ramer–Douglas–Peucker, nhúng thẳng vào SVG (~5 KB). Không gọi API bản đồ nào,
@@ -444,3 +472,18 @@ nên bản này cố tình không làm để khỏi thêm phụ thuộc.
 Endpoint không xác thực, ai biết đường dẫn cũng gọi được — với trang sinh nhật thì không
 sao, nhưng đừng gửi gì nhạy cảm qua đó. Trang không hiện bất kỳ dấu hiệu nào cho thấy
 đang gửi tín hiệu.
+
+
+---
+
+## 11. Ghi chú UX của bản V9.20
+
+- **Ổ khoá trên bản đồ giờ nói đúng sự thật.** Trước đây ổ khoá chỉ có nghĩa "chưa có hồ
+  sơ", nên bắt được mã morse rồi mà điểm vẫn xám khoá — người chơi không thấy mình tiến
+  bộ. Nay `refreshBeacons()` gỡ khoá và chuyển điểm sang amber ngay khi bắt được sóng,
+  nên bản đồ chính là thanh tiến độ.
+- **Mã morse có viền pill mảnh khi đang ghim.** Chữ phát sáng thôi thì chưa đủ báo "bấm
+  được vào đây"; viền bao quanh làm nó thành một mục tiêu bấm rõ ràng.
+- **Ghim là bắt buộc, không phải tuỳ chọn.** Nếu mã chỉ hiện lúc rê chuột thì không thể
+  di chuột xuống bấm vào nó — vừa rời điểm sáng là mã biến mất. Đây chính là lỗi khiến
+  bản V9.10 không vào được hộp pí mật.
