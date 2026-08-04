@@ -196,7 +196,7 @@ textarea::placeholder,input::placeholder{color:#6f83a0}
 .chips.invalid .chip{border-color:#ff7a66}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .toast{position:absolute;top:52px;left:50%;transform:translateX(-50%) translateY(-14px);z-index:40;
-  background:#e0533b;color:#fff;font-size:12.5px;font-weight:500;padding:9px 16px;border-radius:20px;
+  background:#e0533b;color:#fff;font-size:12.5px;font-weight:500;padding:8px 14px;border-radius:20px;
   box-shadow:0 8px 24px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.3s;max-width:86%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -615,6 +615,69 @@ document.getElementById('submitBtn').onclick = async ()=>{
 };
 
 render();
+</script>
+<!-- ↓ Tracking tiến độ đọc hồ sơ (gửi về /api/ping) -->
+<script>
+(function(){
+  /* Nếu file này được deploy TÁCH khỏi trang bản đồ (khác domain), đổi PING
+     thành URL tuyệt đối tới endpoint, ví dụ 'https://dongchi-binh-33.vercel.app/api/ping'.
+     Cùng domain thì để nguyên. */
+  var PING = '/api/ping';
+  var TAG = 'XG-950109-A', bat = Date.now(), seen = {}, sau = 0;
+  function ping(ev, detail){
+    try{
+      var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
+        solved:[], ua:navigator.userAgent.slice(0,120) });
+      if(navigator.sendBeacon)
+        navigator.sendBeacon(PING, new Blob([body],{type:'application/json'}));
+      else
+        fetch(PING,{method:'POST',body:body,keepalive:true,
+          headers:{'Content-Type':'application/json'}}).catch(function(){});
+    }catch(e){}
+  }
+  var deck = document.getElementById('deck');
+  var TOTAL = deck ? deck.children.length : 5;
+  function ten(i){
+    try{
+      var t = deck.children[i].querySelector('.eyebrow, h1, h2');
+      return (i+1)+'/'+TOTAL + (t ? ' · ' + t.textContent.trim().slice(0,32) : '');
+    }catch(e){ return (i+1)+'/'+TOTAL; }
+  }
+  function xem(i){
+    if(seen[i]) return;
+    seen[i] = 1; sau = Object.keys(seen).length;
+    ping('trang_ho_so', TAG + ' · trang ' + ten(i));
+  }
+  ping('ho_so_mo', TAG);
+  xem(0);
+  var _go = window.go;
+  if(typeof _go === 'function'){
+    window.go = function(n){
+      _go(n);
+      xem(Math.max(0, Math.min(TOTAL-1, n)));
+    };
+  }
+  addEventListener('pagehide', function(){
+    ping('ho_so_dong', TAG + ' · xem ' + sau + '/' + TOTAL + ' trang · ' +
+      Math.round((Date.now()-bat)/1000) + ' giây');
+  });
+})();
+</script>
+<!-- ↓ Liên kết quay lại bản đồ chính (thêm bởi trang chủ) -->
+<style>
+.corner.tl{display:none}
+#backHome{position:absolute;top:13px;left:13px;z-index:9;display:inline-flex;
+  align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(6,16,31,.55);backdrop-filter:blur(4px);
+  font-family:"Oswald";font-size:10px;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(234,240,247,.85);text-decoration:none}
+#backHome b{color:var(--amber);font-weight:600;font-size:12px;line-height:1}
+#backHome:active{transform:translateY(1px)}
+</style>
+<a id="backHome" href="/"><b>&larr;</b> Bản đồ</a>
+<script>
+(function(){var f=document.querySelector('.frame'),b=document.getElementById('backHome');
+if(f&&b)f.appendChild(b);})();
 </script>
 <!-- Vercel Web Analytics -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
