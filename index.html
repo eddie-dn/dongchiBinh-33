@@ -666,6 +666,11 @@ render();
 <!-- ↓ Liên kết quay lại bản đồ chính (thêm bởi trang chủ) -->
 <style>
 .corner.tl{display:none}
+/* chừa chỗ cho dải chrome trên (nút Bản đồ + tem phân loại) để chữ không chui xuống dưới */
+.content{padding-top:62px !important}
+.content[style*="justify-content:center"]{padding-bottom:62px !important}
+#topScrim{position:absolute;top:0;left:0;right:0;height:70px;z-index:4;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,16,31,.94) 0%,rgba(6,16,31,.72) 46%,rgba(6,16,31,0) 100%)}
 #backHome{position:absolute;top:13px;left:13px;z-index:9;display:inline-flex;
   align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
   border:1px solid var(--line);background:rgba(6,16,31,.55);backdrop-filter:blur(4px);
@@ -674,10 +679,15 @@ render();
 #backHome b{color:var(--amber);font-weight:600;font-size:12px;line-height:1}
 #backHome:active{transform:translateY(1px)}
 </style>
+<div id="topScrim"></div>
 <a id="backHome" href="/"><b>&larr;</b> Bản đồ</a>
 <script>
-(function(){var f=document.querySelector('.frame'),b=document.getElementById('backHome');
-if(f&&b)f.appendChild(b);})();
+(function(){
+  var f=document.querySelector('.frame');
+  var b=document.getElementById('backHome'), s=document.getElementById('topScrim');
+  if(f&&s)f.appendChild(s);
+  if(f&&b)f.appendChild(b);
+})();
 </script>
 <!-- Vercel Web Analytics -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
