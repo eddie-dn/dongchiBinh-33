@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>XG-950901-B · Hồ sơ niêm phong</title>
+<meta name="theme-color" content="#040b18">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Be+Vietnam+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#040b18;--navy:#0B1B3A;--neon:#38BDF8;--amber:#F2B441;
+  --paper:#EAF0F7;--line:rgba(234,240,247,.28)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--void);color:var(--paper);
+  font-family:"Be Vietnam Pro",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 0%,#10243f 0%,var(--void) 68%)}
+.frame{position:relative;width:100%;max-width:460px;height:100%;max-height:940px;
+  background:var(--navy);overflow:hidden;display:flex;align-items:center;
+  justify-content:center;padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+@media(min-width:480px){.frame{border-radius:26px;height:92vh;border:1px solid rgba(255,255,255,.06)}}
+.corner{position:absolute;width:22px;height:22px;border-color:var(--line);opacity:.85}
+.corner.tr{top:14px;right:14px;border-top:2px solid;border-right:2px solid}
+.corner.bl{bottom:14px;left:14px;border-bottom:2px solid;border-left:2px solid}
+.corner.br{bottom:14px;right:14px;border-bottom:2px solid;border-right:2px solid}
+.mid{text-align:center;max-width:320px}
+.lk{width:34px;height:40px;color:var(--amber);opacity:.9}
+.eyebrow{font-family:"Oswald";font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--neon);margin:20px 0 0}
+h1{font-family:"Oswald";font-weight:700;text-transform:uppercase;font-size:30px;
+  margin:12px 0 0;line-height:1.05}
+p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
+#backHome{position:absolute;top:13px;left:13px;display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(6,16,31,.55);backdrop-filter:blur(4px);font-family:"Oswald";font-size:10px;
+  font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(234,240,247,.85);text-decoration:none}
+#backHome b{color:var(--amber);font-weight:600;font-size:12px;line-height:1}
+</style>
+</head>
+<body>
+<div id="app"><div class="frame">
+  <a id="backHome" href="/"><b>&larr;</b> Bản đồ</a>
+  <span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="mid">
+    <svg class="lk" viewBox="0 0 12 14" aria-hidden="true">
+      <path d="M3.3 6.2V4.3a2.7 2.7 0 0 1 5.4 0v1.9" fill="none" stroke="currentColor" stroke-width="1.3"/>
+      <rect x="1.3" y="6" width="9.4" height="7.2" rx="1.5" fill="currentColor"/>
+    </svg>
+    <p class="eyebrow">XG-950901-B</p>
+    <h1>Hồ sơ đang<br>được chuẩn bị</h1>
+    <p>Niêm phong đã mở nhưng nội dung chưa được nạp lên khoang. Quay lại bản đồ và thử lại sau nhé.</p>
+  </div>
+</div></div>
+</body>
+</html>
