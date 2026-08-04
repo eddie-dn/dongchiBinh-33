@@ -6,9 +6,26 @@
 <title>Bản đồ tác chiến · Phi đoàn</title>
 <meta name="description" content="Chạm vào một điểm sáng để hạ cánh.">
 <meta name="theme-color" content="#040b18">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Phi đoàn Dongchi Bình">
+<meta property="og:title" content="Bản đồ tác chiến · Phi đoàn">
+<meta property="og:description" content="Bốn toạ độ đã kích hoạt trên lãnh thổ. Chạm vào một điểm sáng để hạ cánh.">
+<meta property="og:image" content="/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://dongchi-binh-33.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bản đồ tác chiến · Phi đoàn">
+<meta name="twitter:description" content="Chạm vào một điểm sáng để hạ cánh.">
+<meta name="twitter:image" content="/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preload" as="style"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<noscript><link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap"></noscript>
 <style>
 :root{
   --void:#040b18; --navy:#0B1B3A; --airforce:#1E4E79; --steel:#4A73A0;
@@ -48,9 +65,14 @@ a{color:inherit;text-decoration:none}
 .frame[data-state="focus"] .classtag{opacity:0}
 
 /* huy hiệu: 4 tên lửa, sáng dần theo số mật thư đã giải */
-.pz{display:none;align-items:center;justify-content:center;gap:8px;padding:5px 13px;border-radius:99px;
+.pz{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:5px 13px;
+  border-radius:99px;transition:border-color .5s, background .5s;
   border:1px solid rgba(127,180,235,.22);background:rgba(6,16,31,.45)}
-.pz.on{display:inline-flex}
+/* chưa bắt được mật thư nào: chỉ là bốn nét viền, im lìm */
+.pz.dormant{border-color:rgba(127,180,235,.13);background:rgba(6,16,31,.28)}
+.pz.dormant .rk{opacity:.5}
+.pz.dormant .rk .rk-body,.pz.dormant .rk .rk-fin,.pz.dormant .rk .rk-win{
+  fill:none;stroke:rgba(150,193,232,.7);stroke-width:1.1}
 .rk svg{width:17px;height:18.4px;display:block}
 .rk{opacity:.85}
 .rk .rk-body{fill:url(#metal)}
@@ -66,7 +88,11 @@ a{color:inherit;text-decoration:none}
 .rk.lit .rk-fin{fill:url(#finAmber)}
 .rk.lit .rk-win{fill:#0E7FB8}
 .rk.lit .rk-flame{fill:url(#flameHot)}
-.pz:not(.done) .rk:not(.lit){animation:rkblink 1.7s ease-in-out infinite}
+.pz.armed .rk:not(.lit){animation:rkblink 1.7s ease-in-out infinite}
+.pz.hail .rk{animation:rkhail 1.15s ease-in-out infinite}
+@keyframes rkhail{0%,100%{transform:scale(1.16);filter:drop-shadow(0 0 6px rgba(242,180,65,.6))}
+  50%{transform:scale(1.3);filter:drop-shadow(0 0 15px rgba(242,180,65,1))}}
+.pz.hail{cursor:pointer;border-color:rgba(242,180,65,.55);background:rgba(242,180,65,.1)}
 .rk:nth-child(2){animation-delay:.2s}.rk:nth-child(3){animation-delay:.4s}
 .rk:nth-child(4){animation-delay:.6s}
 @keyframes rkblink{0%,100%{opacity:.28}50%{opacity:.9;filter:drop-shadow(0 0 5px rgba(110,205,255,.5))}}
@@ -80,12 +106,32 @@ a{color:inherit;text-decoration:none}
   padding:56px clamp(20px,6vw,28px) 0;max-height:300px;
   transition:max-height .6s cubic-bezier(.66,.02,.22,1),opacity .38s,padding-top .6s}
 .frame[data-state="focus"] .head{max-height:0;padding-top:0;opacity:0;pointer-events:none}
-.eyebrow{display:flex;align-items:center}
-.flag{width:26px;height:17.3px;flex:none;border-radius:2px;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+.eyebrow{display:flex;align-items:center;gap:11px}
+/* cờ gắn trên một miếng vá, rồi một gạch dẫn kéo hết bề ngang khối chữ —
+   cờ có chỗ tựa, đồng thời thành đường kẻ đầu trang cho tiêu đề bên dưới */
+.patch{flex:none;display:inline-flex;padding:3px;border-radius:5px;
+  border:1px solid rgba(234,240,247,.2);background:rgba(6,16,31,.55);
+  box-shadow:0 2px 9px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.04)}
+.flag{width:26px;height:17.3px;display:block;border-radius:2.5px;
+  box-shadow:0 1px 3px rgba(0,0,0,.55)}
+.eyebrow::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(242,180,65,.6) 0%,rgba(242,180,65,.22) 28%,
+    rgba(234,240,247,.04) 100%)}
+.eyebrow .sq{flex:none;display:inline-flex;align-items:center;gap:7px;
+  font-family:"Oswald";font-size:8.5px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(234,240,247,.62)}
+.eyebrow .sq b{font-weight:700;font-size:8px;letter-spacing:.18em;color:#E8734F;
+  border:1.5px solid rgba(232,115,79,.55);border-radius:3px;padding:3px 7px;
+  transform:rotate(-3deg);text-shadow:0 0 9px rgba(232,115,79,.3);
+  box-shadow:inset 0 0 12px rgba(232,115,79,.09)}
 h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-height:1;
   margin:10px 0 0;font-size:clamp(25px,7.4vw,33px);letter-spacing:.005em;
   text-shadow:0 4px 20px rgba(0,0,0,.5);user-select:none}
-.lead{margin:9px 0 0;font-size:13.5px;line-height:1.45;color:rgba(219,230,243,.75)}
+.lead{margin:9px 0 0;font-size:13.5px;line-height:1.45;color:rgba(219,230,243,.75);
+  transition:color .4s}
+.lead.nudge{font-family:"Oswald";font-size:12px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--neon);animation:nudge 2.1s ease-in-out infinite}
+@keyframes nudge{0%,100%{opacity:.62}50%{opacity:1}}
 
 .cd{margin-top:13px;display:flex;align-items:center;gap:10px;
   border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
@@ -141,6 +187,10 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .bcn[data-locked="1"] .bcn-core{fill:var(--steel)}
 .bcn[data-locked="1"] .bcn-halo{fill:var(--steel);opacity:.14}
 .bcn[data-locked="1"] .bcn-ring{stroke:var(--steel)}
+/* toạ độ có hồ sơ nhưng chưa bắt sóng: thở nhẹ để mời người xem bấm vào */
+.bcn.hint .bcn-halo{animation:haloPulse 1.7s ease-in-out infinite}
+.bcn.hint .bcn-ring{animation-duration:1.7s !important}
+@keyframes haloPulse{0%,100%{opacity:.12}50%{opacity:.4}}
 .bcn{transition:opacity .5s}
 .frame[data-state="focus"] .bcn{opacity:.14}
 .frame[data-state="focus"] .bcn.is-active{opacity:1}
@@ -163,8 +213,10 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .pl{width:12px;height:6.2px;flex:none;fill:currentColor;margin-right:2px}
 
 /* ---------- hud ---------- */
-.hud{position:relative;z-index:6;flex:none;padding:6px clamp(18px,5vw,26px) 32px;
-  display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;
+.hud{position:relative;z-index:6;flex:none;
+  padding:clamp(4px,1.4vh,9px) clamp(18px,5vw,26px) clamp(22px,4vh,34px);
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(6px,1.3vh,11px);text-align:center;
   font-family:"Oswald";text-transform:uppercase}
 .readout{font-size:9.5px;letter-spacing:.06em;line-height:1.55;color:var(--neon);
   opacity:.88;user-select:none;-webkit-user-select:none;cursor:default;transition:opacity .2s}
@@ -178,9 +230,10 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 @keyframes mglow{
   0%,100%{opacity:.85;text-shadow:0 0 7px rgba(56,189,248,.35)}
   50%{opacity:1;text-shadow:0 0 17px rgba(56,189,248,.85)}}
-.cr{font-size:7.7px;letter-spacing:.15em;line-height:1.5;color:rgba(234,240,247,.34);
-  display:flex;align-items:center;gap:9px}
-.rc{display:none;font-family:"Oswald";font-size:7.7px;letter-spacing:.1em;
+.cr{font-size:8px;letter-spacing:.15em;line-height:1.5;color:rgba(234,240,247,.34);
+  display:flex;align-items:center;justify-content:center;gap:clamp(7px,2vw,11px);
+  flex-wrap:wrap}
+.rc{display:none;font-family:"Oswald";font-size:8px;letter-spacing:.1em;
   color:rgba(201,162,75,.6);border:1px solid rgba(201,162,75,.3);border-radius:99px;
   padding:1px 7px}
 .rc.on{display:inline-block}
@@ -209,7 +262,7 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
   user-select:none;-webkit-user-select:none;cursor:default}
 .sheet-coord.code{letter-spacing:.06em;font-size:9.5px;line-height:1.6}
 .rule{height:1px;background:var(--line);margin:14px 0 2px}
-.file{display:flex;align-items:center;gap:12px;padding:13px 2px;
+.file{display:flex;align-items:center;gap:12px;padding:12px 2px 10px;
   border-bottom:1px solid rgba(234,240,247,.1)}
 .file:last-child{border-bottom:0}
 a.file:active{background:rgba(242,180,65,.07)}
@@ -224,7 +277,7 @@ a.file:active{background:rgba(242,180,65,.07)}
 .file-meta.live{color:var(--neon);opacity:.9;font-variant-numeric:tabular-nums}
 .file-go{font-family:"Oswald";font-size:16px;color:var(--amber)}
 .file .lk{width:10px;height:12px;color:rgba(174,201,228,.7)}
-.sheet-note{font-size:12px;line-height:1.5;color:rgba(219,230,243,.48);margin:12px 0 0}
+.sheet-note{font-size:12px;line-height:1.45;color:rgba(219,230,243,.48);margin:6px 0 0}
 
 /* ---------- takeoff ---------- */
 .takeoff{position:absolute;inset:0;z-index:20;display:flex;align-items:center;
@@ -367,6 +420,8 @@ a.file:active{background:rgba(242,180,65,.07)}
 .frame.lit .isles{animation:none;opacity:.8}
 .frame.lit .bcn{animation:none;opacity:1}
 .frame.lit .beacon .tag{animation:none;opacity:1}
+.frame.lit .beacon.hint .tag{animation:tagPulse 1.7s ease-in-out infinite}
+@keyframes tagPulse{0%,100%{opacity:.62}50%{opacity:1}}
 
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;
@@ -413,10 +468,13 @@ a.file:active{background:rgba(242,180,65,.07)}
 
   <header class="head">
     <div class="eyebrow">
-      <svg class="flag" viewBox="0 0 30 20" role="img" aria-label="Cờ Việt Nam">
-        <rect width="30" height="20" rx="2" fill="#DA251D"/>
-        <path d="M15.00,4.50 L16.34,8.36 L20.42,8.44 L17.17,10.90 L18.35,14.81 L15.00,12.48 L11.65,14.81 L12.83,10.90 L9.58,8.44 L13.66,8.36 Z" fill="#FFCD00"/>
-      </svg>
+      <span class="patch">
+        <svg class="flag" viewBox="0 0 30 20" role="img" aria-label="Cờ Việt Nam">
+          <rect width="30" height="20" rx="2" fill="#DA251D"/>
+          <path d="M15.00,4.50 L16.34,8.36 L20.42,8.44 L17.17,10.90 L18.35,14.81 L15.00,12.48 L11.65,14.81 L12.83,10.90 L9.58,8.44 L13.66,8.36 Z" fill="#FFCD00"/>
+        </svg>
+      </span>
+      <span class="sq">Tài liệu Phi đoàn <b>Tối mật</b></span>
     </div>
     <h1 class="title" id="title">Bản đồ tác chiến</h1>
     <p class="lead">Chạm vào một điểm sáng để hạ cánh.</p>
@@ -513,7 +571,7 @@ a.file:active{background:rgba(242,180,65,.07)}
         </g>
       </svg>
 
-      <span class="stamp">Last updated 04-Aug-2026 · V9.20</span>
+      <span class="stamp">Last updated 04-Aug-2026 · V10.04</span>
       <button class="beacon" data-bcn="HN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HN</span><span class="city">Hà Nội</span></span>
       </button>
@@ -686,17 +744,21 @@ const nodeOf = c => NODES.find(n=>n.code===c);
    trên HUD để bấm vào mà mở hộp pí mật. Rê chuột thường chỉ ra kinh–vĩ độ,
    kể cả toạ độ đã mở — muốn xem lại mã phải gõ đúp lần nữa. */
 let hoverNode = null, pinned = null, morseSeen = false;
-let channel = null, unlocked = {}, wrongCount = 0, resetCount = 0;
+let channel = null, unlocked = {}, wrongCount = 0, resetCount = 0, missionShown = false;
+let visits = 0;
 
 /* toạ độ đã bắt sóng (hoặc đã có hồ sơ) thì bỏ ổ khoá và sáng màu amber */
 function refreshBeacons(){
   NODES.forEach(n=>{
-    const open = n.subs.length > 0 || !!unlocked[n.code];
+    const open = !!unlocked[n.code];              /* chỉ bắt được sóng mới sáng */
+    const hint = n.subs.length > 0 && !open;      /* có hồ sơ mà chưa mở → mời gọi */
     const btn = document.querySelector('.beacon[data-bcn="'+n.code+'"]');
     const grp = document.querySelector('.bcn[data-bcn="'+n.code+'"]');
-    if(grp) grp.setAttribute('data-locked', open ? '0' : '1');
+    if(grp){ grp.setAttribute('data-locked', open ? '0' : '1');
+             grp.classList.toggle('hint', hint); }
     if(!btn) return;
     btn.setAttribute('data-locked', open ? '0' : '1');
+    btn.classList.toggle('hint', hint);
     const code = btn.querySelector('.code');
     const ico = n.subs.length
       ? '<svg class="pl"><use href="#jet"/></svg>'          /* có hồ sơ để đọc */
@@ -785,9 +847,9 @@ function render(code){
   if(!node.subs.length){
     list.innerHTML = '<div class="file" data-locked="1"><span class="file-body">'+
       '<span class="file-id">'+lock()+node.code+'-000000</span>'+
-      '<span class="file-title">Hồ sơ chưa giải mật</span></span>'+
+      '<span class="file-title">Chưa kịp sản xuất content TT_TT</span></span>'+
       '<span class="file-go" style="opacity:.3">—</span></div>';
-    $('sheetNote').textContent = 'Toạ độ đã kích hoạt nhưng chưa có hồ sơ nào gửi về căn cứ.';
+    $('sheetNote').textContent = 'Vui lòng donate cho đơn vị triển khai kế hoạch.';
     return;
   }
   list.innerHTML = node.subs.map(s=>{
@@ -907,6 +969,14 @@ const store = {
   channel = s.channel || null;
   wrongCount = s.wrongCount || 0;
   resetCount = s.resetCount || 0;
+  missionShown = !!s.missionShown;
+  visits = s.visits || 0;
+  try{
+    if(!sessionStorage.getItem('mtseen')){       /* mỗi phiên tính một lượt ghé */
+      sessionStorage.setItem('mtseen','1');
+      visits++; store.write(Object.assign(s,{ visits }));
+    }
+  }catch(e){ visits++; }
   showRc();
   pzOn = !!s.pzOn;
   morseSeen = !!s.morseSeen;
@@ -914,7 +984,7 @@ const store = {
   showPz(); refreshBeacons();
 })();
 
-function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount }); }
+function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -946,12 +1016,15 @@ function showRc(){
 }
 function showPz(){
   const pz = $('pz');
-  pz.classList.toggle('on', !!pzOn);
-  if(!pzOn) return;
-  const n = nSolved(), done = n === NODES.length;
+  const n = pzOn ? nSolved() : 0;
+  const done = pzOn && n === NODES.length;
+  const revealed = done && missionShown;
   [...pz.querySelectorAll('.rk')].forEach((el,i)=> el.classList.toggle('lit', i < n));
-  pz.classList.toggle('done', done);
-  $('pzTxt').textContent = done ? 'Mission completed' : '';
+  pz.classList.toggle('dormant', !pzOn);              /* chỉ viền, im lìm */
+  pz.classList.toggle('armed', pzOn && !done);        /* nhấp nháy quả chưa sáng */
+  pz.classList.toggle('hail', done && !missionShown); /* đủ 4 → reo lên chờ bấm */
+  pz.classList.toggle('done', revealed);
+  $('pzTxt').textContent = revealed ? 'Mission completed!' : '';
 }
 
 /* mỗi đáp án một câu khen khác nhau, chỉ lặp lại khi đã dùng hết */
@@ -1155,7 +1228,7 @@ function guess(){
     hint.className = 'cx-hint bad';
     hint.textContent = WRONGS[wrongCount % WRONGS.length];
     wrongCount++; save();
-    ping('giai_sai', cxCode, true);
+    ping('giai_sai', cxCode + ' · lần sai thứ ' + wrongCount);
     cxp.classList.remove('shake'); void cxp.offsetWidth; cxp.classList.add('shake');
   }
 }
@@ -1168,11 +1241,13 @@ $('cxChips').addEventListener('click', e=>{
 $('cxGo').addEventListener('click', guess);
 $('cxInput').addEventListener('keydown', e=>{ if(e.key==='Enter') guess(); });
 $('pz').addEventListener('click', ()=>{
-  if($('pz').classList.contains('done')) openCx(null);
+  if(!pzOn || nSolved() !== NODES.length) return;
+  if(!missionShown){ missionShown = true; save(); showPz(); return; }
+  openCx(null);                       /* lần sau: vào hộp để bấm chơi lại */
 });
 $('cxReset').addEventListener('click', ()=>{
   solved = {}; unlocked = {}; channel = null; morseSeen = false; pzOn = false;
-  wrongCount = 0; pinned = null;
+  wrongCount = 0; pinned = null; missionShown = false;
   resetCount++; showRc();
   save(); showPz(); refreshBeacons();
   frame.classList.remove('hot');
@@ -1249,11 +1324,30 @@ $('fileList').addEventListener('click', e=>{
 });
 
 /* ========================= 9. KHỞI ĐỘNG ========================= */
+/* Ngồi im quá lâu mà chưa biết cơ chế gõ đúp → nhắc một câu.
+   Lần ghé đầu chờ 25 giây; từ lần thứ hai trở đi chỉ 6 giây. */
+const LEAD_DEFAULT = 'Chạm vào một điểm sáng để hạ cánh.';
+const LEAD_HINT = 'Double-tap / Double-click to start mission';
+let idleT = null;
+function armIdle(){
+  clearTimeout(idleT);
+  const lead = document.querySelector('.lead');
+  lead.textContent = LEAD_DEFAULT; lead.classList.remove('nudge');
+  if(morseSeen) return;                    /* đã biết rồi thì khỏi nhắc */
+  if(visits < 2) return;                   /* lượt đầu để người xem tự mò, không gợi ý */
+  idleT = setTimeout(()=>{
+    lead.textContent = LEAD_HINT; lead.classList.add('nudge');
+    ping('nhac_goi_y', 'lượt ghé thứ '+visits, true);
+  }, 6000);
+}
+['pointerdown','keydown'].forEach(ev=>
+  addEventListener(ev, ()=>armIdle(), {passive:true}));
+
 let released = false;
 function release(){ if(!released){ released = true; frame.classList.add('lit'); } }
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-tick(); paint();
+tick(); paint(); armIdle();
 (function(){
   let kind = 'vào mới';
   try{

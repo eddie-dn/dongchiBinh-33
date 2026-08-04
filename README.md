@@ -372,12 +372,13 @@ git add . && git commit -m "Thêm trang chủ bản đồ" && git push
 
 ## 9. Phiên bản
 
-Dòng **Last updated 04-Aug-2026 · V9.20** chạy dọc mép trái bản đồ (class `.stamp`), tự ẩn khi zoom.
+Dòng **Last updated 04-Aug-2026 · V10.04** chạy dọc mép trái bản đồ (class `.stamp`), tự ẩn khi zoom.
 Đánh số: **số lớn** tăng khi thay đổi cấu trúc/luật chơi, **hai số nhỏ** tăng theo bản vá.
 Lịch sử: V1 bản đồ đầu tiên → V2 đếm ngược + zoom → V3 khung hẹp + khung phụ → V4 quần
 đảo đúng vị trí + hộp mật thư → V5 ô chữ + lời khen + sóng biển → V6 kênh bắt sóng + tên
 lửa → V7 khối chinh phục → V8 vá tên lửa đen + double-tap mobile → **V9** bỏ ghim morse +
-câu trêu xoay vòng, **V9.20** ghim lại mã morse + toạ độ mở khoá sáng lên. Khi sửa tiếp, nhớ cập nhật chuỗi trong `.stamp`.
+câu trêu xoay vòng → V9.20 ghim lại mã morse + toạ độ mở khoá sáng lên → **V10** huy hiệu
+tên lửa có vòng đời đầy đủ + lockup cờ. Định dạng tem: `DD-Mon-YYYY · Vx.yy`. Khi sửa tiếp, nhớ cập nhật chuỗi trong `.stamp`.
 
 ## 9b. Ghi chú kỹ thuật
 
@@ -487,3 +488,91 @@ sao, nhưng đừng gửi gì nhạy cảm qua đó. Trang không hiện bất k
 - **Ghim là bắt buộc, không phải tuỳ chọn.** Nếu mã chỉ hiện lúc rê chuột thì không thể
   di chuột xuống bấm vào nó — vừa rời điểm sáng là mã biến mất. Đây chính là lỗi khiến
   bản V9.10 không vào được hộp pí mật.
+
+
+---
+
+## 12. Vòng đời huy hiệu tên lửa (V10)
+
+Bốn trạng thái, chuyển theo tiến độ chứ không bật/tắt như trước:
+
+| Trạng thái | Class | Hình | Khi nào |
+|---|---|---|---|
+| Ngủ | `dormant` | Bốn nét viền mảnh, không nhấp nháy | Chưa bắt được mật thư nào — hiện **ngay từ đầu** để người xem biết có thứ gì đó cần mở |
+| Sẵn sàng | `armed` | Quả đã giải sáng đặc, quả chưa giải nhấp nháy lệch pha | Đã bắt được mật thư đầu tiên |
+| Reo | `hail` | Cả bốn sáng, phóng to co giãn theo nhịp, viền amber | Vừa đủ 4/4 nhưng **chưa bấm vào** |
+| Xong | `done` | Bốn quả đứng yên + chữ **Mission completed!** | Đã bấm vào một lần |
+
+Bấm lần đầu ở trạng thái *Reo* chỉ để lộ dòng chữ; **những lần bấm sau mới mở hộp pí mật**
+để chơi lại. Cờ `missionShown` lưu cùng tiến độ, reset thì về `false` nên vòng reo lặp lại
+đúng một lần cho mỗi lượt chơi.
+
+## 13. Lockup cờ Việt Nam
+
+Trước đây lá cờ đứng trơ một mình trên đầu tiêu đề, không neo vào đâu. Nay nó là một
+**lockup ba phần**: miếng vá (`.patch` — nền tối, viền mảnh, đổ bóng như phù hiệu khâu
+trên áo) → nhãn **PHI ĐOÀN 950109** → **gạch dẫn gradient amber** kéo hết bề ngang khối
+chữ. Gạch dẫn vừa cho lá cờ một đường chân đế, vừa thành đường kẻ đầu trang cho tiêu đề
+bên dưới — hết cảm giác lửng lơ mà không phải thêm chi tiết trang trí nào.
+
+
+---
+
+## 14. Trạng thái điểm sáng (V10.02)
+
+Ổ khoá / màu sắc **chỉ nói về mã morse**, không nói về hồ sơ:
+
+| Điểm | Lúc mới vào | Sau khi bắt được sóng |
+|---|---|---|
+| `XG` (có hồ sơ) | Xám thép, giữ **icon máy bay**, quầng sáng **thở nhẹ** mời gọi | Amber, hết thở |
+| `HN` `GR` `HZM` | Xám thép, **ổ khoá**, đứng yên | Amber, mất ổ khoá |
+
+Nhịp thở (`.bcn.hint`, `@keyframes haloPulse` + `tagPulse`) chỉ gắn cho điểm **có hồ sơ mà
+chưa bắt sóng** — nó là mũi tên chỉ đường duy nhất trên bản đồ, nên tắt ngay khi hết cần.
+
+## 15. Deploy tách riêng file hồ sơ
+
+`xg/950109-a/index.html` chạy độc lập được. Đầu đoạn tracking có hằng:
+
+```js
+var PING = '/api/ping';
+```
+
+Cùng domain với bản đồ thì để nguyên. Nếu upload sang **domain khác**, đổi thành URL
+tuyệt đối, ví dụ `'https://dongchi-binh-33.vercel.app/api/ping'` — endpoint đã trả
+`204` và không kiểm tra origin nên gọi chéo domain vẫn nhận được tín hiệu.
+
+
+---
+
+## 16. Ba tối ưu của V10.03
+
+- **Preload font** — bộ Google Fonts nạp qua `rel="preload" as="style"` cộng thủ thuật
+  `media="print" onload` nên không còn chặn dựng trang, kèm `<noscript>` dự phòng. Vẫn
+  còn một nhịp đổi font rất ngắn (FOUT) vì URL file `.woff2` của Google thay đổi theo
+  phiên bản, không hardcode preload được; muốn triệt tiêu hẳn thì phải tải font về
+  self-host.
+- **Ảnh chia sẻ** — `og.png` 1200×630 ở gốc repo, khai qua thẻ `og:` và `twitter:`.
+  Ảnh dựng lại đúng từ dữ liệu bản đồ thật (cùng path SVG, cùng bảng màu), nên gửi link
+  qua Messenger/Zalo là ra tấm ra món. Đổi ảnh thì thay file, giữ nguyên tên.
+- **Nhắc nhẹ khi ngồi im** — **lượt ghé đầu tiên không nhắc gì cả**, để người xem tự mò
+  ra cơ chế; đó mới là phần thưởng. Từ **lượt ghé thứ hai** trở đi, ngồi im 6 giây thì
+  dòng lead đổi thành `Double-tap / Double-click to start mission` màu neon nhấp nháy
+  (`visits` đếm theo phiên, lưu cùng tiến độ). Chạm hoặc gõ phím bất kỳ là trả về câu
+  gốc. Không nhắc nữa khi đã bắt được mã morse. Sự kiện `nhac_goi_y` bắn về Telegram để
+  bạn biết ai đang bí.
+
+
+## 17. Dải chrome trên của trang hồ sơ
+
+Nút `← Bản đồ` và tem phân loại nằm `position:absolute` ở đỉnh khung, còn `.content` thì
+cuộn được — nên chữ chui xuống dưới hai thứ đó. Bản vá gồm hai phần, đều nằm trong đoạn
+inject cuối `xg/950109-a/index.html`:
+
+- `.content{padding-top:62px !important}` chừa sẵn chỗ cho dải chrome. Trang nào có
+  `justify-content:center` thì thêm `padding-bottom:62px` cho cân đối trục dọc.
+- `#topScrim` — dải gradient tối 70px phủ ngang đỉnh (`z-index:4`, nằm trên nội dung
+  nhưng dưới tem và nút), để chữ cuộn qua thì mờ dần đi thay vì cắt ngang thô.
+
+Chép sang sub-page mới thì mang theo cả hai, nếu sub-page đó cũng dùng khung `.frame` và
+`.content` cuộn được.
