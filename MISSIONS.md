@@ -40,6 +40,7 @@ là file về bản gốc.
 | Mission 2 | **Easy Cheesy** |
 | Mission 3 | **Hit the rock** |
 
+- Trên thanh timeline có **icon máy bay nhỏ bay theo tiến độ** (trượt cùng thanh amber).
 - Cả dòng Mission lẫn timeline **chỉ hiện ở trang bìa**, lật trang là tự ẩn.
 - `prefers-reduced-motion`: tắt mọi nhấp nháy, thay bằng sáng tĩnh.
 
@@ -78,16 +79,21 @@ là file về bản gốc.
   tối thiểu **1 giờ**:
   1. `12`
   2. `5121`
-  3. `MIG-24`
+  3. `MIG-21`
 - **Nút SOS** góc dưới **trái** của hộp (amber mờ):
   - Bấm **10 nhịp liên tục** (mỗi nhịp < 0,9s) → Hội đồng MeowMeow **chi viện luôn một
     gợi ý** (không cần sai, không cần chờ 1 giờ). Bắn sự kiện `sos_hint`.
+    Câu báo: *"Hội đồng MeowMeow chi viện một gợi ý ✦"*; riêng **gợi ý thứ 3** đổi thành
+    *"Hội đồng MeowMeow chi viện thêm 1 gợi ý nữa >=<"*.
   - Bấm **đơn hoặc đôi** → hiện một câu trêu random (không lặp câu liền trước),
     **tối đa 6 lần mỗi phiên**: `Nope 🙅` · `10 chiếc hun 💋 cũng khúm đượt 😆` ·
     `Nah nah nah — cố lên anh oyyyy 💪`.
 - **Hết 3 ngày mà chưa giải được**: góc dưới **phải** của hộp có nút **skip chìm**
   (opacity ~13%). Bấm **10 nhịp liên tục** (mỗi nhịp < 0,9s) → mở khoá luôn.
-- Giải xong (hoặc skip): hộp hiện **PIN đã cấp `PHAM TUAN`** + nút **Chơi lại từ đầu**
+- Giải xong (hoặc skip): hộp mang nhãn **`Mission 3 · Phá đảo (˶˃ ᵕ ˂˶)`**, lời chúc
+  *"Hội Đồng MeowMeow chúc đồng chí giữ vững phong độ phá đảo Map tiếp theo ⚞^. .^⚟!"*,
+  phụ đề *"Nút Bản đồ đã mở khoá — bấm để mở Bản đồ tác chiến của Phi đoàn sinh nhật 🗺️"*
+  + nút **Chơi lại từ đầu**
   (bấm 2 nhịp xác nhận, xoá sạch tiến độ Mission). Nút **Bản đồ** sáng amber, ổ khoá
   trên icon biến mất, bấm là bay thẳng tới `https://dongchi-binh-33.vercel.app/`
   (không còn bị đẩy về Phần I).
@@ -96,9 +102,14 @@ là file về bản gốc.
 
 ## 3. Luật PIN chung (cả hai cửa)
 
-- Sai **3 lần trong một phiên** → báo lỗi và **khoá 30 phút**. Hộp **vẫn mở nguyên**
-  (chỉ khoá ô nhập) để còn đọc gợi ý mà biết sai ở đâu. Mốc khoá lưu `localStorage`
-  nên tải lại trang không né được.
+- **Pool lượt nhập dùng chung cho cả Mission 2 và Mission 3**: **3 lượt mỗi phiên**
+  và **12 lượt mỗi ngày**. Đầu hộp có dòng nhắc ngắn
+  `LƯỢT NHẬP · 3/3 PHIÊN · 12/12 HÔM NAY`, trừ dần theo từng lần sai.
+- Hết **3 lượt phiên** → **khoá 30 phút**. Hết **12 lượt ngày** → khoá tới nửa đêm.
+  Hộp **vẫn mở nguyên** (chỉ khoá ô nhập) để còn đọc gợi ý mà biết sai ở đâu.
+  Mốc khoá lưu `localStorage` nên tải lại trang không né được.
+- Nhập sai **không ghi "Sai rồi"** nữa — bắn ra một câu trêu random lấy từ pool
+  `TAUNTS` (cùng pool với SOS), kèm `· có gợi ý mới ✦` nếu vừa lộ thêm gợi ý.
 - Đang khoá mà mở lại hộp → gợi ý vẫn hiện đầy đủ, ô nhập khoá kèm dòng nhắc
   *"thử lại sau X phút"*.
 - Hết khoá → cấp lại 3 lượt.
@@ -142,11 +153,12 @@ Tất cả đi qua hệ `ping` sẵn có (endpoint `/api/ping`, 3 tầng dự ph
 
 ## 6. Lưu trữ & reset
 
-- `localStorage.msn1`: `{ v, m1, m2, m3, m2at, m2doneAt, hints, hintAt, lockUntil }`
+- `localStorage.msn1`: `{ v, m1, m2, m3, m2at, m2doneAt, hints, hintAt, lockUntil, dayKey, dayN }`
+  - `dayKey` / `dayN` = ngày hiện tại và số lượt sai đã dùng trong ngày (trần 12).
   - `v` = phiên bản luật (hiện là 2 — mốc M2 đổi từ "Chủ nhật" sang "5 ngày";
     nâng luật thời gian lần nữa thì tăng `v` và đặt lại `m2at`).
   - `m2at` = mốc mở M2 · `m2doneAt` = lúc mở khoá M2 (mốc tính 3 ngày của M3).
-- `sessionStorage.msnw2 / msnw3`: số lần nhập sai mỗi phiên cho từng cửa.
+- `sessionStorage.msnw`: số lần nhập sai trong phiên — **dùng chung** cả hai cửa.
 - **Reset**: nút Chơi lại trong hộp M3, hoặc tự xoá `msn1` — về vạch xuất phát,
   đồng hồ 5 ngày chạy lại từ đầu.
 
@@ -155,8 +167,9 @@ Tất cả đi qua hệ `ping` sẵn có (endpoint `/api/ping`, 3 tầng dự ph
 ```js
 var MAPURL = 'https://dongchi-binh-33.vercel.app/';  // đích của nút Bản đồ khi đã mở
 var PIN2 = '217N33', PIN3 = 'PHAMTUAN';
-var HINTS = ['12', '5121', 'MIG-24'];
+var HINTS = ['12', '5121', 'MIG-21'];
 var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆', 'Nah nah nah — cố lên anh oyyyy 💪'];
+var TRY_S = 3, TRY_D = 12;   // lượt nhập sai: mỗi phiên / mỗi ngày (dùng chung M2+M3)
 var W2 = 5*DAY;   // chờ mở Mission 2
 var W3 = 3*DAY;   // đếm ngược Mission 3
 var DIFF = ['Noob', 'Easy Cheesy', 'Hit the rock'];
