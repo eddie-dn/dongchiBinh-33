@@ -1,4 +1,4 @@
-# XG-950109-A · Hồ sơ Phi đoàn (bản deploy độc lập)
+# DAD-950901-A · Hồ sơ Phi đoàn (bản deploy độc lập)
 
 Gói này chạy được một mình, không cần trang bản đồ.
 
