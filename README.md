@@ -39,6 +39,22 @@ của endpoint bên kia.
 (bấm nút Bản đồ khoá) · `gui_form` (bấm Gửi về căn cứ) · `ho_so_dong` (số trang đã xem
 + số giây ở lại).
 
+Thêm từ bản Mission: `bam_dong_countdown` (bấm dòng Mission, kèm nấc hiện tại + số ngày
+còn lại) · `nhay_ban_do_xong` (phân biệt "bấm tiếp vào bản đồ" với "bỏ đi" sau khi nút
+nháy) · `sai_pin` · `khoa_pin` (khoá 30 phút) · `mo_khoa_m2` · `giai_m3` · `skip_m3` ·
+`vao_ban_do` · `reset_msn`.
+
+## Dòng Mission trên trang bìa
+
+Trang bìa có hệ 3 Mission: dòng trạng thái dưới chip (đếm ngược ghi rõ
+`04D 23H 59M 59S`, cập nhật từng giây), **timeline tiến độ** chạy theo mức chinh phục
+kèm độ khó từng nấc (Noob · Easy Cheesy · Hit the rock), hộp PIN dùng chung, khoá 30
+phút khi sai 3 lần/phiên, và cửa test **tap 10 nhịp** vào nút tròn trên timeline để mở
+khoá mission không phải chờ đúng ngày.
+
+**Toàn bộ luật chi tiết nằm ở [`MISSIONS.md`](MISSIONS.md)** — PIN, gợi ý, mốc thời
+gian (M2 mở sau 5 ngày, M3 đếm 3 ngày), sự kiện đo đạc, khoá lưu trữ và hằng cấu hình.
+
 ## Nguyên tắc sửa file
 
 Toàn bộ phần bổ sung nằm trong **một khối duy nhất** ngay trước thẻ Vercel Analytics,
