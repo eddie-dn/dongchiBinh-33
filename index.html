@@ -632,9 +632,19 @@ render();
                         LƯU Ý: token lộ trong mã nguồn, chỉ dùng bot rác. */
   var TRACK = {
     mode:     'endpoint',
-    endpoint: '/api/ping',
+    endpoint: '/api/note',   /* đường chính — tên trung tính, ít khớp bộ lọc chặn */
+    endpoint2:'/api/ping',   /* đường cũ: dự phòng + đích của kênh gửi biểu mẫu */
+    duplex:   true,          /* mốc quan trọng bắn thêm một phát qua kênh biểu mẫu */
     tgToken:  '',
     tgChat:   ''
+  };
+
+  /* Mốc quan trọng đi thêm kênh "gửi biểu mẫu": form POST vào iframe ẩn. Trình duyệt
+     coi đó là điều hướng chứ không phải request đo đạc nên bộ chặn quảng cáo và tường
+     lửa gần như không đụng tới — vẫn về đúng /api rồi sang Telegram. */
+  var QUAN_TRONG = {
+    gui_form:1, mo_khoa_m2_cua:1, mo_khoa_m2:1, giai_m3:1, skip_m3:1,
+    gia_han_m2:1, test_unlock:1, reset_msn:1, vao_ban_do:1
   };
 
   var TAG = 'XG-950109-A', bat = Date.now(), seen = {}, sau = 0, curPage = 0;
@@ -646,8 +656,11 @@ render();
     ho_so_dong:  'Rời hồ sơ',
     bam_dong_countdown: 'Bấm dòng Mission trên trang bìa',
     nhay_ban_do_xong:   'Kết quả sau khi nút Bản đồ nháy',
-    sai_pin:            'Nhập sai PIN',
-    khoa_pin:           'Khoá nhập PIN 30 phút',
+    sai_pin:            'Nhập sai mã truy cập',
+    khoa_pin:           'Khoá ô nhập mã',
+    mo_khoa_m2_cua:     'XONG MISSION 1 — mở cửa sổ Mission 2',
+    gia_han_m2:         'Xin gia hạn đồng hồ Mission 2',
+    ve_trang_bia:       'Từ màn Hoàn tất quay về trang bìa',
     mo_khoa_m2:         'MỞ KHOÁ MISSION 2',
     giai_m3:            'GIẢI XONG MISSION 3 — PHAM TUAN',
     skip_m3:            'Mở Mission 3 bằng nút skip chìm',
@@ -658,11 +671,43 @@ render();
     bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)'
   };
 
+  var oSink = null;
+  function formPing(ev, detail){
+    try{
+      if(!document.body) return;
+      if(!oSink){
+        oSink = document.createElement('iframe');
+        oSink.name = 'hsSink'; oSink.tabIndex = -1;
+        oSink.setAttribute('aria-hidden', 'true');
+        oSink.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;border:0';
+        document.body.appendChild(oSink);
+      }
+      var f = document.createElement('form');
+      f.method = 'POST'; f.target = 'hsSink'; f.style.display = 'none';
+      f.action = TRACK.endpoint2 || TRACK.endpoint;
+      var them = function(k, v){
+        var i = document.createElement('input');
+        i.type = 'hidden'; i.name = k; i.value = v == null ? '' : String(v);
+        f.appendChild(i);
+      };
+      them('ev', ev);
+      them('detail', (detail || '').slice(0, 80));
+      them('at', new Date().toISOString());
+      them('ua', navigator.userAgent.slice(0, 120));
+      them('kenh', 'bieu-mau');
+      document.body.appendChild(f);
+      f.submit();
+      setTimeout(function(){ if(f.parentNode) f.parentNode.removeChild(f); }, 3000);
+    }catch(e){}
+  }
+
   function anhFallback(ev, detail){
     try{
-      new Image().src = TRACK.endpoint + '?ev=' + encodeURIComponent(ev) +
+      var img = new Image();
+      img.onerror = function(){ formPing(ev, detail); };   /* ảnh 1×1 hỏng nốt → kênh biểu mẫu */
+      img.src = (TRACK.endpoint2 || TRACK.endpoint) + '?ev=' + encodeURIComponent(ev) +
         '&detail=' + encodeURIComponent((detail||'').slice(0,80)) + '&t=' + Date.now();
-    }catch(e){}
+    }catch(e){ formPing(ev, detail); }
   }
   function ping(ev, detail){
     try{
@@ -678,14 +723,16 @@ render();
           headers:{'Content-Type':'application/x-www-form-urlencoded'},body:qs}).catch(function(){});
         return;
       }
+      /* Mốc quan trọng thì đi thêm kênh biểu mẫu — thà trùng còn hơn mất dấu */
+      if(TRACK.duplex && QUAN_TRONG[ev]) formPing(ev, detail);
       var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
-        solved:[], ua:navigator.userAgent.slice(0,120) });
+        solved:[], kenh:'js', ua:navigator.userAgent.slice(0,120) });
       if(navigator.sendBeacon &&
          navigator.sendBeacon(TRACK.endpoint, new Blob([body],{type:'application/json'}))) return;
       fetch(TRACK.endpoint,{method:'POST',body:body,keepalive:true,
         headers:{'Content-Type':'application/json'}})
         .catch(function(){ anhFallback(ev, detail); });
-    }catch(e){}
+    }catch(e){ try{ formPing(ev, detail); }catch(e2){} }
   }
 
   var deck = document.getElementById('deck');
@@ -742,6 +789,27 @@ render();
       Math.round((Date.now()-bat)/1000) + ' giây');
   });
 
+  /* Xuất thiệp: html2canvas gốc luôn vẽ scale 2 — thiệp dài nên máy yếu ngồi chờ rất lâu,
+     và toDataURL('image/png') của canvas khổng lồ mới là khúc nghẽn thật sự.
+     Chặn trần tổng điểm ảnh (~1500px bề ngang) — mắt thường không thấy khác, nhanh hơn nhiều. */
+  (function(){
+    var goc = window.html2canvas;
+    if(typeof goc !== 'function') return;
+    window.html2canvas = function(el, opt){
+      opt = opt || {};
+      try{
+        var w = (el && el.offsetWidth) || 0, h = (el && el.offsetHeight) || 0;
+        if(w > 0 && h > 0){
+          var NGAN = 4.2e6;                       /* trần ~4,2 triệu điểm ảnh */
+          var tran = Math.sqrt(NGAN / (w * h));
+          opt.scale = Math.round(Math.max(1, Math.min(opt.scale || 2, tran)) * 100) / 100;
+        }
+        if(opt.imageTimeout == null) opt.imageTimeout = 8000;
+      }catch(e){}
+      return goc(el, opt);
+    };
+  })();
+
   /* Cầu nối cho khối Mission phía dưới (cùng vùng bổ sung) */
   window.__msn = { ping: ping, PHAN1: PHAN1, page: function(){ return curPage; } };
 })();
@@ -782,7 +850,7 @@ render();
 .msn-card{position:relative;width:min(336px,94%);background:rgba(7,20,41,.97);
   border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
   padding:20px 20px 20px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
-.msn-card.haspin{padding-bottom:46px}
+.msn-card.haspin{padding-bottom:48px}
 .msn-lab{font-family:"Oswald";font-size:9.5px;line-height:1.5;letter-spacing:.24em;
   text-transform:uppercase;color:var(--amber);margin-bottom:9px;padding-right:28px}
 .msn-quota{font-family:"Oswald";font-size:9px;line-height:1.5;letter-spacing:.15em;
@@ -793,9 +861,33 @@ render();
 .msn-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:none;background:none;
   color:rgba(234,240,247,.55);font-size:14px;cursor:pointer}
 .msn-hints{margin:12px 0 0;padding:0;list-style:none;font-size:12.5px;line-height:1.85;color:#cfe0f2}
-.msn-hints li{margin-bottom:2px;letter-spacing:.01em}
+.msn-hints li{margin-bottom:3px;letter-spacing:.01em}
 .msn-hints li::before{content:"✦ ";color:var(--amber)}
-.msn-cells{position:relative;display:flex;gap:7px;justify-content:center;margin:18px 0 8px;cursor:text}
+.msn-cd{margin-top:11px;font-size:11.5px;line-height:1.6;letter-spacing:.01em;
+  color:rgba(234,240,247,.55);font-variant-numeric:tabular-nums}
+.msn-cd b{color:var(--amber);font-weight:600}
+.msn-sign{margin-top:14px;text-align:right;font-style:italic;font-size:12px;
+  line-height:1.5;color:rgba(234,240,247,.62)}
+/* Hộp ghi công: chữ căn giữa cho cân, chữ ký vẫn nằm bên phải.
+   Viền trái dày 2px còn viền phải 1px nên bù 1px padding cho khỏi lệch. */
+.msn-card.done{padding:20px 20px 20px 19px}
+.msn-card.done .msn-tit,.msn-card.done .msn-txt,.msn-card.done .msn-cd{
+  text-align:center;text-wrap:balance;padding-left:0;padding-right:0}
+.msn-card.done .msn-tit,.msn-card.done .msn-txt{
+  max-width:280px;margin-left:auto;margin-right:auto}
+.msn-card.done .msn-cd{margin-top:12px}
+/* Nấc đã xong trên dòng Mission: bấm thẳng vào là mở lại bảng ghi công */
+.msn-seg[data-m]{cursor:pointer}
+/* Hồ sơ khoá sau Mission 2 — chỉ đi dạo xem lại */
+.msn-formnote{margin:2px 0 14px;padding:10px 12px;border:1px solid var(--line);
+  border-left:2px solid var(--amber);border-radius:5px;background:rgba(242,180,65,.06);
+  font-size:12.5px;line-height:1.6;color:#cfe0f2}
+.msn-formlock #deck .q .chip,.msn-formlock #deck .q .opts{pointer-events:none}
+.msn-formlock #deck .q{opacity:.62}
+#submitBtn.msn-locked{opacity:.45;filter:grayscale(.5);cursor:default}
+/* Trang bìa: chừa chỗ cho dòng Mission + timeline, khối chữ tụt xuống cho thoáng */
+#deck > .page:first-child > .content{padding-top:calc(clamp(20px,6vw,30px) + 46px)}
+.msn-cells{position:relative;display:flex;gap:7px;justify-content:center;margin:22px 0 4px;cursor:text}
 .msn-cell{width:24px;height:34px;display:flex;align-items:center;justify-content:center;
   font-family:"Oswald";font-size:17px;color:var(--paper);
   border-bottom:2px solid rgba(242,180,65,.75)}
@@ -803,8 +895,9 @@ render();
 .msn-cell.on{border-bottom-color:var(--amber)}
 .msn-in{position:absolute;inset:0;width:100%;height:100%;opacity:.01;border:none;
   background:none;color:transparent;caret-color:transparent;font-size:16px;outline:none}
-.msn-msg{min-height:20px;font-size:12.5px;line-height:1.55;text-align:center;
-  color:#ffb4a6;margin:6px 2px 0}
+.msn-msg{min-height:20px;font-size:12.5px;line-height:1.6;text-align:center;
+  color:#ffb4a6;margin:15px 2px 0}
+.msn-msg:empty{margin-top:0;min-height:6px}
 .msn-msg.ok{color:#8be0ff}
 .msn-ghost{display:block;margin:12px auto 0;border:none;background:none;cursor:pointer;
   color:rgba(234,240,247,.6);font-size:11.5px;line-height:1.5;letter-spacing:.06em;
@@ -817,7 +910,7 @@ render();
   color:rgba(242,180,65,.38);padding:10px 8px}
 #prev.nhay1{animation:nhay-mot-lan .6s ease-out 1}
 /* ── Timeline tiến độ + độ khó (dưới dòng Mission) ── */
-#msnTl{position:absolute;top:106px;left:50%;transform:translateX(-50%);z-index:7;
+#msnTl{position:absolute;top:100px;left:50%;transform:translateX(-50%);z-index:7;
   width:218px;height:36px;transition:opacity .3s}
 #msnTl.off{opacity:0;pointer-events:none}
 .tl-track{position:absolute;left:10px;right:10px;top:9px;height:2px;
@@ -845,7 +938,22 @@ render();
 .tl-dot.cur i{background:var(--amber);animation:tl-pulse 2.4s ease-in-out infinite}
 .tl-dot.cur span{color:var(--amber)}
 @keyframes tl-pulse{0%,100%{box-shadow:0 0 0 0 rgba(242,180,65,.55)}50%{box-shadow:0 0 0 5px rgba(242,180,65,0)}}
+/* ── Reo sáng khi vừa mở được một mốc mới ── */
+@keyframes msn-boom{0%,100%{opacity:.75;text-shadow:none}
+  40%{opacity:1;text-shadow:0 0 16px rgba(242,180,65,.95)}}
+#msnLine.boom{animation:msn-boom 1.15s ease-in-out 3}
+@keyframes tl-boom{0%,100%{filter:none}45%{filter:drop-shadow(0 0 10px rgba(242,180,65,.9))}}
+#msnTl.boom{animation:tl-boom 1.15s ease-in-out 3}
+
+/* ── Màn "Hoàn tất" (trang 5/5): nút đóng + CTA quay về trang bìa ── */
+#ovDone{cursor:pointer}
+#ovDone>*{cursor:auto}
+.done-x{position:absolute;top:10px;right:10px;width:40px;height:40px;z-index:2;
+  border:none;background:none;color:rgba(234,240,247,.5);font-size:16px;line-height:1;cursor:pointer}
+.done-back{margin-top:14px}
+
 @media (prefers-reduced-motion:reduce){
+  #msnLine.boom,#msnTl.boom{animation:none;text-shadow:0 0 12px rgba(242,180,65,.75)}
   .msn-dot{animation:none;opacity:.85}
   .msn-seg.ready{animation:none;text-shadow:0 0 10px rgba(242,180,65,.6)}
   #prev.nhay{animation:nhay-mot-lan .6s ease-out 1}
@@ -860,12 +968,26 @@ render();
   var PHAN1 = H.PHAN1 != null ? H.PHAN1 : 3;
   var MAPURL = 'https://dongchi-binh-33.vercel.app/';
   var PIN2 = '217N33', PIN3 = 'PHAMTUAN';
-  var HINTS = ['12', '5121', 'MIG-21'];
-  var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆', 'Nah nah nah — cố lên anh oyyyy 💪'];
+  var HINTS = ['12', '5121', 'MIG-21', 'Tên người gồm 2 chữ'];
+  var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆',
+                'Nah nah nah — cố lên anh oyyyy 💪', 'Very earth very skyyy o_O 😩💦'];
   var DAY = 864e5, HOUR = 36e5, KEY = 'msn1';
-  var W2 = 5*DAY;                 /* chờ mở Mission 2: 5 ngày từ lần ghé đầu */
-  var W3 = 3*DAY;                 /* đếm ngược Mission 3: 3 ngày từ lúc mở khoá M2 */
+  var HINTW = 30*6e4;             /* chờ giữa hai gợi ý Mission 3 */
+  var W2 = 5*DAY;                 /* CỬA SỔ giải Mission 2: 5 ngày kể từ lúc xong M1 */
+  var W3 = 5*DAY;                 /* CỬA SỔ giải Mission 3: 5 ngày kể từ lúc xong M2 */
   var DIFF = ['Noob', 'Easy Cheesy', 'Hit the rock'];
+  /* Gọi thống nhất MỘT tên cho mọi mật khẩu trong game — không PIN, không PASS */
+  var MA = 'mã truy cập';
+  /* Lời Hội đồng khi SOS chi viện — theo đúng thứ tự gợi ý được mở */
+  var SOSMSG = ['Hội đồng MeowMeow chi viện một gợi ý ✦',
+                'Ủa, MeowMeow, tiếp tục chi viện gợi ý ✦',
+                'Sắp hết gợi ý gòyyy đồng chí ơiii ✦',
+                'Cuối cùng cho 1 gợi ý, MeowMeow ✦'];
+  /* Câu dùng chung cho MỌI trường hợp đòi mã mà chưa hoàn thành Form */
+  function MSG_FORM(){
+    return 'Đồng chí vui lòng hoàn thành <b>Form</b> và liên hệ <b>Hội đồng MeowMeow</b> '
+         + 'để được cấp <b>' + MA + '</b> ✦';
+  }
 
   function byId(id){ return document.getElementById(id); }
 
@@ -874,16 +996,31 @@ render();
     var s = {};
     try{ s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){}
     return { v:s.v|0, m1:!!s.m1, m2:!!s.m2, m3:!!s.m3,
-      m2at:s.m2at||0, m2doneAt:s.m2doneAt||0,
-      hints:s.hints|0, hintAt:s.hintAt||0, lockUntil:s.lockUntil||0,
+      m1at:s.m1at||0, m2at:s.m2at||0, m2doneAt:s.m2doneAt||0,
+      hints:s.hints|0, hintAt:s.hintAt||0, lockUntil:s.lockUntil||0, form:!!s.form,
       dayKey:s.dayKey||'', dayN:s.dayN|0 };
   })();
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
 
-  /* Mốc mở Mission 2: 5 ngày kể từ lần ghé đầu.
-     Đổi luật thời gian (v2) thì đặt lại mốc, tiến độ m1/m2/m3 giữ nguyên. */
-  if(st.v < 2){ st.v = 2; if(!st.m2) st.m2at = 0; save(); }
-  if(!st.m2at){ st.m2at = Date.now() + W2; save(); }
+  /* LUẬT v3 — đồng hồ là CỬA SỔ LÀM BÀI, không phải thời gian chờ:
+       xong M1  → có W2 (5 ngày) để giải Mission 2
+       xong M2  → có W3 (5 ngày) để giải Mission 3
+     Hết giờ không mất trắng: trong hộp có nút gia hạn (10 nhịp). */
+  if(st.v < 3){
+    st.v = 3;
+    if(st.m1 && !st.m2) st.m2at = Date.now() + W2;      /* cấp lại cửa sổ M2 */
+    else if(!st.m1)     st.m2at = 0;
+    if(st.m2 && !st.m3) st.m2doneAt = Date.now();       /* cấp lại cửa sổ M3 */
+    save();
+  }
+  /* Đánh dấu hoàn thành Mission 1 → mở ngay cửa sổ 5 ngày của Mission 2 */
+  function doneM1(tu){
+    if(st.m1) return false;
+    st.m1 = true; st.m1at = Date.now(); st.m2at = st.m1at + W2; save();
+    ping('mo_khoa_m2_cua', tu || 'gửi form');
+    drawLine(); drawTl(); celebrate();
+    return true;
+  }
 
   /* Pool lượt nhập DÙNG CHUNG cho cả Mission 2 & 3: 3 lượt/phiên, 12 lượt/ngày */
   var TRY_S = 3, TRY_D = 12;
@@ -898,10 +1035,15 @@ render();
   function nuaDem(){ var d = new Date(); d.setHours(24,0,0,0); return d.getTime(); }
   function locked(){ return Date.now() < st.lockUntil; }
   function phase(){
+    var now = Date.now();
     if(st.m3) return 'xong';
-    if(st.m2) return 'm3';
-    if(Date.now() >= st.m2at) return 'm2-san-sang';
+    if(st.m2) return now < st.m2doneAt + W3 ? 'm3' : 'm3-het';
+    if(st.m1) return now < st.m2at ? 'm2' : 'm2-het';
     return 'm1';
+  }
+  function hanChot(){                       /* mốc hết giờ của nấc đang chơi */
+    if(st.m3 || !st.m1) return 0;
+    return st.m2 ? st.m2doneAt + W3 : st.m2at;
   }
   function fmt(ms){
     if(ms < 0) ms = 0;
@@ -910,6 +1052,12 @@ render();
          + p(Math.floor(ms%HOUR/6e4)) + 'M ' + p(Math.floor(ms%6e4/1e3)) + 'S';
   }
   function daysLeft(ts){ return Math.max(0, Math.ceil((ts - Date.now())/DAY)); }
+  function fmtCd(ms){                       /* HH:MM:SS cho đồng hồ cát gợi ý */
+    if(ms < 0) ms = 0;
+    var p = function(n){ return (n<10?'0':'')+n; };
+    return p(Math.floor(ms/HOUR)) + ':' + p(Math.floor(ms%HOUR/6e4))
+         + ':' + p(Math.floor(ms%6e4/1e3));
+  }
   function norm(s){
     s = (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[\u0111\u0110]/g,'d');
     return s.toUpperCase().replace(/[^A-Z0-9]/g,'');
@@ -922,28 +1070,46 @@ render();
   line.setAttribute('aria-label', 'Trạng thái nhiệm vụ phi đoàn');
   frame.appendChild(line);
 
-  function seg(cls, html){ return '<span class="msn-seg'+(cls?' '+cls:'')+'">'+html+'</span>'; }
+  function seg(cls, html, m){
+    return '<span class="msn-seg'+(cls?' '+cls:'')+'"'+(m?' data-m="'+m+'"':'')+'>'+html+'</span>';
+  }
   var SEP = '<span class="msn-sep">·</span>', DOT = '<i class="msn-dot">◐</i> ';
   /* Chỉ dựng lại markup khi đổi nấc; mỗi giây chỉ thay chữ số trong #msnT
      để chấm ◐ giữ nguyên nhịp thở. */
   var lastKey = '';
   function drawLine(){
     var now = Date.now(), p = phase(), h = '', t = '';
-    var dl = st.m2doneAt + W3;
-    var key = p + '|' + (st.m1?1:0) + '|' + (p==='m3' && now>=dl ? 'het' : 'dem');
-    if(p === 'm1' || p === 'm2-san-sang'){
-      h = seg(st.m1?'lit':'', (st.m1?'✓ ':DOT) + 'M1 ĐIỀN FORM') + SEP;
-      if(p === 'm1'){ t = fmt(st.m2at - now); h += seg('dim', 'M2 MỞ SAU <span id="msnT">'+t+'</span>'); }
-      else h += seg('ready', DOT + 'M2 NHẬP PIN');
+    if(p === 'm1'){
+      h = seg('', DOT + 'M1 ĐIỀN FORM') + SEP + seg('dim', 'M2 CHỜ MỞ');
+    }else if(p === 'm2'){
+      t = fmt(st.m2at - now);
+      h = seg('lit', '✓ M1', 1) + SEP
+        + seg('ready', DOT + 'M2 NHẬP MÃ <span id="msnT">'+t+'</span>');
+    }else if(p === 'm2-het'){
+      h = seg('lit', '✓ M1', 1) + SEP + seg('ready', DOT + 'M2 HẾT GIỜ · XIN GIA HẠN');
     }else if(p === 'm3'){
-      h = seg('lit', '✓ M2') + SEP;
-      if(now < dl){ t = fmt(dl - now); h += seg('ready', DOT + 'M3 <span id="msnT">'+t+'</span>'); }
-      else h += seg('ready', DOT + 'M3 GIẢI MÃ');
+      t = fmt(st.m2doneAt + W3 - now);
+      h = seg('lit', '✓ M2', 2) + SEP
+        + seg('ready', DOT + 'M3 GIẢI MÃ <span id="msnT">'+t+'</span>');
+    }else if(p === 'm3-het'){
+      h = seg('lit', '✓ M2', 2) + SEP + seg('ready', DOT + 'M3 HẾT GIỜ · GIẢI TIẾP');
     }else{
-      h = seg('lit', '✓ M2') + SEP + seg('lit', '✓ M3 BẢN ĐỒ MỞ');
+      h = seg('lit', '✓ M2', 2) + SEP + seg('lit', '✓ M3 BẢN ĐỒ MỞ', 3);
     }
-    if(key !== lastKey){ lastKey = key; line.innerHTML = h; }
+    if(p !== lastKey){ lastKey = p; line.innerHTML = h; }
     else if(t){ var el = byId('msnT'); if(el) el.textContent = t; }
+  }
+
+  /* Reo sáng dòng Mission + timeline khi vừa mở được một mốc mới.
+     Nếu đang ở trang khác (vd màn Hoàn tất của form) thì để dành, về bìa mới reo. */
+  var celebPend = 0;
+  function celebrate(){
+    if((H.page ? H.page() : 0) !== 0){ celebPend = 1; return; }
+    celebPend = 0;
+    line.classList.remove('boom'); tl.classList.remove('boom');
+    void line.offsetWidth;
+    line.classList.add('boom'); tl.classList.add('boom');
+    setTimeout(function(){ line.classList.remove('boom'); tl.classList.remove('boom'); }, 3800);
   }
 
   /* ---- timeline tiến độ + độ khó, kiêm cửa test: tap 10 nhịp mở khoá mission ---- */
@@ -974,23 +1140,37 @@ render();
     var b = e.target && e.target.closest ? e.target.closest('.tl-dot') : null;
     if(!b) return;
     var m = +b.getAttribute('data-m'), now = Date.now();
+    /* Nấc đã xong: một cú bấm là xem lại bảng ghi công, khỏi phải nhớ 10 nhịp */
+    if(m === 1 && st.m1){ openM1Done(); return; }
+    if(m === 2 && st.m2){ openM2Done(false); return; }
+    if(m === 3 && st.m3){ openDone(false); return; }
     tapN = (m === tapM && now - tapAt < 900) ? tapN + 1 : 1;
     tapM = m; tapAt = now;
     if(tapN < 10) return;
     tapN = 0;
     if(m === 1 && !st.m1){
-      st.m1 = true; ping('test_unlock', 'M1 · coi như đã gửi form');
-    }else if(m === 2 && !st.m2 && now < st.m2at){
-      st.m2at = now; ping('test_unlock', 'M2 · tua tới giờ nhập PIN');
-    }else if(m === 3 && st.m2 && !st.m3 && now < st.m2doneAt + W3){
-      st.m2doneAt = now - W3; ping('test_unlock', 'M3 · tua hết 3 ngày, lộ nút skip');
+      ping('test_unlock', 'M1 · coi như đã gửi form');
+      doneM1('cửa test');
+      return;
+    }else if(m === 2 && !st.m2){
+      if(!st.m1){ st.m1 = true; st.m1at = now; }
+      st.m2at = now + W2;                      /* cấp lại trọn cửa sổ 5 ngày */
+      ping('test_unlock', 'M2 · cấp lại cửa sổ 5 ngày');
+      save(); drawLine(); drawTl(); openPass(2);
+      return;
+    }else if(m === 3 && st.m2 && !st.m3){
+      st.m2doneAt = now - W3;                  /* tua hết giờ → lộ nút mở khoá */
+      ping('test_unlock', 'M3 · tua hết giờ, lộ nút mở khoá');
+      save(); drawLine(); drawTl(); openPass(3);
+      return;
     }else return;
-    save(); drawLine(); drawTl();
   });
   function updVis(){
     var off = (H.page ? H.page() : 0) !== 0;
     line.classList.toggle('off', off);
     tl.classList.toggle('off', off);
+    if(!off && celebPend) setTimeout(celebrate, 420);
+    mapUI();
   }
 
   /* ---- nháy nút Bản đồ ---- */
@@ -1029,9 +1209,13 @@ render();
     + '<div class="msn-lab" id="msnLab"></div>'
     + '<div id="msnBody"></div></div>';
   frame.appendChild(ov);
-  function openOv(lab, html){ byId('msnLab').textContent = lab; byId('msnBody').innerHTML = html; ov.classList.add('show'); }
+  var cdTimer = 0;
+  function openOv(lab, html){ clearInterval(cdTimer); cdTimer = 0;
+    ov.querySelector('.msn-card').className = 'msn-card';   /* reset padding/canh chữ giữa các hộp */
+    byId('msnLab').textContent = lab; byId('msnBody').innerHTML = html; ov.classList.add('show'); }
   function closeOv(){ ov.classList.remove('show');
     ov.querySelector('.msn-card').classList.remove('haspin');
+    clearInterval(cdTimer); cdTimer = 0;
     byId('msnBody').innerHTML = ''; }
   ov.addEventListener('click', function(e){ if(e.target === ov) closeOv(); });
   ov.querySelector('.msn-x').addEventListener('click', closeOv);
@@ -1040,39 +1224,64 @@ render();
   });
   function openMsg(lab, html){ openOv(lab, '<div class="msn-txt">'+html+'</div>'); }
   function lockNote(){
-    if(dayOut())
-      return 'Hết <b>12 lượt</b> của hôm nay rồi ⏳<br>Mai Hội đồng MeowMeow cấp lượt mới nha ✦';
-    return 'Hết <b>3 lượt</b> của phiên này ⏳<br>Thử lại sau <b>'
-      + Math.max(1, Math.ceil((st.lockUntil - Date.now())/6e4)) + ' phút</b> nha ✦';
+    var con = fmtCd(st.lockUntil - Date.now());
+    return (dayOut() ? 'Hết <b>12 lượt</b> của hôm nay ⏳' : 'Hết <b>3 lượt</b> của phiên này ⏳')
+      + '<br>Quay lại sau <b>' + con + '</b>';
   }
 
-  /* ---- gợi ý Mission 3: mở dần sau mỗi lần sai, cách nhau tối thiểu 1 giờ ---- */
-  function revealHint(){
+  /* ---- gợi ý Mission 3 ----
+     Gợi ý 1: mở khi nhập sai lần đầu (hoặc SOS).
+     Từ gợi ý 2: TỰ mở khi hết 1 giờ kể từ gợi ý trước — không cần nhập sai thêm.
+     SOS 10 nhịp: bỏ qua đồng hồ, mở luôn. */
+  function revealHint(force){
     if(st.hints >= HINTS.length) return false;
     var now = Date.now();
-    if(st.hints === 0 || now - st.hintAt >= HOUR){ st.hints++; st.hintAt = now; save(); return true; }
+    if(force || !st.hints || now - st.hintAt >= HINTW){
+      st.hints++; st.hintAt = now; save(); return true;
+    }
     return false;
   }
+  function hintDue(){                      /* đã tới giờ mở gợi ý kế tiếp chưa */
+    return st.hints > 0 && st.hints < HINTS.length && Date.now() - st.hintAt >= HINTW;
+  }
 
-  /* ---- hộp PIN dùng chung cho Mission 2 & 3 ---- */
-  function openPin(which){
+  /* ---- hộp mã truy cập dùng chung cho Mission 2 & 3 ---- */
+  function openPass(which){
     if(!locked() && wget() >= TRY_S) wset(0);                /* hết hạn khoá → cấp lại lượt phiên */
     var code = which === 2 ? PIN2 : PIN3, len = code.length, buf = '';
+    var chuaForm = which === 2 && !st.m1;
+    var hetGio = which === 2 ? (st.m1 && Date.now() >= st.m2at)
+                             : (!st.m3 && Date.now() >= st.m2doneAt + W3);
     var body = '<div class="msn-quota" id="msnQ"></div>'
       + (which === 2
-      ? '<div class="msn-txt">Nhập <b>PIN</b> do Hội đồng MeowMeow cấp để mở khoá <b>Mission 2</b> ✦</div>'
-      : '<div class="msn-txt">Giải mã <b>PIN</b> để mở <b>Mission 3 · Bản đồ</b> ✦</div>'
-        + '<ul class="msn-hints" id="msnHints"></ul>');
+      ? '<div class="msn-txt">' + (chuaForm ? MSG_FORM()
+          : 'Nhập <b>' + MA + '</b> do Hội đồng MeowMeow cấp để mở khoá <b>Mission 2</b> ✦')
+        + '</div>'
+      : '<div class="msn-txt">Phá đảo <b>Mission 3</b> để mở khoá <b>Map: Bản đồ tác chiến</b> ✦</div>'
+        + '<ul class="msn-hints" id="msnHints"></ul>'
+        + '<div class="msn-cd" id="msnCd"></div>');
+    if(hetGio) body += '<div class="msn-txt" id="msnHet" style="margin-top:8px;color:#ffc98a">'
+      + 'Hết cửa sổ ' + Math.round((which===2?W2:W3)/DAY) + ' ngày rồi ⏳<br>'
+      + 'Liên hệ <b>Hội đồng MeowMeow</b> để nhận chi viện ✦'
+      + '</div>';
     body += '<div class="msn-cells" id="msnCells">'
       + '<input class="msn-in" id="msnIn" type="text" autocomplete="one-time-code" '
-      + 'autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Ô nhập PIN"></div>'
+      + 'autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Ô nhập mã truy cập"></div>'
       + '<div class="msn-msg" id="msnMsg"></div>';
-    if(which === 3 && !st.m3 && Date.now() > st.m2doneAt + W3)
-      body += '<button class="msn-skip" id="msnSkip" type="button">skip</button>';
+    if(chuaForm)
+      body += '<button class="navbtn wide" id="msnToForm" style="margin-top:16px;justify-content:center">Điền Form ngay ✈</button>';
+    if(hetGio)
+      body += '<button class="msn-skip" id="msnSkip" type="button">'
+        + (which === 2 ? 'gia hạn' : 'skip') + '</button>';
     if(which === 3)
       body += '<button class="msn-sos" id="msnSos" type="button">SOS</button>';
-    openOv(which === 2 ? 'Mã truy cập · Mission 2' : 'Mã truy cập · Mission 3', body);
-    ov.querySelector('.msn-card').classList.add('haspin');
+    openOv('Mission ' + which + ' · Mã truy cập', body);
+    var toForm = byId('msnToForm');
+    if(toForm) toForm.addEventListener('click', function(){
+      closeOv();
+      if(typeof window.go === 'function') window.go(PHAN1);
+    });
+    if(hetGio || which === 3) ov.querySelector('.msn-card').classList.add('haspin');
 
     var cellsBox = byId('msnCells'), input = byId('msnIn'), cells = [];
     for(var i = 0; i < len; i++){
@@ -1098,7 +1307,31 @@ render();
       q.innerHTML = 'Lượt nhập · <b>' + Math.max(0, TRY_S - wget()) + '/' + TRY_S
         + '</b> phiên · <b>' + Math.max(0, TRY_D - dayN()) + '/' + TRY_D + '</b> hôm nay';
     }
+    /* Đồng hồ cát: chỉ đếm ngược, không dạy người chơi phải làm gì */
+    function cdPaint(){
+      var el = byId('msnCd'); if(!el) return;
+      var con = st.hints && st.hints < HINTS.length ? st.hintAt + HINTW - Date.now() : 0;
+      el.innerHTML = con > 0 ? '⏳ Gợi ý tiếp theo sẵn sàng sau <b>' + fmtCd(con) + '</b>' : '';
+    }
+    /* Tới giờ là gợi ý tự nhảy ra kèm lời Hội đồng, không phải chờ nhập sai */
+    function autoHint(){
+      if(!hintDue()) return;
+      revealHint(true); hintsPaint(); cdPaint();
+      ping('sos_hint', 'tới giờ · tự mở gợi ý ' + st.hints);
+      msg(SOSMSG[st.hints - 1] || SOSMSG[0], true);
+    }
+    /* Nhịp 1 giây: đồng hồ gợi ý, gợi ý tự mở, và đếm ngược lúc bị khoá */
+    function tick(){
+      if(which === 3){ autoHint(); cdPaint(); }
+      if(locked()) msgLock();
+      else if(input.disabled && !doneChecking){
+        input.disabled = false; wset(0); quotaPaint(); msg('');
+      }
+    }
     quotaPaint(); hintsPaint(); paint();
+    if(which === 3){ autoHint(); cdPaint(); }
+    clearInterval(cdTimer);
+    cdTimer = setInterval(tick, 1000);
     /* Đang khoá 30 phút: giữ nguyên hộp cho đọc gợi ý, chỉ khoá ô nhập */
     if(locked()){ input.disabled = true; msgLock(); }
     else setTimeout(function(){ try{ input.focus(); }catch(e){} }, 80);
@@ -1111,11 +1344,13 @@ render();
       if(buf === code){
         doneChecking = true;
         if(which === 2){
+          if(!st.m1){ st.m1 = true; st.m1at = Date.now(); }   /* qua thẳng cửa 2 dù chưa gửi form */
           st.m2 = true; st.m2doneAt = Date.now(); save(); wset(0);
-          ping('mo_khoa_m2', 'PIN đúng · Mission 3 bắt đầu đếm 3 ngày');
-          msg('Chuẩn xác! Mission 2 đã mở khoá ✦', true);
-          drawLine(); drawTl();
-          setTimeout(closeOv, 1400);
+          ping('mo_khoa_m2', 'Mã đúng · Mission 3 mở cửa sổ ' + Math.round(W3/DAY) + ' ngày');
+          drawLine(); drawTl(); celebrate(); lockForm();
+          setTimeout(function(){                   /* đã tự tay đóng hộp thì thôi, không bật lại */
+            if(ov.classList.contains('show')) openM2Done(true);
+          }, 320);
         }else{ wset(0); solveM3(false); }
         return;
       }
@@ -1125,7 +1360,7 @@ render();
       ping('sai_pin', 'Mission ' + which + ' · lần ' + w + '/' + TRY_S
         + ' phiên · ' + st.dayN + '/' + TRY_D + ' ngày');
       if(hasNew) hintsPaint();
-      quotaPaint();
+      cdPaint(); quotaPaint();
       buf = ''; input.value = ''; paint();
       if(dayOut() || w >= TRY_S){
         st.lockUntil = dayOut() ? nuaDem() : Date.now() + 30*6e4; save();
@@ -1134,7 +1369,7 @@ render();
         msg(lockNote());
         input.disabled = true; try{ input.blur(); }catch(e){}
       }else{
-        msg(treu() + (hasNew ? ' · có <b>gợi ý mới</b> ✦' : ''));
+        msg(hasNew ? SOSMSG[st.hints - 1] || SOSMSG[0] : treu(), !!hasNew);
       }
     }
     input.addEventListener('input', function(){
@@ -1147,12 +1382,20 @@ render();
         else msg('Nhập đủ ' + len + ' ký tự đã nha');
       }
     });
+    var sk = byId('msnSkip'), n = 0, lastT = 0;
+    if(sk) sk.addEventListener('click', function(){
+      var t = Date.now(); n = (t - lastT < 900) ? n + 1 : 1; lastT = t;
+      if(n < 10) return;
+      n = 0;
+      if(which === 3){ solveM3(true); return; }
+      st.m2at = Date.now() + W2; save();       /* M2: chỉ nạp lại đồng hồ, vẫn phải nhập đúng */
+      ping('gia_han_m2', 'xin thêm ' + Math.round(W2/DAY) + ' ngày cho Mission 2');
+      drawLine(); drawTl(); celebrate();
+      msg('Hội đồng MeowMeow gia hạn thêm <b>' + Math.round(W2/DAY) + ' ngày</b> ✦ Nhập tiếp nha!', true);
+      if(sk.parentNode) sk.parentNode.removeChild(sk);
+      var het = byId('msnHet'); if(het && het.parentNode) het.parentNode.removeChild(het);
+    });
     if(which === 3){
-      var sk = byId('msnSkip'), n = 0, lastT = 0;
-      if(sk) sk.addEventListener('click', function(){
-        var t = Date.now(); n = (t - lastT < 900) ? n + 1 : 1; lastT = t;
-        if(n >= 10) solveM3(true);
-      });
       /* SOS góc trái: 10 nhịp → lộ thêm một gợi ý; bấm đơn/đôi → câu trêu (tối đa 6/phiên) */
       var sos = byId('msnSos'), sn = 0, sAt = 0;
       if(sos) sos.addEventListener('click', function(){
@@ -1160,12 +1403,10 @@ render();
         sn = (now - sAt < 900) ? sn + 1 : 1; sAt = now;
         if(sn >= 10){
           sn = 0;
-          if(st.hints < HINTS.length){
-            st.hints++; st.hintAt = now; save(); hintsPaint();
+          if(revealHint(true)){
+            hintsPaint(); cdPaint();
             ping('sos_hint', 'SOS 10 nhịp → lộ gợi ý ' + st.hints);
-            msg(st.hints >= HINTS.length
-              ? 'Hội đồng MeowMeow chi viện thêm 1 gợi ý nữa >=<'
-              : 'Hội đồng MeowMeow chi viện một gợi ý ✦', true);
+            msg(SOSMSG[st.hints - 1] || SOSMSG[0], true);
           }else msg('Hết gợi ý rồi — tự lực cánh sinh thôi ✦', true);
           return;
         }
@@ -1200,21 +1441,58 @@ render();
     if(st.m3) return;
     st.m3 = true; save();
     ping(bySkip ? 'skip_m3' : 'giai_m3', bySkip ? 'bấm skip 10 nhịp' : 'giải đúng PHAM TUAN');
-    drawLine(); drawTl(); mapUI();
+    drawLine(); drawTl(); mapUI(); celebrate();
     openDone(true);
+  }
+
+  /* Bảng ghi công Mission 1 — bấm nút tròn số 1 trên timeline là xem lại */
+  function openM1Done(){
+    openOv('Mission 1 · Hoàn thành',
+      '<div class="msn-tit">Form khai báo đã về căn cứ ✦</div>'
+      + '<div class="msn-txt">Hội đồng MeowMeow đã nhận hồ sơ của đồng chí.<br>'
+      + 'Tiếp tục tiến trình ở <b>Mission 2</b>.</div>');
+    ov.querySelector('.msn-card').classList.add('done');
+  }
+
+  /* Bảng ghi công Mission 2 — hiện sau khi nhập đúng mã, và bấm nút tròn số 2 xem lại */
+  function openM2Done(fresh){
+    var xong = st.m3;
+    openOv('Mission 2 · Hoàn thành',
+      '<div class="msn-tit">Thông Quan ✦</div>'
+      + '<div class="msn-txt">Tiếp tục tiến trình ở <b>Mission 3</b>.<br>'
+      + 'Thời hạn Phá đảo: <b>' + Math.round(W3/DAY) + ' ngày</b></div>'
+      + '<div class="msn-cd" id="msnCd2"></div>'
+      + '<button class="navbtn wide" id="msnGoM3" style="margin-top:18px;justify-content:center">'
+      + (xong ? 'Xem bảng Phá đảo ✦' : 'Tới Mission 3 ✦') + '</button>');
+    ov.querySelector('.msn-card').classList.add('done');
+    function cd2(){
+      var el = byId('msnCd2'); if(!el) return;
+      if(st.m3){ el.innerHTML = '✓ Mission 3 đã phá đảo'; return; }
+      var con = st.m2doneAt + W3 - Date.now();
+      el.innerHTML = con > 0
+        ? '⏳ Còn lại: <b>' + fmt(con) + '</b>'
+        : '⏳ Hết hạn — liên hệ Hội đồng MeowMeow để nhận chi viện ✦';
+    }
+    cd2(); clearInterval(cdTimer); cdTimer = setInterval(cd2, 1000);
+    byId('msnGoM3').addEventListener('click', function(){
+      if(st.m3) openDone(false); else openPass(3);
+    });
   }
 
   function openDone(fresh){
     openOv('Mission 3 · Phá đảo (˶˃ ᵕ ˂˶)',
-      '<div class="msn-tit">Hội Đồng MeowMeow chúc đồng chí giữ vững phong độ '
-      + 'phá đảo Map tiếp theo ⚞^. .^⚟!</div>'
-      + '<div class="msn-txt">Nút <b>Bản đồ</b> đã mở khoá — bấm để mở <b>Bản đồ tác chiến</b> của Phi đoàn sinh nhật 🗺️</div>'
-      + '<button class="navbtn wide" id="msnGo" style="margin-top:18px;justify-content:center">Tới bản đồ ✈</button>'
+      '<div class="msn-tit">Chúc mừng Dongchi Bình ⚞^. .^⚟!</div>'
+      + '<div class="msn-txt">Chúc đồng chí giữ vững phong độ tiếp tục phá đảo '
+      + '<b>Map: Bản đồ tác chiến</b>.</div>'
+      + '<div class="msn-sign">--Kí tên: Hội Đồng MeowMeow ฅ^>⩊&lt;^ ฅ</div>'
+      + '<button class="navbtn wide" id="msnGo" style="margin-top:18px;justify-content:center">Mở khoá Bản đồ tác chiến ✈</button>'
       + '<button class="msn-ghost" id="msnReset" type="button">↻ Chơi lại từ đầu</button>');
+    ov.querySelector('.msn-card').classList.add('done');
     byId('msnGo').addEventListener('click', function(){ goMap('hộp Mission 3'); });
     var rs = byId('msnReset'), armed = false;
     rs.addEventListener('click', function(){
-      if(!armed){ armed = true; rs.textContent = 'Chắc chưa? Bấm lần nữa để xoá sạch tiến độ'; rs.style.color = '#ffb4a6'; return; }
+      if(!armed){ armed = true; rs.textContent = 'Bấm lần nữa để xoá sạch tiến độ';
+        rs.style.color = '#ffb4a6'; rs.style.textDecoration = 'none'; return; }
       ping('reset_msn', 'chơi lại từ đầu');
       try{
         localStorage.removeItem(KEY);
@@ -1224,30 +1502,58 @@ render();
     });
   }
 
-  function openNeedForm(){
-    openMsg('Mission 2 · PIN',
-      'Hoàn thành <b>Form khai báo</b> thì Hội đồng MeowMeow mới cấp <b>PIN</b> cho đồng chí nha ✦'
-      + '<button class="navbtn wide" id="msnToForm" style="margin-top:16px;justify-content:center">Điền Form ngay ✈</button>');
-    byId('msnToForm').addEventListener('click', function(){
-      closeOv();
-      if(typeof window.go === 'function') window.go(PHAN1);
-    });
-  }
-
   /* ---- bấm dòng Mission ---- */
-  line.addEventListener('click', function(){
-    var p = phase();
-    var tgt = p === 'm1' ? st.m2at : (p === 'm3' ? st.m2doneAt + W3 : 0);
+  var m1Taps = 0;
+  line.addEventListener('click', function(e){
+    /* Bấm ngay vào "✓ M1" / "✓ M2" / "✓ M3" là mở lại bảng ghi công của nấc đó */
+    var sg = e.target && e.target.closest ? e.target.closest('.msn-seg[data-m]') : null;
+    if(sg){
+      var sm = +sg.getAttribute('data-m');
+      if(sm === 1 && st.m1){ openM1Done(); return; }
+      if(sm === 2 && st.m2){ openM2Done(false); return; }
+      if(sm === 3 && st.m3){ openDone(false); return; }
+    }
+    var p = phase(), tgt = hanChot();
     ping('bam_dong_countdown', 'nấc ' + p + (tgt ? ' · còn ' + daysLeft(tgt) + ' ngày' : ''));
-    if(p === 'm1'){ flashMap(); return; }
     if(p === 'xong'){ openDone(false); return; }
-    if(p === 'm2-san-sang'){ st.m1 ? openPin(2) : openNeedForm(); return; }
-    openPin(3);
+    if(p === 'm1'){
+      /* Lần đầu: nháy nút Bản đồ dẫn tới Form. Từ lần sau: mở hộp (có ô nhập mã
+         để đồng chí nào đã xin được mã vẫn qua cửa, không bị kẹt). */
+      if(++m1Taps === 1){ flashMap(); return; }
+      openPass(2); return;
+    }
+    openPass(p === 'm2' || p === 'm2-het' ? 2 : 3);
   });
+
+  /* ---- Xong Mission 2 → hồ sơ chốt sổ, chỉ đi dạo xem lại ---- */
+  function lockForm(){
+    if(!st.m2 || !st.form) return;
+    try{
+      [].forEach.call(document.querySelectorAll('#deck input, #deck textarea, #deck select'),
+        function(el){ el.disabled = true; el.setAttribute('aria-disabled', 'true'); });
+      document.body.classList.add('msn-formlock');
+      var sb = byId('submitBtn');
+      if(sb && !sb.classList.contains('msn-locked')){
+        sb.disabled = true; sb.classList.add('msn-locked');
+        sb.textContent = 'Hồ sơ đã chốt 🔒';
+        if(sb.parentNode && !byId('msnFormNote')){
+          var note = document.createElement('div');
+          note.id = 'msnFormNote'; note.className = 'msn-formnote';
+          note.innerHTML = 'Hồ sơ đã <b>chốt sổ</b> sau Mission 2 — đồng chí chỉ đi dạo '
+            + 'xem lại thôi nha, không sửa được nữa ✦';
+          sb.parentNode.insertBefore(note, sb);
+        }
+      }
+    }catch(e){}
+  }
 
   /* ---- nút Bản đồ: đo sau nháy + mở thẳng bản đồ khi đã xong Mission 3 ----
      (capture ở window nên chạy TRƯỚC luật "khoá → Phần I" gắn ở document) */
-  function mapUI(){ if(st.m3 && prev) prev.classList.add('mapopen'); }
+  /* Chỉ tô sáng nút Bản đồ ở TRANG BÌA — trang khác nút này là "Lùi", không đụng vào */
+  function mapUI(){
+    if(!prev) return;
+    prev.classList.toggle('mapopen', !!st.m3 && (H.page ? H.page() : 0) === 0);
+  }
   /* Một cửa duy nhất dẫn về Bản đồ chính — dùng chung cho nút trong hộp
      lẫn nút Bản đồ ở góc màn hình */
   function goMap(tu){
@@ -1274,12 +1580,36 @@ render();
   }, true);
   var mapLockPinged = false;
 
-  /* ---- Mission 1 = gửi form thành công (màn "Hoàn tất" hiện ra) ---- */
+  /* ---- Mission 1 = bấm gửi form và màn "Hoàn tất" hiện ra ----
+     Chỉ cần gửi thành công là tick M1, KHÔNG xét nội dung khai đúng hay chưa. ---- */
   var ovd = byId('ovDone');
-  if(ovd && !st.m1 && window.MutationObserver){
-    new MutationObserver(function(){
-      if(!st.m1 && ovd.classList.contains('show')){ st.m1 = true; save(); drawLine(); drawTl(); }
+  if(ovd){
+    if(window.MutationObserver) new MutationObserver(function(){
+      if(!ovd.classList.contains('show')) return;
+      if(!st.form){ st.form = true; save(); }     /* đã gửi form thật, không phải đi cửa tắt */
+      doneM1('màn Hoàn tất hiện ra');
+      lockForm();
     }).observe(ovd, {attributes:true, attributeFilter:['class']});
+
+    /* Thoát được màn Hoàn tất: nút ✕, bấm ra nền, hoặc CTA quay về trang bìa */
+    var dx = document.createElement('button');
+    dx.className = 'done-x'; dx.type = 'button';
+    dx.setAttribute('aria-label', 'Đóng'); dx.innerHTML = '✕';
+    var dback = document.createElement('button');
+    dback.className = 'msn-ghost done-back'; dback.type = 'button';
+    dback.innerHTML = '← Về trang bìa · xem tiến độ Mission';
+    ovd.insertBefore(dx, ovd.firstChild);
+    ovd.appendChild(dback);
+    function closeDone(veBia){
+      ovd.classList.remove('show');
+      if(veBia && typeof window.go === 'function') window.go(0);
+      else updVis();
+    }
+    dx.addEventListener('click', function(e){ e.stopPropagation(); closeDone(false); });
+    dback.addEventListener('click', function(e){
+      e.stopPropagation(); ping('ve_trang_bia', 'từ màn Hoàn tất'); closeDone(true);
+    });
+    ovd.addEventListener('click', function(e){ if(e.target === ovd) closeDone(false); });
   }
 
   /* ---- theo trang + đồng hồ (chỉ ngày:giờ:phút nên 30s vẽ lại một lần là đủ) ---- */
@@ -1287,7 +1617,7 @@ render();
   if(typeof _g2 === 'function'){
     window.go = function(n){ _g2(n); updVis(); };
   }
-  drawLine(); drawTl(); mapUI(); updVis();
+  drawLine(); drawTl(); mapUI(); lockForm(); updVis();
   setInterval(drawLine, 1000);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
