@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Bản đồ tác chiến · Phi đoàn</title>
-<meta name="description" content="Chạm vào một điểm sáng để hạ cánh.">
+<meta name="description" content="Xin mừi Dongchi Bình chọn toạ độ hạ cánh">
 <meta name="theme-color" content="#040b18">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Phi đoàn Dongchi Bình">
@@ -139,7 +139,7 @@ a{color:inherit;text-decoration:none}
 .eyebrow .dia i:nth-child(2){width:6px;height:6px;opacity:1}
 .eyebrow .dia i:nth-child(1),.eyebrow .dia i:nth-child(3){opacity:.55}
 h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-height:1;
-  margin:15px 0 0;font-size:clamp(25px,7.4vw,33px);letter-spacing:.005em;
+  margin:15px 0 0;font-size:clamp(22px,6.6vw,29px);letter-spacing:.01em;
   text-shadow:0 4px 20px rgba(0,0,0,.5);user-select:none}
 .lead{margin:9px 0 0;font-size:13.5px;line-height:1.45;color:rgba(219,230,243,.75);
   transition:color .4s}
@@ -279,17 +279,21 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 @keyframes mglow{
   0%,100%{opacity:.85;text-shadow:0 0 7px rgba(56,189,248,.35)}
   50%{opacity:1;text-shadow:0 0 17px rgba(56,189,248,.85)}}
+/* Cả dòng bản quyền là vùng bấm của cửa hậu — vùng rộng dễ trúng hơn nhiều
+   so với lá cờ 15px, nhất là trên điện thoại. */
 .cr{font-size:8px;letter-spacing:.15em;line-height:1.5;color:rgba(234,240,247,.34);
   display:flex;align-items:center;justify-content:center;gap:clamp(7px,2vw,11px);
-  flex-wrap:wrap}
+  flex-wrap:wrap;background:none;border:0;padding:6px 10px;margin:0;
+  font-family:"Oswald";text-transform:uppercase;cursor:default;
+  border-radius:99px;transition:background .25s;
+  user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.cr.warm .vf{opacity:1;transform:scale(1.22)}
 /* lá cờ nhỏ hơi cong ở cuối dòng bản quyền — bấm 5 cái liên tiếp để mở Reset Mission */
 .vf{width:15px;height:9.7px;flex:none;opacity:.42;vertical-align:-1px}
 .crt{display:inline}
 .crt .vf{margin-left:4px}
-.flagzone{padding:0 2px;margin:0;border:0;background:none;line-height:0;
-  vertical-align:-1px;cursor:default;-webkit-tap-highlight-color:transparent}
-.flagzone .vf{margin-left:2px;transition:opacity .25s, transform .25s}
-.flagzone.warm .vf{opacity:.95;transform:scale(1.12)}
+.vfw{display:inline-block;line-height:0;vertical-align:-1px}
+.vfw .vf{margin-left:4px;transition:opacity .25s, transform .25s}
 /* ---------- sheet ---------- */
 .scrim{position:absolute;inset:0;z-index:7;background:rgba(4,11,24,.2);
   opacity:0;pointer-events:none;transition:opacity .45s}
@@ -472,10 +476,14 @@ a.file:active{background:rgba(242,180,65,.07)}
 /* khối chúc mừng — chỉ hiện khi toạ độ đang chọn đã giải */
 /* Quy ước chung: mọi khung phụ dùng đúng kiểu thẻ "Phi vụ tiếp theo" —
    viền mảnh, gờ amber 2px bên trái, bo góc 5px, nền tối mờ. Chữ giữ tông xanh. */
-.cx-won{display:none;margin-top:14px;padding:11px 13px;border-radius:5px;text-align:center;
-  border:1px solid var(--line);border-left:2px solid var(--amber);
-  background:rgba(6,16,31,.4)}
-.cx-won.on{display:block}
+.cx-won{display:none;margin-top:14px;padding:12px 14px;border-radius:6px;text-align:center;
+  border:1px solid rgba(242,180,65,.42);background:rgba(6,16,31,.4)}
+.cx-won.on{display:block;animation:wonGlow 3.2s ease-in-out infinite}
+@keyframes wonGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(242,180,65,0), inset 0 0 14px rgba(242,180,65,.05);
+          border-color:rgba(242,180,65,.32)}
+  50%    {box-shadow:0 0 16px 0 rgba(242,180,65,.22), inset 0 0 18px rgba(242,180,65,.1);
+          border-color:rgba(242,180,65,.6)}}
 .cx-won-t{margin:0;font-family:"Be Vietnam Pro",system-ui,"Noto Sans",sans-serif;
   font-size:16px;font-weight:600;color:#8BE0FF;line-height:1.35}
 .cx-won-s{margin:5px 0 0;font-size:12px;color:rgba(219,230,243,.75)}
@@ -691,7 +699,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 05-Aug-2026 · V12.02">Last updated 05-Aug-2026 · V11.06</span>
+        <span class="stamp" id="stamp" data-base="Last updated 06-Aug-2026 · V12.05">Last updated 06-Aug-2026 · V12.05</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -726,7 +734,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <span class="pz-txt" id="pzTxt"></span>
     </span>
     <span class="readout idle" id="readout">Chờ chọn toạ độ</span>
-    <span class="cr"><span class="crt">© Bản quyền · Dongchi Bình &amp; Honghandangiu<button class="flagzone" id="flagZone" aria-label="Lá cờ"><svg class="vf" viewBox="0 0 34 22" aria-hidden="true"><path fill="#DA251D" d="M1,4 C8,0.8 16,6.5 24,3.8 C28,2.4 31,2.8 33,3.4 L33,17.6 C31,17 28,16.6 24,18 C16,20.7 8,15 1,18.2 Z"/><path fill="#FFCD00" d="M17.00,6.10 L18.20,9.55 L21.85,9.62 L18.94,11.83 L20.00,15.33 L17.00,13.24 L14.00,15.33 L15.06,11.83 L12.15,9.62 L15.80,9.55 Z"/></svg></button></span></span>
+    <button class="cr" id="flagZone" aria-label="Dòng bản quyền"><span class="crt">© Bản quyền · Dongchi Bình &amp; Honghandangiu<span class="vfw"><svg class="vf" viewBox="0 0 34 22" aria-hidden="true"><path fill="#DA251D" d="M1,4 C8,0.8 16,6.5 24,3.8 C28,2.4 31,2.8 33,3.4 L33,17.6 C31,17 28,16.6 24,18 C16,20.7 8,15 1,18.2 Z"/><path fill="#FFCD00" d="M17.00,6.10 L18.20,9.55 L21.85,9.62 L18.94,11.83 L20.00,15.33 L17.00,13.24 L14.00,15.33 L15.06,11.83 L12.15,9.62 L15.80,9.55 Z"/></svg></span></span></button>
   </footer>
 
   <div class="scrim" id="scrim"></div>
@@ -765,7 +773,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <p class="cx-eyebrow" id="pinTitle">Mã truy cập</p>
       <p class="pin-hint" id="pinHint"></p>
       <div class="pin" id="pinDash"></div>
-      <input class="pin-in" id="pinIn" type="text" inputmode="numeric" maxlength="6"
+      <input class="pin-in" id="pinIn" type="text" inputmode="text" maxlength="6"
              autocomplete="off" aria-label="Mã PIN">
       <p class="cx-hint" id="pinMsg"></p>
     </div>
@@ -896,7 +904,7 @@ const NODES = [
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950109-A', title:'Phi đoàn sinh nhật', href:'/dad/950109-a',
-        meta:'Published date: 27-Jul 2026 | V17.02', pin:'file' },
+        meta:'Published date: 27-Jul 2026 | V22', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
         unlockAt: BIRTHDAY }
   ]},
@@ -1576,14 +1584,30 @@ function fxLoop(now){
     fxCtx.restore();
     fxCtx.restore();
 
-    /* ba đám mây trôi rất chậm */
-    fxCtx.save(); fxCtx.globalAlpha = rise*.5;
-    for(const [cx0, cy0, cs, sp] of [[w*.18,h*.13,1,5],[w*.62,h*.22,.72,3.4],[w*.86,h*.10,.86,4.2]]){
-      const cx = ((cx0 + t*sp) % (w+220)) - 110;
-      fxCtx.fillStyle = 'rgba(198,214,238,.30)';
-      for(const [dx,dy,r] of [[0,0,26],[20,4,20],[-22,5,18],[40,7,13],[-40,8,12]]){
+    /* Mây: mỗi cụm ghép từ nhiều bọt gradient toả dần nên mép mềm như bông.
+       Sáu cụm, ba mức đậm nhạt và ba tốc độ khác nhau để có chiều sâu. */
+    fxCtx.save();
+    const MAY = [
+      [w*.10, h*.11, 1.02, 3.2, .34],
+      [w*.44, h*.19, 0.74, 5.0, .22],
+      [w*.78, h*.09, 0.91, 4.1, .30],
+      [w*.24, h*.26, 0.56, 6.4, .16],
+      [w*.66, h*.30, 0.64, 5.6, .18],
+      [w*.94, h*.22, 0.78, 3.6, .26]
+    ];
+    for(const [cx0, cy0, cs, sp, al] of MAY){
+      const cx = ((cx0 + t*sp) % (w + 320)) - 160;
+      for(const [dx,dy,r,f] of [[0,0,40,1],[30,6,32,.92],[-32,7,29,.9],
+                                [58,11,22,.78],[-60,12,20,.76],
+                                [16,-12,26,.85],[-18,-10,23,.82]]){
+        const px = cx + dx*cs, py = cy0 + dy*cs, R = r*cs;
+        const g = fxCtx.createRadialGradient(px, py, R*.18, px, py, R);
+        g.addColorStop(0,  'rgba(214,228,248,'+(al*f*rise)+')');
+        g.addColorStop(.62,'rgba(200,216,240,'+(al*f*.55*rise)+')');
+        g.addColorStop(1,  'rgba(190,208,236,0)');
+        fxCtx.fillStyle = g;
         fxCtx.beginPath();
-        fxCtx.ellipse(cx+dx*cs, cy0+dy*cs, r*cs, r*cs*.62, 0, 0, 6.283);
+        fxCtx.ellipse(px, py, R, R*.66, 0, 0, 6.283);
         fxCtx.fill();
       }
     }
@@ -1655,6 +1679,21 @@ function fxLoop(now){
     fxCtx.save();
     fxCtx.globalAlpha = rise;
 
+    /* dải núi mờ ngoài xa cho nền bớt trống */
+    fxCtx.save(); fxCtx.globalAlpha = rise*.5;
+    for(let L=0;L<2;L++){
+      const base = h*.42 + 2 - L*7, amp = h*(.10 - L*.035), seed = L*2.7;
+      fxCtx.beginPath(); fxCtx.moveTo(0, base);
+      for(let x=0;x<=w;x+=8){
+        fxCtx.lineTo(x, base - Math.abs(Math.sin(x*0.006 + seed))*amp
+                            - Math.abs(Math.sin(x*0.019 + seed*2))*amp*0.4);
+      }
+      fxCtx.lineTo(w, h*.44); fxCtx.lineTo(0, h*.44); fxCtx.closePath();
+      fxCtx.fillStyle = L ? 'rgba(46,58,78,.9)' : 'rgba(32,42,60,.95)';
+      fxCtx.fill();
+    }
+    fxCtx.restore();
+
     /* sao trời lấp lánh */
     for(let k=0;k<44;k++){
       const sx = ((k*137)%97)/97*w, sy = ((k*89)%53)/53*(h*.38);   /* chỉ phía trên chân trời */
@@ -1683,15 +1722,25 @@ function fxLoop(now){
     const nearL = w*.10, nearR = w*.90, farL = vx-w*.05, farR = vx+w*.05;
     /* mặt đường đất */
     const rg = fxCtx.createLinearGradient(0,hz,0,h);
-    rg.addColorStop(0,'rgba(96,80,60,.5)');
-    rg.addColorStop(1,'rgba(74,58,42,.92)');
+    rg.addColorStop(0,'rgba(158,132,96,.72)');
+    rg.addColorStop(.45,'rgba(136,112,80,.85)');
+    rg.addColorStop(1,'rgba(104,84,60,.96)');
     fxCtx.fillStyle = rg;
     fxCtx.beginPath();
     fxCtx.moveTo(farL,hz); fxCtx.lineTo(farR,hz);
     fxCtx.lineTo(nearR,h); fxCtx.lineTo(nearL,h); fxCtx.closePath(); fxCtx.fill();
     /* hai lề đường sáng cho thấy rõ đây là con đường */
+    /* quầng sáng hắt lên mặt đường từ dãy đèn phía trên */
+    const glow = fxCtx.createRadialGradient(vx, hz+(h-hz)*.55, 8, vx, hz+(h-hz)*.55, w*.42);
+    glow.addColorStop(0,'rgba(196,232,255,.20)');
+    glow.addColorStop(1,'rgba(196,232,255,0)');
+    fxCtx.fillStyle = glow;
+    fxCtx.beginPath();
+    fxCtx.moveTo(farL,hz); fxCtx.lineTo(farR,hz);
+    fxCtx.lineTo(nearR,h); fxCtx.lineTo(nearL,h); fxCtx.closePath(); fxCtx.fill();
+
     fxCtx.lineWidth = 2.2;
-    fxCtx.strokeStyle = 'rgba(150,132,96,.6)';
+    fxCtx.strokeStyle = 'rgba(226,206,168,.8)';
     fxCtx.beginPath(); fxCtx.moveTo(farL,hz); fxCtx.lineTo(nearL,h); fxCtx.stroke();
     fxCtx.beginPath(); fxCtx.moveTo(farR,hz); fxCtx.lineTo(nearR,h); fxCtx.stroke();
     fxCtx.lineWidth = 1;
@@ -1700,7 +1749,7 @@ function fxLoop(now){
     fxCtx.beginPath(); fxCtx.moveTo(farR+6,hz); fxCtx.lineTo(nearR+16,h); fxCtx.stroke();
     /* vạch tim đường đứt khúc, thưa dần về xa */
     /* vệt bánh xe trên nền đất thay cho vạch sơn */
-    fxCtx.strokeStyle = 'rgba(140,118,88,.45)'; fxCtx.lineWidth = 2;
+    fxCtx.strokeStyle = 'rgba(182,158,120,.55)'; fxCtx.lineWidth = 2;
     for(const side of [-1,1]){
       fxCtx.beginPath();
       for(let k=0;k<=10;k++){
@@ -1751,15 +1800,53 @@ function fxLoop(now){
 
     }
 
-    /* lùm cây to nhỏ xen kẽ dọc hai bên đường, càng gần càng lớn */
-    for(let k=0;k<9;k++){
-      const u = Math.pow((k%5+1)/5.6, 1.35);
+    /* Viền cỏ mọc sát mép đường, dày dần về phía gần */
+    for(let k=0;k<40;k++){
+      const u = Math.pow(((k%20)+1)/21, 1.25);
       const y = hz + (h-hz)*u;
-      const side = k<5 ? -1 : 1;
+      const side = k<20 ? -1 : 1;
+      const x = vx + side*(w*.05 + (w*.40-w*.05)*u) + side*(3+9*u);
+      const gh = 3 + 11*u;
+      fxCtx.globalAlpha = rise*(.35+.4*u);
+      fxCtx.strokeStyle = k%3 ? 'rgba(96,142,92,.85)' : 'rgba(126,166,110,.85)';
+      fxCtx.lineWidth = .9 + 1.1*u;
+      fxCtx.beginPath();
+      fxCtx.moveTo(x, y); fxCtx.lineTo(x - 1.8 - 2.4*u, y - gh);
+      fxCtx.moveTo(x, y); fxCtx.lineTo(x + 1.4 + 2.2*u, y - gh*.82);
+      fxCtx.moveTo(x, y); fxCtx.lineTo(x + .2, y - gh*1.08);
+      fxCtx.stroke();
+    }
+
+    /* Hoa dại lấm tấm trong đám cỏ, bốn màu pastel */
+    const HOA = ['#F6D3E4','#F3E7A8','#CFE0FF','#E7CFF6'];
+    for(let k=0;k<26;k++){
+      const u = Math.pow(((k%13)+1)/14, 1.3);
+      const y = hz + (h-hz)*u + 2;
+      const side = k<13 ? -1 : 1;
+      const x = vx + side*(w*.06 + (w*.42-w*.06)*u) + side*(6+16*u) + ((k*29)%11) - 5;
+      const R = .9 + 2.1*u;
+      fxCtx.globalAlpha = rise*(.45+.45*u);
+      fxCtx.fillStyle = HOA[k%HOA.length];
+      for(let pcs=0;pcs<5;pcs++){
+        const a = pcs*1.2566;
+        fxCtx.beginPath();
+        fxCtx.arc(x + Math.cos(a)*R*.85, y + Math.sin(a)*R*.85, R*.62, 0, 6.283);
+        fxCtx.fill();
+      }
+      fxCtx.fillStyle = 'rgba(250,240,190,.95)';
+      fxCtx.beginPath(); fxCtx.arc(x, y, R*.5, 0, 6.283); fxCtx.fill();
+    }
+    fxCtx.globalAlpha = rise;
+
+    /* lùm cây to nhỏ xen kẽ dọc hai bên đường, càng gần càng lớn */
+    for(let k=0;k<16;k++){
+      const u = Math.pow((k%8+1)/8.6, 1.35);
+      const y = hz + (h-hz)*u;
+      const side = k<8 ? -1 : 1;
       const x = vx + side*(w*.055 + (w*.44-w*.055)*u) + side*(14+34*u);
       const R = (7 + 26*u) * (k%2 ? .68 : 1);
       fxCtx.globalAlpha = rise*(.5+.35*u);
-      fxCtx.fillStyle = k%2 ? '#1d3a26' : '#25492e';
+      fxCtx.fillStyle = ['#1d3a26','#25492e','#2f5636','#1a3322'][k%4];
       fxCtx.beginPath();
       fxCtx.ellipse(x, y-R*.5, R, R*.72, 0, 0, 6.283); fxCtx.fill();
       fxCtx.beginPath();
@@ -1815,7 +1902,7 @@ function fxLoop(now){
     /* Hai bóng người tựa lan can. Vẽ liền một khối đầu–cổ–vai–thân để không
        bao giờ bị "rơi đầu" như bản trước (đầu và thân là hai path rời). */
     const base = wy - 14;
-    fxCtx.fillStyle = 'rgba(3,6,11,1)';
+    fxCtx.fillStyle = 'rgba(34,44,64,1)';        /* sáng hơn nền trời để đọc được dáng */
     function nguoi(px, H, nu){
       const r = H*0.115;                       /* bán kính đầu */
       const cy = base - H + r;                 /* tâm đầu */
@@ -1844,7 +1931,7 @@ function fxLoop(now){
         fxCtx.closePath(); fxCtx.fill();
       }
     }
-    nguoi(w*.44, Math.max(46, h*.16), false);   /* nam — nhỏ hơn bản cũ 20% */
+    nguoi(w*.44, Math.max(46, h*.16), false);   /* nam */
     nguoi(w*.545, Math.max(42, h*.148), true);  /* nữ */
     fxCtx.restore();
   }
@@ -2182,7 +2269,11 @@ $('wipeNo').addEventListener('click', closeWipe);
 wipew.addEventListener('click', e=>{ if(e.target === wipew) closeWipe(); });
 $('wipeYes').addEventListener('click', ()=>{
   ping('xoa_sach', 'bấm lá cờ 5 lần');
+  /* Xoá sạch nhưng GIỮ LẠI bộ đếm số lần chơi lại — nó là dấu vết duy nhất
+     được phép sống sót, để dòng Last updated còn hiện "· R(n)". */
+  const keepR = resetCount + 1;
   try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  try{ localStorage.setItem('mtv1', JSON.stringify({ resetCount: keepR })); }catch(e){}
   try{ ['mtseen','mtload','mtvisit'].forEach(k=>sessionStorage.removeItem(k)); }catch(e){}
   setTimeout(()=>location.reload(), 240);
 });
@@ -2229,38 +2320,45 @@ $('askYes').addEventListener('click', ()=>{ closeAsk(); doReset(); });
 /* ---- hackmap: gõ đúp → hộp PIN riêng. Đúng 1959 thì mở toàn bộ bản đồ,
        sai hai lần thì đóng hết và trả người xem về bản đồ. ---- */
 /* ===== Hệ thống hộp PIN dùng chung =====
-   Thêm một mục vào PINS là có ngay một cửa khoá mới: đặt mã, gợi ý, nhãn,
+   Thêm một mục vào CODES là có ngay một cửa khoá mới: đặt mã, gợi ý, nhãn,
    và việc cần làm khi mở đúng. Gợi ý CHỈ hiện sau khi đã vào được hộp PIN. */
-const PINS = {
-  /* tries = số lần được phép sai; hết lượt thì đóng hộp PIN.
-     hack thoát hẳn về bản đồ, file chỉ đóng hộp và trả về bảng hồ sơ. */
-  hack: { code:'1959',   hint:'DAD-950901 TARO', label:'Mã truy cập bản đồ',      tries:2 },
-  file: { code:'459157', hint:'Điện Biên Phủ',   label:'Mã xem lại hồ sơ',       tries:3 }
+/* ===== Quy ước tên gọi =====
+   PIN  — mã TOÀN SỐ  (ví dụ 1959), hiện dạng chấm tròn.
+   PASS — mã CÓ KÝ TỰ (ví dụ MIG-21), hiện chữ thật.
+   `tries` = số lần được phép sai; hết lượt thì đóng hộp.
+   Mã nhập vào và mã gốc đều được chuẩn hoá (bỏ dấu, khoảng trắng, viết hoa)
+   trước khi so, nên gõ "mig21", "MIG-21" hay "mig 21" đều đúng. */
+const CODES = {
+  map:  { kind:'PIN',  code:'1959',   hint:'DAD-950901 TARO', label:'Mã PIN truy cập bản đồ', tries:2 },
+  file: { kind:'PASS', code:'MIG-21', hint:'Điện Biên Phủ',   label:'Mã PASS xem lại hồ sơ',  tries:3 }
 };
+const codeNorm = s => (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const pinw = $('pinw');
 let hackTries = 0, pinMode = 'hack', pinArg = null;
 
 function drawPin(){
-  const need = PINS[pinMode].code.length;
-  const v = $('pinIn').value.replace(/\D/g,'').slice(0,need);
+  const cfg = CODES[pinMode], need = codeNorm(cfg.code).length;
+  /* Chỉ giữ chữ và số. Dấu gạch trong mã gốc là để nhìn cho dễ, người dùng
+     không cần gõ — nhờ vậy không còn cảnh "không gõ được dấu -". */
+  const v = codeNorm($('pinIn').value).slice(0, need);
   $('pinIn').value = v;
   [...$('pinDash').children].forEach((s,i)=>{
-    s.textContent = v[i] ? '•' : '';
+    s.textContent = v[i] ? (cfg.kind === 'PIN' ? '•' : v[i]) : '';
     s.classList.toggle('on', i < v.length);
   });
 }
 function openPin(mode, arg){
-  pinMode = PINS[mode] ? mode : 'hack';
+  pinMode = CODES[mode] ? mode : 'hack';
   pinArg = arg || null;
   hackTries = 0;
-  const cfg = PINS[pinMode];
+  const cfg = CODES[pinMode], need = codeNorm(cfg.code).length;
   $('pinTitle').textContent = cfg.label;
   $('pinHint').innerHTML = 'Gợi ý: <b>' + cfg.hint + '</b>';
-  $('pinIn').maxLength = cfg.code.length;
-  $('pinDash').innerHTML = Array.from({length: cfg.code.length}, ()=>'<span></span>').join('');
+  $('pinIn').maxLength = need;
+  $('pinDash').innerHTML = Array.from({length: need}, ()=>'<span></span>').join('');
   $('pinIn').value = ''; drawPin();
   $('pinMsg').className = 'cx-hint';
-  $('pinMsg').textContent = 'Gõ ' + cfg.code.length + ' số rồi Enter';
+  $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự') + ' rồi Enter';
   pinw.classList.add('on'); pinw.setAttribute('aria-hidden','false');
   setTimeout(()=>$('pinIn').focus(), 80);
 }
@@ -2268,7 +2366,7 @@ function closePin(){
   pinw.classList.remove('on'); pinw.setAttribute('aria-hidden','true');
   $('pinIn').value = ''; drawPin();
 }
-$('hackmap').addEventListener('click', e=>{ if(e.detail >= 2) openPin('hack'); });
+$('hackmap').addEventListener('click', e=>{ if(e.detail >= 2) openPin('map'); });
 $('pinIn').addEventListener('input', drawPin);
 $('pinDash').addEventListener('click', ()=>$('pinIn').focus());
 pinw.addEventListener('click', e=>{ if(e.target === pinw) closePin(); });
@@ -2278,7 +2376,7 @@ function hackTry(){
   const v = ($('pinIn').value || '').trim();
   const msg = $('pinMsg');
   if(pinMode === 'file'){                       /* mở sớm hồ sơ niêm phong */
-    if(v === PINS.file.code){
+    if(codeNorm(v) === codeNorm(CODES.file.code)){
       hackTries = 0;
       if(pinArg) pinFiles[pinArg] = true;
       save(); closePin();
@@ -2290,7 +2388,7 @@ function hackTry(){
       return;
     }
     hackTries++;
-    const left = PINS.file.tries - hackTries;
+    const left = CODES.file.tries - hackTries;
     if(left <= 0){                       /* hết lượt → về lại bảng hồ sơ của toạ độ */
       hackTries = 0; closePin();
       ping('sai_pin_ho_so', pinArg || '');
@@ -2301,7 +2399,7 @@ function hackTry(){
     $('pinIn').value = ''; drawPin(); $('pinIn').focus();
     return;
   }
-  if(v === PINS.hack.code){
+  if(codeNorm(v) === codeNorm(CODES.map.code)){
     hackTries = 0;
     NODES.forEach(n=>{
       unlocked[n.code] = true;
@@ -2317,7 +2415,7 @@ function hackTry(){
     return;
   }
   hackTries++;
-  const left = PINS.hack.tries - hackTries;
+  const left = CODES.map.tries - hackTries;
   if(left <= 0){                         /* hết lượt → trả hẳn về bản đồ */
     hackTries = 0;
     closePin(); closeWipe(); closeCx();
@@ -2390,7 +2488,7 @@ $('fileList').addEventListener('click', e=>{
 /* ========================= 9. KHỞI ĐỘNG ========================= */
 /* Ngồi im quá lâu mà chưa biết cơ chế gõ đúp → nhắc một câu.
    Lần ghé đầu chờ 25 giây; từ lần thứ hai trở đi chỉ 6 giây. */
-const LEAD_DEFAULT = 'Chạm vào một điểm sáng để hạ cánh.';
+const LEAD_DEFAULT = 'Xin mừi Dongchi Bình chọn toạ độ hạ cánh';
 const LEAD_HINT = 'Double-tap / Double-click to start mission';
 let idleT = null;
 function armIdle(){
