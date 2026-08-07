@@ -30,7 +30,24 @@ const NHAN = {
   ho_so_mo:      'Vào trong hồ sơ',
   trang_ho_so:   'Xem trang hồ sơ',
   ho_so_dong:    'Rời hồ sơ',
-  gui_form:      'ĐÃ GỬI BIỂU MẪU VỀ CĂN CỨ'
+  gui_form:      'ĐÃ GỬI BIỂU MẪU VỀ CĂN CỨ',
+
+  /* Hệ 3 Mission trên trang bìa hồ sơ */
+  bam_dong_countdown: 'Bấm dòng Mission trên trang bìa',
+  nhay_ban_do_xong:   'Kết quả sau khi nút Bản đồ nháy',
+  mo_khoa_m2_cua:     'XONG MISSION 1 — mở cửa sổ Mission 2',
+  ve_trang_bia:       'Từ màn Hoàn tất quay về trang bìa',
+  sai_pin:            'Nhập sai mã truy cập',
+  khoa_pin:           'Khoá ô nhập mã',
+  mo_khoa_m2:         'MỞ KHOÁ MISSION 2',
+  gia_han_m2:         'Xin gia hạn đồng hồ Mission 2',
+  giai_m3:            'PHÁ ĐẢO MISSION 3',
+  skip_m3:            'Mở Mission 3 bằng nút chi viện',
+  vao_ban_do:         'Bấm sang Bản đồ tác chiến',
+  reset_msn:          'Chơi lại Mission từ đầu',
+  test_unlock:        'CỬA TEST: tap 10 nhịp mở khoá mission',
+  sos_hint:           'Mở thêm gợi ý (SOS hoặc tới giờ)',
+  bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)'
 };
 
 function gioVN(iso) {
@@ -63,9 +80,12 @@ module.exports = async (req, res) => {
   const detail = String(d.detail || '').slice(0, 80);
   const solved = Array.isArray(d.solved) ? d.solved.slice(0, 8) : [];
   const may = String(d.ua || '').slice(0, 120);
+  /* 'bieu-mau' = tín hiệu đi bằng kênh gửi biểu mẫu (form POST vào iframe ẩn),
+     dùng khi máy người chơi có bộ chặn quảng cáo hoặc tường lửa. */
+  const kenh = String(d.kenh || 'js').slice(0, 16);
 
   const dong = [
-    'BẢN ĐỒ TÁC CHIẾN',
+    'BẢN ĐỒ TÁC CHIẾN' + (kenh === 'js' ? '' : ' [' + kenh + ']'),
     (NHAN[ev] || ev) + (detail ? ' — ' + detail : ''),
     'Đã giải: ' + (solved.length ? solved.join(', ') : 'chưa cái nào') +
       ' (' + solved.length + '/4)',
@@ -74,7 +94,7 @@ module.exports = async (req, res) => {
   ];
   const text = dong.join('\n');
 
-  console.log('[PING]', JSON.stringify({ ev, detail, solved, at: d.at }));
+  console.log('[PING]', JSON.stringify({ ev, detail, solved, kenh, at: d.at }));
 
   const kind = process.env.NOTIFY_KIND;
   try {
