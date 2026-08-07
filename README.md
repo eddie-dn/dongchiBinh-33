@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V12.05** — tem hiển thị dọc mép trái bản đồ.
+**Phiên bản hiện tại: V15.00** — tem hiển thị dọc mép trái bản đồ.
 
 ---
 
@@ -190,10 +190,21 @@ const CODES = {
 };
 ```
 
-| Cửa | Loại | Mã | Gợi ý | Sai mấy lần thì thoát | Thoát về |
-|---|---|---|---|---|---|
-| `map` | PIN | `1959` | DAD-950901 TARO | 2 | Bản đồ chính |
-| `file` | PASS | `MIG-21` | Điện Biên Phủ | 3 | Bảng hồ sơ của toạ độ |
+| Cửa | Loại | Mã | Gợi ý | Khi gõ sai |
+|---|---|---|---|---|
+| `map` | PIN | `1959` | DAD - TARO | Sai 2 lần thì đóng, về bản đồ chính |
+| `file` | PIN | `5121` | ba gợi ý xoay vòng, xem dưới | Sai **quá 5 lần trong một phiên** thì **khoá 1 giờ** |
+
+**Ba gợi ý của `file` xoay vòng theo số lần gõ sai** — mỗi lần sai, chỗ gợi ý tự đổi sang
+câu kế tiếp rồi quay lại từ đầu:
+
+1. `Gợi ý số 2, mission 3`
+2. `MIG-21`
+3. `Phi công Phạm Tuân`
+
+Bộ đếm sai lưu ở `sessionStorage` (`mtpf`) nên đóng tab là về 0; mốc khoá lưu ở
+`localStorage` (`pinLockUntil`) nên đóng tab vẫn còn hiệu lực. Đang khoá thì ô nhập bị vô
+hiệu và hộp báo còn bao lâu.
 
 **Chuẩn hoá khi so mã:** cả mã gõ vào lẫn mã gốc đều bỏ hết ký tự không phải chữ/số rồi
 mới so (`codeNorm`). Nhờ vậy gõ `MIG-21`, `mig21`, `mig 21` đều đúng, và **không còn cảnh
@@ -237,26 +248,25 @@ Bấm thẻ **Phi vụ tiếp theo**: pha `season` mở node **DAD**, pha `phase
 
 ---
 
-## 9. Huy hiệu bốn tên lửa và huy chương
+## 9. Huy hiệu bốn tên lửa
+
+Huy hiệu chỉ có **một hình thức từ đầu tới cuối: bốn tên lửa**. Không còn huy chương, không
+còn con dấu Mission Completed, không còn dòng đếm.
 
 | Trạng thái | Class | Hình | Khi nào |
 |---|---|---|---|
 | Ngủ | `dormant` | Bốn nét viền mảnh, im lìm | Chưa bắt được mật thư nào — hiện **ngay từ đầu** |
 | Sẵn sàng | `armed` | Quả đã giải sáng đặc, quả chưa giải nhấp nháy lệch pha | Đã bắt được mật thư đầu tiên |
-| Reo | `hail` | Cả bốn sáng, co giãn theo nhịp, **chưa có chữ** | Vừa đủ 4/4, suốt 15 giây mạng lưới chạy |
-| Huy chương | `medal` | Một huy chương + con dấu đỏ **MISSION COMPLETED** | Sau khi mạng lưới chạy xong |
+| Reo | `hail` | Cả bốn sáng, co giãn theo nhịp | Suốt 15 giây mạng lưới chạy |
+| Xong | — | Cả bốn sáng, đứng yên | Sau khi mạng lưới chạy xong |
 
-Hạng huy chương theo số lần đoán sai: **vàng** dưới 5 · **bạc** 5–9 · **đồng** từ 10.
-Bấm vào huy chương để mở lại hộp pí mật.
+Bấm huy hiệu khi đã đủ 4/4 để mở lại hộp pí mật.
 
 Khi giải đủ 4/4 và quay ra bản đồ: **mạng lưới 50 tỉnh** bừng lên **15 giây**, đường nối
-chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên lửa cùng reo. Hết 15 giây mới
-đổi sang huy chương.
+chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên lửa cùng reo.
 
 **Độ sáng bản đồ** tăng dần theo tiến độ: `--lum = 0.80 + 0.05 × số mật thư đã giải`.
-Đường bay dùng `--lum²` nên đậm lên nhanh hơn, đủ để nhận ra từng bước.
-
----
+Đường bay dùng `--lum²` nên đậm lên nhanh hơn.
 
 ## 10. Ba cửa hậu
 
@@ -274,15 +284,27 @@ nguyên.
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 06-Aug-2026 · V12.05** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 07-Aug-2026 · V15.00** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
 `R(n)` **sống sót qua mọi lần xoá**: đường xoá sạch bằng lá cờ cố ý ghi lại `resetCount`
 vào `mtv1` ngay sau khi xoá. Đây là dấu vết duy nhất được phép tồn tại qua reset.
 
-**Quy ước đánh số:** `Vx.yy` — `yy` chạy `00 → 09`, hết 09 thì `x` tăng 1 và `yy` về `00`.
-Ví dụ `V12.09` → bản kế tiếp là `V13.00`.
+### Quy ước đánh số phiên bản
+
+`Vx.yy` — **`yy` chỉ chạy `00 → 09`**. Hết `09` thì `x` tăng 1 và `yy` về `00`.
+**Không bao giờ có đuôi `.10` hay lớn hơn.**
+
+**Các nấc `x` bị bỏ qua, không dùng: 13, 14, 23.**
+
+| Đang ở | Bản kế tiếp |
+|---|---|
+| `V12.08` | `V12.09` |
+| `V12.09` | **`V15.00`** — nhảy qua 13 và 14 |
+| `V22.09` | **`V24.00`** — nhảy qua 23 |
+
+Sửa chuỗi ở thuộc tính `data-base` của `#stamp`; `stampText()` sẽ ghép thêm `· R(n)`.
 
 **Nhấp nháy tem:**
 
@@ -495,3 +517,97 @@ Các trường đang lưu: `solved` · `unlocked` · `channel` · `pzOn` · `mor
 - Mỗi lần build chạy bảng **kiểm kê tính năng** (lá cờ, Reset Mission, cửa hậu, huy chương,
   tên lửa, mạng lưới, hộp pí mật, bốn hiệu ứng, lịch năm, túi xáo, đo đạc, đếm ngược, tem)
   để không cắt nhầm thứ không được yêu cầu đổi.
+
+
+---
+
+## 19. Trạng thái chiến thắng
+
+### Lần đầu quay ra bản đồ — ăn mừng đủ bộ
+
+Mạng lưới 50 tỉnh bừng lên 15 giây · đất liền nhấp nháy · bốn tên lửa reo · tiêu đề tự đổi
+qua lại · băng rôn máy bay bay ra 22 giây · tem phiên bản đổi màu trứng phục sinh.
+
+### Từ lần thứ hai trở đi — chỉ mạng lưới
+
+Cờ `winParty` lưu cùng tiến độ. Đã ăn mừng một lần rồi thì mọi lần quay ra sau (từ hộp pí
+mật hay từ bảng hồ sơ) **chỉ còn mạng lưới nhấp nháy**, không đổi tiêu đề, không bay băng
+rôn, không reo tên lửa, không đổi màu tem. Bấm chơi lại thì `winParty` về `false` và vòng
+ăn mừng được mở lại.
+
+### Tiêu đề
+
+Đổi qua lại giữa **Bản đồ tác chiến** và **Mission Completed**. Trong 15 giây ăn mừng thì
+tự đổi mỗi 2,4 giây; xong rồi thì **bấm vào tiêu đề để đổi tay**. Lúc hiện "Mission
+Completed" chữ chuyển sang **đỏ chiến thắng `#FF6B4A`** kèm quầng sáng.
+
+### Dòng dẫn và băng rôn
+
+Khi đã thắng, dòng dẫn là chữ tĩnh **Map: Bản đồ Tác chiến**. **Gõ đúp** vào nó thì máy bay
+kéo băng rôn bay ra thế chỗ **26 giây** rồi trả lại chữ tĩnh.
+
+Băng rôn chạy **phải → trái** trong **19 giây mỗi vòng**: máy bay lật mũi sang trái
+(`scaleX(-1)`) nên **mũi đi trước**, dây và tấm vải kéo lê phía sau đuôi. Hai mép mờ dần
+bằng `mask-image`. Nội dung:
+
+```
+Winner: Dongchi Bình ·
+Mức độ hoàn thành: ⭐⭐⭐⭐⭐ ·
+Thời gian hoàn thành: X Ngày Y Giờ Z Phút ·
+Tìm thấy clue đầu tiên sau: X Ngày Y Giờ Z Phút ·
+Easter Egg: Y/N
+```
+
+| Đoán sai | Sao |
+|---|---|
+| dưới 5 | ⭐⭐⭐⭐⭐ |
+| 5–9 | ⭐⭐⭐⭐ |
+| từ 10 | ⭐⭐⭐ |
+
+Ba mốc thời gian lưu cùng tiến độ: `firstAt` (lần đầu mở trang) · `clueAt` (lần đầu bắt
+được mã morse) · `winAt` (lúc giải xong mật thư thứ tư). `Easter Egg` là `Y` nếu đã mở được
+khung giới thiệu người dựng trang.
+
+Trạng thái này bám theo `nSolved()` nên bấm chơi lại là tự trả về tiêu đề và dòng dẫn gốc.
+`armIdle()` tự dừng khi đã thắng để không ghi đè dòng chữ.
+
+---
+
+## 20. Bẫy đã vấp: temporal dead zone
+
+Lỗi `Cannot access 'pinLockUntil' before initialization` làm **trắng cả trang** vì khối
+`boot()` gán giá trị cho một biến `let` được khai báo **phía dưới** nó. Với `let`/`const`,
+biến tồn tại nhưng chưa dùng được cho tới đúng dòng khai báo.
+
+**Quy tắc:** mọi biến trạng thái mà `boot()` đụng tới phải khai báo trong khối `let` ở đầu
+script, trước `boot()`. Build hiện chạy một bước quét tự động tìm biến bị gán trong thân
+`boot()` mà khai báo nằm sau — kết quả hiện tại: không có.
+
+
+---
+
+## 21. Bẫy đã vấp: vòng tiêu điểm còn dính
+
+Vòng viền amber của `:focus-visible` **dính lại trên nút toạ độ** sau khi quay ra từ bảng
+hồ sơ — nhìn như một khung lỗi lơ lửng giữa bản đồ.
+
+Nguyên nhân **không nằm ở hộp PIN** như chẩn đoán ban đầu. Thủ phạm là `close()`: nó luôn
+trả tiêu điểm về nút toạ độ để phục vụ điều hướng bàn phím. Nếu trước đó người xem có gõ
+phím lần nào (kể cả `Enter` trong ô mã), trình duyệt vẫn coi phiên đó là "điều hướng bàn
+phím" và vẽ vòng viền — dù thao tác đóng bảng là bấm chuột.
+
+**Cách sửa:** theo dõi cờ `kbdNav` — bật khi có `Tab` / `Enter` / `Space` / phím mũi tên,
+tắt khi có `pointerdown`. `close()` chỉ trả tiêu điểm **khi `kbdNav` đang bật**; ngoài ra
+thì bỏ qua. `closePin()` còn chủ động `blur()` và đặt lại `kbdNav = false`, vì gõ `Enter`
+trong ô mã không có nghĩa là người xem đang điều hướng bằng bàn phím.
+
+Ba luồng đã kiểm:
+
+| Luồng | Kết quả |
+|---|---|
+| Chuột: bấm toạ độ → đóng bảng hồ sơ | Không viền |
+| Chuột: mở hồ sơ → `Enter` sai mã → đóng | Không viền |
+| Bàn phím: `Tab` tới toạ độ → `Enter` → `Esc` | Có viền — đúng, cần cho khả năng tiếp cận |
+
+Quy tắc chung: **chỉ trả tiêu điểm khi người xem thật sự đang dùng bàn phím.** Trả vô điều
+kiện là nguồn gốc của mọi vòng viền lơ lửng.

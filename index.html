@@ -9,14 +9,14 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Phi đoàn Dongchi Bình">
 <meta property="og:title" content="Bản đồ tác chiến · Phi đoàn">
-<meta property="og:description" content="Bốn toạ độ đã kích hoạt trên lãnh thổ. Chạm vào một điểm sáng để hạ cánh.">
+<meta property="og:description" content="Xin mừi Dongchi Bình chọn toạ độ hạ cánh">
 <meta property="og:image" content="/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://dongchi-binh-33.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bản đồ tác chiến · Phi đoàn">
-<meta name="twitter:description" content="Chạm vào một điểm sáng để hạ cánh.">
+<meta name="twitter:description" content="Xin mừi Dongchi Bình chọn toạ độ hạ cánh">
 <meta name="twitter:image" content="/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,30 +96,6 @@ a{color:inherit;text-decoration:none}
 .rk:nth-child(2){animation-delay:.45s}.rk:nth-child(3){animation-delay:.9s}
 .rk:nth-child(4){animation-delay:1.35s}
 @keyframes rkblink{0%,100%{opacity:.45}50%{opacity:.85;filter:drop-shadow(0 0 5px rgba(110,205,255,.35))}}
-/* Huy chương thay bốn tên lửa sau khi mạng lưới chạy xong.
-   Hạng theo số lần đoán sai: dưới 5 vàng · 5–9 bạc · từ 10 đồng. */
-.mdl{display:none}
-.mdl svg{width:15px;height:18.5px;display:block}
-.mdl .m-rib{fill:#3c5b7c}
-.mdl .m-ring{opacity:.5}
-.mdl .m-star{fill:rgba(12,26,46,.55)}
-.mdl.gold   .m-disc{fill:url(#mGold)}   .mdl.gold   .m-rib{fill:#C08A2A}
-.mdl.silver .m-disc{fill:url(#mSilver)} .mdl.silver .m-rib{fill:#8FA2B4}
-.mdl.bronze .m-disc{fill:url(#mBronze)} .mdl.bronze .m-rib{fill:#8E5A2C}
-.pz.medal .rk{display:none}
-/* Con dấu nhiệm vụ: huy chương nằm trong khung, khung ngoài của huy hiệu tắt hẳn */
-.pz.medal{cursor:pointer;border:0;background:none;padding:0;gap:0;justify-content:center}
-.pz.medal .pz-stamp{display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  line-height:1}
-.pz.medal .pz-stamp .mdl{align-self:center}
-.pz.medal .pz-stamp .txt{display:inline-block;line-height:1;transform:translateY(-1.5px)}
-.pz.medal .mdl{display:inline-flex;filter:drop-shadow(0 0 6px rgba(242,180,65,.44))}
-.pz-stamp{display:none;font-family:"Oswald";font-size:9px;font-weight:700;
-  letter-spacing:.15em;text-transform:uppercase;color:#E8734F;text-align:center;
-  border:0;padding:0;text-shadow:0 0 10px rgba(232,115,79,.35)}
-.pz.medal .pz-stamp{display:inline-block}
-.pz.medal .pz-txt{display:none}
-.pz-txt:empty{display:none}
 .pz-txt{font-family:"Oswald";font-size:9.5px;font-weight:700;letter-spacing:.24em;
   text-transform:uppercase;color:var(--amber);white-space:nowrap}
 .pz.done{border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08);cursor:pointer}
@@ -146,6 +122,33 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .lead.nudge{font-family:"Oswald";font-size:12px;font-weight:500;letter-spacing:.14em;
   text-transform:uppercase;color:var(--neon);animation:nudge 2.1s ease-in-out infinite}
 @keyframes nudge{0%,100%{opacity:.62}50%{opacity:1}}
+
+/* ---- Trạng thái thắng: tiêu đề đổi qua lại, dòng dẫn thành băng rôn máy bay ---- */
+.frame.won h1.title{cursor:pointer;transition:color .4s, text-shadow .4s}
+.frame.won h1.title.mc{color:#FF6B4A;text-shadow:0 0 22px rgba(255,107,74,.55)}
+.frame.won.cheer h1.title{animation:winPulse 1.6s ease-in-out infinite}
+@keyframes winPulse{0%,100%{opacity:.74}50%{opacity:1}}}
+
+/* Khi đã thắng: dòng dẫn thành chữ tĩnh, gõ đúp vào thì máy bay bay ra thế chỗ */
+.frame.won .lead{cursor:pointer;color:var(--paper);font-weight:500;
+  user-select:none;-webkit-user-select:none}
+.frame.won.flying .lead{display:none}
+.banner{display:none}
+.frame.won.flying .banner{display:block;position:relative;overflow:hidden;height:24px;
+  margin:12px 0 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.banner-run{display:inline-flex;align-items:center;white-space:nowrap;padding-left:100%;
+  animation:bannerRun 19s linear infinite}
+@keyframes bannerRun{to{transform:translateX(-100%)}}
+/* Máy bay quay mũi sang TRÁI vì băng rôn chạy từ phải sang trái —
+   mũi đi trước, dây và tấm vải kéo lê phía sau đuôi. */
+.banner-plane{width:24px;height:12.4px;fill:var(--amber);flex:none;transform:scaleX(-1)}
+.banner-rope{width:9px;height:1px;background:rgba(234,240,247,.45);flex:none}
+.banner-cloth{flex:none;background:linear-gradient(180deg,#F3F6FB 0%,#DCE4EF 100%);
+  color:#12213b;font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 14px;border-radius:2px;
+  box-shadow:0 2px 8px rgba(0,0,0,.35)}
 
 .cd{cursor:pointer;transition:border-color .25s, background .25s;margin-top:13px;display:flex;align-items:center;gap:10px;cursor:pointer;
   transition:border-color .25s, background .25s;
@@ -597,7 +600,14 @@ a.file:active{background:rgba(242,180,65,.07)}
   <header class="head">
     <div class="eyebrow"><span class="dia"><i></i><i></i><i></i></span></div>
     <h1 class="title" id="title">Bản đồ tác chiến</h1>
-    <p class="lead">Chạm vào một điểm sáng để hạ cánh.</p>
+    <p class="lead" id="lead">Xin mừi Dongchi Bình chọn toạ độ hạ cánh</p>
+    <div class="banner" id="banner" aria-hidden="true">
+      <div class="banner-run">
+        <svg class="banner-plane" viewBox="0 0 62 32" aria-hidden="true"><use href="#jet"/></svg>
+        <span class="banner-rope"></span>
+        <span class="banner-cloth" id="bannerText"></span>
+      </div>
+    </div>
 
     <div class="cd" id="cd" role="link" tabindex="0"
          aria-label="Mở hồ sơ niêm phong DAD-950901-B">
@@ -699,7 +709,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 06-Aug-2026 · V12.05">Last updated 06-Aug-2026 · V12.05</span>
+        <span class="stamp" id="stamp" data-base="Last updated 07-Aug-2026 · V15.00">Last updated 07-Aug-2026 · V15.00</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -722,16 +732,6 @@ a.file:active{background:rgba(242,180,65,.07)}
       <span class="rk"><svg viewBox="0 0 24 26"><path class="rk-body" d="M12 1.2c3.1 2.8 4.8 6.6 4.8 10.6v5.6H7.2v-5.6C7.2 7.8 8.9 4 12 1.2Z"/><path class="rk-nose" d="M12 1.2c1.5 1.35 2.7 2.9 3.5 4.6h-7c.8-1.7 2-3.25 3.5-4.6Z"/><path class="rk-fin" d="M7.2 12.4 4.3 16.6v4.3l2.9-2.6Zm9.6 0 2.9 4.2v4.3l-2.9-2.6Z"/><circle class="rk-win" cx="12" cy="10" r="2.1"/><path class="rk-flame" d="M10.1 17.8h3.8c0 2.7-.9 5.4-1.9 7.1-1-1.7-1.9-4.4-1.9-7.1Z"/></svg></span>
       <span class="rk"><svg viewBox="0 0 24 26"><path class="rk-body" d="M12 1.2c3.1 2.8 4.8 6.6 4.8 10.6v5.6H7.2v-5.6C7.2 7.8 8.9 4 12 1.2Z"/><path class="rk-nose" d="M12 1.2c1.5 1.35 2.7 2.9 3.5 4.6h-7c.8-1.7 2-3.25 3.5-4.6Z"/><path class="rk-fin" d="M7.2 12.4 4.3 16.6v4.3l2.9-2.6Zm9.6 0 2.9 4.2v4.3l-2.9-2.6Z"/><circle class="rk-win" cx="12" cy="10" r="2.1"/><path class="rk-flame" d="M10.1 17.8h3.8c0 2.7-.9 5.4-1.9 7.1-1-1.7-1.9-4.4-1.9-7.1Z"/></svg></span>
       <span class="rk"><svg viewBox="0 0 24 26"><path class="rk-body" d="M12 1.2c3.1 2.8 4.8 6.6 4.8 10.6v5.6H7.2v-5.6C7.2 7.8 8.9 4 12 1.2Z"/><path class="rk-nose" d="M12 1.2c1.5 1.35 2.7 2.9 3.5 4.6h-7c.8-1.7 2-3.25 3.5-4.6Z"/><path class="rk-fin" d="M7.2 12.4 4.3 16.6v4.3l2.9-2.6Zm9.6 0 2.9 4.2v4.3l-2.9-2.6Z"/><circle class="rk-win" cx="12" cy="10" r="2.1"/><path class="rk-flame" d="M10.1 17.8h3.8c0 2.7-.9 5.4-1.9 7.1-1-1.7-1.9-4.4-1.9-7.1Z"/></svg></span>
-      <span class="mdl" id="mdl">
-        <svg viewBox="0 0 26 32" aria-hidden="true">
-          <path class="m-rib" d="M6.6 1h4.2l3.4 9.4-4.2 1.6L6.6 1Zm12.8 0h-4.2l-3.4 9.4 4.2 1.6L19.4 1Z"/>
-          <circle class="m-disc" cx="13" cy="21" r="9.4"/>
-          <circle class="m-ring" cx="13" cy="21" r="9.4" fill="none" stroke="rgba(0,0,0,.32)" stroke-width="1.2"/>
-          <path class="m-star" d="M13,15.2 L14.5,19.4 L19,19.5 L15.4,22.2 L16.7,26.4 L13,23.8 L9.3,26.4 L10.6,22.2 L7,19.5 L11.5,19.4 Z"/>
-        </svg>
-      </span>
-      <span class="pz-stamp" id="pzStamp"></span>
-      <span class="pz-txt" id="pzTxt"></span>
     </span>
     <span class="readout idle" id="readout">Chờ chọn toạ độ</span>
     <button class="cr" id="flagZone" aria-label="Dòng bản quyền"><span class="crt">© Bản quyền · Dongchi Bình &amp; Honghandangiu<span class="vfw"><svg class="vf" viewBox="0 0 34 22" aria-hidden="true"><path fill="#DA251D" d="M1,4 C8,0.8 16,6.5 24,3.8 C28,2.4 31,2.8 33,3.4 L33,17.6 C31,17 28,16.6 24,18 C16,20.7 8,15 1,18.2 Z"/><path fill="#FFCD00" d="M17.00,6.10 L18.20,9.55 L21.85,9.62 L18.94,11.83 L20.00,15.33 L17.00,13.24 L14.00,15.33 L15.06,11.83 L12.15,9.62 L15.80,9.55 Z"/></svg></span></span></button>
@@ -1020,8 +1020,12 @@ const nodeOf = c => NODES.find(n=>n.code===c);
    kể cả toạ độ đã mở — muốn xem lại mã phải gõ đúp lần nữa. */
 let hoverNode = null, pinned = null, morseSeen = false;
 let channel = null, unlocked = {}, wrongCount = 0, resetCount = 0, missionShown = false;
-let visits = 0, seasonMark = null, eggDone = false, medalOn = false, winCheer = false;
+let visits = 0, seasonMark = null, eggDone = false, winCheer = false, winParty = false;
 let pinFiles = {};
+/* Khai báo ở đây, TRƯỚC boot(). Đặt sau boot() sẽ vướng "temporal dead zone"
+   của `let` và ném ReferenceError ngay khi nạp trang. */
+let pinFail = 0, pinLockUntil = 0, hackTries = 0;
+let firstAt = 0, clueAt = 0, winAt = 0;
 let eggDay = null, credFound = false, coachDone = false;
 
 /* toạ độ đã bắt sóng (hoặc đã có hồ sơ) thì bỏ ổ khoá và sáng màu amber */
@@ -1068,6 +1072,7 @@ function unlockNode(code, via){
       clearTimeout(coachT);
       coachT = setTimeout(closeCoach, 7000);
     }
+    if(!clueAt){ clueAt = Date.now(); save(); }
     ping('mo_khoa_morse', code+' · '+(via==='map' ? 'từ bản đồ' : 'từ hồ sơ'), true);
   }
   return true;
@@ -1212,11 +1217,23 @@ function close(){
   document.querySelectorAll('.bcn,.beacon').forEach(el=>el.classList.remove('is-active'));
   const prev = current; current = null;
   paint();
-  if(prev){
+  /* Chỉ trả tiêu điểm về nút toạ độ khi người xem đang dùng BÀN PHÍM.
+     Với chuột/chạm, trả tiêu điểm sẽ để lại vòng viền amber lơ lửng trên
+     bản đồ — trình duyệt coi thao tác cuối là gõ phím nên vẽ :focus-visible. */
+  if(prev && kbdNav){
     const btn = document.querySelector('.beacon[data-bcn="'+prev+'"]');
     if(btn) btn.focus({preventScroll:true});
   }
 }
+
+/* Theo dõi người xem đang điều hướng bằng bàn phím hay bằng chuột/chạm.
+   Dùng để quyết định có nên trả tiêu điểm (và vẽ vòng viền) hay không. */
+let kbdNav = false;
+addEventListener('keydown', e=>{
+  if(e.key === 'Tab' || e.key.startsWith('Arrow') || e.key === 'Enter' || e.key === ' ')
+    kbdNav = true;
+}, true);
+addEventListener('pointerdown', ()=>{ kbdNav = false; }, true);
 
 /* ========================= 5. ĐẶT NÚT THEO TOẠ ĐỘ SVG ========================= */
 function place(){
@@ -1279,8 +1296,11 @@ const store = {
   resetCount = s.resetCount || 0;
   missionShown = !!s.missionShown;
   eggDone = !!s.eggDone;
-  medalOn = !!s.medalOn;
+  winParty = !!s.winParty;
   pinFiles = s.pinFiles || {};
+  pinLockUntil = s.pinLockUntil || 0;
+  firstAt = s.firstAt || 0; clueAt = s.clueAt || 0; winAt = s.winAt || 0;
+  if(!firstAt) firstAt = Date.now();
   eggDay = s.eggDay || null;
   credFound = !!s.credFound;
   coachDone = !!s.coachDone;
@@ -1308,7 +1328,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, medalOn, eggDay, credFound, coachDone, pinFiles }); }
+function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, credFound, coachDone, pinFiles, pinLockUntil, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -1345,18 +1365,30 @@ function lum(){
 
 /* mạng lưới các tỉnh bừng lên vài giây — chỉ khi đã giải đủ */
 let gridT = null;
+/* Lần ĐẦU quay ra bản đồ sau khi thắng: ăn mừng đủ bộ — mạng lưới, đất liền
+   nhấp nháy, bốn tên lửa reo, tiêu đề đổi qua lại, băng rôn bay, tem đổi màu.
+   Những lần sau: CHỈ nhấp nháy mạng lưới, không chúc mừng lại. */
 function gridFlash(){
   if(nSolved() !== NODES.length) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const full = !winParty;
   const g = $('grid');
   g.classList.remove('on'); void g.getBoundingClientRect();
   g.classList.add('on');
-  frame.classList.add('win');
-  winCheer = true; showPz();          /* bốn tên lửa reo cùng bản đồ trong 15 giây */
+  if(full){
+    winParty = true; save();
+    frame.classList.add('win','cheer');
+    winBanner(); titleSwap(true); bannerFly(22000);
+    winCheer = true; showPz();
+    eggFlash('win');
+  }
   clearTimeout(gridT);
   gridT = setTimeout(()=>{
-    g.classList.remove('on'); frame.classList.remove('win');
-    winCheer = false; medalMode();
+    g.classList.remove('on');
+    if(full){
+      frame.classList.remove('win','cheer');
+      winCheer = false; showPz(); titleSwap(false);
+    }
   }, 15100);
 }
 
@@ -1384,45 +1416,85 @@ function eggFlash(why){
   eggT = setTimeout(()=>s.classList.remove('egg'), 7300);
 }
 
-/* Tem hiển thị "· R{n}" khi đã bấm chơi lại ít nhất một lần */
+/* Tem hiển thị "· R{n}" khi đã bấm chơi lại ít nhất một lần.
+
+   QUY ƯỚC ĐÁNH SỐ PHIÊN BẢN — sửa chuỗi ở thuộc tính data-base của #stamp:
+     Vx.yy · yy chỉ chạy 00 → 09. Hết 09 thì x tăng 1 và yy về 00.
+     KHÔNG bao giờ có đuôi kiểu .10 hay lớn hơn.
+     Các nấc x bị BỎ QUA, không dùng: 13, 14, 23.
+     Ví dụ: V12.09 → V15.00 (nhảy qua 13, 14) · V22.09 → V24.00 (nhảy qua 23). */
 function stampText(){
   const s = $('stamp'); if(!s) return;
   s.textContent = s.dataset.base + (resetCount > 0 ? ' · R' + resetCount : '');
 }
 
-function medalTier(){
-  return wrongCount < 5 ? 'gold' : (wrongCount < 10 ? 'silver' : 'bronze');
+/* ---- Băng rôn chiến thắng ---- */
+function khoang(ms){
+  const s = Math.max(0, Math.floor(ms/1000));
+  return Math.floor(s/86400) + ' Ngày ' + (Math.floor(s/3600)%24) + ' Giờ ' +
+         (Math.floor(s/60)%60) + ' Phút';
 }
-function medalMode(){
+/* Tiêu đề khi đã thắng: đổi qua lại giữa chữ gốc và "Mission Completed".
+   Trong 15 giây ăn mừng thì tự đổi; xong rồi thì bấm vào để đổi tay. */
+const TITLE_PLAIN = 'Bản đồ tác chiến';
+const TITLE_WIN   = 'Mission Completed';
+let titleMC = false, titleT = null;
+
+function titleSwap(auto){
+  const t = $('title');
+  clearInterval(titleT);
+  if(nSolved() !== NODES.length){
+    t.textContent = TITLE_PLAIN; t.classList.remove('mc'); titleMC = false;
+    return;
+  }
+  const ve = () => {
+    t.textContent = titleMC ? TITLE_WIN : TITLE_PLAIN;
+    t.classList.toggle('mc', titleMC);
+  };
+  if(auto){
+    titleMC = true; ve();
+    titleT = setInterval(()=>{ titleMC = !titleMC; ve(); }, 2400);
+  }else{
+    ve();
+  }
+}
+
+function winBanner(){
+  const done = nSolved() === NODES.length;
+  frame.classList.toggle('won', done);
+  titleSwap(false);
+  if(!done) return;
+  $('lead').textContent = LEAD_WIN;
+  const end = winAt || Date.now();
+  $('bannerText').textContent =
+    'Winner: Dongchi Bình · ' +
+    'Mức độ hoàn thành: ' + '⭐'.repeat(soSao()) + ' · ' +
+    'Thời gian hoàn thành: ' + khoang(end - (firstAt || end)) + ' · ' +
+    'Tìm thấy clue đầu tiên sau: ' + khoang((clueAt || end) - (firstAt || end)) + ' · ' +
+    'Easter Egg: ' + (credFound ? 'Y' : 'N');
+}
+
+/* Cho máy bay bay ra thế chỗ dòng chữ, hết giờ thì trả lại chữ tĩnh */
+let flyT = null;
+function bannerFly(ms){
   if(nSolved() !== NODES.length) return;
-  medalOn = true; missionShown = true; save(); showPz();
+  frame.classList.add('flying');
+  clearTimeout(flyT);
+  flyT = setTimeout(()=>frame.classList.remove('flying'), ms || 26000);
 }
+
+/* Mức độ hoàn thành theo số lần đoán sai — dùng cho băng rôn, thay hệ huy chương */
+function soSao(){ return wrongCount < 5 ? 5 : (wrongCount < 10 ? 4 : 3); }
+/* Huy hiệu chỉ có MỘT hình thức từ đầu tới cuối: bốn tên lửa.
+   dormant → armed → hail (lúc ăn mừng) → đứng yên cùng sáng. */
 function showPz(){
   const pz = $('pz');
   const n = pzOn ? nSolved() : 0;
   const done = pzOn && n === NODES.length;
-  const medal = done && medalOn && !winCheer;
-  const revealed = done && missionShown && !medal && !winCheer;
   [...pz.querySelectorAll('.rk')].forEach((el,i)=> el.classList.toggle('lit', i < n));
-  pz.classList.toggle('dormant', !pzOn);              /* chỉ viền, im lìm */
-  pz.classList.toggle('armed', pzOn && !done);        /* nhấp nháy quả chưa sáng */
-  pz.classList.toggle('hail', done && (winCheer || !missionShown) && !medal);
-  pz.classList.toggle('done', revealed);
-  pz.classList.toggle('medal', medal);
-  if(medal){
-    const m = $('mdl');
-    m.classList.remove('gold','silver','bronze');
-    m.classList.add(medalTier());
-    const st = $('pzStamp');
-    if(st.firstElementChild !== m){
-      st.innerHTML = '';
-      st.appendChild(m);
-      const tx = document.createElement('span');
-      tx.className = 'txt'; tx.textContent = 'Mission completed';
-      st.appendChild(tx);
-    }
-  }
-  $('pzTxt').textContent = revealed ? 'Mission completed!' : '';
+  pz.classList.toggle('dormant', !pzOn);
+  pz.classList.toggle('armed', pzOn && !done);
+  pz.classList.toggle('hail', done && winCheer);
 }
 
 /* mỗi đáp án một câu khen khác nhau, chỉ lặp lại khi đã dùng hết */
@@ -2157,12 +2229,17 @@ function openCx(code){
   cxw.classList.add('on'); cxw.setAttribute('aria-hidden','false');
   setTimeout(()=>{ if(!$('cxInput').disabled) $('cxInput').focus(); }, 320);
 }
+function blurNow(){
+  try{ const a = document.activeElement;
+       if(a && a !== document.body && a.blur) a.blur(); }catch(e){}
+}
 function closeCx(){
   if(fxLock) return;                 /* đang chạy hiệu ứng thì chưa cho ra */
+  if(!kbdNav) blurNow();
   cxw.classList.remove('on','peek','locked');
   cxw.setAttribute('aria-hidden','true');
   /* quay ra bản đồ sau khi đã giải đủ → mạng lưới tỉnh bừng lên + tem đổi màu */
-  setTimeout(()=>{ gridFlash(); eggFlash(); }, 320);
+  setTimeout(gridFlash, 320);   /* eggFlash gọi bên trong, chỉ ở lần ăn mừng đầu */
 }
 
 function guess(){
@@ -2178,6 +2255,7 @@ function guess(){
     hint.className = 'cx-hint good';
     hint.textContent = nSolved()+'/'+NODES.length+' mật thư · đã mở khoá';
     fxStart(n.fx); lum();
+    if(nSolved() === NODES.length && !winAt){ winAt = Date.now(); save(); }
     ping('giai_dung', cxCode+' → '+n.plain);
     if(nSolved() === NODES.length) ping('hoan_thanh', '', true);
   }else{
@@ -2205,15 +2283,28 @@ $('cxChips').addEventListener('click', e=>{
 });
 $('cxGo').addEventListener('click', guess);
 $('cxInput').addEventListener('keydown', e=>{ if(e.key==='Enter') guess(); });
+/* Gõ đúp vào dòng chữ khi đã thắng → máy bay kéo băng rôn bay ra 20 giây */
+$('lead').addEventListener('click', e=>{
+  if(e.detail < 2) return;
+  if(nSolved() !== NODES.length) return;
+  bannerFly(20000);
+});
+
+/* Khi đã thắng, bấm tiêu đề để đổi giữa chữ gốc và Mission Completed */
+$('title').addEventListener('click', ()=>{
+  if(nSolved() !== NODES.length || frame.classList.contains('cheer')) return;
+  titleMC = !titleMC; titleSwap(false);
+});
+
 $('pz').addEventListener('click', ()=>{
   if(!pzOn || nSolved() !== NODES.length) return;
-  if(!missionShown){ missionShown = true; save(); showPz(); return; }
-  openCx(null);                       /* lần sau: vào hộp để bấm chơi lại */
+  openCx(null);           /* bấm huy hiệu khi đã xong → mở lại hộp pí mật */
 });
 function doReset(){
   solved = {}; unlocked = {}; channel = null; morseSeen = false; pzOn = false;
-  wrongCount = 0; pinned = null; missionShown = false; medalOn = false; eggDone = false;
+  wrongCount = 0; pinned = null; missionShown = false; eggDone = false; winParty = false;
   pinFiles = {};
+  firstAt = Date.now(); clueAt = 0; winAt = 0; pinLockUntil = 0;
   eggDay = null;
   resetCount++; stampText();
   save(); showPz(); refreshBeacons(); lum();
@@ -2329,12 +2420,31 @@ $('askYes').addEventListener('click', ()=>{ closeAsk(); doReset(); });
    Mã nhập vào và mã gốc đều được chuẩn hoá (bỏ dấu, khoảng trắng, viết hoa)
    trước khi so, nên gõ "mig21", "MIG-21" hay "mig 21" đều đúng. */
 const CODES = {
-  map:  { kind:'PIN',  code:'1959',   hint:'DAD-950901 TARO', label:'Mã PIN truy cập bản đồ', tries:2 },
-  file: { kind:'PASS', code:'MIG-21', hint:'Điện Biên Phủ',   label:'Mã PASS xem lại hồ sơ',  tries:3 }
+  map:  { kind:'PIN', code:'1959', label:'Mã PIN truy cập bản đồ',
+          hints:['DAD - TARO'], tries:2 },
+  /* Ba gợi ý xoay vòng: mỗi lần gõ sai thì chỗ gợi ý tự đổi sang câu kế tiếp.
+     Sai quá `lockAfter` lần trong một phiên thì khoá `lockMs` mới cho thử lại. */
+  file: { kind:'PIN', code:'5121', label:'Mã PIN xem lại hồ sơ',
+          hints:['Gợi ý số 2, mission 3', 'MIG-21', 'Phi công Phạm Tuân'],
+          lockAfter:5, lockMs:3600000 }
 };
 const codeNorm = s => (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const pinw = $('pinw');
-let hackTries = 0, pinMode = 'hack', pinArg = null;
+let pinMode = 'map', pinArg = null;
+function savePinFail(){ try{ sessionStorage.setItem('mtpf', String(pinFail)); }catch(e){} }
+try{ pinFail = parseInt(sessionStorage.getItem('mtpf') || '0', 10) || 0; }catch(e){}
+
+/* Gợi ý hiện theo số lần đã gõ sai, xoay vòng trong danh sách */
+function showHint(){
+  const hs = CODES[pinMode].hints || [];
+  const i = hs.length ? (pinFail % hs.length) : 0;
+  $('pinHint').innerHTML = hs.length ? 'Gợi ý: <b>' + hs[i] + '</b>' : '';
+}
+const pinLocked = () => pinLockUntil && Date.now() < pinLockUntil;
+function lockLeft(){
+  const m = Math.ceil((pinLockUntil - Date.now())/60000);
+  return m > 60 ? Math.ceil(m/60) + ' giờ' : m + ' phút';
+}
 
 function drawPin(){
   const cfg = CODES[pinMode], need = codeNorm(cfg.code).length;
@@ -2353,18 +2463,29 @@ function openPin(mode, arg){
   hackTries = 0;
   const cfg = CODES[pinMode], need = codeNorm(cfg.code).length;
   $('pinTitle').textContent = cfg.label;
-  $('pinHint').innerHTML = 'Gợi ý: <b>' + cfg.hint + '</b>';
+  showHint();
   $('pinIn').maxLength = need;
   $('pinDash').innerHTML = Array.from({length: need}, ()=>'<span></span>').join('');
   $('pinIn').value = ''; drawPin();
   $('pinMsg').className = 'cx-hint';
   $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự') + ' rồi Enter';
+  if(pinMode === 'file' && pinLocked()){
+    $('pinMsg').className = 'cx-hint bad';
+    $('pinMsg').textContent = 'Đã khoá — thử lại sau ' + lockLeft();
+    $('pinIn').disabled = true;
+  }else{
+    $('pinIn').disabled = false;
+  }
   pinw.classList.add('on'); pinw.setAttribute('aria-hidden','false');
-  setTimeout(()=>$('pinIn').focus(), 80);
+  if(!$('pinIn').disabled) setTimeout(()=>$('pinIn').focus(), 80);
 }
 function closePin(){
   pinw.classList.remove('on'); pinw.setAttribute('aria-hidden','true');
   $('pinIn').value = ''; drawPin();
+  /* Gõ Enter sai mã xong đóng hộp: nếu giữ tiêu điểm thì vòng viền amber của
+     :focus-visible còn dính lại trên bản đồ, nhìn như lỗi. Bỏ tiêu điểm và
+     coi như thao tác chuột để lần đóng bảng hồ sơ sau cũng không vẽ viền. */
+  blurNow(); kbdNav = false;
 }
 $('hackmap').addEventListener('click', e=>{ if(e.detail >= 2) openPin('map'); });
 $('pinIn').addEventListener('input', drawPin);
@@ -2375,9 +2496,14 @@ $('pinIn').addEventListener('keydown', e=>{ if(e.key === 'Enter') hackTry(); });
 function hackTry(){
   const v = ($('pinIn').value || '').trim();
   const msg = $('pinMsg');
-  if(pinMode === 'file'){                       /* mở sớm hồ sơ niêm phong */
+  if(pinMode === 'file'){                       /* mã xem lại hồ sơ đã xuất bản */
+    if(pinLocked()){
+      msg.className = 'cx-hint bad';
+      msg.textContent = 'Đã khoá — thử lại sau ' + lockLeft();
+      return;
+    }
     if(codeNorm(v) === codeNorm(CODES.file.code)){
-      hackTries = 0;
+      hackTries = 0; pinFail = 0; savePinFail();
       if(pinArg) pinFiles[pinArg] = true;
       save(); closePin();
       if(current) render(current);
@@ -2387,15 +2513,21 @@ function hackTry(){
       if(sub) fly(sub.href, node.code + ' · ' + node.name);   /* mở luôn hồ sơ */
       return;
     }
-    hackTries++;
-    const left = CODES.file.tries - hackTries;
-    if(left <= 0){                       /* hết lượt → về lại bảng hồ sơ của toạ độ */
-      hackTries = 0; closePin();
-      ping('sai_pin_ho_so', pinArg || '');
+    pinFail++; savePinFail();
+    ping('sai_pin_ho_so', (pinArg || '') + ' · lần sai thứ ' + pinFail);
+    showHint();                          /* đổi sang gợi ý kế tiếp */
+    if(pinFail > CODES.file.lockAfter){  /* quá số lần cho phép → khoá một giờ */
+      pinLockUntil = Date.now() + CODES.file.lockMs;
+      save();
+      msg.className = 'cx-hint bad';
+      msg.textContent = 'Sai quá nhiều — khoá ' + lockLeft();
+      $('pinIn').disabled = true;
+      ping('khoa_pin_ho_so', String(CODES.file.lockMs/60000) + ' phút');
       return;
     }
     msg.className = 'cx-hint bad';
-    msg.textContent = 'Sai rồi, còn ' + left + ' lượt';
+    msg.textContent = 'Chưa đúng — gợi ý đã đổi, còn ' +
+      (CODES.file.lockAfter + 1 - pinFail) + ' lượt';
     $('pinIn').value = ''; drawPin(); $('pinIn').focus();
     return;
   }
@@ -2406,7 +2538,7 @@ function hackTry(){
       if(!solved[n.code]) solved[n.code] = nextPraise();
     });
     channel = channel || 'map';
-    morseSeen = true; pzOn = true; medalOn = false; missionShown = false;
+    morseSeen = true; pzOn = true; missionShown = false;
     frame.classList.add('hot');
     save(); showPz(); refreshBeacons(); lum();
     ping('hackmap', 'mở toàn bộ bản đồ bằng PIN');
@@ -2489,10 +2621,12 @@ $('fileList').addEventListener('click', e=>{
 /* Ngồi im quá lâu mà chưa biết cơ chế gõ đúp → nhắc một câu.
    Lần ghé đầu chờ 25 giây; từ lần thứ hai trở đi chỉ 6 giây. */
 const LEAD_DEFAULT = 'Xin mừi Dongchi Bình chọn toạ độ hạ cánh';
+const LEAD_WIN     = 'Map: Bản đồ Tác chiến';
 const LEAD_HINT = 'Double-tap / Double-click to start mission';
 let idleT = null;
 function armIdle(){
   clearTimeout(idleT);
+  if(nSolved() === NODES.length) return;   /* đã thắng thì dòng dẫn do winBanner giữ */
   const lead = document.querySelector('.lead');
   lead.textContent = LEAD_DEFAULT; lead.classList.remove('nudge');
   if(morseSeen) return;                    /* đã biết rồi thì khỏi nhắc */
@@ -2509,7 +2643,7 @@ let released = false;
 function release(){ if(!released){ released = true; frame.classList.add('lit'); } }
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-tick(); paint(); armIdle(); stampText();
+tick(); paint(); armIdle(); stampText(); winBanner();
 setTimeout(()=>{ eggFlash('win'); eggFlash('daily'); }, 900);        /* mỗi lần vào trang sau khi đã giải xong */
 (function(){
   let kind = 'vào mới';
