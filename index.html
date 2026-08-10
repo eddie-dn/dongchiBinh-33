@@ -127,11 +127,25 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
 .frame.won h1.title{cursor:pointer;transition:color .4s, text-shadow .4s}
 .frame.won h1.title.mc{color:#FF6B4A;text-shadow:0 0 22px rgba(255,107,74,.55)}
 .frame.won.cheer h1.title{animation:winPulse 1.6s ease-in-out infinite}
-@keyframes winPulse{0%,100%{opacity:.74}50%{opacity:1}}}
+@keyframes winPulse{0%,100%{opacity:.74}50%{opacity:1}}
+/* Cửa sổ EASTER EGG (từ 00:00 01-09, kéo dài 7 ngày):
+   tiêu đề đổi màu tuần tự y hệt tem "Last updated" — dùng chung @keyframes egg.
+   Đặt SAU .cheer để thắng thế khi hai lớp cùng có mặt trên một thẻ. */
+.frame.won h1.title.mc.egg{color:#F2B441;text-shadow:0 0 22px rgba(242,180,65,.5)}
+.frame.won h1.title.eggblink{animation:egg 1.8s linear 4}
+
+/* GAME ON — trong cửa sổ Easter Egg:
+   thẻ "Phi vụ tiếp theo" đóng lại hẳn (bản đồ nở ra chiếm chỗ, xem winBanner),
+   và tiêu đề khoá cứng ở "Easter Egg" nên bỏ luôn con trỏ bàn tay. */
+.frame.gameon .cd{display:none}
+.frame.won.gameon h1.title{cursor:default}
 
 /* Khi đã thắng: dòng dẫn thành chữ tĩnh, gõ đúp vào thì máy bay bay ra thế chỗ */
 .frame.won .lead{cursor:pointer;color:var(--paper);font-weight:500;
   user-select:none;-webkit-user-select:none}
+/* Quân Q cơ trong "Game On · Độ khó: Q♥" — đỏ, tách hẳn khỏi phần chữ còn lại */
+.frame.won .lead .qco{color:#FF5252;font-weight:700;
+  text-shadow:0 0 10px rgba(255,82,82,.45)}
 .frame.won.flying .lead{display:none}
 .banner{display:none}
 .frame.won.flying .banner{display:block;position:relative;overflow:hidden;height:24px;
@@ -149,6 +163,12 @@ h1.title{font-family:"Oswald";font-weight:700;text-transform:uppercase;line-heig
   color:#12213b;font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.1em;
   text-transform:uppercase;padding:5px 14px;border-radius:2px;
   box-shadow:0 2px 8px rgba(0,0,0,.35)}
+/* Sao chưa đạt vẫn giữ chỗ nhưng vẽ dạng VIỀN và làm mờ — nhìn là biết còn thiếu */
+.banner-cloth .star-off{opacity:.34;font-weight:400}
+/* Băng rôn sinh nhật: câu dài + emoji, Oswald thiếu glyph sẽ vỡ chữ nên
+   đổi font và bỏ viết hoa cho dễ đọc. */
+.banner-cloth.eggtext{font-family:"Be Vietnam Pro",system-ui,"Noto Sans",sans-serif;
+  text-transform:none;letter-spacing:.01em;font-size:11px;font-weight:500}
 
 .cd{cursor:pointer;transition:border-color .25s, background .25s;margin-top:13px;display:flex;align-items:center;gap:10px;cursor:pointer;
   transition:border-color .25s, background .25s;
@@ -353,10 +373,31 @@ a.file:active{background:rgba(242,180,65,.07)}
   text-transform:uppercase;color:var(--neon);border:1px solid rgba(56,189,248,.4);
   border-radius:99px;padding:5px 10px;background:rgba(56,189,248,.08)}
 
-/* Cửa hậu "hackmap": gõ đúp vào chữ để lộ ô nhập PIN */
-.hackmap{margin:14px 0 -4px;text-align:center;font-family:"Oswald";font-size:8px;
-  letter-spacing:.24em;text-transform:uppercase;color:rgba(234,240,247,.28);
-  user-select:none;-webkit-user-select:none;cursor:default}
+/* ---- Box Tổng tư lệnh ----
+   Bước 1: hai ô chiến dịch nằm ngang. Bước 2: lệnh của chiến dịch đã chọn.
+   Mọi ô đều lấy thẻ "Phi vụ tiếp theo" làm chuẩn: viền mảnh, gờ amber trái. */
+.hq-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.hq-card{display:flex;flex-direction:column;gap:3px;text-align:left;
+  border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
+  background:rgba(6,16,31,.4);padding:9px 10px;cursor:pointer;
+  transition:border-color .22s, background .22s}
+.hq-card:hover,.hq-card:focus-visible{border-color:rgba(242,180,65,.55);
+  background:rgba(242,180,65,.07)}
+.hq-card.off{border-left-color:var(--steel)}
+/* Đang đếm nhịp bấm: sáng lên cho biết máy có nhận, giống lá cờ chân trang */
+.hq-card.warm{border-color:var(--amber);background:rgba(242,180,65,.16)}
+.hq-code{font-family:"Oswald";font-size:8px;font-weight:600;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--neon)}
+.hq-name{font-family:"Oswald";font-size:12px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--paper);line-height:1.2}
+.hq-state{font-family:"Oswald";font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(234,240,247,.42)}
+.hq-card.off .hq-state{color:rgba(242,180,65,.62)}
+.hq-back{display:block;margin:12px auto 0;background:none;border:0;padding:4px 8px;
+  font-family:"Oswald";font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(234,240,247,.42);cursor:pointer}
+.hq-back:hover,.hq-back:focus-visible{color:var(--paper)}
+.cx-form button[disabled]{opacity:.34;cursor:not-allowed}
 /* Hộp PIN riêng: bốn gạch, gõ số là hiện, Enter là xong */
 #pinw{z-index:28}
 .pin-hint{margin:10px 0 0;text-align:center;font-family:"Be Vietnam Pro",system-ui;
@@ -709,7 +750,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 07-Aug-2026 · V15.00">Last updated 07-Aug-2026 · V15.00</span>
+        <span class="stamp" id="stamp" data-base="Last updated 08-Aug-2026 · V15.03">Last updated 08-Aug-2026 · V15.03</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -796,16 +837,39 @@ a.file:active{background:rgba(242,180,65,.07)}
   </div>
 
   <div class="cxw" id="wipew" aria-hidden="true">
-    <div class="cxp" role="dialog" aria-modal="true" aria-label="Reset Mission">
-      <button class="cx-close" id="wipeNo" aria-label="Huỷ">&#10005;</button>
-      <p class="cx-eyebrow">Lệnh xoá dấu vết</p>
-      <p class="cred-body wide">Ace Map &amp; Nhận Huy Chương xịn hơn!
-        <span class="kao">ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧</span></p>
-      <div class="cx-form">
-        <button id="wipeYes" style="flex:1">Tôi chắc chắn, khum hối hựn!!!</button>
-      </div>
-      <p class="hackmap" id="hackmap">hackmap</p>
+    <div class="cxp" role="dialog" aria-modal="true" aria-label="Box Tổng tư lệnh">
+      <button class="cx-close" id="wipeNo" aria-label="Đóng">&#10005;</button>
+      <p class="cx-eyebrow">Box Tổng tư lệnh</p>
 
+      <!-- Bước 1 — chọn chiến dịch -->
+      <div id="hqStep1">
+        <p class="cred-body wide">Chọn chiến dịch — bấm <b>5 nhịp liên tiếp</b> vào một ô
+          <span class="kao">ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧</span></p>
+        <div class="hq-grid">
+          <button class="hq-card" id="hqCardMap" data-game="map">
+            <span class="hq-code">MAP-01</span>
+            <span class="hq-name">Bản đồ tác chiến</span>
+            <span class="hq-state" id="hqStateMap"></span>
+          </button>
+          <button class="hq-card" id="hqCardEgg" data-game="egg">
+            <span class="hq-code">MAP-02</span>
+            <span class="hq-name">Easter Egg</span>
+            <span class="hq-state" id="hqStateEgg"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bước 2 — lệnh của chiến dịch đã chọn -->
+      <div id="hqStep2" hidden>
+        <p class="cred-body wide" id="hqTitle"></p>
+        <div class="cx-form" style="flex-direction:column;gap:8px">
+          <button id="hqReset" style="width:100%"></button>
+          <button id="hqHack" style="width:100%;color:var(--amber);
+            border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08)">Hack Map</button>
+        </div>
+        <p class="cx-hint" id="hqNote"></p>
+        <button class="hq-back" id="hqBack">&#8592; Chọn chiến dịch khác</button>
+      </div>
     </div>
   </div>
 
@@ -893,6 +957,43 @@ const BIRTHDAY   = SEA.target;        /* mốc đếm ngược của pha hiện 
 const PHASE2_AT  = SEA.phase2;
 const MILESTONE2 = SEA.milestone;
 
+/* ---- Ngày theo GIỜ MÁY, không phải giờ UTC ----
+   toISOString() cắt theo UTC nên ở Việt Nam "ngày mới" rơi vào 07:00 sáng.
+   Mọi mốc "mỗi ngày một lần" đều đi qua hàm này để đúng nghĩa 00:00 giờ VN. */
+function ngay(d){
+  const x = d || new Date(), p = k => String(k).padStart(2,'0');
+  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
+}
+
+/* ---- CỬA SỔ EASTER EGG ----
+   Mở đúng lúc đồng hồ đếm ngược về 0 (00:00 ngày 01-09 giờ VN) và kéo dài
+   EGG_DAYS ngày. Trong cửa sổ này:
+     · tiêu đề "Mission Completed" đổi thành "Easter Egg"
+     · băng rôn máy bay mang lời chúc sinh nhật
+     · dòng dẫn tĩnh đổi thành LEAD_EGG
+   Thêm ?egg=1 vào URL để bật thử mà không cần chờ tới 01-09. */
+/* ---- TÊN HAI CHIẾN DỊCH ----
+   Đặt tên ở ĐÚNG MỘT CHỖ này, mọi nơi khác chỉ trỏ vào GAMES.
+     MAP-01 · Bản đồ tác chiến — game giải mật thư 4 toạ độ, luật ở mục 4–6.
+     MAP-02 · Easter Egg       — màn sinh nhật, mở khi MAP-01 xong VÀ đếm ngược về 0.
+   Muốn đổi tên hiển thị thì sửa `name`, đừng rải chuỗi ra chỗ khác. */
+const GAMES = {
+  map: { code:'MAP-01', name:'Bản đồ tác chiến' },
+  egg: { code:'MAP-02', name:'Easter Egg' }
+};
+const EGG_DAYS  = 7;
+const EGG_FORCE = /[?&]egg=1/.test(location.search);
+/* GAME ON = đã hoàn thành MAP-01 VÀ cửa sổ MAP-02 đang mở.
+   Đây là điều kiện dùng ở khắp nơi: đóng thẻ Phi vụ, khoá tiêu đề, mở hồ sơ
+   niêm phong. Gọi qua hàm này, đừng viết lại hai vế ở chỗ khác. */
+function gameOn(){ return nSolved() === NODES.length && eggOpen(); }
+function eggOpen(){
+  if(EGG_FORCE || eggHack) return true;
+  const s0 = new Date(atVN(SEA.year, SEASON.birthday)).getTime();
+  const now = Date.now();
+  return now >= s0 && now < s0 + EGG_DAYS*864e5;
+}
+
 const NODES = [
   { code:'HAN',  name:'Hà Nội',      lat:21.028, lon:105.854, fx:'park',
     morse:'--- ..- .-. / .---- ... - / -.. .- - .',
@@ -903,10 +1004,10 @@ const NODES = [
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
-      { id:'DAD-950109-A', title:'Phi đoàn sinh nhật', href:'/dad/950109-a',
+      { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
         meta:'Published date: 27-Jul 2026 | V22', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        unlockAt: BIRTHDAY }
+        unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
     morse:'-.-. --- -. / -.. ..- --- -. --. / .... .- -. .... / .--. .... ..- -.-.',
@@ -1000,7 +1101,10 @@ const moc      = () => phase2() ? '30.10.2026' : '01.09.2026';
 const shown = s => !s.showAt || Date.now() >= new Date(s.showAt).getTime();
 /* Hồ sơ niêm phong mở đúng hạn. PIN là lớp khoá riêng của từng hồ sơ đã xuất bản,
    xử lý ở render() qua trường `pin`, không đụng tới mốc thời gian. */
-const isOpen = s => !s.unlockAt || Date.now() >= new Date(s.unlockAt).getTime();
+/* `eggGate` — hồ sơ chỉ thuộc về MAP-02: Game On là coi như đã mở khoá, kể cả
+   khi chưa tới mốc `unlockAt` (trường hợp vào sớm bằng Hack Map). */
+const isOpen = s => (s.eggGate && gameOn()) ||
+                    !s.unlockAt || Date.now() >= new Date(s.unlockAt).getTime();
 const pad = n => String(n).padStart(2,'0');
 const coordOf = n => n.lat.toFixed(3)+'°N · '+n.lon.toFixed(3)+'°E';
 const nodeOf = c => NODES.find(n=>n.code===c);
@@ -1025,6 +1129,13 @@ let pinFiles = {};
 /* Khai báo ở đây, TRƯỚC boot(). Đặt sau boot() sẽ vướng "temporal dead zone"
    của `let` và ném ReferenceError ngay khi nạp trang. */
 let pinFail = 0, pinLockUntil = 0, hackTries = 0;
+/* Bộ đếm sai của mã PIN hồ sơ tính theo NGÀY (pinFailDay), gợi ý chạy TUẦN TỰ
+   theo pinHintIdx. eggTitleDay ghi ngày đã chạy màn Easter Egg. Khai báo ở đây,
+   TRƯỚC boot(), để không vướng temporal dead zone. */
+let pinFailDay = null, pinHintIdx = 0, eggTitleDay = null;
+/* Mở MAP-02 bằng PIN trước ngày 01-09 — lưu bền cùng tiến độ, chỉ mất khi
+   Reset MAP-01. Khai báo TRƯỚC boot() và trước eggOpen() để tránh TDZ. */
+let eggHack = false;
 let firstAt = 0, clueAt = 0, winAt = 0;
 let eggDay = null, credFound = false, coachDone = false;
 
@@ -1160,6 +1271,19 @@ function render(code){
     return;
   }
   list.innerHTML = subs.map(s=>{
+    /* CỬA HAI TẦNG của hồ sơ niêm phong MAP-02.
+       Game On → ổ khoá biến mất, hồ sơ hiện dạng "đã mở khoá". Nhưng muốn hạ
+       cánh thật thì còn phải tìm ĐIỂM KÍCH HOẠT: cửa hậu 10 nhịp trên dòng
+       Last updated (`credFound`). Ai lỡ tìm ra từ trước thì vào thẳng, không
+       phải làm lại. Nhánh này đặt TRƯỚC isOpen() để còn chặn được cả sau 01-09,
+       lúc `unlockAt` đã tự hết hạn. */
+    if(s.eggGate && gameOn() && !credFound){
+      return '<div class="file" data-egggate="1">'+
+        '<span class="file-body"><span class="file-id">'+s.id+'</span>'+
+        '<span class="file-title">'+s.title+'</span>'+
+        '<span class="file-meta">Đã mở khoá · chưa có điểm kích hoạt</span>'+
+        '</span><span class="file-go">&rarr;</span></div>';
+    }
     if(isOpen(s)){
       const needPin = s.pin && !pinFiles[s.id];
       if(needPin){
@@ -1302,6 +1426,11 @@ const store = {
   firstAt = s.firstAt || 0; clueAt = s.clueAt || 0; winAt = s.winAt || 0;
   if(!firstAt) firstAt = Date.now();
   eggDay = s.eggDay || null;
+  pinFail = s.pinFail || 0;
+  pinFailDay = s.pinFailDay || null;
+  pinHintIdx = s.pinHintIdx || 0;
+  eggTitleDay = s.eggTitleDay || null;
+  eggHack = !!s.eggHack;
   credFound = !!s.credFound;
   coachDone = !!s.coachDone;
   visits = s.visits || 0;
@@ -1328,7 +1457,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, credFound, coachDone, pinFiles, pinLockUntil, firstAt, clueAt, winAt }); }
+function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, credFound, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -1364,7 +1493,7 @@ function lum(){
 }
 
 /* mạng lưới các tỉnh bừng lên vài giây — chỉ khi đã giải đủ */
-let gridT = null;
+let gridT = null, partyT = null;
 /* Lần ĐẦU quay ra bản đồ sau khi thắng: ăn mừng đủ bộ — mạng lưới, đất liền
    nhấp nháy, bốn tên lửa reo, tiêu đề đổi qua lại, băng rôn bay, tem đổi màu.
    Những lần sau: CHỈ nhấp nháy mạng lưới, không chúc mừng lại. */
@@ -1381,15 +1510,27 @@ function gridFlash(){
     winBanner(); titleSwap(true); bannerFly(22000);
     winCheer = true; showPz();
     eggFlash('win');
+    if(eggOpen()) eggTitleFlash();
+    /* BẪY ĐÃ VẤP: trước đây phần dọn dẹp đi chung hẹn giờ với mạng lưới.
+       Đóng/mở lại hộp pí mật trong 15 giây ăn mừng sẽ gọi gridFlash lần nữa
+       với full=false, clearTimeout xoá luôn hẹn giờ dọn dẹp → interval đổi
+       tiêu đề và class .cheer không ai gỡ, chữ nhấp nháy qua lại vĩnh viễn.
+       Nay phần ăn mừng có hẹn giờ RIÊNG (partyT), không bị lần gọi sau giết. */
+    clearTimeout(partyT);
+    partyT = setTimeout(endParty, 15100);
   }
   clearTimeout(gridT);
-  gridT = setTimeout(()=>{
-    g.classList.remove('on');
-    if(full){
-      frame.classList.remove('win','cheer');
-      winCheer = false; showPz(); titleSwap(false);
-    }
-  }, 15100);
+  gridT = setTimeout(()=>{ g.classList.remove('on'); }, 15100);
+}
+
+/* Kết thúc màn ăn mừng: dừng hẳn ở "Mission Completed" (hoặc "Easter Egg"
+   trong cửa sổ 01-09) và ĐỨNG IM — không đổi qua lại nữa. Muốn đổi thì bấm
+   tay vào tiêu đề. */
+function endParty(){
+  clearTimeout(partyT); partyT = null;
+  frame.classList.remove('win','cheer');
+  winCheer = false; showPz();
+  titleMC = true; titleSwap(false);
 }
 
 /* tem phiên bản đổi màu như trứng phục sinh trong 4 giây */
@@ -1401,7 +1542,7 @@ let eggT = null;
 function eggFlash(why){
   if(why === 'daily'){
     if(credFound) return;
-    const today = new Date().toISOString().slice(0,10);
+    const today = ngay();
     if(eggDay === today) return;
     eggDay = today; save();
   }else{
@@ -1438,18 +1579,25 @@ function khoang(ms){
    Trong 15 giây ăn mừng thì tự đổi; xong rồi thì bấm vào để đổi tay. */
 const TITLE_PLAIN = 'Bản đồ tác chiến';
 const TITLE_WIN   = 'Mission Completed';
+const TITLE_EGG   = 'Easter Egg';
 let titleMC = false, titleT = null;
 
 function titleSwap(auto){
   const t = $('title');
+  /* Đang trong 15 giây ăn mừng thì mọi lời gọi "đổi tay" đều bị bỏ qua,
+     để nhịp tự đổi 2,4 giây không bị cắt ngang giữa chừng. */
+  if(auto === false && frame.classList.contains('cheer')) return;
   clearInterval(titleT);
   if(nSolved() !== NODES.length){
-    t.textContent = TITLE_PLAIN; t.classList.remove('mc'); titleMC = false;
+    t.textContent = TITLE_PLAIN;
+    t.classList.remove('mc','egg'); titleMC = false;
     return;
   }
   const ve = () => {
-    t.textContent = titleMC ? TITLE_WIN : TITLE_PLAIN;
+    const egg = eggOpen();
+    t.textContent = titleMC ? (egg ? TITLE_EGG : TITLE_WIN) : TITLE_PLAIN;
     t.classList.toggle('mc', titleMC);
+    t.classList.toggle('egg', titleMC && egg);
   };
   if(auto){
     titleMC = true; ve();
@@ -1459,19 +1607,63 @@ function titleSwap(auto){
   }
 }
 
+/* Năm ô sao luôn đủ chỗ: đạt bao nhiêu thì tô đặc bấy nhiêu, phần còn thiếu
+   vẽ dạng VIỀN và làm mờ — thay vì biến mất như bản cũ. */
+function saoHtml(){
+  const k = soSao();
+  return '⭐'.repeat(k) +
+    (k < 5 ? '<span class="star-off">' + '☆'.repeat(5 - k) + '</span>' : '');
+}
+
 function winBanner(){
   const done = nSolved() === NODES.length;
   frame.classList.toggle('won', done);
+  /* Vào/ra GAME ON: thẻ "Phi vụ tiếp theo" đóng lại, khung header thấp xuống,
+     bản đồ nở ra chiếm chỗ. Nút toạ độ đặt bằng getScreenCTM nên phải gọi lại
+     place() SAU khi trình duyệt đã bố trí xong — chờ hai khung hình.
+     Chỉ chạy khi trạng thái THỰC SỰ đổi, tránh gọi place() mỗi lần vẽ lại. */
+  const on = done && eggOpen();
+  if(frame.classList.contains('gameon') !== on){
+    frame.classList.toggle('gameon', on);
+    requestAnimationFrame(()=>requestAnimationFrame(place));
+  }
   titleSwap(false);
   if(!done) return;
-  $('lead').textContent = LEAD_WIN;
+  /* GAME ON chỉ có MỘT kiểu hiện: dòng dẫn "Game On", băng rôn sinh nhật.
+     Không đảo qua lại với "Map: Bản đồ Tác chiến" và băng rôn Winner nữa. */
+  const cloth = $('bannerText');
+  cloth.classList.toggle('eggtext', on);
+  $('lead').innerHTML = on ? LEAD_EGG : LEAD_WIN;
+  if(on){ cloth.textContent = BANNER_EGG; return; }
   const end = winAt || Date.now();
-  $('bannerText').textContent =
+  cloth.innerHTML =
     'Winner: Dongchi Bình · ' +
-    'Mức độ hoàn thành: ' + '⭐'.repeat(soSao()) + ' · ' +
+    'Mức độ hoàn thành: ' + saoHtml() + ' · ' +
     'Thời gian hoàn thành: ' + khoang(end - (firstAt || end)) + ' · ' +
     'Tìm thấy clue đầu tiên sau: ' + khoang((clueAt || end) - (firstAt || end)) + ' · ' +
     'Easter Egg: ' + (credFound ? 'Y' : 'N');
+}
+
+/* ---- Màn Easter Egg: nhấp nháy tiêu đề y hệt tem Last updated ---- */
+let eggTitleT = null;
+function eggTitleFlash(){
+  const t = $('title');
+  t.classList.remove('eggblink'); void t.getBoundingClientRect();
+  t.classList.add('eggblink');
+  clearTimeout(eggTitleT);
+  eggTitleT = setTimeout(()=>t.classList.remove('eggblink'), 7300);
+}
+/* Mỗi ĐẦU NGÀY một lần, suốt 7 ngày kể từ 01-09: mở trang là thấy tiêu đề
+   Easter Egg nhấp nháy và băng rôn chúc mừng sinh nhật bay ra.
+   force=true dùng cho nút "Reset: Easter Map". */
+function eggIntro(force){
+  if(!eggOpen() || nSolved() !== NODES.length) return;
+  const d = ngay();
+  if(!force && eggTitleDay === d) return;
+  eggTitleDay = d; save();
+  titleMC = true; titleSwap(false);
+  eggTitleFlash();
+  winBanner(); bannerFly(22000);
 }
 
 /* Cho máy bay bay ra thế chỗ dòng chữ, hết giờ thì trả lại chữ tĩnh */
@@ -2287,12 +2479,14 @@ $('cxInput').addEventListener('keydown', e=>{ if(e.key==='Enter') guess(); });
 $('lead').addEventListener('click', e=>{
   if(e.detail < 2) return;
   if(nSolved() !== NODES.length) return;
-  bannerFly(20000);
+  bannerFly(20000);   /* chỉ cho máy bay bay lại, KHÔNG đổi nội dung băng rôn */
 });
 
 /* Khi đã thắng, bấm tiêu đề để đổi giữa chữ gốc và Mission Completed */
 $('title').addEventListener('click', ()=>{
   if(nSolved() !== NODES.length || frame.classList.contains('cheer')) return;
+  /* GAME ON: "Easter Egg" là chữ chốt, bấm vào KHÔNG lật về "Bản đồ tác chiến". */
+  if(eggOpen()) return;
   titleMC = !titleMC; titleSwap(false);
 });
 
@@ -2300,18 +2494,24 @@ $('pz').addEventListener('click', ()=>{
   if(!pzOn || nSolved() !== NODES.length) return;
   openCx(null);           /* bấm huy hiệu khi đã xong → mở lại hộp pí mật */
 });
+/* ---- MỘT đường xoá duy nhất cho CẢ HAI nút reset ----
+   Bản cũ: nút trong hộp pí mật reset từng biến bằng tay nên luôn sót — biến
+   credFound / coachDone / visits, các class giao diện won·cheer·flying·win,
+   và ba hẹn giờ titleT · flyT · gridT vẫn sống. Nút lá cờ thì dọn storage rồi
+   nạp lại trang nên mới sạch trọn vẹn.
+   Nay cả hai đi chung hàm này: dọn storage → reload. Dấu vết duy nhất được
+   phép sống sót là bộ đếm R(n). */
+function hardWipe(ev, detail){
+  ping(ev, detail || '');
+  const keepR = resetCount + 1;
+  try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  try{ localStorage.setItem('mtv1', JSON.stringify({ resetCount: keepR })); }catch(e){}
+  try{ ['mtseen','mtload','mtvisit','mtpf'].forEach(k=>sessionStorage.removeItem(k)); }catch(e){}
+  setTimeout(()=>location.reload(), 240);
+}
 function doReset(){
-  solved = {}; unlocked = {}; channel = null; morseSeen = false; pzOn = false;
-  wrongCount = 0; pinned = null; missionShown = false; eggDone = false; winParty = false;
-  pinFiles = {};
-  firstAt = Date.now(); clueAt = 0; winAt = 0; pinLockUntil = 0;
-  eggDay = null;
-  resetCount++; stampText();
-  save(); showPz(); refreshBeacons(); lum();
-  frame.classList.remove('hot');
-  try{ localStorage.removeItem('mtping'); }catch(e){}
-  ping('reset','');
-  closeCx(); paint();
+  cxw.classList.remove('on'); cxw.setAttribute('aria-hidden','true');
+  hardWipe('reset', 'nút chơi lại trong hộp pí mật');
 }
 $('cxClose').addEventListener('click', closeCx);
 cxw.addEventListener('click', e=>{ if(e.target===cxw && !fxLock) closeCx(); });
@@ -2349,25 +2549,98 @@ $('flagZone').addEventListener('click', ()=>{
   flagT = setTimeout(()=>{ flagN = 0; $('flagZone').classList.remove('warm'); }, 900);
   if(flagN >= 5){
     flagN = 0; $('flagZone').classList.remove('warm');
+    hqShow(1);                       /* luôn mở lại ở bước chọn chiến dịch */
     wipew.classList.add('on'); wipew.setAttribute('aria-hidden','false');
   }
 });
 function closeWipe(){
   wipew.classList.remove('on'); wipew.setAttribute('aria-hidden','true');
-  hackTries = 0;
+  hackTries = 0; hqShow(1);
 }
+
+/* ===== BOX TỔNG TƯ LỆNH =====
+   Bước 1 — hai ô chiến dịch nằm ngang: MAP-01 và MAP-02.
+   Bước 2 — chọn lệnh cho chiến dịch vừa bấm: Reset hoặc Hack Map.
+   Nút Reset cần bấm HAI nhịp (nhịp đầu đổi nhãn thành lời hỏi lại) — cố ý,
+   để không phải chồng thêm một hộp xác nhận lên trên hộp này. */
+let hqGame = null, hqArmed = false;
+
+function eggSan(){ return nSolved() === NODES.length && eggOpen(); }
+
+function hqState(){
+  const won = nSolved() === NODES.length;
+  $('hqStateMap').textContent = won ? 'Đã hoàn thành 4/4'
+                                    : 'Đang chơi · ' + nSolved() + '/4';
+  $('hqStateEgg').textContent = !won ? 'Chờ MAP-01 xong'
+                              : (eggOpen() ? 'Đang diễn ra' : 'Mở 00:00 · 01-09');
+  $('hqCardMap').classList.toggle('off', won);
+  $('hqCardEgg').classList.toggle('off', !eggSan());
+}
+function hqShow(step){
+  $('hqStep1').hidden = step !== 1;
+  $('hqStep2').hidden = step !== 2;
+  if(step === 1){ hqGame = null; hqArmed = false; hqCool(); hqState(); }
+}
+function hqPick(g){
+  if(!GAMES[g]) return;
+  hqGame = g; hqArmed = false;
+  const G = GAMES[g], rs = $('hqReset');
+  $('hqTitle').textContent = G.code + ' · ' + G.name;
+  rs.textContent = 'Reset: ' + G.name;
+  const ok = (g === 'map') || eggSan();
+  rs.disabled = !ok;
+  $('hqNote').textContent = g === 'map'
+    ? 'Reset: xoá sạch tiến độ, chơi lại MAP-01 từ đầu. Bộ đếm R(n) vẫn giữ.'
+    : (ok ? 'Reset: tua về đúng lúc đếm ngược chạm 0 — tiêu đề nhấp nháy, băng rôn sinh nhật bay ra. Tiến độ MAP-01 giữ nguyên.'
+          : 'Chưa reset được: MAP-02 chỉ mở khi đã hoàn thành MAP-01 và đồng hồ đã về 0. Dùng Hack Map để mở sớm.');
+  hqShow(2);
+}
+
+/* Reset MAP-02 — KHÔNG đụng tiến độ, chỉ tua lại màn chào Easter Egg */
+function eggReplay(){
+  ping('reset_easter_egg', 'tua lại màn chúc mừng sinh nhật');
+  eggTitleDay = null; eggDay = null; winParty = false;
+  clearTimeout(partyT); clearTimeout(gridT); clearTimeout(flyT);
+  frame.classList.remove('win','cheer','flying');
+  winCheer = false; save();
+  closeWipe();
+  cxw.classList.remove('on'); cxw.setAttribute('aria-hidden','true');
+  if(current) close();
+  setTimeout(()=>{ eggIntro(true); gridFlash(); }, 300);
+}
+
+/* Vào lệnh của một chiến dịch phải bấm 5 NHỊP LIÊN TIẾP vào đúng ô đó — giống
+   lá cờ chân trang. Ngưng quá 900 ms, hoặc đổi sang ô kia, là đếm lại từ đầu.
+   Cố ý làm khó: sau nút này là lệnh xoá sạch. */
+let hqTap = 0, hqTapT = null, hqTapG = null;
+function hqCool(){
+  clearTimeout(hqTapT); hqTap = 0; hqTapG = null;
+  document.querySelectorAll('.hq-card').forEach(x=>x.classList.remove('warm'));
+}
+document.querySelectorAll('.hq-card').forEach(b=>
+  b.addEventListener('click', ()=>{
+    const g = b.dataset.game;
+    if(hqTapG !== g) hqCool();
+    hqTapG = g; hqTap++;
+    b.classList.add('warm');
+    clearTimeout(hqTapT);
+    hqTapT = setTimeout(hqCool, 900);
+    if(hqTap >= 5){ hqCool(); hqPick(g); }
+  }));
+$('hqBack').addEventListener('click', ()=> hqShow(1));
+$('hqHack').addEventListener('click', ()=> openPin(hqGame === 'egg' ? 'egg' : 'map'));
+$('hqReset').addEventListener('click', ()=>{
+  const rs = $('hqReset'); if(rs.disabled || !hqGame) return;
+  if(!hqArmed){                       /* nhịp một: hỏi lại ngay trên nút */
+    hqArmed = true;
+    rs.textContent = 'Chú Bình chắc chưaaa? Bấm lần nữa';
+    return;
+  }
+  if(hqGame === 'map') hardWipe('xoa_sach', 'Tổng tư lệnh · reset MAP-01');
+  else eggReplay();
+});
 $('wipeNo').addEventListener('click', closeWipe);
 wipew.addEventListener('click', e=>{ if(e.target === wipew) closeWipe(); });
-$('wipeYes').addEventListener('click', ()=>{
-  ping('xoa_sach', 'bấm lá cờ 5 lần');
-  /* Xoá sạch nhưng GIỮ LẠI bộ đếm số lần chơi lại — nó là dấu vết duy nhất
-     được phép sống sót, để dòng Last updated còn hiện "· R(n)". */
-  const keepR = resetCount + 1;
-  try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
-  try{ localStorage.setItem('mtv1', JSON.stringify({ resetCount: keepR })); }catch(e){}
-  try{ ['mtseen','mtload','mtvisit'].forEach(k=>sessionStorage.removeItem(k)); }catch(e){}
-  setTimeout(()=>location.reload(), 240);
-});
 
 /* Bấm liên tục 10 cái quanh dòng Last updated → khung giới thiệu người dựng trang */
 const credw = $('credw');
@@ -2380,6 +2653,9 @@ $('stampZone').addEventListener('click', ()=>{
     tapN = 0;
     credw.classList.add('on'); credw.setAttribute('aria-hidden','false');
     credFound = true; save();          /* tìm ra rồi thì tem thôi nháy hằng ngày */
+    /* Đây cũng là ĐIỂM KÍCH HOẠT của hồ sơ niêm phong MAP-02 — bảng hồ sơ đang
+       mở thì vẽ lại ngay để hồ sơ chuyển sang bấm vào được. */
+    if(current) render(current);
     ping('cua_sau', 'mở khung giới thiệu', true);
   }
 });
@@ -2420,25 +2696,43 @@ $('askYes').addEventListener('click', ()=>{ closeAsk(); doReset(); });
    Mã nhập vào và mã gốc đều được chuẩn hoá (bỏ dấu, khoảng trắng, viết hoa)
    trước khi so, nên gõ "mig21", "MIG-21" hay "mig 21" đều đúng. */
 const CODES = {
-  map:  { kind:'PIN', code:'1959', label:'Mã PIN truy cập bản đồ',
+  map:  { kind:'PIN', code:'1959', label:'Hack Map · MAP-01 Bản đồ tác chiến',
           hints:['DAD - TARO'], tries:2 },
-  /* Ba gợi ý xoay vòng: mỗi lần gõ sai thì chỗ gợi ý tự đổi sang câu kế tiếp.
-     Sai quá `lockAfter` lần trong một phiên thì khoá `lockMs` mới cho thử lại. */
+  /* Hack MAP-02: mở luôn cửa sổ Easter Egg trước 01-09 (và mở sẵn MAP-01,
+     vì Easter Egg chỉ có nghĩa khi bản đồ tác chiến đã xong). */
+  egg:  { kind:'PIN', code:'1959', label:'Hack Map · MAP-02 Easter Egg',
+          hints:['DAD - TARO'], tries:2 },
+  /* Gợi ý đi LẦN LƯỢT theo pinHintIdx (không ngẫu nhiên), mỗi lần gõ sai thì
+     nhích sang câu kế tiếp rồi vòng lại từ đầu. Thứ tự đã chốt:
+       1. Gợi ý số 2, mission 3   2. MIG-21   3. 5 ngôi sao   4. Phi công Phạm Tuân
+     Sai QUÁ `lockAfter` lần TRONG MỘT NGÀY thì mới khoá `lockMs`. */
   file: { kind:'PIN', code:'5121', label:'Mã PIN xem lại hồ sơ',
-          hints:['Gợi ý số 2, mission 3', 'MIG-21', 'Phi công Phạm Tuân'],
-          lockAfter:5, lockMs:3600000 }
+          hints:['Gợi ý số 2, mission 3', 'MIG-21', '5 ngôi sao', 'Phi công Phạm Tuân'],
+          lockAfter:3, lockMs:3600000 }
 };
 const codeNorm = s => (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const pinw = $('pinw');
 let pinMode = 'map', pinArg = null;
-function savePinFail(){ try{ sessionStorage.setItem('mtpf', String(pinFail)); }catch(e){} }
-try{ pinFail = parseInt(sessionStorage.getItem('mtpf') || '0', 10) || 0; }catch(e){}
+/* Bộ đếm sai theo NGÀY, lưu ở localStorage cùng tiến độ (trước đây nằm ở
+   sessionStorage nên đóng tab là mất). Sang ngày mới, hoặc khoá vừa hết hạn,
+   thì đếm lại từ 0. */
+function pinRoll(){
+  const d = ngay();
+  /* Sang ngày mới: cả bộ đếm sai LẪN con trỏ gợi ý đều về 0. Người xem lâu lâu
+     mới ghé vẫn được xem lại gợi ý từ câu đầu, không bị nhảy giữa chừng. */
+  if(pinFailDay !== d){ pinFailDay = d; pinFail = 0; pinHintIdx = 0; save(); }
+  if(pinLockUntil && Date.now() >= pinLockUntil){
+    pinLockUntil = 0; pinFail = 0; save();
+  }
+}
+function savePinFail(){ save(); }
 
-/* Gợi ý hiện theo số lần đã gõ sai, xoay vòng trong danh sách */
+/* Gợi ý đi LẦN LƯỢT theo pinHintIdx, và pinHintIdx về 0 mỗi ngày (xem pinRoll) */
 function showHint(){
   const hs = CODES[pinMode].hints || [];
-  const i = hs.length ? (pinFail % hs.length) : 0;
-  $('pinHint').innerHTML = hs.length ? 'Gợi ý: <b>' + hs[i] + '</b>' : '';
+  if(!hs.length){ $('pinHint').innerHTML = ''; return; }
+  const i = ((pinHintIdx % hs.length) + hs.length) % hs.length;
+  $('pinHint').innerHTML = 'Gợi ý: <b>' + hs[i] + '</b>';
 }
 const pinLocked = () => pinLockUntil && Date.now() < pinLockUntil;
 function lockLeft(){
@@ -2461,6 +2755,7 @@ function openPin(mode, arg){
   pinMode = CODES[mode] ? mode : 'hack';
   pinArg = arg || null;
   hackTries = 0;
+  if(pinMode === 'file') pinRoll();
   const cfg = CODES[pinMode], need = codeNorm(cfg.code).length;
   $('pinTitle').textContent = cfg.label;
   showHint();
@@ -2468,7 +2763,8 @@ function openPin(mode, arg){
   $('pinDash').innerHTML = Array.from({length: need}, ()=>'<span></span>').join('');
   $('pinIn').value = ''; drawPin();
   $('pinMsg').className = 'cx-hint';
-  $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự') + ' rồi Enter';
+  $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự') + ' rồi Enter'
+    + (pinMode === 'file' && pinFail > 0 ? ' · đã sai ' + pinFail + '/' + CODES.file.lockAfter : '');
   if(pinMode === 'file' && pinLocked()){
     $('pinMsg').className = 'cx-hint bad';
     $('pinMsg').textContent = 'Đã khoá — thử lại sau ' + lockLeft();
@@ -2487,7 +2783,6 @@ function closePin(){
      coi như thao tác chuột để lần đóng bảng hồ sơ sau cũng không vẽ viền. */
   blurNow(); kbdNav = false;
 }
-$('hackmap').addEventListener('click', e=>{ if(e.detail >= 2) openPin('map'); });
 $('pinIn').addEventListener('input', drawPin);
 $('pinDash').addEventListener('click', ()=>$('pinIn').focus());
 pinw.addEventListener('click', e=>{ if(e.target === pinw) closePin(); });
@@ -2497,13 +2792,14 @@ function hackTry(){
   const v = ($('pinIn').value || '').trim();
   const msg = $('pinMsg');
   if(pinMode === 'file'){                       /* mã xem lại hồ sơ đã xuất bản */
+    pinRoll();
     if(pinLocked()){
       msg.className = 'cx-hint bad';
       msg.textContent = 'Đã khoá — thử lại sau ' + lockLeft();
       return;
     }
     if(codeNorm(v) === codeNorm(CODES.file.code)){
-      hackTries = 0; pinFail = 0; savePinFail();
+      hackTries = 0; pinFail = 0; pinLockUntil = 0; savePinFail();
       if(pinArg) pinFiles[pinArg] = true;
       save(); closePin();
       if(current) render(current);
@@ -2513,25 +2809,29 @@ function hackTry(){
       if(sub) fly(sub.href, node.code + ' · ' + node.name);   /* mở luôn hồ sơ */
       return;
     }
-    pinFail++; savePinFail();
-    ping('sai_pin_ho_so', (pinArg || '') + ' · lần sai thứ ' + pinFail);
-    showHint();                          /* đổi sang gợi ý kế tiếp */
-    if(pinFail > CODES.file.lockAfter){  /* quá số lần cho phép → khoá một giờ */
+    pinFail++; pinHintIdx++; savePinFail();
+    ping('sai_pin_ho_so', (pinArg || '') + ' · lần sai thứ ' + pinFail + ' trong ngày');
+    showHint();                          /* nhích sang gợi ý KẾ TIẾP, không random */
+    const max = CODES.file.lockAfter;
+    if(pinFail > max){                   /* quá 3 lần TRONG NGÀY → khoá 60 phút */
       pinLockUntil = Date.now() + CODES.file.lockMs;
       save();
       msg.className = 'cx-hint bad';
-      msg.textContent = 'Sai quá nhiều — khoá ' + lockLeft();
+      msg.textContent = 'Sai quá ' + max + ' lần hôm nay — khoá ' + lockLeft();
       $('pinIn').disabled = true;
       ping('khoa_pin_ho_so', String(CODES.file.lockMs/60000) + ' phút');
       return;
     }
     msg.className = 'cx-hint bad';
-    msg.textContent = 'Chưa đúng — gợi ý đã đổi, còn ' +
-      (CODES.file.lockAfter + 1 - pinFail) + ' lượt';
+    msg.textContent = 'Chưa đúng · Sai ' + pinFail + '/' + max + ' — gợi ý đã đổi' +
+      (pinFail === max ? ' · sai thêm lần nữa là khoá 60 phút' : '');
     $('pinIn').value = ''; drawPin(); $('pinIn').focus();
     return;
   }
-  if(codeNorm(v) === codeNorm(CODES.map.code)){
+  /* Hai cửa Hack Map dùng CHUNG một nhánh: cùng mã, khác việc làm sau khi mở.
+     MAP-01 → mở hết bốn toạ độ rồi chạy màn ăn mừng.
+     MAP-02 → làm y vậy, cộng thêm bật cờ eggHack để mở cửa sổ Easter Egg. */
+  if(codeNorm(v) === codeNorm(CODES[pinMode].code)){
     hackTries = 0;
     NODES.forEach(n=>{
       unlocked[n.code] = true;
@@ -2539,15 +2839,23 @@ function hackTry(){
     });
     channel = channel || 'map';
     morseSeen = true; pzOn = true; missionShown = false;
+    const toEgg = pinMode === 'egg';
+    if(toEgg){ eggHack = true; eggTitleDay = null; }
+    winParty = false;                 /* cho phép chạy lại màn ăn mừng đủ bộ */
     frame.classList.add('hot');
     save(); showPz(); refreshBeacons(); lum();
-    ping('hackmap', 'mở toàn bộ bản đồ bằng PIN');
+    ping(toEgg ? 'hack_easter_egg' : 'hackmap',
+         toEgg ? 'mở MAP-02 bằng PIN' : 'mở toàn bộ MAP-01 bằng PIN');
     closePin(); closeWipe(); closeCx(); paint();
-    setTimeout(()=>{ gridFlash(); eggFlash('win'); }, 260);
+    titleMC = true;
+    setTimeout(()=>{
+      if(toEgg) eggIntro(true);
+      gridFlash(); eggFlash('win');
+    }, 260);
     return;
   }
   hackTries++;
-  const left = CODES.map.tries - hackTries;
+  const left = CODES[pinMode].tries - hackTries;
   if(left <= 0){                         /* hết lượt → trả hẳn về bản đồ */
     hackTries = 0;
     closePin(); closeWipe(); closeCx();
@@ -2609,6 +2917,12 @@ document.addEventListener('keydown', e=>{
   else if(current) close();
 });
 $('fileList').addEventListener('click', e=>{
+  if(e.target.closest('.file[data-egggate]')){
+    $('sheetNote').textContent =
+      'Hồ sơ đã mở khoá — nhưng cần tìm điểm kích hoạt để hạ cánh.';
+    ping('cham_ho_so_niem_phong', 'chưa có điểm kích hoạt');
+    return;
+  }
   const ask = e.target.closest('.file[data-askpin]');
   if(ask){ openPin('file', ask.dataset.askpin); return; }
   const a = e.target.closest('a.file[data-fly]'); if(!a) return;
@@ -2622,6 +2936,12 @@ $('fileList').addEventListener('click', e=>{
    Lần ghé đầu chờ 25 giây; từ lần thứ hai trở đi chỉ 6 giây. */
 const LEAD_DEFAULT = 'Xin mừi Dongchi Bình chọn toạ độ hạ cánh';
 const LEAD_WIN     = 'Map: Bản đồ Tác chiến';
+/* Dòng dẫn tĩnh và nội dung băng rôn trong cửa sổ Easter Egg (từ 00:00 01-09) */
+/* Dòng dẫn Game On — có thẻ nên phải gán bằng innerHTML, không textContent */
+const LEAD_EGG     = 'Game On · Độ khó: <b class="qco">Q♥</b>';
+const BANNER_EGG   = 'Chúc mừng sinh nhật Dongchi Bình tuổi 32 🎉 · ' +
+  'Chúc anh mọi điều như ý, vạn sự bình an, cần - kiệm - liêm - chính ' +
+  'như Bác Hồ dạy 😘🎊🎆';
 const LEAD_HINT = 'Double-tap / Double-click to start mission';
 let idleT = null;
 function armIdle(){
@@ -2643,8 +2963,15 @@ let released = false;
 function release(){ if(!released){ released = true; frame.classList.add('lit'); } }
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* GIAO DIỆN CHỐT SAU KHI THẮNG.
+   Đã hoàn thành MAP-01 thì mọi lần mở trang về sau đều dừng ở "Mission
+   Completed" — đó là màn hình cuối của MAP-01, và là thứ người xem thấy cho tới
+   khi MAP-02 mở ra. Trong cửa sổ Easter Egg thì chỗ đó đọc là "Easter Egg".
+   Bấm vào tiêu đề vẫn lật về chữ gốc được, nhưng MẶC ĐỊNH không còn là chữ gốc. */
+if(nSolved() === NODES.length) titleMC = true;
 tick(); paint(); armIdle(); stampText(); winBanner();
 setTimeout(()=>{ eggFlash('win'); eggFlash('daily'); }, 900);        /* mỗi lần vào trang sau khi đã giải xong */
+setTimeout(()=>eggIntro(), 1200);   /* đầu ngày trong cửa sổ 7 ngày → màn Easter Egg */
 (function(){
   let kind = 'vào mới';
   try{

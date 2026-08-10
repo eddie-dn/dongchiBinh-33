@@ -3,7 +3,12 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V15.00** — tem hiển thị dọc mép trái bản đồ.
+**Phiên bản hiện tại: V15.03** — trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong.
+
+> **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
+> `MAP-01 · Bản đồ tác chiến` là game giải mật thư bốn toạ độ.
+> `MAP-02 · Easter Egg` là màn sinh nhật, chỉ mở khi MAP-01 xong **và** đếm ngược về 0.
+> Tên khai ở hằng `GAMES` trong `index.html` — sửa một chỗ, đổi khắp nơi.
 
 ---
 
@@ -23,13 +28,13 @@ Deploy thẳng lên Vercel từ GitHub.
 ├── han/
 │   └── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
 ├── dad/
-│   ├── 950109-a/index.html ← DAD-950109-A · hồ sơ đã xuất bản
+│   ├── 950901-a/index.html ← DAD-950901-A · hồ sơ đã xuất bản
 │   └── 950901-b/index.html ← DAD-950901-B · hồ sơ niêm phong (trang tạm)
 ├── uih/                    ← chưa có hồ sơ
 └── sgn/                    ← chưa có hồ sơ
 ```
 
-Vercel tự phục vụ `dad/950109-a/index.html` tại `/dad/950109-a`. Một sub-page = một thư
+Vercel tự phục vụ `dad/950901-a/index.html` tại `/dad/950901-a`. Một sub-page = một thư
 mục chứa đúng một `index.html`.
 
 ---
@@ -39,7 +44,7 @@ mục chứa đúng một `index.html`.
 | Mã | Thành phố | Vai trò |
 |---|---|---|
 | `HAN` | Hà Nội | Mở hồ sơ `HAN-261030` khi vào pha tháng 10 |
-| `DAD` | Đà Nẵng | Hai hồ sơ: `DAD-950109-A` (đã xuất bản) và `DAD-950901-B` (niêm phong) |
+| `DAD` | Đà Nẵng | Hai hồ sơ: `DAD-950901-A` (đã xuất bản) và `DAD-950901-B` (niêm phong) |
 | `UIH` | Quy Nhơn | Chưa có hồ sơ |
 | `SGN` | TP.HCM | Chưa có hồ sơ · **là toạ độ chốt sổ**, xem mục 5 |
 
@@ -69,7 +74,7 @@ Hoàng Sa và Trường Sa nằm **đúng vị trí địa lý**, cùng phép ch
 
 **Bước 1** — tạo thư mục, ví dụ `uih/990101-a/index.html`.
 
-**Bước 2** — chép khối bổ sung ở cuối `dad/950109-a/index.html` sang, chỉ đổi hằng `TAG`.
+**Bước 2** — chép khối bổ sung ở cuối `dad/950901-a/index.html` sang, chỉ đổi hằng `TAG`.
 
 **Bước 3** — khai báo trong `NODES` của `index.html`:
 
@@ -193,18 +198,25 @@ const CODES = {
 | Cửa | Loại | Mã | Gợi ý | Khi gõ sai |
 |---|---|---|---|---|
 | `map` | PIN | `1959` | DAD - TARO | Sai 2 lần thì đóng, về bản đồ chính |
-| `file` | PIN | `5121` | ba gợi ý xoay vòng, xem dưới | Sai **quá 5 lần trong một phiên** thì **khoá 1 giờ** |
+| `file` | PIN | `5121` | bốn gợi ý đi lần lượt, xem dưới | Hiện **Sai n/3**; sai **quá 3 lần trong MỘT NGÀY** thì **khoá 60 phút** |
 
-**Ba gợi ý của `file` xoay vòng theo số lần gõ sai** — mỗi lần sai, chỗ gợi ý tự đổi sang
-câu kế tiếp rồi quay lại từ đầu:
+**Bốn gợi ý của `file` đi LẦN LƯỢT, không ngẫu nhiên** — mỗi lần gõ sai thì nhích sang câu
+kế tiếp rồi vòng lại từ đầu. Thứ tự đã chốt, `5 ngôi sao` đứng **trước** `Phạm Tuân`:
 
 1. `Gợi ý số 2, mission 3`
 2. `MIG-21`
-3. `Phi công Phạm Tuân`
+3. `5 ngôi sao`
+4. `Phi công Phạm Tuân`
 
-Bộ đếm sai lưu ở `sessionStorage` (`mtpf`) nên đóng tab là về 0; mốc khoá lưu ở
-`localStorage` (`pinLockUntil`) nên đóng tab vẫn còn hiệu lực. Đang khoá thì ô nhập bị vô
-hiệu và hộp báo còn bao lâu.
+Con trỏ gợi ý là `pinHintIdx`. **Sang ngày mới thì cả bộ đếm sai lẫn con trỏ gợi ý đều về
+0** (`pinRoll()`), nên người xem lâu lâu mới ghé vẫn được đọc lại gợi ý **từ câu đầu**, không
+bị rơi vào giữa danh sách.
+
+**Bộ đếm sai tính theo NGÀY** (`pinFail` + `pinFailDay`, lưu ở `localStorage` cùng tiến độ,
+không còn ở `sessionStorage` nữa nên đóng tab mở lại vẫn đếm tiếp). Sang ngày mới hoặc khi
+khoá vừa hết hạn thì về 0. Mỗi lần sai, hộp báo đúng dạng **`Chưa đúng · Sai n/3`**; tới
+`3/3` thì báo thêm *"sai thêm lần nữa là khoá 60 phút"*. Lần sai thứ **4** mới thực sự khoá
+`pinLockUntil` 60 phút. Gõ đúng mã thì đếm về 0 và gỡ khoá luôn.
 
 **Chuẩn hoá khi so mã:** cả mã gõ vào lẫn mã gốc đều bỏ hết ký tự không phải chữ/số rồi
 mới so (`codeNorm`). Nhờ vậy gõ `MIG-21`, `mig21`, `mig 21` đều đúng, và **không còn cảnh
@@ -272,19 +284,62 @@ chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên l
 
 | Cửa | Thao tác | Kết quả |
 |---|---|---|
-| **Xoá sạch** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Reset Mission** → xác nhận thì xoá toàn bộ tiến độ, **giữ lại bộ đếm `R(n)`** |
+| **Tổng tư lệnh** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Box Tổng tư lệnh** hai bước, xem dưới |
 | **Giới thiệu** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung giới thiệu người dựng trang (`#credw`, sửa nội dung ở `.cred-body`) |
-| **hackmap** | Trong hộp Reset Mission, **gõ đúp** vào chữ `hackmap` | Hộp PIN → nhập `1959` thì mở toàn bộ bản đồ và chạy màn reo mừng |
+| **Hack Map** | Trong Box Tổng tư lệnh, chọn chiến dịch rồi bấm **Hack Map** | Hộp PIN → nhập `1959`. Chữ `hackmap` gõ đúp đã bỏ, cơ chế PIN giữ nguyên |
 
 Vùng bấm của cửa xoá sạch là **cả dòng bản quyền**, không chỉ lá cờ 15px — dễ trúng hơn
 nhiều trên điện thoại. Khi đang đếm, **chỉ lá cờ sáng và phóng to nhẹ**, phần chữ giữ
 nguyên.
 
+### Box Tổng tư lệnh — hai bước
+
+Câu *"Ace Map & Nhận Huy Chương xịn hơn!"* và chữ `hackmap` gõ đúp đều đã bỏ.
+
+**Bước 1 — chọn chiến dịch.** Hai ô nằm ngang, mỗi ô hiện mã, tên và tình trạng. Vào được
+lệnh của một ô phải bấm **5 nhịp liên tiếp** vào đúng ô đó — giống lá cờ chân trang. Ngưng
+quá 900 ms hoặc nhảy sang ô kia là đếm lại từ đầu; ô đang đếm sáng lên (`.hq-card.warm`).
+Cố ý làm khó vì sau nút này là lệnh xoá sạch.
+
+| Ô | Tình trạng có thể hiện |
+|---|---|
+| `MAP-01 · Bản đồ tác chiến` | `Đang chơi · n/4` → `Đã hoàn thành 4/4` |
+| `MAP-02 · Easter Egg` | `Chờ MAP-01 xong` → `Mở 00:00 · 01-09` → `Đang diễn ra` |
+
+**Bước 2 — chọn lệnh cho chiến dịch vừa bấm.** Luôn có đúng hai nút, cộng một đường lùi
+*"← Chọn chiến dịch khác"*:
+
+| Lệnh | MAP-01 | MAP-02 |
+|---|---|---|
+| **Reset** | Xoá sạch tiến độ, chơi lại từ đầu, **giữ `R(n)`**, nạp lại trang | **Không đụng tiến độ.** Tua về đúng lúc đếm ngược chạm 0: tiêu đề nhấp nháy đổi màu, chữ nhảy qua lại, băng rôn sinh nhật bay ra, mạng lưới 50 tỉnh bừng lên |
+| **Hack Map** | PIN `1959` → mở cả bốn toạ độ, chạy màn ăn mừng | PIN `1959` → làm y như MAP-01, **cộng thêm** bật cờ `eggHack` để mở cửa sổ Easter Egg **trước 01-09** |
+
+Nút **Reset** của MAP-02 bị vô hiệu khi chưa đủ điều kiện (`eggSan()` = đã xong MAP-01 **và**
+`eggOpen()`); dòng chú thích dưới nút nói rõ lý do và chỉ sang Hack Map.
+
+**Reset cần bấm hai nhịp.** Nhịp đầu đổi nhãn nút thành *"Chú Bình chắc chưaaa? Bấm lần
+nữa"*. Cố ý làm ngay trên nút thay vì mở thêm một hộp xác nhận — hai hộp `.cxw` chồng nhau
+sẽ đá `z-index` của nhau.
+
+**`eggHack` sống bền** trong `mtv1`, nên hack một lần là cửa sổ Easter Egg mở mãi. Chỉ
+**Reset MAP-01** mới xoá nó (vì đó là `hardWipe`).
+
+### Một đường xoá duy nhất — `hardWipe()`
+
+**Bẫy đã vấp.** Nút chơi lại trong hộp pí mật trước đây reset **từng biến bằng tay** nên
+luôn sót: `credFound`, `coachDone`, `visits`, `winCheer`, các class giao diện
+`won · cheer · flying · win`, và ba hẹn giờ `titleT · flyT · gridT` vẫn sống. Đường lá cờ
+thì dọn `localStorage` rồi `location.reload()` nên mới sạch trọn vẹn.
+
+Nay **cả hai nút đi chung `hardWipe(ev, detail)`**: dọn `mtv1` · `mtping` ·
+`mtseen` · `mtload` · `mtvisit` · `mtpf`, ghi lại đúng một trường `resetCount`, rồi nạp lại
+trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng gỡ từng biến.**
+
 ---
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 07-Aug-2026 · V15.00** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 08-Aug-2026 · V15.03** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -389,7 +444,7 @@ của Vercel.
 
 ---
 
-## 14. File hồ sơ `DAD-950109-A`
+## 14. File hồ sơ `DAD-950901-A`
 
 File này **giữ nguyên bản gốc từng byte**. Mọi thứ thêm vào nằm trong **một khối duy nhất**
 ngay trước thẻ Vercel Analytics, mở đầu bằng:
@@ -481,9 +536,20 @@ Output Directory **để trống** → Deploy. Từ đó mỗi lần `git push` 
 - [ ] Gõ đúp một điểm sáng → ghim mã morse → bấm vào mã → mở hộp pí mật
 - [ ] Giải đúng → hiệu ứng ăn mừng + khối chúc mừng viền vàng nhấp nháy
 - [ ] `SGN` không phản ứng gì khi ba toạ độ kia chưa xong
-- [ ] Bấm `DAD-950109-A` → hỏi PASS → gõ `mig21` → mở hồ sơ
+- [ ] Bấm `DAD-950901-A` → hỏi PASS → gõ `mig21` → mở hồ sơ
 - [ ] Trong hồ sơ, nút `← Bản đồ` chỉ có ở trang đầu và nhảy tới Phần I
-- [ ] Bấm 5 cú vào dòng bản quyền → Reset Mission; `R(n)` vẫn còn sau khi xoá
+- [ ] Bấm 5 cú vào dòng bản quyền → **Box Tổng tư lệnh**, bước 1 có hai ô MAP-01 / MAP-02
+- [ ] Chọn MAP-02 khi chưa thắng → nút Reset mờ, chú thích chỉ sang Hack Map
+- [ ] Hack Map · MAP-02 → PIN `1959` → mở luôn màn Easter Egg, đóng tab mở lại vẫn còn
+- [ ] Vào ô chiến dịch phải **5 nhịp liên tiếp**; 3 nhịp ô này + 2 nhịp ô kia thì không mở
+- [ ] Reset cần bấm **hai nhịp**; `R(n)` vẫn còn sau khi xoá MAP-01
+- [ ] Game On: thẻ Phi vụ biến mất, bản đồ nở ra, nút toạ độ vẫn đúng chỗ
+- [ ] Game On: bấm tiêu đề không lật về chữ gốc; gõ đúp dòng dẫn không đổi băng rôn
+- [ ] Game On: `950901-B` bỏ ổ khoá, bấm vào báo cần điểm kích hoạt; sau 10 nhịp Last updated thì vào thẳng
+- [ ] Nút chơi lại trong hộp pí mật xoá sạch **y hệt** đường lá cờ (cùng `hardWipe`)
+- [ ] Thắng đủ 4 → đóng/mở lại hộp pí mật vài lần trong 15 giây → hết giờ tiêu đề **đứng im**
+- [ ] Mở `/?egg=1` sau khi đã thắng → tiêu đề `Easter Egg` nhấp nháy + băng rôn sinh nhật
+- [ ] Gõ sai PIN hồ sơ: báo `Sai 1/3` → `2/3` → `3/3` → lần 4 khoá 60 phút; gợi ý đi lần lượt
 - [ ] Thử trên điện thoại thật, cả màn hình nhỏ 360px
 
 ---
@@ -496,8 +562,9 @@ mở lại vẫn còn. Ba trường hợp mất: chế độ ẩn danh, người
 **từng máy + từng trình duyệt**.
 
 Các trường đang lưu: `solved` · `unlocked` · `channel` · `pzOn` · `morseSeen` · `wrongCount`
-· `resetCount` · `missionShown` · `medalOn` · `visits` · `season` · `eggDone` · `eggDay` ·
-`credFound` · `coachDone` · `pinFiles`.
+· `resetCount` · `missionShown` · `visits` · `season` · `eggDone` · `winParty` · `eggDay` ·
+`credFound` · `coachDone` · `pinFiles` · `pinLockUntil` · `pinFail` · `pinFailDay` ·
+`pinHintIdx` · `eggTitleDay` · `eggHack` · `firstAt` · `clueAt` · `winAt`.
 
 ---
 
@@ -538,8 +605,24 @@ rôn, không reo tên lửa, không đổi màu tem. Bấm chơi lại thì `win
 ### Tiêu đề
 
 Đổi qua lại giữa **Bản đồ tác chiến** và **Mission Completed**. Trong 15 giây ăn mừng thì
-tự đổi mỗi 2,4 giây; xong rồi thì **bấm vào tiêu đề để đổi tay**. Lúc hiện "Mission
-Completed" chữ chuyển sang **đỏ chiến thắng `#FF6B4A`** kèm quầng sáng.
+tự đổi mỗi 2,4 giây; **hết 15 giây là dừng hẳn ở "Mission Completed" và đứng im**. Muốn đổi
+nữa thì **bấm tay vào tiêu đề**.
+
+**"Mission Completed" là GIAO DIỆN CHỐT của MAP-01.** Đã giải đủ 4/4 thì **mọi lần mở trang
+về sau đều mặc định hiện "Mission Completed"**, không quay lại chữ gốc nữa — đó là màn hình
+cuối của MAP-01 và là thứ người xem thấy cho tới khi MAP-02 mở ra (lúc đó chỗ này đọc là
+"Easter Egg"). Quy tắc nằm ở đúng một dòng trong khối khởi động:
+`if(nSolved() === NODES.length) titleMC = true;`. Bấm vào tiêu đề vẫn lật về chữ gốc được,
+nhưng **mặc định không còn là chữ gốc**. Lúc hiện "Mission Completed" chữ chuyển sang **đỏ chiến
+thắng `#FF6B4A`** kèm quầng sáng.
+
+**Bẫy đã vấp: chữ nhấp nháy không ngừng.** `gridFlash()` cũ nhét phần dọn dẹp màn ăn mừng
+chung một hẹn giờ với mạng lưới (`gridT`). Đóng rồi mở lại hộp pí mật trong 15 giây đó sẽ
+gọi `gridFlash()` lần nữa với `full = false`; `clearTimeout(gridT)` **giết luôn hẹn giờ dọn
+dẹp**, nên `titleT` và class `.cheer` không ai gỡ → tiêu đề đổi qua lại vĩnh viễn. Nay phần
+ăn mừng có hẹn giờ **riêng** là `partyT`, gọi `endParty()`; `endParty()` gỡ `win`/`cheer`,
+đặt `titleMC = true` rồi `titleSwap(false)`. Ngoài ra `titleSwap(false)` **bỏ qua** khi
+`.cheer` còn trên khung, để không cắt ngang nhịp tự đổi.
 
 ### Dòng dẫn và băng rôn
 
@@ -561,8 +644,12 @@ Easter Egg: Y/N
 | Đoán sai | Sao |
 |---|---|
 | dưới 5 | ⭐⭐⭐⭐⭐ |
-| 5–9 | ⭐⭐⭐⭐ |
-| từ 10 | ⭐⭐⭐ |
+| 5–9 | ⭐⭐⭐⭐☆ |
+| từ 10 | ⭐⭐⭐☆☆ |
+
+**Năm ô sao luôn đủ chỗ.** Phần chưa đạt vẽ bằng `☆` bọc trong `<span class="star-off">`
+(`opacity:.34`) — nhìn thấy viền nhưng mờ hẳn, thay vì biến mất như bản cũ. Hàm dựng là
+`saoHtml()`; vì có thẻ nên `#bannerText` dùng `innerHTML`, không dùng `textContent`.
 
 Ba mốc thời gian lưu cùng tiến độ: `firstAt` (lần đầu mở trang) · `clueAt` (lần đầu bắt
 được mã morse) · `winAt` (lúc giải xong mật thư thứ tư). `Easter Egg` là `Y` nếu đã mở được
@@ -570,6 +657,97 @@ khung giới thiệu người dựng trang.
 
 Trạng thái này bám theo `nSolved()` nên bấm chơi lại là tự trả về tiêu đề và dòng dẫn gốc.
 `armIdle()` tự dừng khi đã thắng để không ghi đè dòng chữ.
+
+---
+
+## 19b. Cửa sổ EASTER EGG — từ 00:00 ngày 01-09
+
+Khi đồng hồ đếm ngược về 0, trang bước vào **cửa sổ Easter Egg** kéo dài `EGG_DAYS = 7`
+ngày. Cổng vào là `eggOpen()`, mốc sinh ra từ `SEASON.birthday` + `SEA.year` — **không
+hardcode năm**, đúng luật mục 8.
+
+Có **hai đường mở sớm**, dùng để thử hoặc để trình diễn:
+
+| Đường | Cách | Sống được bao lâu |
+|---|---|---|
+| `?egg=1` | thêm vào URL | chỉ trong lần tải trang đó (hằng `EGG_FORCE`) |
+| **Hack Map · MAP-02** | Box Tổng tư lệnh → ô `MAP-02` → Hack Map → PIN `1959` | **vĩnh viễn**, cờ `eggHack` lưu trong `mtv1`, chỉ mất khi Reset MAP-01 |
+
+Cửa sổ chỉ có hiệu lực khi **đã giải đủ 4/4** — nó thay chỗ của trạng thái chiến thắng.
+
+| Thứ | Ngoài cửa sổ | Trong cửa sổ |
+|---|---|---|
+| Tiêu đề (nửa kia) | `Mission Completed`, đỏ `#FF6B4A` | `Easter Egg`, amber `#F2B441` |
+| Dòng dẫn tĩnh | `Map: Bản đồ Tác chiến` | `Game On · Độ khó: Q♥` (Q♥ đỏ) |
+| Băng rôn máy bay | `Winner: … · Mức độ hoàn thành: ⭐… · Easter Egg: Y/N` | Lời chúc sinh nhật |
+
+Nội dung băng rôn sinh nhật nằm ở hằng `BANNER_EGG`:
+
+> Chúc mừng sinh nhật Dongchi Bình tuổi 32 🎉 · Chúc anh mọi điều như ý, vạn sự bình an,
+> cần - kiệm - liêm - chính như Bác Hồ dạy 😘🎊🎆
+
+Câu dài và có emoji nên tấm vải đổi sang class `.eggtext`: font `Be Vietnam Pro`, bỏ viết
+hoa — Oswald thiếu glyph emoji sẽ vỡ chữ.
+
+### Màn chào mỗi đầu ngày
+
+`eggIntro()` chạy **một lần mỗi ngày**, suốt 7 ngày. Mốc ngày ghi ở `eggTitleDay`. Nó:
+
+1. đặt tiêu đề về `Easter Egg`;
+2. gắn class `.eggblink` — **đổi màu tuần tự 7,3 giây, dùng chung `@keyframes egg` với tem
+   Last updated**, đúng thời lượng của màn ăn mừng;
+3. cho băng rôn sinh nhật bay ra 22 giây.
+
+### Ngày tính theo GIỜ MÁY, không phải UTC
+
+`toISOString().slice(0,10)` cắt theo UTC nên ở Việt Nam "ngày mới" rơi vào **07:00 sáng**.
+Mọi mốc *"mỗi ngày một lần"* — `eggDay` (tem), `eggTitleDay` (Easter Egg), `pinFailDay`
+(bộ đếm PIN) — nay đi qua hàm `ngay()` dựng chuỗi `YYYY-MM-DD` từ giờ máy.
+
+---
+
+## 19c. GAME ON — trạng thái khi MAP-02 đang chạy
+
+`gameOn()` = **đã hoàn thành MAP-01** và **`eggOpen()`**. Gọi qua hàm này, đừng viết lại hai
+vế ở chỗ khác. Khung nhận class `gameon`, và bốn thứ đổi cùng lúc:
+
+| Thứ | Ngoài Game On | Trong Game On |
+|---|---|---|
+| Tiêu đề | `Mission Completed` ⇄ bấm để lật về chữ gốc | `Easter Egg` — **khoá cứng**, bấm vào không lật nữa |
+| Dòng dẫn | `Map: Bản đồ Tác chiến` | `Game On · Độ khó: Q♥` — quân **Q♥ màu đỏ** `#FF5252` |
+| Băng rôn | Winner + sao + thời gian | Lời chúc sinh nhật — **chỉ một kiểu**, không đảo qua lại |
+| Thẻ *Phi vụ tiếp theo* | Hiện | **Đóng hẳn** (`.frame.gameon .cd{display:none}`) |
+
+**Dòng dẫn có thẻ HTML** nên `LEAD_EGG` phải gán bằng `innerHTML`, không `textContent` —
+nếu không sẽ hiện ra chữ `<b class="qco">`.
+
+**Gõ đúp dòng dẫn** trong Game On chỉ cho máy bay bay lại, **không** đổi nội dung băng rôn.
+Cờ `eggBanner` của bản trước đã bỏ hẳn.
+
+### Bản đồ nở ra khi đóng thẻ Phi vụ
+
+Header thấp xuống thì `.mapwrap` (`flex:1`) tự chiếm chỗ trống. Nhưng **nút toạ độ đặt bằng
+`cam.getScreenCTM()`**, không theo dòng chảy layout — nên `winBanner()` gọi lại `place()`
+sau **hai khung hình** mỗi khi class `gameon` thực sự đổi. Chỉ chạy khi trạng thái đổi, không
+gọi mỗi lần vẽ lại.
+
+### Cửa hai tầng của hồ sơ `DAD-950901-B`
+
+Hồ sơ này gắn cờ `eggGate:true` trong `NODES` — nó thuộc về MAP-02, không phải MAP-01.
+
+| Tình huống | Hiện ra sao | Bấm vào |
+|---|---|---|
+| Chưa Game On | Ổ khoá + đếm ngược tới 01-09 | Không phản hồi |
+| Game On, **chưa** có điểm kích hoạt | **Bỏ ổ khoá**, meta ghi *"Đã mở khoá · chưa có điểm kích hoạt"* | Báo *"cần tìm điểm kích hoạt để hạ cánh"* |
+| Game On, **đã** có điểm kích hoạt | Link thật | Bay thẳng vào `/dad/950901-b` |
+
+**Điểm kích hoạt chính là cửa hậu `credFound`** — bấm 10 nhịp vào dòng Last updated. Ai lỡ
+tìm ra từ trước thì vào thẳng, không phải làm lại. Mở được cửa hậu lúc bảng hồ sơ đang mở
+thì `render(current)` chạy lại ngay, hồ sơ chuyển sang bấm được mà không cần đóng mở.
+
+**Thứ tự nhánh trong `render()` rất quan trọng:** nhánh `eggGate` đặt **trước** `isOpen()`.
+Đặt sau thì từ 01-09 trở đi `unlockAt` tự hết hạn, hồ sơ thành link và cửa kích hoạt bị bỏ
+qua hoàn toàn.
 
 ---
 
