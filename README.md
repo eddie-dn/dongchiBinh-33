@@ -23,12 +23,20 @@ Deploy thẳng lên Vercel từ GitHub.
 ├── .gitignore
 │
 ├── api/
-│   └── ping.js             ← endpoint đo đạc, bắn về Telegram/Discord
+│   ├── ping.js             ← endpoint đo đạc, bắn về Telegram/Discord
+│   └── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
 │
 ├── han/
 │   └── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
 ├── dad/
-│   ├── 950901-a/index.html ← DAD-950901-A · hồ sơ đã xuất bản
+│   ├── 950901-a/           ← DAD-950901-A · hồ sơ đã xuất bản
+│   │   ├── index.html
+│   │   ├── vercel.json     ← chỉ dùng khi deploy tách riêng
+│   │   ├── MISSIONS.md     ← luật chơi hệ 3 Mission
+│   │   ├── README.md
+│   │   └── api/            ← bản sao cho deploy tách riêng, monorepo không build
+│   │       ├── ping.js
+│   │       └── note.js
 │   └── 950901-b/index.html ← DAD-950901-B · hồ sơ niêm phong (trang tạm)
 ├── uih/                    ← chưa có hồ sơ
 └── sgn/                    ← chưa có hồ sơ
