@@ -48,7 +48,14 @@ const NHAN = {
   reset_msn:          'Chơi lại Mission từ đầu',
   test_unlock:        'CỬA TEST: tap 10 nhịp mở khoá mission',
   sos_hint:           'Mở thêm gợi ý (SOS hoặc tới giờ)',
-  bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)'
+  bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)',
+
+  /* Hai pha điều hướng + hồ sơ người chơi (profile) — USER-FLOW.md */
+  redirect_ho_so:     'PHA 1: gõ / bị đẩy về hồ sơ',
+  mo_pha_map:         'MỞ PHA MAP — bản đồ thành trang chính',
+  luu_profile:        'KHAI DANH — tạo bản lưu profile',
+  doi_ten_profile:    'Đổi tên profile',
+  khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile'
 };
 
 function gioVN(iso) {

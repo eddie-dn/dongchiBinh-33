@@ -644,7 +644,8 @@ render();
      lửa gần như không đụng tới — vẫn về đúng /api rồi sang Telegram. */
   var QUAN_TRONG = {
     gui_form:1, mo_khoa_m2_cua:1, mo_khoa_m2:1, giai_m3:1, skip_m3:1,
-    gia_han_m2:1, test_unlock:1, reset_msn:1, vao_ban_do:1
+    gia_han_m2:1, test_unlock:1, reset_msn:1, vao_ban_do:1,
+    mo_pha_map:1, luu_profile:1, khoi_phuc_profile:1
   };
 
   var TAG = 'XG-950901-A', bat = Date.now(), seen = {}, sau = 0, curPage = 0;
@@ -668,7 +669,11 @@ render();
     reset_msn:          'Chơi lại Mission từ đầu',
     test_unlock:        'CỬA TEST: tap 10 nhịp mở khoá mission',
     sos_hint:           'SOS 10 nhịp → xin thêm gợi ý',
-    bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)'
+    bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)',
+    mo_pha_map:         'MỞ PHA MAP — bản đồ thành trang chính',
+    luu_profile:        'KHAI DANH — tạo bản lưu profile',
+    doi_ten_profile:    'Đổi tên profile',
+    khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile'
   };
 
   var oSink = null;
@@ -952,6 +957,26 @@ render();
   border:none;background:none;color:rgba(234,240,247,.5);font-size:16px;line-height:1;cursor:pointer}
 .done-back{margin-top:14px}
 
+/* ── Hồ sơ người chơi (profile) — chip góc phải trên, CHỈ ở trang bìa.
+   Khai danh lúc nhập đúng mã Mission 2; luật đầy đủ ở USER-FLOW.md §6 ── */
+#msnProf{position:absolute;top:13px;right:19px;z-index:30;display:none;align-items:center;gap:6px;
+  max-width:29%;border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
+  background:rgba(7,20,41,.97);padding:5px 9px;cursor:pointer;
+  font-family:"Oswald";font-size:9.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(242,180,65,.8);transition:opacity .3s;
+  -webkit-tap-highlight-color:transparent}
+#msnProf.on{display:inline-flex}
+#msnProf.off{display:none}
+#msnProf svg{width:12px;height:12px;flex:none;fill:currentColor}
+#msnProf span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Ô nhập tên ở bước Khai danh + ô đổi tên trong hộp profile */
+.msn-name{display:block;width:100%;margin-top:16px;padding:10px 12px;border-radius:5px;
+  border:1px solid var(--line);border-left:2px solid var(--amber);
+  background:rgba(6,16,31,.5);color:var(--paper);text-align:center;
+  font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:14px;outline:none}
+.msn-name:focus{border-color:rgba(242,180,65,.55)}
+.msn-name::placeholder{color:rgba(234,240,247,.35)}
+
 @media (prefers-reduced-motion:reduce){
   #msnLine.boom,#msnTl.boom{animation:none;text-shadow:0 0 12px rgba(242,180,65,.75)}
   .msn-dot{animation:none;opacity:.85}
@@ -1169,6 +1194,7 @@ render();
     var off = (H.page ? H.page() : 0) !== 0;
     line.classList.toggle('off', off);
     tl.classList.toggle('off', off);
+    pfChip.classList.toggle('off', off);   /* chip profile cũng chỉ ở trang bìa */
     if(!off && celebPend) setTimeout(celebrate, 420);
     mapUI();
   }
@@ -1348,8 +1374,13 @@ render();
           st.m2 = true; st.m2doneAt = Date.now(); save(); wset(0);
           ping('mo_khoa_m2', 'Mã đúng · Mission 3 mở cửa sổ ' + Math.round(W3/DAY) + ' ngày');
           drawLine(); drawTl(); celebrate(); lockForm();
+          /* Đã có profile (chơi lại sau reset): chỉ checkpoint đè, không hỏi lại tên.
+             Chưa có: chen bước KHAI DANH trước bảng Thông Quan (USER-FLOW.md §6.2). */
+          var coProf = !!navRead().profile;
+          if(coProf) profSave('M2');
           setTimeout(function(){                   /* đã tự tay đóng hộp thì thôi, không bật lại */
-            if(ov.classList.contains('show')) openM2Done(true);
+            if(!ov.classList.contains('show')) return;
+            if(coProf) openM2Done(true); else openKhaiDanh();
           }, 320);
         }else{ wset(0); solveM3(false); }
         return;
@@ -1440,6 +1471,16 @@ render();
   function solveM3(bySkip){
     if(st.m3) return;
     st.m3 = true; save();
+    /* CHUYỂN PHA — phá đảo M3 là mở Bản đồ cả hai chiều, từ giờ / là trang chính.
+       Ghi tại mốc GIẢI XONG chứ không phải lúc bấm nút Bản đồ: giải xong rồi đóng
+       tab, hôm sau gõ thẳng / vẫn phải vào được Map (USER-FLOW.md §4). */
+    var nav = navRead();
+    if(!nav.mapUnlocked){
+      nav.v = nav.v || 1; nav.mapUnlocked = true; nav.unlockedAt = Date.now();
+      navWrite(nav);
+      ping('mo_pha_map', bySkip ? 'phá đảo bằng skip' : 'giải đúng PHAM TUAN');
+    }
+    profSave('M3');
     ping(bySkip ? 'skip_m3' : 'giai_m3', bySkip ? 'bấm skip 10 nhịp' : 'giải đúng PHAM TUAN');
     drawLine(); drawTl(); mapUI(); celebrate();
     openDone(true);
@@ -1456,6 +1497,9 @@ render();
 
   /* Bảng ghi công Mission 2 — hiện sau khi nhập đúng mã, và bấm nút tròn số 2 xem lại */
   function openM2Done(fresh){
+    /* Lỡ đóng hộp đúng lúc Khai danh (hoặc xong M2 từ bản cũ chưa có profile):
+       mở lại bảng này là làm nốt nghi thức — không ai lọt lưới khai danh */
+    if(!navRead().profile){ openKhaiDanh(); return; }
     var xong = st.m3;
     openOv('Mission 2 · Hoàn thành',
       '<div class="msn-tit">Thông Quan ✦</div>'
@@ -1498,9 +1542,107 @@ render();
         localStorage.removeItem(KEY);
         sessionStorage.removeItem('msnw'); sessionStorage.removeItem('msnsos');
       }catch(e){}
+      /* M3 không còn "đã xong" → hạ cờ pha, quay về PHA 1 (hồ sơ là nhà).
+         PROFILE thì GIỮ — chơi lại thoải mái, muốn về trạng thái cũ thì bấm chip. */
+      var nv = navRead();
+      if(nv.mapUnlocked){ nv.mapUnlocked = false; navWrite(nv); }
       setTimeout(function(){ location.reload(); }, 250);
     });
   }
+
+  /* ---- Hồ sơ người chơi (profile) — khoá chung nav1, luật ở USER-FLOW.md ----
+     Khai danh MỘT LẦN lúc nhập đúng mã Mission 2 → từ đó chip tên đứng góc
+     phải trên trang bìa; bản lưu (đúng MỘT bản) tự ghi đè theo mốc tiến lên
+     và sống qua mọi đường reset. */
+  function navRead(){ try{ return JSON.parse(localStorage.getItem('nav1')||'{}')||{}; }catch(e){ return {}; } }
+  function navWrite(v){ try{ localStorage.setItem('nav1', JSON.stringify(v)); }catch(e){} }
+  function escH(s){ return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function profSave(moc){
+    var nav = navRead(); if(!nav.profile) return;   /* chưa khai danh thì chưa có gì để bò */
+    var s = {}; try{ s = JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){}
+    var t = null; try{ t = JSON.parse(localStorage.getItem('mtv1')||'null'); }catch(e){}
+    nav.profile.savedAt = Date.now(); nav.profile.moc = moc;
+    nav.profile.snap = nav.profile.snap || {};
+    nav.profile.snap.msn1 = s;                      /* chụp NGUYÊN VĂN, không chọn lọc trường */
+    if(t) nav.profile.snap.mtv1 = t;                /* tiến độ bản đồ chỉ có từ PHA 2 */
+    navWrite(nav); chipDraw();
+  }
+  var pfChip = document.createElement('button');
+  pfChip.id = 'msnProf'; pfChip.type = 'button';
+  pfChip.setAttribute('aria-label', 'Hồ sơ người chơi — quay về bản lưu gần nhất');
+  pfChip.innerHTML = PLANE + '<span></span>';
+  frame.appendChild(pfChip);
+  function chipDraw(){
+    var nav = navRead(), on = !!(nav.profile && nav.profile.name);
+    pfChip.classList.toggle('on', on);
+    if(on) pfChip.querySelector('span').textContent = nav.profile.name;
+  }
+  /* Bước KHAI DANH — chen một nhịp trước bảng "Thông Quan ✦" của Mission 2.
+     Ô điền sẵn tên mặc định, nhập rỗng cũng lưu được — không ai kẹt ở đây. */
+  function openKhaiDanh(){
+    openOv('Mission 2 · Khai danh',
+      '<div class="msn-tit">Đồng chí tên chi? ✦</div>'
+      + '<div class="msn-txt">Tên này gắn với <b>bản lưu tiến trình</b> — lần sau bấm vào tên '
+      + 'ở góc phải trên cùng là quay về đúng chỗ đã lưu ✦</div>'
+      + '<input class="msn-name" id="kdIn" type="text" maxlength="12" value="Dongchi Bình" '
+      + 'autocomplete="off" spellcheck="false" aria-label="Tên hồ sơ người chơi">'
+      + '<button class="navbtn wide" id="kdSave" style="margin-top:14px;justify-content:center">Lưu hồ sơ ✦</button>');
+    ov.querySelector('.msn-card').classList.add('done');
+    var inp = byId('kdIn');
+    setTimeout(function(){ try{ inp.focus(); inp.select(); }catch(e){} }, 80);
+    function saveName(){
+      var name = (inp.value || '').trim().slice(0, 12) || 'Dongchi Bình';
+      var nav = navRead();
+      nav.v = nav.v || 1;
+      nav.profile = { name: name, savedAt: Date.now(), moc: 'M2', snap: {} };
+      navWrite(nav);
+      profSave('M2');                     /* chụp msn1 hiện tại vào bản lưu đầu tiên */
+      ping('luu_profile', name);
+      chipDraw();
+      openM2Done(true);
+    }
+    byId('kdSave').addEventListener('click', saveName);
+    inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') saveName(); });
+  }
+  /* Hộp profile — bấm chip là mở: tiếp tục ở bản lưu (hỏi lại một nhịp) hoặc đổi tên */
+  pfChip.addEventListener('click', function(){
+    var nav = navRead(), p = nav.profile; if(!p) return;
+    var d = new Date(p.savedAt || 0), p2 = function(n){ return (n<10?'0':'')+n; };
+    openOv('Hồ sơ người chơi',
+      '<div class="msn-tit" id="pfTit">✈ ' + escH(p.name) + '</div>'
+      + '<div class="msn-txt">Bản lưu: <b>' + escH(p.moc || '—') + '</b> · '
+      + p2(d.getDate()) + '-' + p2(d.getMonth()+1) + ' '
+      + p2(d.getHours()) + ':' + p2(d.getMinutes()) + '</div>'
+      + '<button class="navbtn wide" id="pfGo" style="margin-top:16px;justify-content:center">Tiếp tục ở bản lưu ✦</button>'
+      + '<input class="msn-name" id="pfIn" type="text" maxlength="12" placeholder="Đổi tên…" '
+      + 'autocomplete="off" spellcheck="false" aria-label="Tên mới cho hồ sơ người chơi">'
+      + '<button class="msn-ghost" id="pfRen" type="button">Đổi tên</button>');
+    ov.querySelector('.msn-card').classList.add('done');
+    var go = byId('pfGo'), armed = false;
+    go.addEventListener('click', function(){
+      if(!armed){ armed = true; go.textContent = 'Chú Bình chắc chưaaa? Bấm lần nữa'; return; }
+      ping('khoi_phuc_profile', p.moc || '');
+      try{
+        if(p.snap && p.snap.msn1) localStorage.setItem(KEY, JSON.stringify(p.snap.msn1));
+        if(p.snap && p.snap.mtv1) localStorage.setItem('mtv1', JSON.stringify(p.snap.mtv1));
+      }catch(e){}
+      var nv = navRead();                 /* pha tính lại từ chính bản lưu */
+      nv.mapUnlocked = !!(p.snap && p.snap.msn1 && p.snap.msn1.m3);
+      navWrite(nv);
+      setTimeout(function(){ location.reload(); }, 240);
+    });
+    byId('pfRen').addEventListener('click', function(){
+      var v = (byId('pfIn').value || '').trim().slice(0, 12);
+      if(!v) return;
+      var nv = navRead(); if(!nv.profile) return;
+      nv.profile.name = v; navWrite(nv); p = nv.profile;
+      ping('doi_ten_profile', v);
+      chipDraw();
+      byId('pfTit').innerHTML = '✈ ' + escH(v);
+      byId('pfIn').value = '';
+    });
+  });
 
   /* ---- bấm dòng Mission ---- */
   var m1Taps = 0;
@@ -1617,7 +1759,7 @@ render();
   if(typeof _g2 === 'function'){
     window.go = function(n){ _g2(n); updVis(); };
   }
-  drawLine(); drawTl(); mapUI(); lockForm(); updVis();
+  drawLine(); drawTl(); mapUI(); lockForm(); chipDraw(); updVis();
   setInterval(drawLine, 1000);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
