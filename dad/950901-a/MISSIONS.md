@@ -86,9 +86,6 @@ là file về bản gốc.
   — **không lộ mẹo**. Cách chi viện thật: góc dưới **phải** có nút **gia hạn**, bấm
   **10 nhịp liên tục** (mỗi nhịp < 0,9s) → nạp lại trọn **5 ngày mới**, vẫn phải nhập đúng
   `217N33`. Không bao giờ kẹt vĩnh viễn. Bắn sự kiện `gia_han_m2`.
-- Nhập đúng → chen **một bước KHAI DANH** (`MISSION 2 · KHAI DANH` — *"Nhập pí danh ✦"*,
-  tối đa 6 ký tự, không viết hoa; luật đầy đủ ở `USER-FLOW.md` §6) rồi mới tới bảng ghi
-  công. Ai đã có pí danh thì bỏ qua bước này.
 - Nhập đúng → `✓ M2`, Mission 1 ẩn khỏi dòng, Mission 3 mở cửa sổ 5 ngày. Hộp đổi **ngay**
   (320ms) thành **bảng ghi công `MISSION 2 · HOÀN THÀNH`** (*"Thông Quan ✦"* — "Tiếp tục tiến
   trình ở Mission 3. Thời hạn Phá đảo: 5 ngày") và **đứng yên ở đó** — không còn
@@ -140,6 +137,10 @@ ai qua cửa 2 bằng mã mà chưa điền thì form vẫn mở để điền n
   cũng chỉ ghi *"Liên hệ **Hội đồng MeowMeow** để nhận chi viện ✦"*. Cách chi viện thật:
   góc dưới **phải** có nút **skip chìm** (opacity ~13%), bấm **10 nhịp liên tục** → mở
   khoá luôn.
+- **Phá đảo M3 là cửa mở PÍ DANH.** Lần đầu phá đảo mà chưa có pí danh nào thì chen
+  **một bước KHAI DANH** (`MISSION 3 · KHAI DANH` — *"Nhập pí danh ✦"*, tối đa 6 ký tự,
+  không viết hoa) rồi mới tới bảng ghi công. Từ đây dòng Mission đổi hình: **`✓ M3` đẩy
+  lên chỗ của `✓ M2`, ô thứ hai thành bảng xổ pí danh**. Luật đầy đủ ở `USER-FLOW.md` §6.
 - Giải xong (hoặc skip): hộp mang nhãn **`MISSION 3 · PHÁ ĐẢO (˶˃ ᵕ ˂˶)`**, chữ căn giữa
   (class `.msn-card.done` — bù 1px padding trái vì viền trái dày 2px, `text-wrap:balance`
   cho các dòng gãy đều nhau) với nội dung:
