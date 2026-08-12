@@ -58,7 +58,13 @@ const NHAN = {
   khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile',
   doi_profile:        'Đổi sang pí danh khác',
   xoa_profile:        'Xoá một pí danh',
-  an_danh:            'Chuyển sang chơi ẩn danh'
+  an_danh:            'Chuyển sang chơi ẩn danh',
+  luu_tien_trinh:     'Lưu tiến trình vào pí danh',
+
+  /* Khung Tổ kỹ thuật */
+  gui_tam_tu:         'GỬI TÂM TƯ cho tổ kỹ thuật',
+  gui_tam_tu_loi:     'Gửi tâm tư thất bại',
+  vao_easter_egg:     'Vào Easter Egg từ khung Tổ kỹ thuật'
 };
 
 function gioVN(iso) {
