@@ -88,55 +88,6 @@ a{color:inherit;text-decoration:none}
 .classtag b{display:block;font-weight:500;color:var(--amber);letter-spacing:.16em}
 .frame[data-state="focus"] .classtag{opacity:0}
 
-/* ── Pí danh (profile) — góc phải trên cùng, luật ở USER-FLOW.md.
-   KHÔNG có hộp nền: chữ nổi thẳng trên nền, kèm mũi ▾ để biết bấm mở được.
-   right:42px để chừa hẳn góc kẻ tay (.corner.tr rộng 20px ở right:13px). ── */
-.prof{position:absolute;top:14px;right:42px;z-index:9;display:none;align-items:center;gap:5px;
-  max-width:34%;border:none;background:none;padding:6px 2px;cursor:pointer;
-  font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.17em;
-  text-transform:uppercase;color:var(--amber);text-shadow:0 0 12px rgba(242,180,65,.45);
-  transition:opacity .4s;-webkit-tap-highlight-color:transparent}
-.prof.on{display:inline-flex}
-.prof svg{width:14px;height:auto;flex:none;fill:currentColor;transform:rotate(-16deg)}
-.prof span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.prof i{font-style:normal;font-size:8px;opacity:.75;transition:transform .25s}
-.prof.anon{color:rgba(234,240,247,.5);text-shadow:none}
-.prof.open i{transform:rotate(180deg)}
-.prof:active{opacity:.7}
-.frame[data-state="focus"] .prof{opacity:0;pointer-events:none}
-/* Lần đầu có pí danh: nền tối lại, chip nhấp nháy để chỉ chỗ — chỉ một lần */
-.prof.teach{animation:profTeach 1.1s ease-in-out infinite}
-@keyframes profTeach{0%,100%{opacity:.45}50%{opacity:1;text-shadow:0 0 18px rgba(242,180,65,.9)}}
-.profdim{position:absolute;inset:0;z-index:8;background:rgba(4,11,24,.72);
-  backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .45s}
-.profdim.on{opacity:1;pointer-events:auto}
-
-/* ── Bảng xổ pí danh — tối đa 2 hồ sơ, bấm để đổi, ✕ để xoá ── */
-.profmenu{position:absolute;top:38px;right:20px;z-index:10;width:196px;display:none;
-  border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
-  background:#08182e;box-shadow:0 20px 48px rgba(0,0,0,.6);padding:8px 0 6px;
-  font-family:"Be Vietnam Pro",system-ui,sans-serif}
-.profmenu.on{display:block}
-.profmenu-lab{font-family:"Oswald";font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--amber);opacity:.8;padding:0 12px 7px}
-.profrow{display:flex;align-items:center;gap:8px;width:100%;padding:8px 8px 8px 12px;
-  border:none;background:none;cursor:pointer;text-align:left;
-  color:rgba(234,240,247,.72);font-size:12.5px;line-height:1.35;
-  font-family:inherit;-webkit-tap-highlight-color:transparent}
-.profrow:hover,.profrow:focus-visible{background:rgba(242,180,65,.08)}
-.profrow.cur{color:var(--amber)}
-.profrow .pname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.profrow .pmoc{font-family:"Oswald";font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(234,240,247,.42);flex:none}
-.profrow .pdot{flex:none;width:5px;height:5px;border-radius:50%;background:transparent}
-.profrow.cur .pdot{background:var(--amber);box-shadow:0 0 7px rgba(242,180,65,.7)}
-.profx{flex:none;width:24px;height:24px;border:none;background:none;cursor:pointer;
-  color:rgba(234,240,247,.35);font-size:11px;line-height:1;border-radius:4px}
-.profx:hover{color:#ffb4a6;background:rgba(255,180,166,.1)}
-.profx.arm{color:#ffb4a6;background:rgba(255,180,166,.14)}
-.profmenu-sep{height:1px;margin:6px 12px;background:var(--line)}
-.profrow.act{color:rgba(234,240,247,.55);font-size:11.5px}
-.profrow.act:hover{color:var(--paper)}
 
 /* huy hiệu: 4 tên lửa, sáng dần theo số mật thư đã giải */
 .pz{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:5px 13px;
@@ -580,6 +531,24 @@ a.file:active{background:rgba(242,180,65,.07)}
   text-wrap:balance;overflow-wrap:anywhere}
 .cred-body .kao{display:inline-block;margin-left:6px;font-size:12.5px;color:var(--amber);
   font-family:"Noto Sans",system-ui,sans-serif;max-width:100%;overflow-wrap:anywhere}
+/* ── Khung Tổ kỹ thuật: hàng hai nút + dòng gửi tâm tư ── */
+.cred-acts{display:flex;gap:8px;margin-top:16px}
+.cred-acts button{flex:1;font-family:"Oswald";font-size:10px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;padding:11px 8px;border-radius:5px;
+  border:1px solid var(--line);background:rgba(6,16,31,.6);color:rgba(234,240,247,.78);
+  cursor:pointer;transition:border-color .25s,background .25s,color .25s}
+.cred-acts button:hover,.cred-acts button:focus-visible{border-color:rgba(242,180,65,.55);
+  background:rgba(242,180,65,.08);color:var(--paper)}
+.cred-acts #credEgg{color:var(--amber);border-color:rgba(242,180,65,.5);
+  background:rgba(242,180,65,.08)}
+.cred-acts button.on{color:var(--amber);border-color:rgba(242,180,65,.6)}
+.tt-box{margin-top:14px}
+.tt-box textarea{width:100%;resize:vertical;min-height:74px;padding:10px 12px;border-radius:5px;
+  border:1px solid var(--line);border-left:2px solid var(--amber);background:rgba(6,16,31,.75);
+  color:var(--paper);font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:13px;
+  line-height:1.6;outline:none}
+.tt-box textarea:focus{border-color:rgba(242,180,65,.55)}
+.tt-box textarea::placeholder{color:rgba(234,240,247,.32)}
 .cx-morse{font-family:"Oswald";font-size:13.8px;letter-spacing:.08em;line-height:1.7;
   color:#8BE0FF;text-align:center;margin:16px 0 0;word-spacing:.3em;
   user-select:none;-webkit-user-select:none;cursor:default;
@@ -715,12 +684,6 @@ a.file:active{background:rgba(242,180,65,.07)}
   <span class="corner bl"></span><span class="corner br"></span>
   <div class="classtag" id="classtag">Mật · Đơn vị Zoeyzuize<b>Độc lập - Tự do - Hạnh phúc</b></div>
 
-  <div class="profdim" id="profDim" aria-hidden="true"></div>
-  <button class="prof" id="profChip" type="button" aria-haspopup="true" aria-expanded="false"
-          aria-label="Pí danh — bấm để đổi hồ sơ">
-    <svg viewBox="0 0 62 32" aria-hidden="true"><use href="#jet"/></svg><span id="profName"></span><i>▾</i>
-  </button>
-  <div class="profmenu" id="profMenu" role="menu" aria-hidden="true"></div>
 
   <header class="head">
     <div class="eyebrow"><span class="dia"><i></i><i></i><i></i></span></div>
@@ -834,7 +797,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 08-Aug-2026 · V15.03">Last updated 08-Aug-2026 · V15.03</span>
+        <span class="stamp" id="stamp" data-base="Last updated 12-Aug-2026 · V15.04">Last updated 12-Aug-2026 · V15.04</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -964,6 +927,21 @@ a.file:active{background:rgba(242,180,65,.07)}
       <h2 class="cx-title" id="credTitle">Người dựng trang</h2>
       <p class="cred-body">Nội dung sẽ bổ sung sau.</p>
       <p class="cx-hint">Bạn vừa tìm ra một cửa sau (˶ᵔ ᵕ ᵔ˶)</p>
+
+      <!-- Dòng gửi tâm tư: ẩn sẵn, hiện ra NGAY TRÊN hàng nút khi bấm "Gửi tâm tư" -->
+      <div class="tt-box" id="ttBox" hidden>
+        <textarea id="ttIn" rows="3" maxlength="600" placeholder="Viết vài dòng gửi tổ kỹ thuật…"
+                  aria-label="Lời nhắn gửi tổ kỹ thuật"></textarea>
+        <div class="cx-form" style="margin-top:8px">
+          <button id="ttSend" style="flex:1">Gửi ✦</button>
+        </div>
+        <p class="cx-hint" id="ttMsg"></p>
+      </div>
+
+      <div class="cred-acts">
+        <button id="credMsg" type="button">✉ Gửi tâm tư</button>
+        <button id="credEgg" type="button">Enter Easter Egg ✦</button>
+      </div>
     </div>
   </div>
 
@@ -2542,7 +2520,6 @@ function guess(){
     if(nSolved() === NODES.length && !winAt){ winAt = Date.now(); save(); }
     ping('giai_dung', cxCode+' → '+n.plain);
     if(nSolved() === NODES.length) ping('hoan_thanh', '', true);
-    profSave('MAP ' + nSolved() + '/' + NODES.length);   /* bản lưu bò theo từng mật thư */
   }else{
     hint.className = 'cx-hint bad';
     hint.textContent = nextWrong();
@@ -2587,162 +2564,6 @@ $('pz').addEventListener('click', ()=>{
   if(!pzOn || nSolved() !== NODES.length) return;
   openCx(null);           /* bấm huy hiệu khi đã xong → mở lại hộp pí mật */
 });
-/* ---- Hồ sơ người chơi (profile) — khoá chung nav1, luật ở USER-FLOW.md ----
-   Bản lưu do hồ sơ DAD-950901-A tạo lúc khai danh (nhập đúng mã Mission 2);
-   bên bản đồ chỉ checkpoint đè thêm mỗi khi giải được một mật thư, và mở hộp
-   từ chip góc phải trên cùng để quay về bản lưu hoặc đổi tên. */
-const PROF_MAX = 2;                       /* trần số pí danh lưu được */
-function navRead(){
-  let n = {}; try{ n = JSON.parse(localStorage.getItem('nav1')||'{}')||{}; }catch(e){}
-  /* Di trú v1 → v2: một profile lẻ thành mảng profiles + con trỏ active */
-  if(n.profile && !n.profiles){ n.profiles = [n.profile]; n.active = 0; delete n.profile; n.v = 2; }
-  if(!Array.isArray(n.profiles)) n.profiles = [];
-  if(typeof n.active !== 'number') n.active = n.profiles.length ? 0 : -1;
-  if(n.active >= n.profiles.length) n.active = n.profiles.length ? 0 : -1;
-  return n;
-}
-function navWrite(v){ try{ localStorage.setItem('nav1', JSON.stringify(v)); }catch(e){} }
-function profEsc(s){ return String(s).replace(/[&<>"']/g, c =>
-  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function profCur(){ const n = navRead(); return n.active >= 0 ? n.profiles[n.active] : null; }
-function profSnap(){                     /* ảnh chụp NGUYÊN VĂN hai khoá tiến độ */
-  let sn = {}; try{ sn = JSON.parse(localStorage.getItem('msn1')||'{}')||{}; }catch(e){}
-  return { msn1: sn, mtv1: store.read() };
-}
-/* Chơi ẩn danh (active = -1) thì không ghi vào hồ sơ nào — đúng nghĩa ẩn danh */
-function profSave(moc){
-  const nav = navRead(); if(nav.active < 0) return;
-  const p = nav.profiles[nav.active]; if(!p) return;
-  p.savedAt = Date.now(); p.moc = moc; p.snap = profSnap();
-  navWrite(nav); profChipDraw();
-}
-function profChipDraw(){
-  const nav = navRead(), p = profCur();
-  const co = nav.profiles.length > 0;
-  $('profChip').classList.toggle('on', co);       /* chưa có pí danh nào thì không hiện gì */
-  $('profChip').classList.toggle('anon', !p);
-  $('profName').textContent = p ? p.name : 'ẩn danh';
-}
-/* Nạp một bản lưu rồi tải lại trang — muốn về trạng thái trọn vẹn thì reload */
-function profLoad(nav, i){
-  const p = nav.profiles[i]; if(!p) return;
-  nav.active = i;
-  if(p.snap){
-    try{
-      if(p.snap.msn1) localStorage.setItem('msn1', JSON.stringify(p.snap.msn1));
-      if(p.snap.mtv1) localStorage.setItem('mtv1', JSON.stringify(p.snap.mtv1));
-    }catch(e){}
-    nav.mapUnlocked = !!(p.snap.msn1 && p.snap.msn1.m3);   /* pha tính lại từ chính bản lưu */
-  }
-  navWrite(nav);
-  setTimeout(()=>location.reload(), 240);
-}
-const profMenu = $('profMenu');
-function profMenuDraw(){
-  const nav = navRead();
-  let h = '<div class="profmenu-lab">Pí danh · ' + nav.profiles.length + '/' + PROF_MAX + '</div>';
-  nav.profiles.forEach((p, i) => {
-    h += '<div class="profrow' + (i === nav.active ? ' cur' : '') + '" data-i="' + i + '" role="menuitem" tabindex="0">'
-      + '<span class="pdot"></span>'
-      + '<span class="pname">' + profEsc(p.name) + '</span>'
-      + '<span class="pmoc">' + profEsc(p.moc || '—') + '</span>'
-      + '<button class="profx" type="button" data-x="' + i + '" aria-label="Xoá pí danh">&#10005;</button></div>';
-  });
-  if(!nav.profiles.length)
-    h += '<div class="profrow act" style="cursor:default">Chưa có pí danh nào</div>';
-  h += '<div class="profmenu-sep"></div>';
-  h += nav.active >= 0
-    ? '<div class="profrow act" data-act="out" role="menuitem" tabindex="0">⏻ Chơi ẩn danh</div>'
-    : '<div class="profrow act" style="cursor:default">Đang chơi ẩn danh ✦</div>';
-  profMenu.innerHTML = h;
-}
-function openProfMenu(){
-  profMenuDraw();
-  profMenu.classList.add('on'); profMenu.setAttribute('aria-hidden','false');
-  $('profChip').classList.add('open'); $('profChip').setAttribute('aria-expanded','true');
-  profTeachOff();
-}
-function closeProfMenu(){
-  profMenu.classList.remove('on'); profMenu.setAttribute('aria-hidden','true');
-  $('profChip').classList.remove('open'); $('profChip').setAttribute('aria-expanded','false');
-}
-$('profChip').addEventListener('click', e=>{
-  e.stopPropagation();
-  profMenu.classList.contains('on') ? closeProfMenu() : openProfMenu();
-});
-document.addEventListener('click', e=>{
-  if(profMenu.classList.contains('on') && !e.target.closest('#profMenu')) closeProfMenu();
-});
-let profXArm = -1;
-profMenu.addEventListener('click', e=>{
-  e.stopPropagation();
-  const x = e.target.closest('.profx');
-  if(x){                                  /* xoá pí danh — bấm hai nhịp cho chắc */
-    const i = +x.dataset.x;
-    if(profXArm !== i){
-      profXArm = i;
-      profMenu.querySelectorAll('.profx').forEach(b=>b.classList.remove('arm'));
-      x.classList.add('arm'); x.textContent = '✕?';
-      return;
-    }
-    const nav = navRead();
-    const bo = nav.profiles[i];
-    nav.profiles.splice(i, 1);
-    if(nav.active === i) nav.active = -1;             /* xoá hồ sơ đang dùng → về ẩn danh */
-    else if(nav.active > i) nav.active--;
-    navWrite(nav); profXArm = -1;
-    ping('xoa_profile', bo ? bo.name : '');
-    profMenuDraw(); profChipDraw();
-    return;
-  }
-  const row = e.target.closest('.profrow');
-  if(!row) return;
-  if(row.dataset.act === 'out'){                     /* chơi ẩn danh */
-    const nav = navRead();
-    profSave(nav.profiles[nav.active] ? nav.profiles[nav.active].moc || '—' : '—');
-    const n2 = navRead(); n2.active = -1; navWrite(n2);
-    ping('an_danh', 'thoát khỏi pí danh');
-    profMenuDraw(); profChipDraw();
-    return;
-  }
-  if(row.dataset.i == null) return;
-  const i = +row.dataset.i, nav = navRead();
-  if(i === nav.active){
-    /* Đang đứng ở chính hồ sơ này → bấm là QUAY VỀ BẢN LƯU, ghi đè tiến độ
-       hiện tại nên hỏi lại một nhịp, cùng độ nguy hiểm với Reset. */
-    if(row.dataset.arm !== '1'){
-      row.dataset.arm = '1';
-      row.querySelector('.pname').textContent = 'chắc chưaaa?';
-      return;
-    }
-    ping('khoi_phuc_profile', nav.profiles[i].moc || '');
-    profLoad(nav, i);
-  }else{
-    /* Đổi sang hồ sơ khác: cất tiến độ đang chơi vào hồ sơ cũ trước đã, không mất gì */
-    if(nav.active >= 0) profSave(nav.profiles[nav.active].moc || '—');
-    const n2 = navRead();
-    ping('doi_profile', n2.profiles[i].name);
-    profLoad(n2, i);
-  }
-});
-/* Lần đầu vừa có pí danh: nền tối lại, chip nhấp nháy để chỉ chỗ — đúng một lần */
-let profTeachT = null;
-function profTeachOff(){
-  clearTimeout(profTeachT);
-  $('profChip').classList.remove('teach');
-  $('profDim').classList.remove('on');
-}
-function profTeach(){
-  const nav = navRead();
-  if(nav.chipTaught || !nav.profiles.length) return;
-  nav.chipTaught = true; navWrite(nav);
-  $('profDim').classList.add('on');
-  $('profChip').classList.add('teach');
-  profTeachT = setTimeout(profTeachOff, 4200);
-}
-$('profDim').addEventListener('click', profTeachOff);
-profChipDraw();
-setTimeout(profTeach, 700);      /* vừa từ hồ sơ sang, chưa từng được chỉ chỗ */
 
 /* ---- MỘT đường xoá duy nhất cho CẢ HAI nút reset ----
    Bản cũ: nút trong hộp pí mật reset từng biến bằng tay nên luôn sót — biến
@@ -2754,8 +2575,8 @@ setTimeout(profTeach, 700);      /* vừa từ hồ sơ sang, chưa từng đư�
 function hardWipe(ev, detail){
   ping(ev, detail || '');
   const keepR = resetCount + 1;
-  /* nav1 (profile + pha điều hướng) cố ý KHÔNG đụng — Mission 3 của hồ sơ vẫn
-     xong nên vẫn ở PHA 2, và bản lưu phải sống qua reset (USER-FLOW.md §6.5) */
+  /* nav1 (pí danh + pha điều hướng) cố ý KHÔNG đụng — Mission 3 của hồ sơ vẫn
+     xong nên vẫn ở PHA 2, và bản lưu phải sống qua reset (USER-FLOW.md §6) */
   try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
   try{ localStorage.setItem('mtv1', JSON.stringify({ resetCount: keepR })); }catch(e){}
   try{ ['mtseen','mtload','mtvisit','mtpf'].forEach(k=>sessionStorage.removeItem(k)); }catch(e){}
@@ -2911,9 +2732,54 @@ $('stampZone').addEventListener('click', ()=>{
     ping('cua_sau', 'mở khung giới thiệu', true);
   }
 });
-function closeCred(){ credw.classList.remove('on'); credw.setAttribute('aria-hidden','true'); }
+function closeCred(){
+  credw.classList.remove('on'); credw.setAttribute('aria-hidden','true');
+  $('ttBox').hidden = true; $('credMsg').classList.remove('on');
+}
 $('credClose').addEventListener('click', closeCred);
 credw.addEventListener('click', e=>{ if(e.target === credw) closeCred(); });
+
+/* ---- Hai nút trong khung Tổ kỹ thuật ----
+   Trái: mở dòng gửi tâm tư ngay trên hàng nút → gửi về hòm thư qua /api/thu.
+   Phải: vào thẳng Easter Egg — bật cờ eggHack VĨNH VIỄN y như Hack Map · MAP-02. */
+$('credMsg').addEventListener('click', ()=>{
+  const box = $('ttBox');
+  box.hidden = !box.hidden;
+  $('credMsg').classList.toggle('on', !box.hidden);
+  if(!box.hidden) setTimeout(()=>{ try{ $('ttIn').focus(); }catch(e){} }, 60);
+});
+$('ttSend').addEventListener('click', ()=>{
+  const el = $('ttIn'), msg = $('ttMsg');
+  const loi = (el.value || '').trim();
+  if(!loi){ msg.textContent = 'Viết vài chữ đã nha ✦'; return; }
+  msg.textContent = 'Đang gửi…';
+  const body = JSON.stringify({ loi: loi.slice(0, 600), tu: 'Bản đồ tác chiến',
+    at: new Date().toISOString(), ua: navigator.userAgent.slice(0,120) });
+  fetch('/api/thu', { method:'POST', body:body, headers:{'Content-Type':'application/json'} })
+    .then(r=>{
+      if(!r.ok) throw 0;
+      msg.textContent = 'Đã gửi về tổ kỹ thuật ✦ Cảm ơn đồng chí!';
+      el.value = '';
+      setTimeout(()=>{ $('ttBox').hidden = true; $('credMsg').classList.remove('on'); msg.textContent = ''; }, 2200);
+    })
+    .catch(()=>{                        /* mất mạng / bị chặn → giữ nguyên chữ đã gõ */
+      msg.textContent = 'Gửi không được — thử lại giúp em ✦';
+      ping('gui_tam_tu_loi', 'fetch thất bại');
+    });
+  ping('gui_tam_tu', loi.slice(0, 60));
+});
+$('credEgg').addEventListener('click', ()=>{
+  if(nSolved() !== NODES.length){       /* chưa xong MAP-01 thì Easter Egg chưa có gì để mở */
+    $('ttMsg').textContent = 'Phải phá đảo bốn toạ độ đã ✦';
+    return;
+  }
+  eggHack = true; eggTitleDay = null; save();
+  ping('vao_easter_egg', 'nút trong khung Tổ kỹ thuật');
+  closeCred();
+  titleMC = true;
+  winBanner();
+  setTimeout(()=>{ eggIntro(true); gridFlash(); }, 260);
+});
 
 /* Bấm vào thẻ "Phi vụ tiếp theo" → mở đúng toạ độ đang giữ hồ sơ niêm phong
    trên bản đồ (KHÔNG bay thẳng vào hồ sơ), để người xem vẫn thấy ngữ cảnh. */
@@ -3163,7 +3029,6 @@ document.addEventListener('keydown', e=>{
   if(fxLock) return;                 /* đang chạy hiệu ứng thì Esc cũng không ra */
   if(pinw.classList.contains('on')){ closePin(); return; }
   if(askw.classList.contains('on')){ closeAsk(); return; }
-  if(profMenu.classList.contains('on')){ closeProfMenu(); return; }
   if(wipew.classList.contains('on')) closeWipe();
   else if(credw.classList.contains('on')) closeCred();
   else if(cxw.classList.contains('on')) closeCx();

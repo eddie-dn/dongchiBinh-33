@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V15.03** — trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong.
+**Phiên bản hiện tại: V15.04** — trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
 > `MAP-01 · Bản đồ tác chiến` là game giải mật thư bốn toạ độ.
@@ -24,7 +24,8 @@ Deploy thẳng lên Vercel từ GitHub.
 │
 ├── api/
 │   ├── ping.js             ← endpoint đo đạc, bắn về Telegram/Discord
-│   └── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
+│   ├── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
+│   └── thu.js              ← nhận "tâm tư" từ khung Tổ kỹ thuật, gửi về hòm thư
 │
 ├── han/
 │   └── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
@@ -293,7 +294,7 @@ chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên l
 | Cửa | Thao tác | Kết quả |
 |---|---|---|
 | **Tổng tư lệnh** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Box Tổng tư lệnh** hai bước, xem dưới |
-| **Giới thiệu** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung giới thiệu người dựng trang (`#credw`, sửa nội dung ở `.cred-body`) |
+| **Giới thiệu** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung giới thiệu người dựng trang (`#credw`, sửa nội dung ở `.cred-body`) — cuối khung có **hai nút**: *✉ Gửi tâm tư* (mở ô nhập ngay trên hàng nút, gửi về hòm thư qua `/api/thu`) và *Enter Easter Egg ✦* (bật `eggHack` vĩnh viễn) |
 | **Hack Map** | Trong Box Tổng tư lệnh, chọn chiến dịch rồi bấm **Hack Map** | Hộp PIN → nhập `1959`. Chữ `hackmap` gõ đúp đã bỏ, cơ chế PIN giữ nguyên |
 
 Vùng bấm của cửa xoá sạch là **cả dòng bản quyền**, không chỉ lá cờ 15px — dễ trúng hơn
@@ -348,7 +349,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 08-Aug-2026 · V15.03** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 12-Aug-2026 · V15.04** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
