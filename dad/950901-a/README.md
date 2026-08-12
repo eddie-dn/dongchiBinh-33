@@ -9,8 +9,14 @@ Gói này chạy được một mình, không cần trang bản đồ.
 ├── MISSIONS.md     ← luật chơi đầy đủ của hệ 3 Mission
 └── api/
     ├── ping.js     ← endpoint nhận tín hiệu, bắn về Telegram/Discord
-    └── note.js     ← bí danh của ping.js (bắt buộc có — xem "Chống mất tín hiệu")
+    ├── note.js     ← bí danh của ping.js (bắt buộc có — xem "Chống mất tín hiệu")
+    └── thu.js      ← nhận "tâm tư" từ khung Tổ kỹ thuật bên bản đồ, gửi về hòm thư
 ```
+
+> **Deploy chung với bản đồ** (cách đang dùng) thì gói này còn hai việc nữa: giữ cờ điều
+> hướng hai pha và **pí danh** ở khoá `localStorage.nav1`, dùng chung với trang bản đồ.
+> Luật đầy đủ ở [`../../USER-FLOW.md`](../../USER-FLOW.md). Deploy tách domain thì hai
+> thứ đó tự tắt — xem mục "Hai pha & pí danh" bên dưới.
 
 ## Deploy
 
@@ -19,6 +25,7 @@ Gói này chạy được một mình, không cần trang bản đồ.
 2. Vercel → Add New Project → Import repo → Framework **Other**, Build Command và Output
    Directory **để trống** → Deploy.
 3. Settings → Environment Variables: `NOTIFY_KIND=telegram`, `TG_TOKEN`, `TG_CHAT`.
+   Muốn nút *Gửi tâm tư* gửi được email thì thêm `RESEND_KEY`, `MAIL_FROM`, `MAIL_TO`.
 4. **Redeploy** — biến môi trường chỉ ăn từ lần deploy sau.
 
 ## Cấu hình đo đạc
@@ -78,6 +85,9 @@ trang) · `nhay_phan1` (bấm nút Bản đồ khoá) · `gui_form` · `ho_so_do
 · `khoa_pin` · `mo_khoa_m2` · `gia_han_m2` · `giai_m3` · `skip_m3` · `sos_hint` ·
 `test_unlock` · `vao_ban_do` · `bam_ban_do_khoa` · `reset_msn`.
 
+**Hai pha & pí danh:** `mo_pha_map` · `luu_profile` · `doi_profile` · `xoa_profile` ·
+`an_danh` · `khoi_phuc_profile` · `luu_tien_trinh`.
+
 ## Hệ 3 Mission trên trang bìa
 
 Trang bìa có dòng trạng thái dưới chip (đếm ngược `04D 23H 59M 59S`, cập nhật từng giây),
@@ -102,9 +112,39 @@ Vài luật đáng nhớ:
 - **Xong Mission 2 thì Form chốt sổ** — chỉ lật trang xem lại, không sửa được nữa (chỉ áp
   dụng với người đã thực sự gửi form).
 - **Cửa test**: tap 10 nhịp vào nút tròn của mission chưa xong để không bao giờ bị kẹt.
+- **Phá đảo Mission 3 là cửa mở pí danh** — xem mục dưới.
 
 **Toàn bộ luật chi tiết nằm ở [`MISSIONS.md`](MISSIONS.md)** — mã, gợi ý, mốc thời gian,
 lượt nhập, sự kiện đo đạc, khoá lưu trữ và hằng cấu hình.
+
+## Hai pha & pí danh (chỉ khi deploy chung với bản đồ)
+
+Hồ sơ này là **nhà** của người chơi cho tới khi phá đảo Mission 3:
+
+| | Trước khi xong M3 | Sau khi xong M3 |
+|---|---|---|
+| Gõ thẳng `/` (bản đồ) | Bị đẩy về `/dad/950901-a` | Vào bản đồ bình thường |
+| Nút **Bản đồ** góc dưới trái | Khoá (luật ở MISSIONS.md §5) | Sáng amber, bấm là sang bản đồ |
+| Pí danh | Chưa mở | Ô thứ hai của dòng Mission |
+
+**Phá đảo Mission 3 mở hai thứ cùng lúc:** cờ `nav1.mapUnlocked` (bản đồ thành trang
+chính từ đó) và **pí danh**.
+
+### Pí danh
+
+- Hộp `MISSION 3 · KHAI DANH` hiện ngay sau khi phá đảo. Luật: **tối đa 6 ký tự**, chữ
+  thường / số / ký tự đặc biệt, **không viết hoa** (gõ hoa bị hạ thường ngay khi gõ).
+- Xong M3 thì dòng Mission đổi hình: **`✓ M3` đẩy lên chỗ `✓ M2`, ô thứ hai thành bảng
+  xổ pí danh**. Ba trạng thái: `＋ Lưu pí danh` (chưa có) · `pdb ▾` (đang dùng) ·
+  `Ẩn danh ▾` (đã thoát hồ sơ).
+- **Tối đa 2 pí danh**, mỗi cái giữ đúng một bản lưu. Bảng xổ cho đổi hồ sơ (tap), quay
+  về bản lưu (tap chính hồ sơ đang dùng), xoá (✕ hai nhịp), tạo mới, và chơi ẩn danh.
+- **Bản đồ không tự ghi hồ sơ.** Đang chơi bản đồ mà muốn lưu thì **quay về trang bìa
+  này** — về tới là chốt, nhưng chỉ ghi khi tiến độ **tiến lên**. Muốn ghi đè thật (vd
+  vừa reset bản đồ) thì bấm lệnh **⟱ Lưu tiến trình** trong bảng xổ.
+- Mốc bản lưu kể cả hai game: `M1` · `M2` · `M3 ✓` · `TAC 1/4…4/4` · `EGG ✦`.
+- Pí danh **sống sót qua mọi lần reset** của cả hai game. Chỉ mất khi người chơi tự xoá
+  dữ liệu trang.
 
 ## Tối ưu xuất thiệp
 
@@ -118,3 +158,8 @@ triệu) — mắt thường không thấy khác, nhưng nhanh hơn nhiều lầ
 Toàn bộ phần bổ sung nằm trong **một vùng duy nhất** ngay trước thẻ Vercel Analytics, mở
 đầu bằng `<!-- ↓ Bổ sung: đo đạc + luật điều hướng -->`. Phần còn lại của `index.html`
 giống **từng byte** với bản gốc. Muốn quay về bản gốc chỉ cần xoá vùng đó.
+
+**Đụng tới pí danh thì nhớ:** mọi lần đọc/ghi đi qua đúng một cặp `navRead()`/`navWrite()`
+(có sẵn bước di trú v1 → v2), và `mocNow()` là chỗ duy nhất dựng nhãn mốc. Thêm trường
+mới phải thêm ở cả bản chép bên `index.html` của bản đồ — hai bên dùng chung khoá `nav1`
+nên lệch schema là vỡ bản lưu.
