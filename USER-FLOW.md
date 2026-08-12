@@ -460,7 +460,14 @@ Khung `#credw` (mở bằng 10 nhịp vào dòng Last updated) nay có một hà
 | Nút | Vị trí | Việc |
 |---|---|---|
 | **✉ Gửi tâm tư** | trái | Mở một ô nhập **ngay phía trên hàng nút**; gõ xong bấm **Gửi ✦** → `POST /api/thu` → về hòm thư `honghandn@gmail.com` |
-| **Enter Easter Egg ✦** | phải | Bật cờ `eggHack` **vĩnh viễn** (y như Hack Map · MAP-02) rồi chạy `eggIntro` + mạng lưới. Chưa đủ 4/4 thì báo *"Phải phá đảo bốn toạ độ đã ✦"* |
+| **Enter Easter Egg ✦** | phải | **Bay thẳng vào hồ sơ niêm phong `/dad/950901-b`**. Trước khi đi có bật `eggHack` + `credFound` nên lúc quay ra bản đồ đã sẵn trạng thái GAME ON |
+
+Đích của nút phải lấy từ hằng `EGG_HREF`, **đọc thẳng từ `NODES`** (mục `DAD-950901-B`)
+chứ không viết cứng đường dẫn — đổi `href` trong `NODES` là nút đi theo, không lệch.
+
+Không chặn thêm cửa nào ở nút này: vào được khung Tổ kỹ thuật nghĩa là đã gõ đủ 10 nhịp
+vào dòng Last updated, mà đó **chính là điểm kích hoạt** (`credFound`) của hồ sơ niêm
+phong theo README §19c.
 
 ### `/api/thu` — đường thư
 

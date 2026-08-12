@@ -2768,17 +2768,24 @@ $('ttSend').addEventListener('click', ()=>{
     });
   ping('gui_tam_tu', loi.slice(0, 60));
 });
+/* Đích của nút Enter Easter Egg — lấy thẳng từ NODES để không bao giờ lệch với
+   đường dẫn thật của hồ sơ niêm phong. */
+const EGG_HREF = (function(){
+  try{
+    const n = NODES.find(x => x.code === 'DAD');
+    const f = n && n.subs.find(y => /950901-B/i.test(y.id));
+    return (f && f.href) || '/dad/950901-b';
+  }catch(e){ return '/dad/950901-b'; }
+})();
+/* Nút phải: BAY THẲNG vào hồ sơ niêm phong DAD-950901-B.
+   Vào được khung này nghĩa là đã có điểm kích hoạt (10 nhịp Last updated bật
+   credFound), nên không chặn thêm cửa nào nữa. Vẫn bật eggHack để lúc quay ra
+   bản đồ thì trạng thái GAME ON đã sẵn, đúng như đi cửa Hack Map · MAP-02. */
 $('credEgg').addEventListener('click', ()=>{
-  if(nSolved() !== NODES.length){       /* chưa xong MAP-01 thì Easter Egg chưa có gì để mở */
-    $('ttMsg').textContent = 'Phải phá đảo bốn toạ độ đã ✦';
-    return;
-  }
-  eggHack = true; eggTitleDay = null; save();
-  ping('vao_easter_egg', 'nút trong khung Tổ kỹ thuật');
+  eggHack = true; eggTitleDay = null; credFound = true; save();
+  ping('vao_easter_egg', 'nút Tổ kỹ thuật → ' + EGG_HREF);
   closeCred();
-  titleMC = true;
-  winBanner();
-  setTimeout(()=>{ eggIntro(true); gridFlash(); }, 260);
+  setTimeout(()=>{ location.href = EGG_HREF; }, 160);
 });
 
 /* Bấm vào thẻ "Phi vụ tiếp theo" → mở đúng toạ độ đang giữ hồ sơ niêm phong

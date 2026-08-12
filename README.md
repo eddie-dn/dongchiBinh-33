@@ -294,7 +294,7 @@ chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên l
 | Cửa | Thao tác | Kết quả |
 |---|---|---|
 | **Tổng tư lệnh** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Box Tổng tư lệnh** hai bước, xem dưới |
-| **Giới thiệu** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung giới thiệu người dựng trang (`#credw`, sửa nội dung ở `.cred-body`) — cuối khung có **hai nút**: *✉ Gửi tâm tư* (mở ô nhập ngay trên hàng nút, gửi về hòm thư qua `/api/thu`) và *Enter Easter Egg ✦* (bật `eggHack` vĩnh viễn) |
+| **Giới thiệu** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung giới thiệu người dựng trang (`#credw`, sửa nội dung ở `.cred-body`) — cuối khung có **hai nút**: *✉ Gửi tâm tư* (mở ô nhập ngay trên hàng nút, gửi về hòm thư qua `/api/thu`) và *Enter Easter Egg ✦* (**bay thẳng vào hồ sơ niêm phong `/dad/950901-b`**, đồng thời bật `eggHack` + `credFound` nên quay ra bản đồ là đã GAME ON) |
 | **Hack Map** | Trong Box Tổng tư lệnh, chọn chiến dịch rồi bấm **Hack Map** | Hộp PIN → nhập `1959`. Chữ `hackmap` gõ đúp đã bỏ, cơ chế PIN giữ nguyên |
 
 Vùng bấm của cửa xoá sạch là **cả dòng bản quyền**, không chỉ lá cờ 15px — dễ trúng hơn
