@@ -8,6 +8,10 @@
    CSS/JS, để không loé bản đồ một khung hình rồi mới bị đẩy đi.
    Cửa test: ?stay=1 hoặc ?egg=1 — chỉ sống trong lần tải đó, không lưu. */
 (function(){
+  /* CHỈ chuyển hướng khi trang đang được PHỤC VỤ qua http/https. Mở file bằng
+     file:// (tải về xem thử, kiểm tra trước khi upload) thì /dad/950901-a không
+     tồn tại → trình duyệt báo ERR_FILE_NOT_FOUND, trắng trang. Đã vấp đúng lỗi này. */
+  if(location.protocol !== 'http:' && location.protocol !== 'https:') return;
   try{
     var nav = JSON.parse(localStorage.getItem('nav1') || '{}') || {};
     if(nav.mapUnlocked || /[?&](stay|egg)=1/.test(location.search)) return;

@@ -99,11 +99,14 @@ Một script **nhỏ, đứng đầu `<head>`** của `index.html` gốc, chạy
 <script>
 /* Redirect guard — PHA 1 đẩy về hồ sơ. Đứng trước mọi CSS/JS khác. */
 (function(){
+  /* Chỉ chạy khi trang được PHỤC VỤ qua http/https — xem bẫy dưới */
+  if(location.protocol !== 'http:' && location.protocol !== 'https:') return;
   try{
     var nav = JSON.parse(localStorage.getItem('nav1')||'{}');
     var stay = /[?&](stay|egg)=1/.test(location.search);
-    if(!nav.mapUnlocked && !stay) location.replace('/dad/950901-a');
-  }catch(e){ location.replace('/dad/950901-a'); }
+    if(nav.mapUnlocked || stay) return;
+  }catch(e){}
+  location.replace('/dad/950901-a');
 })();
 </script>
 ```
@@ -120,6 +123,13 @@ Luật đã cân nhắc:
   ai gõ được nó là người dựng trang.
 - Guard chỉ nằm ở `index.html` gốc. `han/261030`, `dad/950901-b` không đụng — chúng đã
   có cửa riêng (unlockAt, eggGate).
+
+**BẪY ĐÃ VẤP — mở bằng `file://` thì trắng trang.** Bản đầu không xét giao thức, nên tải
+file về mở thử (kiểm tra trước khi upload) là guard bắn sang `file:///dad/950901-a` —
+đường dẫn không tồn tại → Chrome báo *"Your file couldn't be accessed · ERR_FILE_NOT_FOUND"*.
+Nhìn y như file hỏng, dù file nguyên vẹn từng byte. Nay guard **thoát ngay** khi
+`location.protocol` không phải `http:`/`https:`, nên mở tại chỗ vẫn xem được bản đồ đầy
+đủ. Bên hồ sơ không dính vì không có guard.
 
 ### Trong hồ sơ không đổi gì ở pha 1
 
@@ -417,6 +427,10 @@ thì soi ảnh chụp ở khổ 390px.
 - [x] Box Tổng tư lệnh: bỏ gợi ý "bấm 5 nhịp", kaomoji không tràn viền
 - [x] Trong cửa sổ Easter Egg, tiêu đề đổi **"Easter Egg" ⇄ "Game On"**, cả hai nửa
       cùng tông amber và cùng nhịp nhấp nháy (`class="title mc egg eggblink"`)
+
+**Mở tại chỗ (file://)**
+- [x] Mở thẳng `index.html` bằng trình duyệt → hiện bản đồ, không bị đẩy đi đâu
+- [x] Mở thẳng `dad/950901-a/index.html` → hiện hồ sơ bình thường
 
 **Còn phải thử tay**
 - [ ] Điện thoại thật, cả màn 360px
