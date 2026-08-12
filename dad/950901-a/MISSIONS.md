@@ -86,6 +86,9 @@ là file về bản gốc.
   — **không lộ mẹo**. Cách chi viện thật: góc dưới **phải** có nút **gia hạn**, bấm
   **10 nhịp liên tục** (mỗi nhịp < 0,9s) → nạp lại trọn **5 ngày mới**, vẫn phải nhập đúng
   `217N33`. Không bao giờ kẹt vĩnh viễn. Bắn sự kiện `gia_han_m2`.
+- Nhập đúng → chen **một bước KHAI DANH** (`MISSION 2 · KHAI DANH` — *"Nhập pí danh ✦"*,
+  tối đa 6 ký tự, không viết hoa; luật đầy đủ ở `USER-FLOW.md` §6) rồi mới tới bảng ghi
+  công. Ai đã có pí danh thì bỏ qua bước này.
 - Nhập đúng → `✓ M2`, Mission 1 ẩn khỏi dòng, Mission 3 mở cửa sổ 5 ngày. Hộp đổi **ngay**
   (320ms) thành **bảng ghi công `MISSION 2 · HOÀN THÀNH`** (*"Thông Quan ✦"* — "Tiếp tục tiến
   trình ở Mission 3. Thời hạn Phá đảo: 5 ngày") và **đứng yên ở đó** — không còn
@@ -201,7 +204,7 @@ không phải gõ 10 nhịp:
 
 | Nút | Khi đã xong | Mở ra |
 |---|---|---|
-| Nút 1 | M1 xong | `MISSION 1 · HOÀN THÀNH` |
+| Nút 1 | M1 xong | `MISSION 1 · HOÀN THÀNH` — *"Form khai báo đã về căn cứ ✦"* + **đúng hai dòng** thân bài |
 | Nút 2 | M2 xong | `MISSION 2 · HOÀN THÀNH` — *"Thông Quan ✦"* + đếm ngược cửa sổ M3 + nút Tới Mission 3 |
 | Nút 3 | M3 xong | `MISSION 3 · PHÁ ĐẢO` |
 
@@ -256,7 +259,10 @@ Tất cả đi qua hệ `ping` sẵn có (endpoint `/api/ping`, 3 tầng dự ph
 - **Di trú v2 → v3** tự động: ai đang dở M2 được cấp lại 5 ngày từ lúc mở trang, ai
   đang dở M3 cũng vậy — không ai bị kẹt vì đổi luật.
 - **Reset**: nút Chơi lại trong hộp M3, hoặc tự xoá `msn1` — về vạch xuất phát, đồng hồ
-  chỉ chạy lại khi xong M1.
+  chỉ chạy lại khi xong M1. Reset **hạ cờ `nav1.mapUnlocked`** (về pha 1) nhưng **giữ
+  nguyên pí danh** — bấm chip góc phải là quay lại bản lưu cũ.
+- `localStorage.nav1`: pí danh + pha điều hướng, dùng chung với trang bản đồ. Xem
+  `USER-FLOW.md`.
 
 ---
 

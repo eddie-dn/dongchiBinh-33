@@ -880,6 +880,8 @@ render();
   text-align:center;text-wrap:balance;padding-left:0;padding-right:0}
 .msn-card.done .msn-tit,.msn-card.done .msn-txt{
   max-width:280px;margin-left:auto;margin-right:auto}
+/* Câu ngắn muốn đứng trọn MỘT dòng: bỏ trần 280px, chỉ gãy ở đúng thẻ <br> */
+.msn-card.done .msn-txt.nowrap2{max-width:none;text-wrap:nowrap}
 .msn-card.done .msn-cd{margin-top:12px}
 /* Nấc đã xong trên dòng Mission: bấm thẳng vào là mở lại bảng ghi công */
 .msn-seg[data-m]{cursor:pointer}
@@ -957,25 +959,66 @@ render();
   border:none;background:none;color:rgba(234,240,247,.5);font-size:16px;line-height:1;cursor:pointer}
 .done-back{margin-top:14px}
 
-/* ── Hồ sơ người chơi (profile) — chip góc phải trên, CHỈ ở trang bìa.
-   Khai danh lúc nhập đúng mã Mission 2; luật đầy đủ ở USER-FLOW.md §6 ── */
-#msnProf{position:absolute;top:13px;right:19px;z-index:30;display:none;align-items:center;gap:6px;
-  max-width:29%;border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
-  background:rgba(7,20,41,.97);padding:5px 9px;cursor:pointer;
-  font-family:"Oswald";font-size:9.5px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:rgba(242,180,65,.8);transition:opacity .3s;
-  -webkit-tap-highlight-color:transparent}
+/* ── Pí danh (profile) — chip góc phải trên, CHỈ ở trang bìa.
+   KHÔNG có hộp nền: chữ nổi thẳng trên nền, kèm mũi ▾ để biết bấm mở được.
+   right:46px để chừa hẳn góc kẻ tay (.corner.tr rộng 24px ở right:14px). ── */
+#msnProf{position:absolute;top:15px;right:46px;z-index:31;display:none;align-items:center;gap:5px;
+  max-width:34%;border:none;background:none;padding:6px 2px;cursor:pointer;
+  font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--amber);text-shadow:0 0 12px rgba(242,180,65,.45);
+  transition:opacity .3s;-webkit-tap-highlight-color:transparent}
 #msnProf.on{display:inline-flex}
 #msnProf.off{display:none}
 #msnProf svg{width:12px;height:12px;flex:none;fill:currentColor}
 #msnProf span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Ô nhập tên ở bước Khai danh + ô đổi tên trong hộp profile */
-.msn-name{display:block;width:100%;margin-top:16px;padding:10px 12px;border-radius:5px;
+#msnProf i{font-style:normal;font-size:8px;opacity:.75;transition:transform .25s}
+#msnProf.anon{color:rgba(234,240,247,.5);text-shadow:none}
+#msnProf.open i{transform:rotate(180deg)}
+#msnProf:active{opacity:.7}
+/* Lần đầu có pí danh: nền tối lại, chip nhấp nháy để chỉ chỗ — chỉ một lần */
+#msnProf.teach{animation:pfTeach 1.1s ease-in-out infinite}
+@keyframes pfTeach{0%,100%{opacity:.45}50%{opacity:1;text-shadow:0 0 18px rgba(242,180,65,.9)}}
+#msnDim{position:absolute;inset:0;z-index:30;background:rgba(4,11,24,.72);
+  backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .45s}
+#msnDim.on{opacity:1;pointer-events:auto}
+
+/* ── Bảng xổ pí danh — tối đa 2 hồ sơ, bấm để đổi, ✕ để xoá ── */
+#msnMenu{position:absolute;top:40px;right:22px;z-index:32;width:196px;display:none;
+  border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
+  background:#08182e;box-shadow:0 20px 48px rgba(0,0,0,.6);padding:8px 0 6px}
+#msnMenu.on{display:block}
+.pf-lab{font-family:"Oswald";font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--amber);opacity:.8;padding:0 12px 7px}
+.pf-row{display:flex;align-items:center;gap:8px;width:100%;padding:8px 8px 8px 12px;
+  border:none;background:none;cursor:pointer;text-align:left;
+  color:rgba(234,240,247,.72);font-size:12.5px;line-height:1.35;
+  -webkit-tap-highlight-color:transparent}
+.pf-row:hover,.pf-row:focus-visible{background:rgba(242,180,65,.08)}
+.pf-row.cur{color:var(--amber)}
+.pf-row .pname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-row .pmoc{font-family:"Oswald";font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(234,240,247,.42);flex:none}
+.pf-row .pdot{flex:none;width:5px;height:5px;border-radius:50%;background:transparent}
+.pf-row.cur .pdot{background:var(--amber);box-shadow:0 0 7px rgba(242,180,65,.7)}
+.pf-x{flex:none;width:24px;height:24px;border:none;background:none;cursor:pointer;
+  color:rgba(234,240,247,.35);font-size:11px;line-height:1;border-radius:4px}
+.pf-x:hover{color:#ffb4a6;background:rgba(255,180,166,.1)}
+.pf-x.arm{color:#ffb4a6;background:rgba(255,180,166,.14)}
+.pf-sep{height:1px;margin:6px 12px;background:var(--line)}
+.pf-row.act{color:rgba(234,240,247,.55);font-size:11.5px}
+.pf-row.act:hover{color:var(--paper)}
+/* Ô nhập pí danh — rộng bằng hộp cho cân với khối chữ phía trên */
+.msn-name{display:block;width:100%;margin-top:18px;padding:11px 14px;border-radius:5px;
   border:1px solid var(--line);border-left:2px solid var(--amber);
   background:rgba(6,16,31,.5);color:var(--paper);text-align:center;
-  font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:14px;outline:none}
+  font-family:"Oswald";font-size:16px;font-weight:600;letter-spacing:.22em;outline:none}
 .msn-name:focus{border-color:rgba(242,180,65,.55)}
-.msn-name::placeholder{color:rgba(234,240,247,.35)}
+.msn-name::placeholder{color:rgba(234,240,247,.3);letter-spacing:.12em;font-size:13px}
+/* Hộp Khai danh: chữ và ô nhập cùng một bề ngang, không bị bó hẹp như bảng ghi công */
+.msn-card.wideform .msn-txt,.msn-card.wideform .msn-tit{max-width:none}
+.msn-rule{margin:9px 0 0;font-size:11px;line-height:1.6;text-align:center;
+  color:rgba(234,240,247,.45)}
+.msn-rule b{color:rgba(242,180,65,.8);font-weight:600}
 
 @media (prefers-reduced-motion:reduce){
   #msnLine.boom,#msnTl.boom{animation:none;text-shadow:0 0 12px rgba(242,180,65,.75)}
@@ -1194,7 +1237,8 @@ render();
     var off = (H.page ? H.page() : 0) !== 0;
     line.classList.toggle('off', off);
     tl.classList.toggle('off', off);
-    pfChip.classList.toggle('off', off);   /* chip profile cũng chỉ ở trang bìa */
+    pfChip.classList.toggle('off', off);   /* chip pí danh cũng chỉ ở trang bìa */
+    if(off){ menuClose(); teachOff(); }
     if(!off && celebPend) setTimeout(celebrate, 420);
     mapUI();
   }
@@ -1374,10 +1418,12 @@ render();
           st.m2 = true; st.m2doneAt = Date.now(); save(); wset(0);
           ping('mo_khoa_m2', 'Mã đúng · Mission 3 mở cửa sổ ' + Math.round(W3/DAY) + ' ngày');
           drawLine(); drawTl(); celebrate(); lockForm();
-          /* Đã có profile (chơi lại sau reset): chỉ checkpoint đè, không hỏi lại tên.
-             Chưa có: chen bước KHAI DANH trước bảng Thông Quan (USER-FLOW.md §6.2). */
-          var coProf = !!navRead().profile;
-          if(coProf) profSave('M2');
+          /* Đang đứng ở một pí danh (chơi lại sau reset): chỉ checkpoint đè, không hỏi lại.
+             Chưa có / đang ẩn danh và còn chỗ trống: chen bước NHẬP PÍ DANH trước
+             bảng Thông Quan (USER-FLOW.md §6.2). */
+          var nvM2 = navRead();
+          var coProf = !!profCur() || nvM2.profiles.length >= PROF_MAX;
+          if(profCur()) profSave('M2');
           setTimeout(function(){                   /* đã tự tay đóng hộp thì thôi, không bật lại */
             if(!ov.classList.contains('show')) return;
             if(coProf) openM2Done(true); else openKhaiDanh();
@@ -1489,17 +1535,20 @@ render();
   /* Bảng ghi công Mission 1 — bấm nút tròn số 1 trên timeline là xem lại */
   function openM1Done(){
     openOv('Mission 1 · Hoàn thành',
+      /* Hai dòng, không để câu đầu gãy làm ba — xem MISSIONS.md §7 */
       '<div class="msn-tit">Form khai báo đã về căn cứ ✦</div>'
-      + '<div class="msn-txt">Hội đồng MeowMeow đã nhận hồ sơ của đồng chí.<br>'
+      + '<div class="msn-txt nowrap2">Hội đồng MeowMeow đã nhận hồ sơ.<br>'
       + 'Tiếp tục tiến trình ở <b>Mission 2</b>.</div>');
     ov.querySelector('.msn-card').classList.add('done');
   }
 
   /* Bảng ghi công Mission 2 — hiện sau khi nhập đúng mã, và bấm nút tròn số 2 xem lại */
   function openM2Done(fresh){
-    /* Lỡ đóng hộp đúng lúc Khai danh (hoặc xong M2 từ bản cũ chưa có profile):
-       mở lại bảng này là làm nốt nghi thức — không ai lọt lưới khai danh */
-    if(!navRead().profile){ openKhaiDanh(); return; }
+    /* Lỡ đóng hộp đúng lúc Khai danh (hoặc xong M2 từ bản cũ chưa có pí danh):
+       mở lại bảng này là làm nốt nghi thức — không ai lọt lưới khai danh.
+       Đang cố ý chơi ẩn danh thì thôi, không ép. */
+    var nvD = navRead();
+    if(!nvD.profiles.length){ openKhaiDanh(); return; }
     var xong = st.m3;
     openOv('Mission 2 · Hoàn thành',
       '<div class="msn-tit">Thông Quan ✦</div>'
@@ -1554,95 +1603,220 @@ render();
      Khai danh MỘT LẦN lúc nhập đúng mã Mission 2 → từ đó chip tên đứng góc
      phải trên trang bìa; bản lưu (đúng MỘT bản) tự ghi đè theo mốc tiến lên
      và sống qua mọi đường reset. */
-  function navRead(){ try{ return JSON.parse(localStorage.getItem('nav1')||'{}')||{}; }catch(e){ return {}; } }
+  var PROF_MAX = 2, PID_LEN = 6;          /* tối đa 2 pí danh, mỗi pí danh 6 ký tự */
+  function navRead(){
+    var n = {}; try{ n = JSON.parse(localStorage.getItem('nav1')||'{}')||{}; }catch(e){}
+    /* Di trú v1 → v2: một profile lẻ thành mảng profiles + con trỏ active */
+    if(n.profile && !n.profiles){ n.profiles = [n.profile]; n.active = 0; delete n.profile; n.v = 2; }
+    if(!(n.profiles instanceof Array)) n.profiles = [];
+    if(typeof n.active !== 'number') n.active = n.profiles.length ? 0 : -1;
+    if(n.active >= n.profiles.length) n.active = n.profiles.length ? 0 : -1;
+    return n;
+  }
   function navWrite(v){ try{ localStorage.setItem('nav1', JSON.stringify(v)); }catch(e){} }
   function escH(s){ return String(s).replace(/[&<>"']/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  /* LUẬT PÍ DANH: không có chữ in hoa, tối đa 6 ký tự — chữ thường, số, ký tự đặc biệt.
+     Hạ chữ thường ngay khi gõ nên người chơi không bao giờ tạo được tên sai luật. */
+  function pidNorm(s){ return String(s||'').toLowerCase().replace(/\s+/g,'').slice(0, PID_LEN); }
+  function profSnap(){
+    var s = {}, t = null;
+    try{ s = JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){}
+    try{ t = JSON.parse(localStorage.getItem('mtv1')||'null'); }catch(e){}
+    var o = { msn1: s };                  /* chụp NGUYÊN VĂN, không chọn lọc trường */
+    if(t) o.mtv1 = t;                     /* tiến độ bản đồ chỉ có từ PHA 2 */
+    return o;
+  }
+  /* Chơi ẩn danh (active = -1) thì không ghi vào hồ sơ nào — đúng nghĩa ẩn danh */
   function profSave(moc){
-    var nav = navRead(); if(!nav.profile) return;   /* chưa khai danh thì chưa có gì để bò */
-    var s = {}; try{ s = JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){}
-    var t = null; try{ t = JSON.parse(localStorage.getItem('mtv1')||'null'); }catch(e){}
-    nav.profile.savedAt = Date.now(); nav.profile.moc = moc;
-    nav.profile.snap = nav.profile.snap || {};
-    nav.profile.snap.msn1 = s;                      /* chụp NGUYÊN VĂN, không chọn lọc trường */
-    if(t) nav.profile.snap.mtv1 = t;                /* tiến độ bản đồ chỉ có từ PHA 2 */
+    var nav = navRead(); if(nav.active < 0) return;
+    var p = nav.profiles[nav.active]; if(!p) return;
+    p.savedAt = Date.now(); p.moc = moc; p.snap = profSnap();
     navWrite(nav); chipDraw();
   }
+  function profCur(){ var n = navRead(); return n.active >= 0 ? n.profiles[n.active] : null; }
+  /* Nhãn mốc của tiến độ ĐANG chơi — dùng khi tạo pí danh giữa chừng */
+  function mocNow(){ return st.m3 ? 'M3' : st.m2 ? 'M2' : st.m1 ? 'M1' : '—'; }
+  /* Nạp một bản lưu rồi tải lại trang — về trạng thái trọn vẹn thì reload */
+  function profLoad(nav, i){
+    var p = nav.profiles[i]; if(!p) return;
+    nav.active = i;
+    if(p.snap){
+      try{
+        if(p.snap.msn1) localStorage.setItem(KEY, JSON.stringify(p.snap.msn1));
+        if(p.snap.mtv1) localStorage.setItem('mtv1', JSON.stringify(p.snap.mtv1));
+      }catch(e){}
+      nav.mapUnlocked = !!(p.snap.msn1 && p.snap.msn1.m3);   /* pha tính lại từ bản lưu */
+    }
+    navWrite(nav);
+    setTimeout(function(){ location.reload(); }, 240);
+  }
+
+  var pfDim = document.createElement('div'); pfDim.id = 'msnDim';
+  pfDim.setAttribute('aria-hidden', 'true');
+  frame.appendChild(pfDim);
   var pfChip = document.createElement('button');
   pfChip.id = 'msnProf'; pfChip.type = 'button';
-  pfChip.setAttribute('aria-label', 'Hồ sơ người chơi — quay về bản lưu gần nhất');
-  pfChip.innerHTML = PLANE + '<span></span>';
+  pfChip.setAttribute('aria-haspopup', 'true');
+  pfChip.setAttribute('aria-label', 'Pí danh — bấm để đổi hồ sơ');
+  pfChip.innerHTML = PLANE + '<span></span><i>▾</i>';
   frame.appendChild(pfChip);
+  var pfMenu = document.createElement('div');
+  pfMenu.id = 'msnMenu'; pfMenu.setAttribute('role', 'menu');
+  pfMenu.setAttribute('aria-hidden', 'true');
+  frame.appendChild(pfMenu);
+
   function chipDraw(){
-    var nav = navRead(), on = !!(nav.profile && nav.profile.name);
-    pfChip.classList.toggle('on', on);
-    if(on) pfChip.querySelector('span').textContent = nav.profile.name;
+    var nav = navRead(), p = profCur();
+    pfChip.classList.toggle('on', nav.profiles.length > 0);
+    pfChip.classList.toggle('anon', !p);
+    pfChip.querySelector('span').textContent = p ? p.name : 'ẩn danh';
   }
-  /* Bước KHAI DANH — chen một nhịp trước bảng "Thông Quan ✦" của Mission 2.
-     Ô điền sẵn tên mặc định, nhập rỗng cũng lưu được — không ai kẹt ở đây. */
-  function openKhaiDanh(){
+  function menuDraw(){
+    var nav = navRead(), h = '<div class="pf-lab">Pí danh · ' + nav.profiles.length + '/' + PROF_MAX + '</div>';
+    nav.profiles.forEach(function(p, i){
+      h += '<div class="pf-row' + (i === nav.active ? ' cur' : '') + '" data-i="' + i + '" role="menuitem" tabindex="0">'
+        + '<span class="pdot"></span><span class="pname">' + escH(p.name) + '</span>'
+        + '<span class="pmoc">' + escH(p.moc || '—') + '</span>'
+        + '<button class="pf-x" type="button" data-x="' + i + '" aria-label="Xoá pí danh">&#10005;</button></div>';
+    });
+    if(!nav.profiles.length) h += '<div class="pf-row act" style="cursor:default">Chưa có pí danh nào</div>';
+    h += '<div class="pf-sep"></div>';
+    if(nav.profiles.length < PROF_MAX)
+      h += '<div class="pf-row act" data-act="new" role="menuitem" tabindex="0">＋ Pí danh mới</div>';
+    h += nav.active >= 0
+      ? '<div class="pf-row act" data-act="out" role="menuitem" tabindex="0">⏻ Chơi ẩn danh</div>'
+      : '<div class="pf-row act" style="cursor:default">Đang chơi ẩn danh ✦</div>';
+    pfMenu.innerHTML = h;
+  }
+  function menuOpen(){
+    menuDraw(); pfMenu.classList.add('on'); pfMenu.setAttribute('aria-hidden','false');
+    pfChip.classList.add('open'); teachOff();
+  }
+  function menuClose(){
+    pfMenu.classList.remove('on'); pfMenu.setAttribute('aria-hidden','true');
+    pfChip.classList.remove('open');
+  }
+  pfChip.addEventListener('click', function(e){
+    e.stopPropagation();
+    pfMenu.classList.contains('on') ? menuClose() : menuOpen();
+  });
+  document.addEventListener('click', function(e){
+    if(pfMenu.classList.contains('on') && !(e.target.closest && e.target.closest('#msnMenu'))) menuClose();
+  });
+  var xArm = -1;
+  pfMenu.addEventListener('click', function(e){
+    e.stopPropagation();
+    var x = e.target.closest ? e.target.closest('.pf-x') : null;
+    if(x){                               /* xoá pí danh — bấm hai nhịp cho chắc */
+      var xi = +x.getAttribute('data-x');
+      if(xArm !== xi){
+        xArm = xi;
+        [].forEach.call(pfMenu.querySelectorAll('.pf-x'), function(b){ b.classList.remove('arm'); });
+        x.classList.add('arm'); x.textContent = '✕?';
+        return;
+      }
+      var nv = navRead(), bo = nv.profiles[xi];
+      nv.profiles.splice(xi, 1);
+      if(nv.active === xi) nv.active = -1;          /* xoá hồ sơ đang dùng → về ẩn danh */
+      else if(nv.active > xi) nv.active--;
+      navWrite(nv); xArm = -1;
+      ping('xoa_profile', bo ? bo.name : '');
+      menuDraw(); chipDraw();
+      return;
+    }
+    var row = e.target.closest ? e.target.closest('.pf-row') : null;
+    if(!row) return;
+    var act = row.getAttribute('data-act');
+    if(act === 'new'){ menuClose(); openKhaiDanh(true); return; }
+    if(act === 'out'){                   /* chơi ẩn danh */
+      var n0 = navRead();
+      if(n0.active >= 0) profSave(n0.profiles[n0.active].moc || '—');
+      var n1 = navRead(); n1.active = -1; navWrite(n1);
+      ping('an_danh', 'thoát khỏi pí danh');
+      menuDraw(); chipDraw();
+      return;
+    }
+    if(row.getAttribute('data-i') == null) return;
+    var i = +row.getAttribute('data-i'), nav = navRead();
+    if(i === nav.active){
+      /* Đang đứng ở chính hồ sơ này → bấm là QUAY VỀ BẢN LƯU, ghi đè tiến độ
+         hiện tại nên hỏi lại một nhịp, cùng độ nguy hiểm với Reset. */
+      if(row.getAttribute('data-arm') !== '1'){
+        row.setAttribute('data-arm', '1');
+        row.querySelector('.pname').textContent = 'chắc chưaaa?';
+        return;
+      }
+      ping('khoi_phuc_profile', nav.profiles[i].moc || '');
+      profLoad(nav, i);
+    }else{
+      /* Đổi sang hồ sơ khác: cất tiến độ đang chơi vào hồ sơ cũ trước đã, không mất gì */
+      if(nav.active >= 0) profSave(nav.profiles[nav.active].moc || '—');
+      var n2 = navRead();
+      ping('doi_profile', n2.profiles[i].name);
+      profLoad(n2, i);
+    }
+  });
+  /* Lần đầu vừa có pí danh: nền tối lại, chip nhấp nháy để chỉ chỗ — đúng một lần */
+  var teachT = 0;
+  function teachOff(){ clearTimeout(teachT); pfChip.classList.remove('teach'); pfDim.classList.remove('on'); }
+  function teachOn(){
+    var nav = navRead();
+    if(nav.chipTaught || !nav.profiles.length) return;
+    nav.chipTaught = true; navWrite(nav);
+    pfDim.classList.add('on'); pfChip.classList.add('teach');
+    teachT = setTimeout(teachOff, 4200);
+  }
+  pfDim.addEventListener('click', teachOff);
+
+  /* Bước NHẬP PÍ DANH — chen một nhịp trước bảng "Thông Quan ✦" của Mission 2.
+     them=true khi tạo thêm pí danh thứ hai từ bảng xổ. */
+  function openKhaiDanh(them){
     openOv('Mission 2 · Khai danh',
-      '<div class="msn-tit">Đồng chí tên chi? ✦</div>'
-      + '<div class="msn-txt">Tên này gắn với <b>bản lưu tiến trình</b> — lần sau bấm vào tên '
+      '<div class="msn-tit">Nhập pí danh ✦</div>'
+      + '<div class="msn-txt">Pí danh gắn với <b>bản lưu tiến trình</b> — lần sau bấm vào pí danh '
       + 'ở góc phải trên cùng là quay về đúng chỗ đã lưu ✦</div>'
-      + '<input class="msn-name" id="kdIn" type="text" maxlength="12" value="Dongchi Bình" '
-      + 'autocomplete="off" spellcheck="false" aria-label="Tên hồ sơ người chơi">'
-      + '<button class="navbtn wide" id="kdSave" style="margin-top:14px;justify-content:center">Lưu hồ sơ ✦</button>');
-    ov.querySelector('.msn-card').classList.add('done');
+      + '<input class="msn-name" id="kdIn" type="text" maxlength="' + PID_LEN + '" '
+      + 'placeholder="pí danh…" autocomplete="off" autocapitalize="none" spellcheck="false" '
+      + 'aria-label="Pí danh">'
+      + '<div class="msn-rule">Tối đa <b>' + PID_LEN + ' ký tự</b> · chữ thường, số, ký tự đặc biệt '
+      + '· <b>không viết hoa</b></div>'
+      + '<div class="msn-msg" id="kdMsg"></div>'
+      + '<button class="navbtn wide" id="kdSave" style="margin-top:10px;justify-content:center">Lưu hồ sơ ✦</button>');
+    var card = ov.querySelector('.msn-card');
+    card.classList.add('done', 'wideform');
     var inp = byId('kdIn');
-    setTimeout(function(){ try{ inp.focus(); inp.select(); }catch(e){} }, 80);
+    setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 80);
+    /* Hạ chữ thường ngay khi gõ: không bao giờ tạo được pí danh sai luật */
+    inp.addEventListener('input', function(){
+      var v = pidNorm(inp.value);
+      if(v !== inp.value) inp.value = v;
+    });
     function saveName(){
-      var name = (inp.value || '').trim().slice(0, 12) || 'Dongchi Bình';
+      var name = pidNorm(inp.value);
+      var m = byId('kdMsg');
+      if(!name){ if(m) m.textContent = 'Nhập pí danh đã nha ✦'; return; }
       var nav = navRead();
-      nav.v = nav.v || 1;
-      nav.profile = { name: name, savedAt: Date.now(), moc: 'M2', snap: {} };
+      if(nav.profiles.some(function(p){ return p.name === name; })){
+        if(m) m.textContent = 'Pí danh này có rồi ✦'; return;
+      }
+      if(nav.profiles.length >= PROF_MAX){
+        if(m) m.textContent = 'Chỉ lưu được ' + PROF_MAX + ' pí danh — xoá bớt một cái đã ✦'; return;
+      }
+      nav.v = 2;
+      nav.profiles.push({ name: name, savedAt: Date.now(), moc: 'M2', snap: {} });
+      nav.active = nav.profiles.length - 1;
       navWrite(nav);
-      profSave('M2');                     /* chụp msn1 hiện tại vào bản lưu đầu tiên */
+      profSave(mocNow());
       ping('luu_profile', name);
       chipDraw();
+      if(them){ closeOv(); teachOn(); return; }
       openM2Done(true);
+      setTimeout(teachOn, 500);          /* chỉ chỗ chip ngay sau khi có pí danh đầu tiên */
     }
     byId('kdSave').addEventListener('click', saveName);
     inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') saveName(); });
   }
-  /* Hộp profile — bấm chip là mở: tiếp tục ở bản lưu (hỏi lại một nhịp) hoặc đổi tên */
-  pfChip.addEventListener('click', function(){
-    var nav = navRead(), p = nav.profile; if(!p) return;
-    var d = new Date(p.savedAt || 0), p2 = function(n){ return (n<10?'0':'')+n; };
-    openOv('Hồ sơ người chơi',
-      '<div class="msn-tit" id="pfTit">✈ ' + escH(p.name) + '</div>'
-      + '<div class="msn-txt">Bản lưu: <b>' + escH(p.moc || '—') + '</b> · '
-      + p2(d.getDate()) + '-' + p2(d.getMonth()+1) + ' '
-      + p2(d.getHours()) + ':' + p2(d.getMinutes()) + '</div>'
-      + '<button class="navbtn wide" id="pfGo" style="margin-top:16px;justify-content:center">Tiếp tục ở bản lưu ✦</button>'
-      + '<input class="msn-name" id="pfIn" type="text" maxlength="12" placeholder="Đổi tên…" '
-      + 'autocomplete="off" spellcheck="false" aria-label="Tên mới cho hồ sơ người chơi">'
-      + '<button class="msn-ghost" id="pfRen" type="button">Đổi tên</button>');
-    ov.querySelector('.msn-card').classList.add('done');
-    var go = byId('pfGo'), armed = false;
-    go.addEventListener('click', function(){
-      if(!armed){ armed = true; go.textContent = 'Chú Bình chắc chưaaa? Bấm lần nữa'; return; }
-      ping('khoi_phuc_profile', p.moc || '');
-      try{
-        if(p.snap && p.snap.msn1) localStorage.setItem(KEY, JSON.stringify(p.snap.msn1));
-        if(p.snap && p.snap.mtv1) localStorage.setItem('mtv1', JSON.stringify(p.snap.mtv1));
-      }catch(e){}
-      var nv = navRead();                 /* pha tính lại từ chính bản lưu */
-      nv.mapUnlocked = !!(p.snap && p.snap.msn1 && p.snap.msn1.m3);
-      navWrite(nv);
-      setTimeout(function(){ location.reload(); }, 240);
-    });
-    byId('pfRen').addEventListener('click', function(){
-      var v = (byId('pfIn').value || '').trim().slice(0, 12);
-      if(!v) return;
-      var nv = navRead(); if(!nv.profile) return;
-      nv.profile.name = v; navWrite(nv); p = nv.profile;
-      ping('doi_ten_profile', v);
-      chipDraw();
-      byId('pfTit').innerHTML = '✈ ' + escH(v);
-      byId('pfIn').value = '';
-    });
-  });
 
   /* ---- bấm dòng Mission ---- */
   var m1Taps = 0;

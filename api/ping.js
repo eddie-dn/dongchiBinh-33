@@ -55,7 +55,10 @@ const NHAN = {
   mo_pha_map:         'MỞ PHA MAP — bản đồ thành trang chính',
   luu_profile:        'KHAI DANH — tạo bản lưu profile',
   doi_ten_profile:    'Đổi tên profile',
-  khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile'
+  khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile',
+  doi_profile:        'Đổi sang pí danh khác',
+  xoa_profile:        'Xoá một pí danh',
+  an_danh:            'Chuyển sang chơi ẩn danh'
 };
 
 function gioVN(iso) {

@@ -2,8 +2,9 @@
 
 > **Trạng thái: ĐÃ TRIỂN KHAI** vào `index.html`, `dad/950901-a/index.html` và hai bản
 > `api/ping.js` (nhãn sự kiện mới). Đã chạy kiểm thử đầu-cuối bằng Chromium headless:
-> redirect hai pha, khai danh, checkpoint, khôi phục, reset — 30/30 đạt. Mọi tên khoá,
-> tên hàm, tên sự kiện dưới đây là tên chốt — code đang dùng đúng tên này.
+> redirect hai pha, luật pí danh, hai hồ sơ, đổi/xoá/ẩn danh, checkpoint, khôi phục,
+> reset, tiêu đề Game On, Box Tổng tư lệnh — 43/43 đạt. Mọi tên khoá, tên hàm, tên sự
+> kiện dưới đây là tên chốt — code đang dùng đúng tên này.
 
 Liên quan trực tiếp tới hai file:
 
@@ -47,7 +48,7 @@ duy nhất: **phá đảo Mission 3** trong hồ sơ DAD-950901-A.
 | Mở `/dad/950901-a` | Hiện hồ sơ, chơi 3 Mission | Hiện hồ sơ, nút Bản đồ sáng, về `/` được |
 | Nút Bản đồ trong hồ sơ | Khoá (luật MISSIONS.md §5 giữ nguyên) | Mở — `goMap()` như hiện hành |
 | Đường Map → hồ sơ | Không tồn tại (Map không vào được) | **Duy nhất**: bấm toạ độ `DAD` → bảng hồ sơ → `DAD-950901-A` |
-| Chip profile góc phải trên | Hiện sau khi khai danh (mục 6) | Hiện ở cả hai trang |
+| Chip pí danh góc phải trên | Hiện sau khi khai danh (mục 6) | Hiện ở cả hai trang |
 
 Chuyển pha là **chốt một chiều có điều kiện**: phá đảo M3 thì bật, và chỉ **Chơi lại từ
 đầu của hồ sơ** (`reset_msn`) mới hạ xuống — vì lúc đó M3 không còn "đã xong" nữa, quay
@@ -64,16 +65,21 @@ có đường xoá riêng (`hardWipe`, `reset_msn`). Điều hướng và profil
 
 ```js
 localStorage.nav1 = {
-  v: 1,                      // phiên bản luật, để di trú về sau
+  v: 2,                      // phiên bản luật, để di trú về sau
   mapUnlocked: false,        // cờ chuyển pha — true = PHA 2
   unlockedAt: null,          // timestamp phá đảo M3, để hiển thị
-  profile: null              // hoặc object ở mục 6
+  profiles: [],              // TỐI ĐA 2 pí danh, mỗi phần tử xem mục 6.1
+  active: -1,                // con trỏ pí danh đang dùng · -1 = chơi ẩn danh
+  chipTaught: false          // đã chỉ chỗ chip lần đầu chưa (mục 6.6)
 }
 ```
 
+**Di trú v1 → v2 tự động** ngay trong `navRead()`: bản cũ có `profile` lẻ thì gói thành
+`profiles: [profile]`, `active: 0`, xoá trường cũ. Không ai mất bản lưu vì đổi luật.
+
 Quy tắc:
 
-1. **Chỉ hai điểm ghi `mapUnlocked`**: điểm bật ở mục 4, điểm tắt ở mục 6.5. Không ai
+1. **Chỉ hai điểm ghi `mapUnlocked`**: điểm bật ở mục 4, điểm tắt ở mục 6.7. Không ai
    khác được đụng.
 2. Cả hai trang đọc `nav1` qua đúng một cặp hàm `navRead()` / `navWrite()` (mỗi trang
    một bản chép, giống cách `TRACK` đang được nhân bản) — luôn `try/catch` và luôn có
@@ -176,15 +182,15 @@ sáng amber, ổ khoá biến mất, bấm là về `/`. Vòng đi về hai chi�
 
 ---
 
-## 6. Profile — một bản lưu duy nhất
+## 6. Pí danh (profile) — tối đa 2 hồ sơ
 
 ### 6.1. Vật lưu là gì
 
 ```js
-nav1.profile = {
-  name:    'Dongchi Bình',   // tên khai, 1–12 ký tự, cắt khoảng trắng thừa
+nav1.profiles[i] = {
+  name:    'pdb',            // PÍ DANH, luật ở 6.2
   savedAt: 1725148800000,    // lần checkpoint gần nhất
-  moc:     'M2',             // nhãn mốc cuối: 'M2' | 'M3' | 'MAP n/4' | 'MAP 4/4'
+  moc:     'M2',             // nhãn mốc cuối: 'M1' | 'M2' | 'M3' | 'MAP n/4'
   snap: {
     msn1: { ... },           // chụp nguyên văn localStorage.msn1
     mtv1: { ... }            // chụp nguyên văn localStorage.mtv1 (pha 2 mới có)
@@ -192,51 +198,65 @@ nav1.profile = {
 }
 ```
 
-**Đúng một bản lưu** (`profile` là object, không phải mảng) — checkpoint sau **ghi đè**
-checkpoint trước. "Trạng thái cuối cùng của bản thân" nghĩa là bản lưu luôn là mốc mới
-nhất, không có chọn giữa nhiều bản.
+**Mỗi pí danh giữ đúng MỘT bản lưu** — checkpoint sau ghi đè checkpoint trước. "Trạng
+thái cuối cùng của bản thân" nghĩa là bản lưu luôn là mốc mới nhất.
+
+**Trần 2 pí danh** (`PROF_MAX`). Đủ hai thì dòng "＋ Pí danh mới" biến mất; muốn thêm
+phải xoá bớt một cái.
 
 Snapshot chụp **nguyên văn** hai khoá tiến độ, không chọn lọc trường — để khỏi phải
 đồng bộ danh sách trường mỗi khi `save()` của một trong hai game thêm biến (bẫy
 "reset từng biến bằng tay luôn sót" của README §10 áp dụng y hệt cho lưu).
 
-### 6.2. Khai danh — lúc nhập đúng mã ở Mission 2
+### 6.2. Luật đặt pí danh
 
-Mốc tạo profile: **nhập đúng `217N33`** (kể cả đường "qua cửa 2 bằng mã, tick luôn M1"
-— vì điều kiện thật là *đã hoàn thành M1 tại khoảnh khắc mã đúng*, mà nhập đúng mã thì
-M1 chắc chắn vừa tick).
+| Luật | Chi tiết |
+|---|---|
+| Không chữ in hoa | Gõ hoa cũng bị **hạ thường ngay khi gõ** — không tạo được tên sai luật |
+| Tối đa **6 ký tự** | `PID_LEN`; cắt thẳng lúc gõ, `maxlength` chỉ là lớp phụ |
+| Cho phép | chữ thường, số, ký tự đặc biệt |
+| Bỏ | mọi khoảng trắng |
+| Không trùng | Trùng tên đã có → báo *"Pí danh này có rồi ✦"* |
 
-Luồng trong hộp Mission 2, chen **một bước** trước bảng "Thông Quan ✦":
+Chuẩn hoá đi qua đúng một hàm `pidNorm()` ở cả hai trang.
+
+### 6.3. Khai danh — lúc nhập đúng mã ở Mission 2
+
+Mốc tạo pí danh: **nhập đúng `217N33`**. Luồng trong hộp Mission 2, chen **một bước**
+trước bảng "Thông Quan ✦":
 
 ```
 nhập đúng 217N33
       │
       ▼
 ┌───────────────────────────────┐
-│ MISSION 2 · KHAI DANH         │   ← nhãn amber, đúng quy ước khung phụ README §15
+│ MISSION 2 · KHAI DANH         │
 │                               │
-│ Đồng chí tên chi? ✦           │
-│ ┌───────────────────────┐     │
-│ │ [ô nhập · tối đa 12]  │     │
-│ └───────────────────────┘     │
-│        [ Lưu hồ sơ ✦ ]        │
+│ Nhập pí danh ✦                │
+│ Pí danh gắn với bản lưu…      │
+│ ┌───────────────────────────┐ │  ← ô rộng bằng hộp, Oswald giãn chữ
+│ │        pí danh…           │ │
+│ └───────────────────────────┘ │
+│ Tối đa 6 ký tự · chữ thường,  │
+│ số, ký tự đặc biệt ·          │
+│ không viết hoa                │
+│      [ Lưu hồ sơ ✦ ]          │
 └───────────────────────────────┘
-      │ lưu xong (320ms, nhịp chuyển sẵn có)
+      │ lưu xong
       ▼
-bảng "Thông Quan ✦" như hiện hành
+bảng "Thông Quan ✦" → rồi spotlight chỉ chỗ chip (6.6)
 ```
 
-- Ô nhập **điền sẵn `Dongchi Bình`** — bấm Lưu luôn cũng được, không ai kẹt ở bước này.
-- Nhập rỗng / toàn khoảng trắng → dùng tên điền sẵn. Không có nút bỏ qua: một bản lưu
-  là xương sống của tính năng quay lại, cho né thì mất nghĩa.
-- Lưu xong: tạo `nav1.profile` với `snap.msn1` hiện tại, `moc:'M2'`, bắn `luu_profile`,
-  và **chip góc phải trên cùng xuất hiện từ đây** (6.4).
-- Ai đã có profile (chơi lại sau reset) mà tới lại mốc này: **không hỏi lại tên**, chỉ
-  checkpoint đè theo 6.3 — khai danh là nghi thức một lần.
+- **Không điền sẵn tên**, không nút bỏ qua: pí danh là xương sống của tính năng quay lại.
+  Bỏ trống mà bấm Lưu thì báo *"Nhập pí danh đã nha ✦"*.
+- Đang đứng ở một pí danh (chơi lại sau reset) → **không hỏi lại**, chỉ checkpoint đè.
+- Đang **ẩn danh** mà còn chỗ trống → hỏi lại, tạo pí danh thứ hai.
+- Đã đủ 2 pí danh → bỏ qua bước này, chơi tiếp bình thường.
+- Lỡ đóng hộp giữa chừng: mở lại bảng Mission 2 sẽ hỏi nốt — không ai lọt lưới.
 
-### 6.3. Checkpoint tự động — bản lưu tự bò theo người chơi
+### 6.4. Checkpoint tự động — bản lưu tự bò theo người chơi
 
-Sau khai danh, **mỗi mốc quan trọng ghi đè snapshot** qua một hàm chung `profSave(moc)`:
+Mỗi mốc quan trọng ghi đè snapshot của **pí danh đang dùng** qua hàm chung `profSave(moc)`:
 
 | Trang | Mốc | `moc` ghi vào |
 |---|---|---|
@@ -245,100 +265,102 @@ Sau khai danh, **mỗi mốc quan trọng ghi đè snapshot** qua một hàm chu
 | Map | Giải đúng một toạ độ MAP-01 | `MAP 1/4` … `MAP 3/4` |
 | Map | Hoàn thành 4/4 | `MAP 4/4` |
 
-Danh sách này cố ý **ngắn và toàn mốc tiến lên** — không checkpoint theo nhịp thời gian,
-không checkpoint khi mở gợi ý — để bản lưu luôn là "thành quả", và restore không bao giờ
-kéo người chơi **lùi** quá một mốc.
+Danh sách cố ý **ngắn và toàn mốc tiến lên** — bản lưu luôn là "thành quả", và khôi phục
+không bao giờ kéo người chơi lùi quá một mốc.
 
-`profSave` không làm gì khi chưa có `nav1.profile` (chưa khai danh thì chưa có gì để bò).
+`profSave` **không làm gì khi đang ẩn danh** (`active === -1`) — đúng nghĩa ẩn danh.
 
-### 6.4. Chip profile góc phải trên cùng — cửa quay về bản lưu
+### 6.5. Chip pí danh + bảng xổ ở góc phải trên cùng
 
-Hiện ở **cả hai trang**, cùng một kiểu:
-
-```
-                          ┌──────────────┐
-                          │ ✈ DONGCHI BÌNH │   ← Oswald 10px hoa giãn rộng, amber .75,
-                          └──────────────┘      viền mảnh var(--line), nền tối mờ
-```
-
-- **Map**: góc phải của `header.head`, cùng hàng tiêu đề. Tự ẩn khi zoom
-  (`data-state="focus"`), giống `.stamp`.
-- **Hồ sơ**: `position:absolute` góc phải trên của `#app`, chỉ hiện ở **trang bìa**
-  (`body[data-pg="0"]`) — đúng luật "dòng Mission chỉ hiện ở trang bìa", không đè lên
-  chip `HỒ SƠ PHI ĐOÀN · NO.9509` vốn nằm giữa.
-- Chưa có profile → **không hiện gì**. Không hiện chip "Khai danh" mồi trước — tên chỉ
-  sinh ra từ nghi thức 6.2.
-
-Bấm chip mở hộp (khung `.cxw` sẵn có của từng trang):
+Chip hiện ở **cả hai trang**, **không có hộp nền** — chữ nổi thẳng trên nền kèm mũi `▾`:
 
 ```
-┌─────────────────────────────────────┐
-│ HỒ SƠ NGƯỜI CHƠI              ✕     │
-│                                     │
-│  ✈ Dongchi Bình                     │
-│  Bản lưu: MAP 2/4 · 30-08 21:15     │
-│                                     │
-│  [ Tiếp tục ở bản lưu ✦ ]           │   ← nút chính, amber
-│  [ Đổi tên ]                        │   ← nút phụ, chỉ đổi profile.name
-└─────────────────────────────────────┘
+                                    ✈ PDB ▾        ← Oswald 10px hoa giãn rộng, amber
+                                                      + quầng sáng; ▾ xoay 180° khi mở
 ```
 
-Đây chính là chỗ "**chọn/nhập** user profile": chỉ có một bản lưu nên "chọn" là xác nhận
-tiếp tục ở bản đó; "nhập" là Đổi tên. Không có nút xoá profile trong hộp này — đường
-xoá duy nhất là reset của hồ sơ (6.5), tránh mất bản lưu vì bấm nhầm.
+- **right: 42px (Map) / 46px (hồ sơ)** — chừa hẳn góc kẻ tay `.corner.tr`, không đè lên.
+- **Map**: trong `.frame`, tự ẩn khi zoom (`data-state="focus"`) giống `.stamp`.
+- **Hồ sơ**: chỉ hiện ở **trang bìa**, lật trang là ẩn (và đóng luôn bảng xổ).
+- Chưa có pí danh nào → **không hiện gì**. Đang ẩn danh → chữ xám, ghi `ẩn danh`.
 
-### 6.5. Khôi phục, reset, và vòng đời
+Bấm chip mở **bảng xổ**:
 
-**Tiếp tục ở bản lưu** (`khoi_phuc_profile`):
+```
+┌──────────────────────────────┐
+│ PÍ DANH · 2/2                │
+│   pdb                M2   ✕  │  ← tap dòng = đổi sang hồ sơ này
+│ ● mimi9              M3   ✕  │  ← ● = đang dùng; tap = quay về bản lưu
+│ ──────────────────────────── │
+│ ＋ Pí danh mới               │  ← chỉ hiện khi < 2, chỉ có ở trang hồ sơ
+│ ⏻ Chơi ẩn danh               │
+└──────────────────────────────┘
+```
 
-1. Hỏi lại một nhịp kiểu quen thuộc: nút đổi nhãn *"Chú Bình chắc chưaaa? Bấm lần nữa"*
-   — vì restore **ghi đè tiến độ hiện tại**, cùng độ nguy hiểm với Reset.
-2. Ghi `snap.msn1` → `localStorage.msn1`, `snap.mtv1` → `localStorage.mtv1` (trường nào
+| Thao tác | Kết quả |
+|---|---|
+| Tap dòng **không** phải hồ sơ đang dùng | **Đổi hồ sơ**: cất tiến độ đang chơi vào hồ sơ cũ trước đã (không mất gì), nạp snapshot hồ sơ mới, reload |
+| Tap dòng **đang** dùng | **Quay về bản lưu** — ghi đè tiến độ hiện tại nên hỏi lại một nhịp: chữ đổi thành *"chắc chưaaa?"* |
+| Bấm **✕** | Xoá pí danh — **hai nhịp**, nhịp đầu nút đổi thành `✕?`. Xoá đúng hồ sơ đang dùng thì rơi về ẩn danh, **tiến độ đang chơi không bị đụng** |
+| **＋ Pí danh mới** | Mở lại hộp Khai danh (6.3), lưu xong là đứng luôn ở pí danh mới |
+| **⏻ Chơi ẩn danh** | Cất tiến độ vào hồ sơ hiện tại lần cuối rồi `active = -1`. Bảng xổ **vẫn mở** để thấy trạng thái vừa đổi |
+
+Đóng bảng xổ: bấm ra ngoài, `Esc`, hoặc bấm lại chip.
+
+### 6.6. Chỉ chỗ chip lần đầu
+
+Ngay sau khi có pí danh đầu tiên: **nền tối lại** (`.profdim` / `#msnDim`, mờ 72% + blur)
+và **chip nhấp nháy** 4,2 giây để kéo mắt về góc phải. Bấm vào nền hoặc mở bảng xổ là tắt
+ngay. Chạy **đúng một lần** — cờ `chipTaught` trong `nav1`.
+
+### 6.7. Khôi phục, reset, và vòng đời
+
+Khôi phục / đổi hồ sơ đều đi qua `profLoad(nav, i)`:
+
+1. Ghi `snap.msn1` → `localStorage.msn1`, `snap.mtv1` → `localStorage.mtv1` (trường nào
    `snap` không có thì **không đụng** khoá đó).
-3. Tính lại `mapUnlocked` từ chính snapshot (`snap.msn1.m3`) rồi `location.reload()` —
-   đúng quy tắc "muốn về một trạng thái trọn vẹn thì reload, đừng gỡ từng biến".
+2. Tính lại `mapUnlocked` từ chính snapshot (`snap.msn1.m3`).
+3. `location.reload()` — đúng quy tắc "muốn về một trạng thái trọn vẹn thì reload, đừng
+   gỡ từng biến".
 
 Ma trận sống/chết của từng khoá qua các đường xoá:
 
-| Đường xoá | `mtv1` | `msn1` | `nav1.mapUnlocked` | `nav1.profile` |
+| Đường xoá | `mtv1` | `msn1` | `nav1.mapUnlocked` | `nav1.profiles` |
 |---|---|---|---|---|
 | `hardWipe` — reset MAP-01 (lá cờ, hộp pí mật, Tổng tư lệnh) | xoá (giữ `resetCount`) | giữ | **giữ `true`** — M3 hồ sơ vẫn xong | **giữ** |
 | `reset_msn` — Chơi lại từ đầu trong hộp M3 của hồ sơ | giữ | xoá | **hạ về `false`** — về pha 1 | **giữ** |
 | Người chơi tự xoá dữ liệu trang / ẩn danh | mất | mất | mất | mất — chấp nhận, README §17 |
 
-`profile` sống qua **cả hai** đường reset — đó là toàn bộ giá trị của tính năng: chơi
-lại thoải mái, chip vẫn đứng góc phải, bấm một cái là quay về trạng thái cuối. `hardWipe`
-cần sửa một dòng: dọn thêm khoá nào thì dọn, nhưng **không được đụng `nav1`** (thêm
-`nav1` vào danh sách "dấu vết được phép tồn tại qua reset", cạnh `resetCount`).
+Pí danh sống qua **cả hai** đường reset — đó là toàn bộ giá trị của tính năng. `hardWipe`
+**không được đụng `nav1`** (đã ghi rõ trong code, cạnh dòng giữ `resetCount`).
 
 Trường hợp biên đã soi:
 
-- **Restore ở pha 2 về bản lưu `moc:'M2'`** (chưa xong M3): `mapUnlocked` tính lại từ
-  snapshot → về `false` → lần tải sau guard đẩy về hồ sơ. Nhất quán: trạng thái cuối
-  của bản thân lúc đó đúng là đang ở pha 1.
-- **Hai tab mở song song** (Map một tab, hồ sơ một tab): `nav1` ghi kiểu
-  đọc-sửa-ghi nguyên khoá, mốc checkpoint thưa nên va chạm gần như không xảy ra; tab
-  nào ghi sau thắng — chấp nhận, không làm khoá phân tán cho một trang tĩnh.
-- **Safari dọn storage sau ~7 ngày không ghé**: mất cả ba khoá, người chơi về pha 1
-  từ đầu. Không có gì cứu ngoài server — ngoài phạm vi, xem mục 8.
+- **Khôi phục ở pha 2 về bản lưu `moc:'M2'`** (chưa xong M3): `mapUnlocked` tính lại từ
+  snapshot → về `false` → lần tải sau guard đẩy về hồ sơ. Nhất quán.
+- **Hai tab mở song song**: `nav1` ghi kiểu đọc-sửa-ghi nguyên khoá, mốc checkpoint thưa
+  nên va chạm gần như không xảy ra; tab nào ghi sau thắng — chấp nhận cho một trang tĩnh.
+- **Safari dọn storage sau ~7 ngày không ghé**: mất cả ba khoá. Ngoài phạm vi, xem mục 8.
 
 ---
 
 ## 7. Đo đạc — sự kiện mới
 
 Đi qua hệ `ping` sẵn có của từng trang (endpoint `/api/ping` + `/api/note`, các tầng dự
-phòng giữ nguyên):
+phòng giữ nguyên). Nhãn tiếng Việt khai trong `NHAN` của **cả hai** bản `api/ping.js`.
 
 | Sự kiện | Trang | Khi nào | Gửi mấy lần |
 |---|---|---|---|
 | `mo_pha_map` | Hồ sơ | Cờ `mapUnlocked` bật lần đầu | 1 lần duy nhất |
-| `redirect_ho_so` | Map | Guard đẩy `/` về hồ sơ | 1 lần / lượt ghé (kèm đếm trong phiên) |
-| `luu_profile` | Hồ sơ | Khai danh xong (kèm tên) | 1 lần duy nhất |
-| `doi_ten_profile` | cả hai | Đổi tên trong hộp chip (kèm tên mới) | mỗi lần |
-| `khoi_phuc_profile` | cả hai | Bấm Tiếp tục ở bản lưu, đã qua nhịp xác nhận (kèm `moc`) | mỗi lần |
+| `redirect_ho_so` | Map | Guard đẩy `/` về hồ sơ | Mỗi lần bị đẩy |
+| `luu_profile` | Hồ sơ | Khai danh xong (kèm pí danh) | Mỗi pí danh một lần |
+| `doi_profile` | cả hai | Đổi sang pí danh khác (kèm tên đích) | mỗi lần |
+| `xoa_profile` | cả hai | Xoá một pí danh (kèm tên vừa xoá) | mỗi lần |
+| `an_danh` | cả hai | Bấm "Chơi ẩn danh" | mỗi lần |
+| `khoi_phuc_profile` | cả hai | Quay về bản lưu, đã qua nhịp xác nhận (kèm `moc`) | mỗi lần |
 
-`mo_pha_map`, `luu_profile`, `khoi_phuc_profile` vào danh sách `QUAN_TRONG` của hồ sơ
-(đi song song hai kênh, MISSIONS.md §12) — mất dấu mốc chuyển pha là mù cả phân tích.
+`mo_pha_map`, `luu_profile`, `khoi_phuc_profile` nằm trong danh sách `QUAN_TRONG` của hồ
+sơ (đi song song hai kênh, MISSIONS.md §12) — mất dấu mốc chuyển pha là mù cả phân tích.
 
 ---
 
@@ -365,20 +387,37 @@ phòng giữ nguyên):
 
 ---
 
-## 9. Checklist QA khi triển khai
+## 9. Checklist QA — đã chạy tự động, 43/43 đạt
 
-- [ ] Máy mới tinh, gõ `/` → về `/dad/950901-a`, không loé bản đồ, Back không kẹt vòng
-- [ ] `/?stay=1` đứng lại được Map dù chưa mở khoá; tải lại không có `stay` thì lại bị đẩy
-- [ ] Xong M1 → nhập đúng `217N33` → hiện KHAI DANH, điền sẵn `Dongchi Bình` → Lưu → Thông Quan
-- [ ] Nhập rỗng ở KHAI DANH → vẫn lưu với tên điền sẵn; chip hiện góc phải trang bìa
-- [ ] Chip không hiện ở các trang trong của hồ sơ (lật khỏi bìa là ẩn)
-- [ ] Giải `PHAM TUAN` (và riêng một lượt test bằng skip 10 nhịp) → gõ `/` vào thẳng Map
-- [ ] Từ Map: 1 click `DAD` → `DAD-950901-A` → PASS `mig21` → vào hồ sơ; nút Bản đồ trong hồ sơ về lại `/` — đủ hai chiều
-- [ ] Giải một toạ độ MAP-01 → mở hộp chip → dòng bản lưu đổi thành `MAP 1/4`
-- [ ] Reset MAP-01 bằng lá cờ → tải `/` vẫn ở Map (không văng về hồ sơ), chip còn, restore về đúng `MAP n/4`
-- [ ] Chơi lại từ đầu trong hộp M3 → tải `/` bị đẩy về hồ sơ (pha 1), chip còn, restore về được bản lưu cũ và quay lại pha đúng của bản lưu
-- [ ] Restore hỏi lại một nhịp; bấm một lần rồi bỏ đi không mất gì
-- [ ] Đổi tên → chip đổi ngay ở trang đang mở; sang trang kia cũng thấy tên mới
-- [ ] Tên chứa `<b>` hay emoji → hiển thị nguyên văn vô hại ở chip và hộp
-- [ ] Telegram nhận đủ: `mo_pha_map` đúng 1 lần, `redirect_ho_so`, `luu_profile`, `khoi_phuc_profile` kèm `moc`
-- [ ] Thử trên điện thoại thật, màn 360px: chip không đè tiêu đề, hộp profile không tràn
+Kịch bản Chromium headless dựng lại đúng các bước dưới; mục nào không tự động hoá được
+thì soi ảnh chụp ở khổ 390px.
+
+**Hai pha**
+- [x] Máy mới tinh, gõ `/` → về `/dad/950901-a`, không loé bản đồ, Back không kẹt vòng
+- [x] `/?stay=1` đứng lại được Map dù chưa mở khoá
+- [x] Phá đảo M3 (cả đường skip) → gõ `/` vào thẳng Map
+- [x] Reset hồ sơ → `/` lại bị đẩy về hồ sơ; reset MAP-01 thì vẫn ở Map
+
+**Pí danh**
+- [x] Nhập đúng `217N33` → hộp ghi **"Nhập pí danh ✦"**, ô trống, có dòng luật
+- [x] Gõ `CHUBINHXYZ` → tự thành `chubin` (hạ hoa + cắt 6 ký tự)
+- [x] Bỏ trống mà Lưu → báo *"Nhập pí danh đã nha ✦"*; trùng tên → *"Pí danh này có rồi ✦"*
+- [x] Lưu xong: nền tối lại + chip nhấp nháy đúng **một lần** (`chipTaught`)
+- [x] Bảng xổ: nhãn `1/2` → `2/2`, đủ hai thì mất dòng "＋ Pí danh mới"
+- [x] Tap hồ sơ khác → switch, tiến độ đang chơi được cất vào hồ sơ cũ trước
+- [x] Tap hồ sơ đang dùng → hỏi lại *"chắc chưaaa?"* rồi mới khôi phục
+- [x] ✕ cần **hai nhịp**; xoá hồ sơ đang dùng → rơi về ẩn danh, hồ sơ kia còn nguyên
+- [x] Chơi ẩn danh → chip xám ghi `ẩn danh`, không xoá hồ sơ nào, bảng xổ vẫn mở
+- [x] Chip chỉ ở trang bìa của hồ sơ; lật trang là ẩn
+- [x] Chip **không đè góc kẻ tay phải**; bảng xổ nằm gọn trong khung; `Esc` đóng được
+- [x] Chip không có nền hộp, có mũi `▾`
+
+**Giao diện khác**
+- [x] Bảng ghi công Mission 1 gói đúng **2 dòng**
+- [x] Box Tổng tư lệnh: bỏ gợi ý "bấm 5 nhịp", kaomoji không tràn viền
+- [x] Trong cửa sổ Easter Egg, tiêu đề đổi **"Easter Egg" ⇄ "Game On"**, cả hai nửa
+      cùng tông amber và cùng nhịp nhấp nháy (`class="title mc egg eggblink"`)
+
+**Còn phải thử tay**
+- [ ] Điện thoại thật, cả màn 360px
+- [ ] Sau khi deploy: Telegram nhận đủ 7 sự kiện ở mục 7
