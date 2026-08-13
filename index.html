@@ -531,10 +531,76 @@ a.file:active{background:rgba(242,180,65,.07)}
   text-wrap:balance;overflow-wrap:anywhere}
 .cred-body .kao{display:inline-block;margin-left:6px;font-size:12.5px;color:var(--amber);
   font-family:"Noto Sans",system-ui,sans-serif;max-width:100%;overflow-wrap:anywhere}
+/* ── Khung Tổ kỹ thuật: chân dung có hào quang ── */
+.cred-hero{position:relative;width:112px;height:112px;margin:14px auto 4px;flex:none}
+/* hai lớp ánh sáng: quầng ngoài thở chậm + vòng gradient xoay — lấy ý từ splash art,
+   nhưng giữ tông amber/xanh của khung cho khỏi lạc bộ */
+.cred-hero::before{content:"";position:absolute;inset:-26%;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%, rgba(242,180,65,.5) 0%,
+    rgba(242,180,65,.18) 38%, rgba(56,189,248,.12) 62%, rgba(56,189,248,0) 78%);
+  filter:blur(3px);animation:heroBreath 4.6s ease-in-out infinite}
+.cred-hero::after{content:"";position:absolute;inset:-10%;border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(242,180,65,0) 0deg, rgba(242,180,65,.62) 60deg,
+    rgba(255,255,255,.9) 96deg, rgba(56,189,248,.5) 150deg, rgba(242,180,65,0) 230deg,
+    rgba(242,180,65,0) 360deg);
+  -webkit-mask:radial-gradient(circle, transparent 63%, #000 65%, #000 72%, transparent 74%);
+  mask:radial-gradient(circle, transparent 63%, #000 65%, #000 72%, transparent 74%);
+  animation:heroSpin 9s linear infinite}
+@keyframes heroBreath{0%,100%{opacity:.62;transform:scale(.97)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes heroSpin{to{transform:rotate(360deg)}}
+.cred-hero .cut{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  border:1.5px solid rgba(242,180,65,.55);
+  box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 22px rgba(56,189,248,.22)}
+.cred-hero img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:saturate(1.06) contrast(1.04)}
+/* chưa có ảnh thì vẫn ra một quầng sáng tử tế, không vỡ bố cục */
+.cred-hero .cut::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(158deg, rgba(242,180,65,.34), rgba(56,189,248,.26) 58%, rgba(11,27,58,.6));
+  mix-blend-mode:screen;pointer-events:none}
+.cred-hero .fall{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 40% 34%, #F2B441, #1E4E79 70%);opacity:.9}
+.cred-hi{margin:2px 0 0;text-align:center;font-family:"Oswald";font-size:9px;
+  font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:rgba(234,240,247,.45)}
+
+/* ── Tiêu đề "Collected: Easter Egg" + dòng chúc mừng ── */
+.cx-title.eggfound{cursor:default}
+.cx-title.eggfound.blink{animation:egg 1.8s linear 4}
+.cred-lines{margin:14px 0 0}
+.cred-l2{display:flex;align-items:center;gap:8px;font-size:13.5px;
+  line-height:1.55;color:var(--paper)}
+.cred-l2 .key{flex:none;width:20px;height:20px;display:block;
+  animation:keySpin 3.4s linear infinite;transform-origin:50% 50%;
+  filter:drop-shadow(0 0 6px rgba(242,180,65,.85))}
+@keyframes keySpin{
+  0%{transform:rotateY(0deg) scale(1)}
+  45%{transform:rotateY(180deg) scale(1.12)}
+  50%{filter:drop-shadow(0 0 13px rgba(255,255,255,.95))}
+  100%{transform:rotateY(360deg) scale(1)}}
+
+/* ── Pháo hoa toàn khung, chặn mọi thao tác trong 15 giây ── */
+.fwrap{position:absolute;inset:0;z-index:60;display:none;background:rgba(4,11,24,.34)}
+.fwrap.on{display:block}
+.fwrap canvas{position:absolute;inset:0;width:100%;height:100%}
+.fw-cap{position:absolute;left:0;right:0;top:16%;text-align:center;pointer-events:none;
+  font-family:"Oswald";font-weight:600;text-transform:uppercase;letter-spacing:.24em;
+  animation:egg 1.8s linear infinite}
+.fw-cap b{display:block;font-size:clamp(19px,5.6vw,25px)}
+.fw-cap span{display:block;margin-top:9px;font-size:10px;letter-spacing:.3em;
+  color:rgba(234,240,247,.72)}
+
+/* nút xem lại pháo hoa — cùng ngôn ngữ với nút cuộn phim trong hộp pí mật */
+.cred-rp{position:absolute;top:6px;right:42px;width:32px;height:32px;border:none;
+  background:none;cursor:pointer;color:rgba(242,180,65,.75);padding:0;
+  display:none;align-items:center;justify-content:center}
+.cred-rp.on{display:flex}
+.cred-rp:hover{color:var(--amber)}
+.cred-rp svg{width:17px;height:17px;fill:currentColor}
+
 /* ── Khung Tổ kỹ thuật: hàng hai nút + dòng gửi tâm tư ── */
 .cred-acts{display:flex;gap:8px;margin-top:16px}
-.cred-acts button{flex:1;font-family:"Oswald";font-size:10px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;padding:11px 8px;border-radius:5px;
+.cred-acts button{flex:1;font-family:"Oswald";font-size:9px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;padding:12px 6px;
+  border-radius:5px;
   border:1px solid var(--line);background:rgba(6,16,31,.6);color:rgba(234,240,247,.78);
   cursor:pointer;transition:border-color .25s,background .25s,color .25s}
 .cred-acts button:hover,.cred-acts button:focus-visible{border-color:rgba(242,180,65,.55);
@@ -542,6 +608,14 @@ a.file:active{background:rgba(242,180,65,.07)}
 .cred-acts #credEgg{color:var(--amber);border-color:rgba(242,180,65,.5);
   background:rgba(242,180,65,.08)}
 .cred-acts button.on{color:var(--amber);border-color:rgba(242,180,65,.6)}
+/* Dòng gửi tâm tư — chữ nhỏ, có dấu thư, KHÔNG phải nút */
+.tt-line{display:flex;align-items:center;justify-content:center;gap:7px;margin:14px 0 0;
+  cursor:pointer;font-size:12px;line-height:1.5;color:rgba(234,240,247,.5);
+  transition:color .25s;-webkit-tap-highlight-color:transparent}
+.tt-line svg{width:15px;height:auto;flex:none}
+.tt-line:hover,.tt-line:focus-visible{color:var(--amber)}
+.tt-line:active{opacity:.7}
+#ttw{z-index:29}
 .tt-box{margin-top:14px}
 .tt-box textarea{width:100%;resize:vertical;min-height:74px;padding:10px 12px;border-radius:5px;
   border:1px solid var(--line);border-left:2px solid var(--amber);background:rgba(6,16,31,.75);
@@ -797,7 +871,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 12-Aug-2026 · V15.04">Last updated 12-Aug-2026 · V15.04</span>
+        <span class="stamp" id="stamp" data-base="Last updated 13-Aug-2026 · V15.07">Last updated 13-Aug-2026 · V15.07</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -923,25 +997,61 @@ a.file:active{background:rgba(242,180,65,.07)}
   <div class="cxw" id="credw" aria-hidden="true">
     <div class="cxp" role="dialog" aria-modal="true" aria-labelledby="credTitle">
       <button class="cx-close" id="credClose" aria-label="Đóng">&#10005;</button>
+      <button class="cred-rp" id="credRp" type="button" aria-label="Xem lại màn pháo hoa">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3V5Zm2 2v2h2V7H5Zm0 4v2h2v-2H5Zm0 4v2h2v-2H5Zm12-8v2h2V7h-2Zm0 4v2h2v-2h-2Zm0 4v2h2v-2h-2ZM9 7h6v10H9V7Z"/></svg>
+      </button>
       <p class="cx-eyebrow">Tổ kỹ thuật</p>
-      <h2 class="cx-title" id="credTitle">Người dựng trang</h2>
-      <p class="cred-body">Nội dung sẽ bổ sung sau.</p>
-      <p class="cx-hint">Bạn vừa tìm ra một cửa sau (˶ᵔ ᵕ ᵔ˶)</p>
+      <h2 class="cx-title eggfound" id="credTitle">Collected: Easter Egg</h2>
 
-      <!-- Dòng gửi tâm tư: ẩn sẵn, hiện ra NGAY TRÊN hàng nút khi bấm "Gửi tâm tư" -->
-      <div class="tt-box" id="ttBox" hidden>
-        <textarea id="ttIn" rows="3" maxlength="600" placeholder="Viết vài dòng gửi tổ kỹ thuật…"
-                  aria-label="Lời nhắn gửi tổ kỹ thuật"></textarea>
-        <div class="cx-form" style="margin-top:8px">
-          <button id="ttSend" style="flex:1">Gửi ✦</button>
-        </div>
-        <p class="cx-hint" id="ttMsg"></p>
+      <div class="cred-hero">
+        <span class="cut">
+          <span class="fall"></span>
+          <img id="credPic" src="/han/honghan.jpg" alt=""
+               onerror="this.style.display='none'">
+        </span>
+      </div>
+      <p class="cred-hi">Say hi ✦ Honghandangiu</p>
+
+      <div class="cred-lines">
+        <p class="cred-l2">
+          <svg class="key" viewBox="0 0 24 24" aria-hidden="true"><path fill="#F2B441" d="M14.5 3a6.5 6.5 0 1 0-6.2 8.5L4 15.8V21h5.2l1.5-1.5v-1.9h1.9l1-1v-1.9h1.9l1.2-1.2A6.5 6.5 0 0 0 14.5 3Zm2.2 5.1a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4Z"/></svg>
+          Chúc mừng đồng chí 🎉
+        </p>
       </div>
 
       <div class="cred-acts">
-        <button id="credMsg" type="button">✉ Gửi tâm tư</button>
+        <button id="credKnow" type="button">Get to know me</button>
         <button id="credEgg" type="button">Enter Easter Egg ✦</button>
       </div>
+
+      <!-- Gửi tâm tư: chỉ MỘT DÒNG chữ có dấu thư, không phải nút. Bấm vào mở hộp riêng. -->
+      <p class="tt-line" id="ttLine" role="button" tabindex="0">
+        <svg viewBox="0 0 20 14" aria-hidden="true"><path d="M1 2.4A1.4 1.4 0 0 1 2.4 1h15.2A1.4 1.4 0 0 1 19 2.4v9.2a1.4 1.4 0 0 1-1.4 1.4H2.4A1.4 1.4 0 0 1 1 11.6V2.4Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="m1.6 2.6 8.4 5.6 8.4-5.6" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+        Gửi tâm tư cho tổ kỹ thuật
+      </p>
+    </div>
+  </div>
+
+  <!-- Hộp gửi tâm tư — mở từ dòng chữ trên, có Gửi và Quay lại -->
+  <div class="fwrap" id="fwrap" aria-hidden="true">
+    <canvas id="fwcv"></canvas>
+    <div class="fw-cap" id="fwCap"><b>Collected: Easter Egg</b><span>Unlock Gate 1 ✦</span></div>
+  </div>
+
+  <div class="cxw" id="ttw" aria-hidden="true">
+    <div class="cxp" role="dialog" aria-modal="true" aria-labelledby="ttTitle">
+      <p class="cx-eyebrow">Gửi tâm tư</p>
+      <h2 class="cx-title" id="ttTitle">Viết vài dòng ✦</h2>
+      <div class="tt-box">
+        <textarea id="ttIn" rows="4" maxlength="600" placeholder="Tổ kỹ thuật đọc hết, thật đó…"
+                  aria-label="Lời nhắn gửi tổ kỹ thuật"></textarea>
+      </div>
+      <div class="cx-form" style="margin-top:12px">
+        <button id="ttBack" style="flex:1;background:none;color:rgba(234,240,247,.72);
+          border:1px solid var(--line)">&#8592; Quay lại</button>
+        <button id="ttSend" style="flex:1">Gửi ✦</button>
+      </div>
+      <p class="cx-hint" id="ttMsg"></p>
     </div>
   </div>
 
@@ -1201,6 +1311,9 @@ let pinFailDay = null, pinHintIdx = 0, eggTitleDay = null;
 let eggHack = false;
 let firstAt = 0, clueAt = 0, winAt = 0;
 let eggDay = null, credFound = false, coachDone = false;
+/* Đã chạy màn pháo hoa "Easter Egg Found" lần đầu chưa. Nằm trong mtv1 nên
+   hardWipe xoá cùng bộ với mọi tiến độ khác — reset là màn ăn mừng mở lại. */
+let eggParty = false;
 
 /* toạ độ đã bắt sóng (hoặc đã có hồ sơ) thì bỏ ổ khoá và sáng màu amber */
 function refreshBeacons(){
@@ -1495,6 +1608,7 @@ const store = {
   eggTitleDay = s.eggTitleDay || null;
   eggHack = !!s.eggHack;
   credFound = !!s.credFound;
+  eggParty = !!s.eggParty;
   coachDone = !!s.coachDone;
   visits = s.visits || 0;
   /* Sang mùa mới (từ 17-08 hằng năm) → trang trở lại như chưa ai đụng vào.
@@ -1520,7 +1634,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, credFound, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
+function save(){ store.write({ solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, credFound, eggParty, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -2726,28 +2840,155 @@ $('stampZone').addEventListener('click', ()=>{
     tapN = 0;
     credw.classList.add('on'); credw.setAttribute('aria-hidden','false');
     credFound = true; save();          /* tìm ra rồi thì tem thôi nháy hằng ngày */
+    openCredFx();
     /* Đây cũng là ĐIỂM KÍCH HOẠT của hồ sơ niêm phong MAP-02 — bảng hồ sơ đang
        mở thì vẽ lại ngay để hồ sơ chuyển sang bấm vào được. */
     if(current) render(current);
     ping('cua_sau', 'mở khung giới thiệu', true);
   }
 });
+/* Lần đầu: pháo hoa 15 giây + đổi chữ. Lần sau: chỉ nhấp nháy màu. */
+function openCredFx(){
+  $('credRp').classList.toggle('on', eggParty);
+  if(!eggParty){
+    eggParty = true; save();
+    ping('easter_egg_found', 'lần đầu — chạy pháo hoa');
+    fwRun();
+  }else{
+    $('credTitle').textContent = T_FOUND;
+    credTitleBlink();
+  }
+}
 function closeCred(){
+  if(fwOn) return;                    /* đang pháo hoa thì chưa cho ra */
   credw.classList.remove('on'); credw.setAttribute('aria-hidden','true');
-  $('ttBox').hidden = true; $('credMsg').classList.remove('on');
 }
 $('credClose').addEventListener('click', closeCred);
-credw.addEventListener('click', e=>{ if(e.target === credw) closeCred(); });
+credw.addEventListener('click', e=>{ if(e.target === credw && !fwOn) closeCred(); });
+
+/* ═══════════ MÀN "EASTER EGG FOUND" ═══════════
+   Lần ĐẦU mở được cửa hậu: pháo hoa phủ kín khung 15 giây, chặn mọi thao tác,
+   tiêu đề đổi qua lại "Collected: Easter Egg" ⇄ "Unlock Gate 1" và nhấp nháy màu
+   y như cặp "Easter Egg ⇄ Game On" ngoài bản đồ. Hết giờ thì dừng hẳn, tiêu đề
+   đứng ở "Collected: Easter Egg".
+   Từ lần thứ hai: CHỈ nhấp nháy màu — không pháo hoa, không đổi chữ. Nút cuộn
+   phim trong khung cho xem lại bất cứ lúc nào. */
+/* Tiêu đề đứng yên ở "Collected: Easter Egg" — đồng bộ với dòng chữ trong khung
+   và với băng chữ của màn pháo hoa; lúc ăn mừng thì đổi qua lại với "Unlock Gate 1". */
+const T_COLL  = 'Collected: Easter Egg';
+const T_GATE  = 'Unlock Gate 1';
+const T_FOUND = T_COLL;
+const FW_MS   = 15000;
+const fwrap = $('fwrap');
+let fwOn = false, fwT = null, fwSwapT = null, fwRaf = 0;
+
+function credTitleBlink(){                 /* nhấp nháy màu, dùng chung @keyframes egg */
+  const t = $('credTitle');
+  t.classList.remove('blink'); void t.getBoundingClientRect();
+  t.classList.add('blink');
+  setTimeout(()=>t.classList.remove('blink'), 7400);
+}
+function fwStop(){
+  clearTimeout(fwT); clearTimeout(fwSwapT); cancelAnimationFrame(fwRaf);
+  fwT = fwSwapT = null; fwRaf = 0; fwOn = false;
+  fwrap.classList.remove('on'); fwrap.setAttribute('aria-hidden','true');
+  $('credTitle').textContent = T_FOUND;
+  $('credRp').classList.add('on');          /* xong màn thì luôn có nút xem lại */
+}
+/* Pháo hoa: dùng lại đúng hình dạng đợt bắn của hiệu ứng SGN (FWSHAPES) nên hai
+   chỗ ăn mừng trong trang nhìn cùng một bộ. */
+function fwRun(){
+  if(fwOn) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ credTitleBlink(); return; }
+  fwOn = true;
+  fwrap.classList.add('on'); fwrap.setAttribute('aria-hidden','false');
+  const cv = $('fwcv'), c = cv.getContext('2d');
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  let W = 0, H = 0, P = [], next = 0;
+  function co(){
+    const r = fwrap.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = W * dpr; cv.height = H * dpr;
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  co();
+  function no(){
+    const cx = rnd(W*.14,W*.86), cy = rnd(H*.10,H*.5);
+    const hue = [42,16,190,330,58][Math.floor(Math.random()*5)];
+    const kind = FWSHAPES[Math.floor(Math.random()*FWSHAPES.length)];
+    const n = kind === 'ring' ? 74 : 96, spin = Math.random()*6.283;
+    for(let i=0;i<n;i++){
+      const a = (i/n)*6.283 + rnd(-.02,.02);
+      const sp = rnd(2.0,3.6) * shapeR(kind, a + spin);
+      P.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,hue:hue+rnd(-14,14)});
+    }
+  }
+  const het = Date.now() + FW_MS;
+  /* tiêu đề đổi qua lại suốt màn ăn mừng */
+  let phien = false;
+  $('credTitle').textContent = T_COLL;
+  credTitleBlink();
+  (function swap(){
+    fwSwapT = setTimeout(()=>{
+      if(!fwOn) return;
+      phien = !phien;
+      $('credTitle').textContent = phien ? T_GATE : T_COLL;
+      swap();
+    }, 2400);
+  })();
+  function ve(){
+    if(!fwOn) return;
+    const now = Date.now();
+    c.clearRect(0,0,W,H);
+    if(now > next && het - now > 1500){ no(); next = now + rnd(620,1050); }
+    for(let i = P.length - 1; i >= 0; i--){
+      const p = P[i];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.045; p.vx *= 0.988; p.vy *= 0.988;
+      p.life -= 0.0135;
+      if(p.life <= 0){ P.splice(i,1); continue; }
+      c.globalAlpha = Math.max(0, p.life);
+      c.fillStyle = 'hsl(' + p.hue + ',95%,' + (58 + p.life*22) + '%)';
+      c.beginPath(); c.arc(p.x, p.y, 1.6 + p.life*1.5, 0, 6.283); c.fill();
+    }
+    c.globalAlpha = 1;
+    if(now >= het && !P.length){ fwStop(); return; }
+    fwRaf = requestAnimationFrame(ve);
+  }
+  ve();
+  fwT = setTimeout(()=>{ /* hết 15 giây thì thôi bắn, đợi tàn hết rồi dừng */ }, FW_MS);
+  addEventListener('resize', co, {passive:true});
+}
+/* Chặn mọi thao tác trong lúc pháo hoa chạy */
+fwrap.addEventListener('click', e=>{ e.stopPropagation(); e.preventDefault(); });
+$('credRp').addEventListener('click', e=>{
+  e.stopPropagation();
+  ping('xem_lai_phao_hoa', '');
+  fwRun();
+});
 
 /* ---- Hai nút trong khung Tổ kỹ thuật ----
    Trái: mở dòng gửi tâm tư ngay trên hàng nút → gửi về hòm thư qua /api/thu.
    Phải: vào thẳng Easter Egg — bật cờ eggHack VĨNH VIỄN y như Hack Map · MAP-02. */
-$('credMsg').addEventListener('click', ()=>{
-  const box = $('ttBox');
-  box.hidden = !box.hidden;
-  $('credMsg').classList.toggle('on', !box.hidden);
-  if(!box.hidden) setTimeout(()=>{ try{ $('ttIn').focus(); }catch(e){} }, 60);
+/* Nút trái: sang trang HAN — series câu hỏi để hiểu người dựng trang */
+const HAN_HREF = '/han/961030-a';
+$('credKnow').addEventListener('click', ()=>{
+  ping('get_to_know_me', HAN_HREF);
+  closeCred();
+  setTimeout(()=>{ location.href = HAN_HREF; }, 160);
 });
+
+/* Dòng "Gửi tâm tư" → mở hộp riêng (Gửi / Quay lại) */
+const ttw = $('ttw');
+function openTt(){
+  ttw.classList.add('on'); ttw.setAttribute('aria-hidden','false');
+  $('ttMsg').textContent = '';
+  setTimeout(()=>{ try{ $('ttIn').focus(); }catch(e){} }, 80);
+}
+function closeTt(){ ttw.classList.remove('on'); ttw.setAttribute('aria-hidden','true'); }
+$('ttLine').addEventListener('click', openTt);
+$('ttLine').addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') openTt(); });
+$('ttBack').addEventListener('click', closeTt);
+ttw.addEventListener('click', e=>{ if(e.target === ttw) closeTt(); });
 $('ttSend').addEventListener('click', ()=>{
   const el = $('ttIn'), msg = $('ttMsg');
   const loi = (el.value || '').trim();
@@ -2760,7 +3001,7 @@ $('ttSend').addEventListener('click', ()=>{
       if(!r.ok) throw 0;
       msg.textContent = 'Đã gửi về tổ kỹ thuật ✦ Cảm ơn đồng chí!';
       el.value = '';
-      setTimeout(()=>{ $('ttBox').hidden = true; $('credMsg').classList.remove('on'); msg.textContent = ''; }, 2200);
+      setTimeout(closeTt, 1600);
     })
     .catch(()=>{                        /* mất mạng / bị chặn → giữ nguyên chữ đã gõ */
       msg.textContent = 'Gửi không được — thử lại giúp em ✦';
@@ -3034,6 +3275,7 @@ $('coachX').addEventListener('click', closeCoach);
 document.addEventListener('keydown', e=>{
   if(e.key !== 'Escape') return;
   if(fxLock) return;                 /* đang chạy hiệu ứng thì Esc cũng không ra */
+  if(ttw.classList.contains('on')){ closeTt(); return; }
   if(pinw.classList.contains('on')){ closePin(); return; }
   if(askw.classList.contains('on')){ closeAsk(); return; }
   if(wipew.classList.contains('on')) closeWipe();

@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V15.04** — trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong.
+**Phiên bản hiện tại: V15.05** — trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
 > `MAP-01 · Bản đồ tác chiến` là game giải mật thư bốn toạ độ.
@@ -28,7 +28,10 @@ Deploy thẳng lên Vercel từ GitHub.
 │   └── thu.js              ← nhận "tâm tư" từ khung Tổ kỹ thuật, gửi về hòm thư
 │
 ├── han/
-│   └── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
+│   ├── index.html          ← MÀN CHỌN HỒ SƠ · hai thẻ A/B, nút về bản đồ
+│   ├── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
+│   ├── 961030-a/index.html ← WHO'S MY KINDRED SPIRIT · 5 câu hỏi, theme Sakura
+│   └── 961030-b/index.html ← SECRET BOX · nền dải ngân hà, mở bằng mã từ 961030-a
 ├── dad/
 │   ├── 950901-a/           ← DAD-950901-A · hồ sơ đã xuất bản
 │   │   ├── index.html
@@ -294,12 +297,37 @@ chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên l
 | Cửa | Thao tác | Kết quả |
 |---|---|---|
 | **Tổng tư lệnh** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Box Tổng tư lệnh** hai bước, xem dưới |
-| **Giới thiệu** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung giới thiệu người dựng trang (`#credw`, sửa nội dung ở `.cred-body`) — cuối khung có **hai nút**: *✉ Gửi tâm tư* (mở ô nhập ngay trên hàng nút, gửi về hòm thư qua `/api/thu`) và *Enter Easter Egg ✦* (**bay thẳng vào hồ sơ niêm phong `/dad/950901-b`**, đồng thời bật `eggHack` + `credFound` nên quay ra bản đồ là đã GAME ON) |
+| **Collected: Easter Egg** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung `#credw`, xem mục riêng ngay dưới |
 | **Hack Map** | Trong Box Tổng tư lệnh, chọn chiến dịch rồi bấm **Hack Map** | Hộp PIN → nhập `1959`. Chữ `hackmap` gõ đúp đã bỏ, cơ chế PIN giữ nguyên |
 
 Vùng bấm của cửa xoá sạch là **cả dòng bản quyền**, không chỉ lá cờ 15px — dễ trúng hơn
 nhiều trên điện thoại. Khi đang đếm, **chỉ lá cờ sáng và phóng to nhẹ**, phần chữ giữ
 nguyên.
+
+### Khung "Collected: Easter Egg" — `#credw`
+
+Mở bằng cửa hậu **10 nhịp vào dòng Last updated**. Nội dung sửa ở `.cred-body`.
+
+| Phần | Chi tiết |
+|---|---|
+| Ảnh chân dung | `.cred-hero` — ảnh ở `/han/honghan.jpg`, hai lớp sáng kiểu splash art (quầng gradient phía sau + lớp phủ bắt sáng phía trước). **Chưa có ảnh thì tự ẩn** (`onerror`) và còn lại quầng sáng, trang không vỡ |
+| Tiêu đề | **Collected: Easter Egg** ⇄ **Unlock Gate 1** — đổi qua lại lúc ăn mừng rồi đứng lại ở *Collected: Easter Egg*, nhấp nháy cùng cơ chế với cặp *Easter Egg ⇄ Game On* ở tiêu đề trang |
+| Dòng dưới | Dòng chúc mừng kèm chìa khoá xoay. Trước đây còn một dòng `Collected: Easter Egg` nữa — **đã bỏ** vì trùng hệt tiêu đề |
+| Hai nút | trái *Get to know me* → `/han/961030-a` · phải *Enter Easter Egg ✦* → **bay thẳng vào `/dad/950901-b`**, đồng thời bật `eggHack` + `credFound` nên quay ra bản đồ là đã GAME ON |
+| Dòng tâm tư | một dòng chữ có **dấu thư** dưới hai nút — bấm mở hộp nhập (Gửi / Quay lại), gửi về hòm thư qua `/api/thu` |
+
+**Pháo hoa lần đầu.** Lần **đầu tiên** mở khung này: pháo hoa **toàn màn hình trong 15 s**
+(`FW_MS`), overlay `#fwrap` **nuốt mọi cú bấm** — `closeCred()` thoát sớm khi `fwOn` nên
+không đóng ngang được. Dùng lại đúng bộ hình pháo hoa của cảnh SGN (`FWSHAPES`, `shapeR`).
+
+**Từ lần thứ hai:** chỉ nhấp nháy đổi chữ, không pháo hoa. Muốn xem lại thì bấm **icon
+xem lại** `#credRp` (chỉ hiện khi đã xem lần đầu) — giống các nút xem lại trong Hộp pí mật.
+
+Cờ `eggParty` nằm **trong cùng bộ trạng thái với `mtv1`** (`save()` / `boot()`), nên
+**reset là reset cả cụm**: chơi lại từ đầu thì màn pháo hoa cũng mở lại từ đầu.
+
+> **BẪY ĐÃ VẤP:** `let eggParty` phải khai **trước** `boot()`. Khai sau là dính temporal
+> dead zone, xem mục 20.
 
 ### Box Tổng tư lệnh — hai bước
 
@@ -349,7 +377,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 12-Aug-2026 · V15.04** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 12-Aug-2026 · V15.05** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -803,3 +831,142 @@ Ba luồng đã kiểm:
 
 Quy tắc chung: **chỉ trả tiêu điểm khi người xem thật sự đang dùng bàn phím.** Trả vô điều
 kiện là nguồn gốc của mọi vòng viền lơ lửng.
+
+---
+
+## 22. HAN-961030 — Get to know me & Secret Box
+
+Hai trang mới, vào từ khung **Tổ kỹ thuật** của bản đồ (nút *Get to know me*).
+
+| Trang | Là gì | Nền động |
+|---|---|---|
+| `/han/` | **Màn chọn hồ sơ** — hai thẻ A/B kèm nhãn trạng thái thật, và nút về bản đồ | Hoa anh đào rơi |
+| `/han/961030-a` | *Who's my kindred spirit?* — bộ câu hỏi về Honghandangiu; đúng hết thì được cấp **mã 5 số** | **Hoa anh đào rơi** — canvas, mỗi cánh vẽ bằng hai cung bezier, xoay quanh trục dọc nên lúc mỏng lúc dày |
+| `/han/961030-b` | **HongHan's Secret Box** — hiện còn *đang trong quá trình forming*, mở sau | **Dải ngân hà** — canvas, sao xếp theo hai nhánh xoắn, quay quanh lõi với tốc độ giảm dần theo bán kính |
+
+### Nút lùi KHÔNG bắn thẳng ra ngoài
+
+Từ `961030-a` hay `961030-b` bấm lùi đều về `/han/` — màn chọn hồ sơ — chứ không nhảy
+một phát ra bản đồ. Người xem nhìn thấy cả hai phần, còn ở lại hay ra hẳn là **họ chọn**.
+Chỉ nút *Bản đồ* dưới chân màn chọn mới đưa ra ngoài (và vẫn qua cửa điều hướng hai pha:
+chưa phá đảo M3 thì `/` vẫn đẩy về hồ sơ, xem mục 17).
+
+### Theme mới — không dùng chung bảng màu với bản đồ
+
+Giữ nguyên **cấu trúc** của design system (khung `.frame`, góc kẻ tay, tem phân loại,
+ô nhập từng ký tự, hộp bo góc) nhưng đổi hẳn bảng màu và chữ:
+
+```
+--lav #F4E7FB · --blush #F3DCDC · --coral #F5BCBA
+--orchid #E3AADD · --violet #C8A8E9 · --peri #C3C7F3
+--ink #3E2F56 (chữ chính — tím mực, KHÔNG dùng đen)
+```
+
+**Chữ:** `Cormorant Garamond` in nghiêng cho tiêu đề (mềm, nữ tính) · `Oswald` viết hoa
+giãn rộng cho nhãn kỹ thuật (giữ chất cyber của bản đồ) · `Be Vietnam Pro` cho văn bản.
+Đây là chỗ hai tính cách gặp nhau: **serif nghiêng + nhãn kỹ thuật viết hoa**.
+
+`961030-a` nền sáng pastel; `961030-b` nền tím đêm để dải ngân hà nổi lên — cùng một họ
+màu, khác độ sáng.
+
+### BẪY ĐÃ VẤP — canvas không chịu giãn ra
+
+`<canvas>` là **replaced element**, có kích thước nội tại **300×150**. Đặt
+`position:absolute; inset:0` thôi thì nó **không** giãn theo khung: nó vẫn là một ô
+300×150 nằm ở góc trái trên. Hiệu ứng vẫn chạy đủ quân, chỉ là chạy trong cái ô bé xíu
+đó — nhìn ra màn hình thì tưởng "hoa chỉ rơi ở đỉnh trang" hoặc "ngân hà co về một góc".
+
+Bắt buộc viết đủ:
+
+```css
+#sakura, #galaxy{ position:absolute; inset:0; width:100%; height:100% }
+```
+
+Đã mất một vòng chỉnh vô ích (tăng mật độ, đổi điểm sinh, đổi tốc độ rơi) trước khi tìm
+ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()` của canvas trả về
+`300×150` là dấu hiệu duy nhất cần nhìn.
+
+### Hai mẹo giữ hiệu ứng trải đều
+
+- **Cánh hoa:** ra khỏi mép trái thì **vòng** sang mép phải (`h.x = W + 40`) chứ không
+  thay cánh mới. Cánh chỉ rời cuộc khi chạm đáy → mật độ đều từ đỉnh xuống chân trang.
+  Nếu cho despawn theo mép trái, gió thổi trái làm phần lớn cánh biến mất giữa chừng và
+  nửa dưới trang trống dần.
+- **Lõi ngân hà** đặt lệch xuống `cx = W*0.54, cy = H*0.62`. Để giữa khung thì quầng sáng
+  nằm đúng sau hộp nhập mã, chữ bị loá.
+
+### Luật chơi 961030-a
+
+| | Nội dung | Đáp án |
+|---|---|---|
+| Manga | Tên một Manga Nhật Bản mà em yêu thích? | `ALICE IN BORDERLAND` |
+| Đi dạy | Em bắt đầu đi dạy năm bao nhiêu? | `2016` |
+| Mèo | Chú mèo đầu tiên Honghandangiu nuôi tên là gì? | `DUOI GAY` |
+| LoL | Champion em chơi nhiều nhất trong LoL? | `AKALI` |
+| Tâm lý | Nhà tâm lý học vĩ đại nhất trong lòng em? | `CARL JUNG` |
+
+- **Thứ tự câu hỏi ngẫu nhiên** mỗi lượt chơi (`tron()` trộn mảng, lưu ở `hanv1.order`).
+- **Mỗi ngày mỗi câu chỉ được sai 2 lần** (`SAI_NGAY`). Hết lượt → câu đó khoá tới nửa
+  đêm, và người chơi **phải reset toàn bộ**, trộn lại thứ tự, trả lời lại từ đầu.
+  Bộ đếm sai reset theo ngày **giờ máy** (`hanv1.day`).
+- **Gợi ý — đúng cơ chế Mission 3.** Sai lần đầu lộ gợi ý 1; gợi ý kế **tự mở sau 45
+  giây** mà không cần sai thêm; muốn mở sớm thì bấm **SOS góc dưới trái 10 nhịp liên
+  tiếp** (mỗi nhịp cách nhau dưới 900 ms). Bấm lai rai một hai cái chỉ bị ghẹo, tối đa
+  6 câu mỗi phiên. Câu Alice tách `2020` → `Netflix Live Action` → `Arisu` thành ba
+  gợi ý riêng.
+- **Gợi ý và đồng hồ nằm TRÊN ô nhập** — đọc rồi mới gõ, mắt không phải nhảy xuống dưới
+  rồi ngược lên.
+- So khớp bỏ dấu, bỏ khoảng trắng, không phân biệt hoa thường: gõ *"alice in borderland"*
+  hay *"Đuôi Gãy"* đều nhận.
+- Xong hết → hiện **mã `91969`** (hằng `PIN_B`) — **ngày sinh âm lịch của HongHan** — và
+  nút *Vào Secret Box ✦*. Đi bằng nút này thì trang B khỏi hỏi mã lại (`hanv1.bOpen`).
+
+Tiến độ lưu ở `localStorage.hanv1` — **khoá riêng**, không đụng `mtv1` / `msn1` / `nav1`.
+
+### Ô đáp án — một hàng là mặc định
+
+Đáp án dài ngắn khác nhau (từ `2016` bốn ô tới `ALICEINBORDERLAND` mười bảy ô) nhưng
+luôn cố xếp **gọn một hàng**: hàm `xepO()` dò cỡ ô từ 24 px xuống 12 px, khe giữa ô co
+theo cỡ, lấy cỡ lớn nhất còn vừa bề ngang thẻ.
+
+Chỉ khi cỡ nhỏ nhất vẫn tràn mới xuống **hai hàng**, và điểm cắt ưu tiên **ranh giới
+từ** gần giữa: `ALICE IN | BORDERLAND`, chứ không phải `ALICEINBO | RDERLAND` — chia cho
+thật đều thì cân mắt nhưng chẳng ai nhận ra mình đang gõ chữ gì. Hai hàng dùng chung một
+cỡ ô để nhìn không so le, mỗi hàng tự căn giữa.
+
+Xoay ngang máy là bề ngang đổi hẳn → `xepLai()` xếp lại (có hoãn 160 ms), nếu không thì
+hàng đang vừa khít bỗng tràn ra ngoài thẻ.
+
+### Cửa mã bên B — SOS chỉ mở khi đã bí thật
+
+Cửa `961030-b` nhận **5 số**. Nút **SOS góc trái chỉ hiện sau 3 lần nhập sai** — chưa sai
+thì không thấy, khỏi mời gọi. Hiện rồi thì bấm **10 nhịp liên tiếp** mới lộ gợi ý
+*"Ngày sinh ÂM LỊCH của HongHan"*, y hệt cơ chế SOS bên A và Mission 3.
+
+Số lần sai ghi vào `hanv1.bSai`, nên **tải lại trang không mất nút SOS đã mở được** —
+bắt sai lại ba lần nữa mới cho thấy thì vô lý.
+
+### Cửa hậu hoa — bảng điều phối
+
+Giống lá cờ ngoài bản đồ: **bấm icon hoa góc dưới 5 nhịp** (mỗi nhịp cách nhau dưới
+900 ms) → bảng điều phối, nhập **PIN 1959** → *Reset* (bấm hai lần để chắc) hoặc
+*Hoàn thành ngay*.
+
+> **BẪY ĐÃ VẤP:** ban đầu cho `.flow.warm{transform:scale(1.18)}` phóng to **cả nút**.
+> Vùng bấm nhảy ra khỏi ngón tay giữa chuỗi nhịp → gần như không ai bấm đủ 5 nhịp trong
+> cửa sổ thời gian. Chỉ phóng to **`svg` bên trong**, giữ nguyên hộp bấm.
+
+### Tem phiên bản
+
+Góc phải dưới mỗi trang HAN có tem giống bản đồ: chuỗi gốc ở `data-base` của `#stamp`,
+hàm `stampText()` ghép thêm `· R(n)` khi đã reset ít nhất một lần — nên số lần reset
+vẫn thấy được sau khi làm lại.
+
+### Sửa nội dung
+
+- Câu hỏi và gợi ý: hằng `HOI` đầu khối script `961030-a`.
+- Nội dung hộp: hàm `drawBox()` trong `961030-b`.
+- Mã mở khoá: sửa `PIN_B` bên A **và** `PIN` bên B cho khớp; gợi ý SOS của cửa B nằm ở
+  hằng `GOIY`. PIN bảng điều phối: `PIN_CTRL` (`1959`), giống khu điều phối ngoài bản đồ.
+- Thẻ trên màn chọn hồ sơ: sửa thẳng trong `han/index.html` (nhãn trạng thái do hàm
+  `nhan()` dán theo `hanv1`).

@@ -50,6 +50,27 @@ const NHAN = {
   sos_hint:           'Mở thêm gợi ý (SOS hoặc tới giờ)',
   bam_ban_do_khoa:    'Bấm nút Bản đồ khoá tạm (sau M1)',
 
+  /* HAN-961030 — Get to know me + Wishlist */
+  get_to_know_me:     'Bấm GET TO KNOW ME → sang HAN',
+  han_mo:             'Mở trang ba câu hỏi',
+  han_dung:           'TRẢ LỜI ĐÚNG một câu',
+  han_sai:            'Trả lời sai',
+  han_goi_y:          'Mở thêm gợi ý',
+  han_xong:           'XONG CẢ BA CÂU — được cấp mã Wishlist',
+  han_choi_lai:       'Trả lời lại từ đầu',
+  han_ve_ban_do:      'Từ HAN quay về bản đồ',
+  han_dong:           'Rời trang câu hỏi',
+  han_b_mo:           'Mở trang Wishlist',
+  han_pin_sai:        'Nhập sai mã Wishlist',
+  han_mo_wishlist:    'MỞ KHOÁ WISHLIST',
+  han_wish_tick:      'Đánh dấu một điều ước',
+  han_het_luot:       'HẾT LƯỢT SAI trong ngày — phải làm lại',
+  han_hub:            'Mở màn chọn hồ sơ HAN',
+  han_hub_di:         'Từ màn chọn hồ sơ đi tiếp',
+  han_ve_hub:         'Lùi về màn chọn hồ sơ HAN',
+  han_cua_hau:        'Mở bảng điều phối bằng hoa 5 nhịp',
+  han_dieu_phoi:      'Lệnh trong bảng điều phối HAN',
+
   /* Hai pha điều hướng + hồ sơ người chơi (profile) — USER-FLOW.md */
   redirect_ho_so:     'PHA 1: gõ / bị đẩy về hồ sơ',
   mo_pha_map:         'MỞ PHA MAP — bản đồ thành trang chính',
@@ -64,7 +85,9 @@ const NHAN = {
   /* Khung Tổ kỹ thuật */
   gui_tam_tu:         'GỬI TÂM TƯ cho tổ kỹ thuật',
   gui_tam_tu_loi:     'Gửi tâm tư thất bại',
-  vao_easter_egg:     'Vào Easter Egg từ khung Tổ kỹ thuật'
+  vao_easter_egg:     'Vào Easter Egg từ khung Tổ kỹ thuật',
+  easter_egg_found:   'EASTER EGG FOUND — màn pháo hoa lần đầu',
+  xem_lai_phao_hoa:   'Xem lại màn pháo hoa'
 };
 
 function gioVN(iso) {

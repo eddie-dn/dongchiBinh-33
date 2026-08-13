@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>HongHan's Secret Box · HAN-961030-B</title>
+<meta name="description" content="Hộp bí mật của Honghandangiu">
+<meta name="theme-color" content="#1A1230">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Phi đoàn Dongchi Bình">
+<meta property="og:title" content="HongHan's Secret Box · HAN-961030-B">
+<meta property="og:description" content="Hộp bí mật của Honghandangiu">
+<meta property="og:image" content="/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<noscript><link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap"></noscript>
+<style>
+/* ============================================================
+   HAN-961030-B — THEME "GALAXY"
+   Cùng hệ với 961030-A: khung, góc kẻ tay, tem phân loại, ô nhập mã,
+   tem phiên bản góc dưới, hoa cửa hậu. Khác ở nền — dải ngân hà xoắn
+   chiếm gần trọn khung, tông tím-hồng pastel.
+   ============================================================ */
+:root{
+  --lav:#F4E7FB;   --blush:#F3DCDC;  --coral:#F5BCBA;
+  --orchid:#E3AADD; --violet:#C8A8E9; --peri:#C3C7F3;
+  --paper:#F6EFFB;
+  --ink2:rgba(246,239,251,.66);
+  --line:rgba(227,170,221,.24);
+  --bad:#F5A8B8;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#120C22;color:var(--paper);
+  font-family:"Be Vietnam Pro",system-ui,"Noto Sans",sans-serif;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+#app{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+
+.frame{position:relative;width:100%;height:100%;display:flex;flex-direction:column;
+  overflow:hidden;background:radial-gradient(120% 90% at 50% 44%, #2B1E4C 0%, #1B1233 55%, #120C22 100%)}
+@media (min-width:480px){
+  body{background:linear-gradient(160deg,#150E28,#241839)}
+  .frame{max-width:460px;max-height:940px;height:92vh;border-radius:26px;
+    box-shadow:0 30px 80px rgba(20,10,40,.6)}
+}
+.corner{position:absolute;width:20px;height:20px;border-color:rgba(227,170,221,.4);z-index:6}
+.corner.tl{top:13px;left:13px;border-top:2px solid;border-left:2px solid}
+.corner.tr{top:13px;right:13px;border-top:2px solid;border-right:2px solid}
+.corner.bl{bottom:13px;left:13px;border-bottom:2px solid;border-left:2px solid}
+.corner.br{bottom:13px;right:13px;border-bottom:2px solid;border-right:2px solid}
+
+/* <canvas> là phần tử thay thế, kích thước nội tại 300×150 — thiếu width/height
+   100% thì inset:0 không giãn nổi, cả dải ngân hà co về góc trái trên. */
+#galaxy{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+
+.classtag{position:absolute;top:13px;left:50%;transform:translateX(-50%);z-index:6;
+  padding:6px 14px;border:1px solid var(--line);border-radius:5px;
+  background:rgba(27,18,51,.55);backdrop-filter:blur(6px);
+  font-family:"Oswald";font-size:8.5px;font-weight:500;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--ink2);text-align:center;line-height:1.7}
+.classtag b{display:block;font-weight:600;color:var(--orchid);letter-spacing:.18em}
+
+.wrap{position:relative;z-index:4;flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:64px clamp(20px,6vw,28px) 16px;overflow-y:auto;overscroll-behavior:contain}
+.wrap::-webkit-scrollbar{width:0}
+
+.eyebrow{display:flex;align-items:center;gap:12px;margin:8px 0 10px}
+.eyebrow::before,.eyebrow::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(227,170,221,.06),rgba(227,170,221,.55))}
+.eyebrow::after{background:linear-gradient(90deg,rgba(227,170,221,.55),rgba(227,170,221,.06))}
+.eyebrow i{width:5px;height:5px;background:var(--orchid);transform:rotate(45deg);
+  border-radius:1px;display:block}
+
+h1.title{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-style:italic;
+  margin:0;font-size:clamp(28px,8.4vw,38px);line-height:1.08;color:var(--paper);
+  text-shadow:0 4px 30px rgba(0,0,0,.5)}
+h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
+  font-size:clamp(11px,3.2vw,13px);letter-spacing:.3em;text-transform:uppercase;
+  color:var(--orchid);margin-bottom:9px}
+.lead{margin:11px 0 0;font-size:12.5px;line-height:1.62;color:var(--ink2)}
+
+.card{position:relative;margin-top:22px;padding:22px 20px;border-radius:18px;
+  border:1px solid var(--line);background:rgba(255,255,255,.07);
+  backdrop-filter:blur(14px);box-shadow:0 18px 44px rgba(10,4,25,.44)}
+.c-lab{font-family:"Oswald";font-size:9px;font-weight:600;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--orchid);margin:0 0 9px;text-align:center}
+.c-txt{font-size:13px;line-height:1.7;text-align:center;color:var(--ink2);margin:0;
+  text-wrap:balance}
+.c-tit{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-weight:600;
+  font-style:italic;margin:0 0 10px;text-align:center;color:var(--paper)}
+
+.cells{position:relative;display:flex;gap:7px;justify-content:center;margin:20px 0 2px;cursor:text}
+.cell{width:26px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-family:"Oswald";font-size:19px;color:var(--paper);
+  border-bottom:2px solid rgba(227,170,221,.5);transition:border-color .25s}
+.cell.on{border-bottom-color:var(--orchid)}
+.cell.fill{border-bottom-color:var(--violet)}
+.inp{position:absolute;inset:0;width:100%;height:100%;opacity:.01;border:none;
+  background:none;color:transparent;caret-color:transparent;font-size:16px;outline:none}
+.msg{min-height:19px;margin:13px 2px 0;font-size:12.5px;line-height:1.6;text-align:center;
+  color:var(--bad)}
+.msg:empty{min-height:4px;margin-top:0}
+.msg.ok{color:var(--orchid)}
+.hints{margin:12px 0 0;padding:0;list-style:none;font-size:12.5px;line-height:1.8;
+  color:var(--ink2);text-align:center}
+.hints:empty{margin:0}
+.hints li::before{content:"✦ ";color:var(--orchid)}
+.hints li b{color:var(--paper);font-weight:600}
+/* SOS nằm góc trái thẻ, chỉ hiện sau khi nhập sai quá số lần cho phép */
+.sos{position:absolute;bottom:8px;left:12px;border:none;background:none;cursor:pointer;
+  font-family:"Oswald";font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(227,170,221,.9);padding:9px 6px}
+.sos[hidden]{display:none}
+.card.haspin{padding-bottom:40px}
+
+/* ── màn "đang hình thành" ── */
+.form-orb{width:96px;height:96px;margin:6px auto 16px;border-radius:50%;position:relative}
+.form-orb::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 42% 38%, #FBE3F0 0%, var(--orchid) 34%, var(--violet) 62%, rgba(195,199,243,0) 76%);
+  filter:blur(1px);animation:orbBreath 4.4s ease-in-out infinite}
+.form-orb::after{content:"";position:absolute;inset:-16%;border-radius:50%;
+  border:1px dashed rgba(227,170,221,.55);animation:orbSpin 14s linear infinite}
+@keyframes orbBreath{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+.dots{display:flex;justify-content:center;gap:7px;margin-top:14px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--orchid);opacity:.35;
+  animation:dotWave 1.5s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.18s}
+.dots i:nth-child(3){animation-delay:.36s}
+@keyframes dotWave{0%,100%{opacity:.28;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  margin-top:16px;padding:13px 16px;border:none;border-radius:999px;cursor:pointer;
+  font-family:"Oswald";font-size:11px;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:#2A1E44;
+  background:linear-gradient(120deg,var(--violet),var(--orchid) 60%,var(--coral));
+  box-shadow:0 12px 26px rgba(120,80,180,.45)}
+.btn.ghost{background:none;color:var(--ink2);border:1px solid var(--line);box-shadow:none;font-size:10px}
+
+.foot{position:relative;z-index:5;flex:none;display:flex;align-items:center;
+  justify-content:space-between;gap:8px;padding:0 clamp(18px,5vw,24px) 22px}
+.back{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
+  background:rgba(255,255,255,.06);border-radius:999px;padding:9px 14px;cursor:pointer;
+  font-family:"Oswald";font-size:9.5px;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink2)}
+.back:hover{border-color:var(--orchid);color:var(--paper)}
+.flow{border:none;background:none;cursor:pointer;padding:8px;line-height:0;
+  color:rgba(227,170,221,.7);transition:color .25s,transform .25s}
+.flow svg{width:19px;height:19px;fill:currentColor;transition:transform .25s}
+/* Chỉ CÁNH HOA to lên, vùng bấm đứng yên: nút tự phóng to sẽ dịch dưới ngón
+   tay giữa chuỗi 5 nhịp, rất dễ trượt — đã vấp lúc kiểm thử. */
+.flow.warm{color:var(--orchid)}
+.flow.warm svg{transform:scale(1.2)}
+.stampzone{display:flex;align-items:center;gap:8px}
+.stamp{font-family:"Oswald";font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(246,239,251,.4);text-align:right;line-height:1.5}
+
+.ovw{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
+  background:rgba(18,12,34,.62);backdrop-filter:blur(6px);padding:24px}
+.ovw.on{display:flex}
+.ovp{position:relative;width:min(340px,94%);padding:22px 20px;border-radius:18px;
+  border:1px solid var(--line);background:rgba(38,26,66,.96);
+  box-shadow:0 26px 60px rgba(10,4,25,.6)}
+.ovp .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border:none;
+  background:none;cursor:pointer;color:var(--ink2);font-size:14px}
+.ov-lab{font-family:"Oswald";font-size:9px;font-weight:600;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--orchid);margin:0 0 8px}
+.ov-tit{font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;font-weight:600;
+  font-style:italic;margin:0 0 6px;color:var(--paper)}
+.ov-txt{font-size:12.5px;line-height:1.65;color:var(--ink2);margin:0}
+.ov-row{display:flex;gap:8px;margin-top:16px}
+.ov-row .btn{margin-top:0}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="frame" id="frame">
+  <span class="corner tl"></span><span class="corner tr"></span>
+  <span class="corner bl"></span><span class="corner br"></span>
+  <canvas id="galaxy" aria-hidden="true"></canvas>
+  <div class="classtag">Hồ sơ niêm phong · No.961030<b>Secret Box</b></div>
+
+  <div class="wrap">
+    <div class="eyebrow"><i></i></div>
+    <h1 class="title"><b>HongHan’s</b>Secret Box</h1>
+    <p class="lead" id="lead">Nhập mã em vừa tặng để mở ✦</p>
+    <div id="stage"></div>
+  </div>
+
+  <div class="foot">
+    <button class="back" id="back" type="button">&#8592; Hồ sơ HAN</button>
+    <span class="stampzone">
+      <button class="flow" id="flow" type="button" aria-label="Bảng điều phối">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.2a2.6 2.6 0 1 0 0 1.6 2.6 2.6 0 0 0 0-1.6Zm0-9.2c1.9 0 3.1 1.8 2.6 3.6-.2.8.6 1.5 1.3 1.1 1.7-.9 3.7.3 3.7 2.2 0 1.9-2 3.1-3.7 2.2-.7-.4-1.5.3-1.3 1.1.5 1.8-.7 3.6-2.6 3.6s-3.1-1.8-2.6-3.6c.2-.8-.6-1.5-1.3-1.1-1.7.9-3.7-.3-3.7-2.2 0-1.9 2-3.1 3.7-2.2.7.4 1.5-.3 1.3-1.1C8.9 3.8 10.1 2 12 2Z"/><path d="M12 15.6c-1 2.2-1.4 4.4-1.2 6.4h2.4c.2-2-.2-4.2-1.2-6.4Z" opacity=".55"/></svg>
+      </button>
+      <span class="stamp" id="stamp" data-base="HAN-961030-B · V1.02<br>Last updated 13-Aug-2026"></span>
+    </span>
+  </div>
+
+  <div class="ovw" id="ctrl" aria-hidden="true">
+    <div class="ovp" role="dialog" aria-modal="true">
+      <button class="x" id="ctrlX" type="button" aria-label="Đóng">&#10005;</button>
+      <div id="ctrlBody"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<img src="/api/ping?ev=tai_trang&detail=han-961030-b" alt="" width="1" height="1"
+     style="position:absolute;left:0;top:0;opacity:0;pointer-events:none" aria-hidden="true">
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+var PIN      = '91969';             /* phải khớp PIN_B bên 961030-a */
+var GOIY     = 'Ngày sinh ÂM LỊCH của HongHan';   /* lộ qua nút SOS */
+var SAI_SOS  = 3;                   /* sai quá bấy nhiêu lần thì hiện nút SOS */
+var SOSGHEO  = ['Bấm nữa đi, bấm nữa đi ✦', 'Chưa đủ nhịp đâu anh ơi ✦',
+                'Kiên trì lên, sắp tới rồi ✦', 'Ngón tay mỏi chưa? ✦'];
+var PIN_CTRL = '1959';
+var HREF_A   = '/han/961030-a';
+var HREF_HAN = '/han/';             /* nút lùi về màn chọn hồ sơ */
+
+/* ═══════════ LƯU TRỮ — dùng chung khoá hanv1 với 961030-a ═══════════ */
+var KEY = 'hanv1';
+var st = (function(){
+  var s = {};
+  try{ s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){}
+  return { done: !!s.done, bOpen: !!s.bOpen, reset: s.reset|0, bSai: s.bSai|0 };
+})();
+function save(){
+  var s = {};
+  try{ s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){}
+  s.bOpen = st.bOpen; s.reset = st.reset; s.bSai = st.bSai;
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+}
+function ping(ev, detail){
+  try{
+    var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
+      solved:[], ua:navigator.userAgent.slice(0,120) });
+    if(navigator.sendBeacon &&
+       navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))) return;
+    fetch('/api/ping',{method:'POST',body:body,keepalive:true,
+      headers:{'Content-Type':'application/json'}}).catch(function(){});
+  }catch(e){}
+}
+function stampText(){
+  var el = $('stamp');
+  el.innerHTML = el.dataset.base + (st.reset > 0 ? ' · R' + st.reset : '');
+}
+
+/* ═══════════ DẢI NGÂN HÀ ═══════════
+   Hai nhánh xoắn theo hàm log, hạt dồn về lõi, mỗi hạt quay quanh tâm với tốc
+   độ giảm dần theo bán kính nên nhìn như thiên hà xoay thật. Đĩa nghiêng 22°
+   và ép dẹt 0,34 để thấy rõ hình xoắn ốc thay vì một vòng tròn. Ba lớp: bụi
+   nền → mây tinh vân → sao, cộng quầng lõi vẽ chồng gradient. */
+(function galaxy(){
+  var cv = $('galaxy'), ctx = cv.getContext('2d');
+  var W = 0, H = 0, dpr = Math.min(devicePixelRatio || 1, 2);
+  var it = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var MAU = ['#FFFFFF','#FBE3F0','#F5BCBA','#E3AADD','#C3C7F3','#C8A8E9','#FFF6FB'];
+  var sao = [], bui = [], may = [], NGHIENG = -0.38, DET = 0.34;
+
+  function co(){
+    var r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    dung();
+  }
+  function nhanh(t, k){                 /* xoắn log: góc tăng theo bán kính */
+    return t * 4.6 + k * Math.PI + (Math.random() - 0.5) * (0.7 - t * 0.42);
+  }
+  function dung(){
+    sao.length = 0; bui.length = 0; may.length = 0;
+    var R = Math.max(W, H) * 0.72;       /* đĩa RỘNG HƠN KHUNG — tràn ra ngoài mép */
+    var N = Math.max(300, Math.min(980, Math.round(W * H / 620)));
+    var i, t, k;
+    for(i = 0; i < N; i++){
+      k = i % 2;
+      t = Math.pow(Math.random(), 0.56);
+      sao.push({ r: t*R, g: nhanh(t, k),
+        v: (0.00040 + 0.00092/(0.22 + t)) * (0.85 + Math.random()*0.3),
+        s: (Math.random() < 0.07 ? 1.7 : 0.7) + Math.random()*0.85,
+        m: MAU[(Math.random()*MAU.length)|0],
+        o: 0.34 + Math.random()*0.62,
+        nh: Math.random()*6.28, ns: 0.01 + Math.random()*0.03 });
+    }
+    for(i = 0; i < Math.round(N*0.5); i++){    /* bụi mờ lấp khoảng trống giữa hai nhánh */
+      t = Math.pow(Math.random(), 0.5);
+      bui.push({ r: t*R, g: Math.random()*6.28,
+        v: (0.00034 + 0.0007/(0.25 + t)),
+        s: 0.5 + Math.random()*0.6, o: 0.09 + Math.random()*0.14,
+        m: MAU[(Math.random()*MAU.length)|0] });
+    }
+    for(k = 0; k < 10; k++){                   /* mây tinh vân bám theo nhánh xoắn */
+      t = 0.18 + Math.random()*0.8;
+      may.push({ r: t*R, g: nhanh(t, k%2),
+        v: 0.00030 + 0.00042/(0.3 + t),
+        rad: R*(0.15 + Math.random()*0.22),
+        m: ['#E3AADD','#C3C7F3','#F5BCBA','#C8A8E9','#9F7BD8'][k % 5],
+        o: 0.055 + Math.random()*0.075 });
+    }
+  }
+  var t = 0;
+  function ve(){
+    /* Lõi đặt lệch xuống dưới khung: nếu để giữa thì quầng sáng nằm đúng sau
+       khung nhập mã, chữ bị loá. Xuống 0.62 thì khung nằm trên nền tối, còn
+       nửa dưới trang có chỗ sáng nhất — mắt vẫn thấy cả đĩa ngân hà. */
+    var cx = W*0.54, cy = H*0.62;
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.translate(cx, cy); ctx.rotate(NGHIENG); ctx.translate(-cx, -cy);
+    ctx.globalCompositeOperation = 'lighter';
+    var i, o, x, y, g;
+
+    for(i = 0; i < may.length; i++){
+      o = may[i]; if(!it) o.g += o.v;
+      x = cx + Math.cos(o.g)*o.r; y = cy + Math.sin(o.g)*o.r*DET;
+      g = ctx.createRadialGradient(x, y, 0, x, y, o.rad);
+      g.addColorStop(0, o.m); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.globalAlpha = o.o; ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(x, y, o.rad, 0, 6.2832); ctx.fill();
+    }
+    for(i = 0; i < bui.length; i++){
+      o = bui[i]; if(!it) o.g += o.v;
+      x = cx + Math.cos(o.g)*o.r; y = cy + Math.sin(o.g)*o.r*DET;
+      ctx.globalAlpha = o.o; ctx.fillStyle = o.m;
+      ctx.beginPath(); ctx.arc(x, y, o.s, 0, 6.2832); ctx.fill();
+    }
+    /* quầng lõi: ba lớp chồng nhau cho sáng dần vào giữa */
+    var Rl = Math.min(W, H)*0.34;
+    g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Rl);
+    g.addColorStop(0, 'rgba(255,248,253,.86)');
+    g.addColorStop(.16, 'rgba(251,227,240,.5)');
+    g.addColorStop(.42, 'rgba(227,170,221,.22)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = 1; ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, Rl, 0, 6.2832); ctx.fill();
+
+    t++;
+    for(i = 0; i < sao.length; i++){
+      o = sao[i]; if(!it) o.g += o.v;
+      var nh = 0.6 + 0.4*Math.sin(t*o.ns + o.nh);
+      x = cx + Math.cos(o.g)*o.r; y = cy + Math.sin(o.g)*o.r*DET;
+      ctx.globalAlpha = o.o*nh; ctx.fillStyle = o.m;
+      ctx.beginPath(); ctx.arc(x, y, o.s, 0, 6.2832); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+    requestAnimationFrame(ve);
+  }
+  co();
+  addEventListener('resize', co, {passive:true});
+  ve();
+})();
+
+/* ═══════════ CỬA MÃ ═══════════ */
+function drawGate(){
+  var len = PIN.length, buf = '';
+  $('lead').innerHTML = 'Nhập mã em vừa tặng để mở ✦';
+  $('stage').innerHTML =
+    '<div class="card">'
+    + '<p class="c-lab">Mã truy cập · ' + len + ' số</p>'
+    + '<p class="c-txt">Mã nằm ở màn cuối của phần <b>Who’s my kindred spirit?</b>. '
+    + 'Chưa có thì quay lại lấy nha ✦</p>'
+    + '<div class="cells" id="cells">'
+    + '<input class="inp" id="inp" type="text" inputmode="numeric" autocomplete="one-time-code" '
+    + 'aria-label="Ô nhập mã"></div>'
+    + '<div class="msg" id="msg"></div>'
+    + '<ul class="hints" id="hints"></ul>'
+    + '<button class="sos" id="sos" type="button" hidden>SOS</button>'
+    + '</div>';
+  var box = $('cells'), inp = $('inp'), o = [];
+  for(var k = 0; k < len; k++){
+    var c = document.createElement('span'); c.className = 'cell';
+    box.insertBefore(c, inp); o.push(c);
+  }
+  function paint(){
+    for(var k = 0; k < len; k++){
+      o[k].textContent = buf[k] ? '•' : '';
+      o[k].classList.toggle('on', k === buf.length);
+      o[k].classList.toggle('fill', k < buf.length);
+    }
+  }
+  paint();
+  setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 120);
+  box.addEventListener('click', function(){ try{ inp.focus(); }catch(e){} });
+
+  /* ---- SOS: chỉ hiện khi đã sai quá SAI_SOS lần ----
+     Mở gợi ý bằng 10 NHỊP LIÊN TIẾP, đúng cơ chế nút SOS của Mission 3 và của
+     phần câu hỏi bên A — bấm một hai cái chỉ bị ghẹo. */
+  /* Số lần sai NHỚ luôn vào hanv1: tải lại trang mà mất nút SOS vừa mở được thì
+     người chơi phải sai thêm ba lần nữa mới thấy lại — vô lý. */
+  var sn = 0, sAt = 0, sos = $('sos');
+  function hienSos(){
+    if(!sos.hidden) return;
+    sos.hidden = false;
+    $('stage').querySelector('.card').classList.add('haspin');
+  }
+  if(st.bSai >= SAI_SOS) hienSos();
+  sos.addEventListener('click', function(){
+    var now = Date.now();
+    sn = (now - sAt < 900) ? sn + 1 : 1; sAt = now;
+    if(sn >= 10){
+      sn = 0;
+      $('hints').innerHTML = '<li>Gợi ý · <b>' + GOIY + '</b></li>';
+      $('msg').textContent = 'Chi viện một gợi ý ✦'; $('msg').classList.add('ok');
+      ping('han_goi_y', 'cửa mã B · SOS 10 nhịp');
+      return;
+    }
+    if(sn <= 2){
+      $('msg').textContent = SOSGHEO[(Math.random()*SOSGHEO.length)|0];
+      $('msg').classList.add('ok');
+    }
+  });
+  inp.addEventListener('input', function(){
+    buf = (inp.value||'').replace(/\D/g,'').slice(0, len); paint();
+    if(buf.length === len){
+      if(buf === PIN){
+        st.bOpen = true; save();
+        ping('han_mo_wishlist', 'nhập đúng mã');
+        $('msg').textContent = 'Đúng rồi ✦'; $('msg').classList.add('ok');
+        setTimeout(drawBox, 520);
+      }else{
+        st.bSai++; save();
+        ping('han_pin_sai', 'lần ' + st.bSai);
+        $('msg').textContent = st.bSai >= SAI_SOS
+          ? 'Vẫn chưa đúng ✦ Bí quá thì gọi SOS góc dưới trái nha'
+          : 'Chưa đúng mã rồi ✦';
+        $('msg').classList.remove('ok');
+        if(st.bSai >= SAI_SOS) hienSos();
+        buf = ''; inp.value = ''; paint();
+      }
+    }
+  });
+}
+
+/* ═══════════ NỘI DUNG — hiện đang hình thành ═══════════ */
+function drawBox(){
+  $('lead').innerHTML = 'Anh vào được rồi ✦ Nhưng bên trong em còn đang xếp dở…';
+  $('stage').innerHTML =
+    '<div class="card">'
+    + '<p class="c-lab">Trạng thái · Đang hình thành</p>'
+    + '<div class="form-orb"></div>'
+    + '<div class="c-tit">Em còn đang gói ghém ✦</div>'
+    + '<p class="c-txt">Hộp này đang trong quá trình <b>forming</b> — em hẹn anh mở ra sau nha. '
+    + 'Cứ giữ mã, khi nào xong em sẽ báo ✦</p>'
+    + '<div class="dots"><i></i><i></i><i></i></div>'
+    + '<button class="btn ghost" id="goA" type="button">← Về phần câu hỏi</button>'
+    + '</div>';
+  $('goA').addEventListener('click', function(){
+    setTimeout(function(){ location.href = HREF_A; }, 140);
+  });
+}
+
+/* ═══════════ CỬA HẬU: HOA 5 NHỊP ═══════════ */
+var ctrl = $('ctrl');
+function ctrlOpen(html){ $('ctrlBody').innerHTML = html; ctrl.classList.add('on'); ctrl.setAttribute('aria-hidden','false'); }
+function ctrlClose(){ ctrl.classList.remove('on'); ctrl.setAttribute('aria-hidden','true'); }
+$('ctrlX').addEventListener('click', ctrlClose);
+ctrl.addEventListener('click', function(e){ if(e.target === ctrl) ctrlClose(); });
+
+function bangDieuPhoi(){
+  ctrlOpen(
+    '<p class="ov-lab">Bảng điều phối</p>'
+    + '<p class="ov-tit">HAN-961030-B</p>'
+    + '<p class="ov-txt">Trạng thái: <b>' + (st.bOpen ? 'đã mở khoá' : 'còn cửa mã') + '</b>'
+    + (st.reset ? ' · R' + st.reset : '') + '</p>'
+    + '<div class="ov-row">'
+    + '<button class="btn ghost" id="cLock" type="button">↻ Khoá lại</button>'
+    + '<button class="btn" id="cOpen" type="button">Mở khoá</button>'
+    + '</div>'
+    + '<p class="msg" id="cMsg"></p>');
+  var lk = $('cLock'), armed = false;
+  lk.addEventListener('click', function(){
+    if(!armed){ armed = true; lk.textContent = 'Bấm lần nữa'; return; }
+    st.bOpen = false; st.reset++; save(); stampText();
+    ping('han_dieu_phoi', 'khoá lại cửa mã');
+    ctrlClose(); drawGate();
+  });
+  $('cOpen').addEventListener('click', hopPin);
+}
+function hopPin(){
+  var len = PIN_CTRL.length, buf = '';
+  ctrlOpen(
+    '<p class="ov-lab">Mã điều phối</p>'
+    + '<p class="ov-tit">Nhập mã ✦</p>'
+    + '<p class="ov-txt">Mã này dùng chung với khu điều phối của bản đồ.</p>'
+    + '<div class="cells" id="pc" style="margin-top:16px">'
+    + '<input class="inp" id="pcIn" type="text" inputmode="numeric" autocomplete="off" '
+    + 'aria-label="Mã điều phối"></div>'
+    + '<p class="msg" id="cMsg"></p>');
+  var box = $('pc'), inp = $('pcIn'), o = [];
+  for(var k = 0; k < len; k++){
+    var c = document.createElement('span'); c.className = 'cell';
+    box.insertBefore(c, inp); o.push(c);
+  }
+  function paint(){
+    for(var k = 0; k < len; k++){
+      o[k].textContent = buf[k] ? '•' : '';
+      o[k].classList.toggle('on', k === buf.length);
+    }
+  }
+  paint();
+  setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 90);
+  box.addEventListener('click', function(){ try{ inp.focus(); }catch(e){} });
+  inp.addEventListener('input', function(){
+    buf = (inp.value||'').replace(/\D/g,'').slice(0, len); paint();
+    if(buf.length === len){
+      if(buf === PIN_CTRL){
+        st.bOpen = true; save();
+        ping('han_dieu_phoi', 'mở khoá bằng mã');
+        ctrlClose(); drawBox();
+      }else{
+        $('cMsg').textContent = 'Sai mã rồi ✦';
+        buf = ''; inp.value = ''; paint();
+      }
+    }
+  });
+}
+var fn = 0, fAt = 0;
+$('flow').addEventListener('click', function(){
+  var now = Date.now();
+  fn = (now - fAt < 900) ? fn + 1 : 1; fAt = now;
+  var el = $('flow');
+  el.classList.add('warm');
+  setTimeout(function(){ el.classList.remove('warm'); }, 260);
+  if(fn >= 5){ fn = 0; ping('han_cua_hau', 'mở bảng điều phối'); bangDieuPhoi(); }
+});
+
+/* ═══════════ KHỞI ĐỘNG ═══════════ */
+/* Lùi về màn chọn hồ sơ HAN chứ không nhảy thẳng sang phần A hay ra bản đồ. */
+$('back').addEventListener('click', function(){
+  ping('han_ve_hub', 'từ Secret Box');
+  setTimeout(function(){ location.href = HREF_HAN; }, 140);
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && ctrl.classList.contains('on')) ctrlClose();
+});
+stampText();
+ping('han_b_mo', st.bOpen ? 'đã mở khoá' : 'còn cửa mã');
+if(st.bOpen) drawBox(); else drawGate();
+})();
+</script>
+</body>
+</html>
