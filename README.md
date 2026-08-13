@@ -840,16 +840,18 @@ Hai trang mới, vào từ khung **Tổ kỹ thuật** của bản đồ (nút *
 
 | Trang | Là gì | Nền động |
 |---|---|---|
-| `/han/` | **Màn chọn hồ sơ** — hai thẻ A/B kèm nhãn trạng thái thật, và nút về bản đồ | Hoa anh đào rơi |
+| `/han/` | Màn chọn hồ sơ — **không nằm trong luồng chơi nữa**, chỉ còn gõ URL mới tới | Hoa anh đào rơi |
 | `/han/961030-a` | *Who's my kindred spirit?* — bộ câu hỏi về Honghandangiu; đúng hết thì được cấp **mã 5 số** | **Hoa anh đào rơi** — canvas, mỗi cánh vẽ bằng hai cung bezier, xoay quanh trục dọc nên lúc mỏng lúc dày |
 | `/han/961030-b` | **HongHan's Secret Box** — hiện còn *đang trong quá trình forming*, mở sau | **Dải ngân hà** — canvas, sao xếp theo hai nhánh xoắn, quay quanh lõi với tốc độ giảm dần theo bán kính |
 
-### Nút lùi KHÔNG bắn thẳng ra ngoài
+### Đường đi — thẳng, không có trạm trung chuyển
 
-Từ `961030-a` hay `961030-b` bấm lùi đều về `/han/` — màn chọn hồ sơ — chứ không nhảy
-một phát ra bản đồ. Người xem nhìn thấy cả hai phần, còn ở lại hay ra hẳn là **họ chọn**.
-Chỉ nút *Bản đồ* dưới chân màn chọn mới đưa ra ngoài (và vẫn qua cửa điều hướng hai pha:
-chưa phá đảo M3 thì `/` vẫn đẩy về hồ sơ, xem mục 17).
+Đi từ đâu cũng **vào thẳng `961030-a`** (nút *Get to know me* trong khung cửa hậu của bản
+đồ). Lùi từ A là ra **bản đồ**; lùi từ B là về **A**. `961030-b` mở bằng nút ở màn hoàn
+thành của A, hoặc gõ thẳng URL rồi nhập mã.
+
+Màn chọn hồ sơ `/han/` vẫn còn trên đĩa nhưng **không nằm trong luồng nữa** — bắt người
+xem dừng một trạm chỉ để bấm tiếp là dài dòng.
 
 ### Theme mới — không dùng chung bảng màu với bản đồ
 
@@ -907,8 +909,15 @@ ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()`
 
 - **Thứ tự câu hỏi ngẫu nhiên** mỗi lượt chơi (`tron()` trộn mảng, lưu ở `hanv1.order`).
 - **Mỗi ngày mỗi câu chỉ được sai 2 lần** (`SAI_NGAY`). Hết lượt → câu đó khoá tới nửa
-  đêm, và người chơi **phải reset toàn bộ**, trộn lại thứ tự, trả lời lại từ đầu.
-  Bộ đếm sai reset theo ngày **giờ máy** (`hanv1.day`).
+  đêm (màn *See ya tmr 😉* với một dòng `Lượt retry · 0/2` và đồng hồ đếm), và người chơi
+  **phải reset toàn bộ**, trộn lại thứ tự, trả lời lại từ đầu. Bộ đếm sai reset theo ngày
+  **giờ máy** (`hanv1.day`).
+
+  > **Luật này còn ngặt và có ngõ cụt.** Reset **không hoàn lượt sai** — trộn lại thứ tự
+  > xong, đi tới đúng câu đã cháy lượt là tắc, hôm đó không cách nào chơi hết bài. Đề xuất
+  > nới: lượt sai đếm theo **phiên 30 phút** thay vì tới nửa đêm; cháy lượt một câu thì
+  > **gác câu đó lại và nhảy sang câu kế**, cuối vòng mới quay lại; chỉ khi cháy lượt cả
+  > năm câu mới **mời** (không ép) làm lại. Chưa đổi — chờ chốt.
 - **Gợi ý — đúng cơ chế Mission 3.** Sai lần đầu lộ gợi ý 1; gợi ý kế **tự mở sau 45
   giây** mà không cần sai thêm; muốn mở sớm thì bấm **SOS góc dưới trái 10 nhịp liên
   tiếp** (mỗi nhịp cách nhau dưới 900 ms). Bấm lai rai một hai cái chỉ bị ghẹo, tối đa
@@ -918,8 +927,9 @@ ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()`
   rồi ngược lên.
 - So khớp bỏ dấu, bỏ khoảng trắng, không phân biệt hoa thường: gõ *"alice in borderland"*
   hay *"Đuôi Gãy"* đều nhận.
-- Xong hết → hiện **mã `91969`** (hằng `PIN_B`) — **ngày sinh âm lịch của HongHan** — và
-  nút *Vào Secret Box ✦*. Đi bằng nút này thì trang B khỏi hỏi mã lại (`hanv1.bOpen`).
+- Xong hết → màn **Phá Đảo Lòng EM** (ba trái tim nhấp nháy so le) · *HongHan's Secret* ·
+  *Thương gửi anh PIN* · **mã `91969`** (hằng `PIN_B`) — **ngày sinh âm lịch của HongHan**
+  — và nút *Vào Secret Box ✦*. Đi bằng nút này thì trang B khỏi hỏi mã lại (`hanv1.bOpen`).
 
 Tiến độ lưu ở `localStorage.hanv1` — **khoá riêng**, không đụng `mtv1` / `msn1` / `nav1`.
 
@@ -939,18 +949,27 @@ hàng đang vừa khít bỗng tràn ra ngoài thẻ.
 
 ### Cửa mã bên B — SOS chỉ mở khi đã bí thật
 
-Cửa `961030-b` nhận **5 số**. Nút **SOS góc trái chỉ hiện sau 3 lần nhập sai** — chưa sai
+Cửa `961030-b` chỉ còn đúng một dòng **"Vui lòng nhập mã PIN ✦"** và hàng ô — bỏ hết câu
+dẫn, bỏ luôn nhãn đếm số chữ số. Cửa nhận **5 số**. Nút **SOS góc trái chỉ hiện sau 3 lần
+nhập sai** — chưa sai
 thì không thấy, khỏi mời gọi. Hiện rồi thì bấm **10 nhịp liên tiếp** mới lộ gợi ý
 *"Ngày sinh ÂM LỊCH của HongHan"*, y hệt cơ chế SOS bên A và Mission 3.
 
 Số lần sai ghi vào `hanv1.bSai`, nên **tải lại trang không mất nút SOS đã mở được** —
 bắt sai lại ba lần nữa mới cho thấy thì vô lý.
 
-### Cửa hậu hoa — bảng điều phối
+### Cửa hậu hoa — Khối vận hành
 
-Giống lá cờ ngoài bản đồ: **bấm icon hoa góc dưới 5 nhịp** (mỗi nhịp cách nhau dưới
-900 ms) → bảng điều phối, nhập **PIN 1959** → *Reset* (bấm hai lần để chắc) hoặc
-*Hoàn thành ngay*.
+Giống lá cờ ngoài bản đồ: **bấm 5 nhịp** (mỗi nhịp cách nhau dưới 900 ms) → **Khối vận
+hành**, nhập **PIN 1959** → *Reset* (bấm hai lần để chắc) hoặc *Hoàn thành ngay*.
+
+Vùng bấm là **cả cụm hoa + dòng tem** (`#stampzone`), đúng như cửa hậu ngoài bản đồ nhận
+cả dòng bản quyền chứ không riêng lá cờ 15 px — trên điện thoại dễ trúng hơn hẳn. Nhấp
+nháy thì vẫn chỉ mình bông hoa.
+
+Hộp nhập mã dựng **y khuôn hộp mã của Box Tổng tư lệnh**: một nhãn nhỏ *Mã truy cập*,
+hàng ô gạch chân, một dòng nhắc *Gõ 4 số*. Không tiêu đề, và **không kể mã ở đâu ra** —
+câu "mã này dùng chung với khu điều phối của bản đồ" đã bỏ.
 
 > **BẪY ĐÃ VẤP:** ban đầu cho `.flow.warm{transform:scale(1.18)}` phóng to **cả nút**.
 > Vùng bấm nhảy ra khỏi ngón tay giữa chuỗi nhịp → gần như không ai bấm đủ 5 nhịp trong

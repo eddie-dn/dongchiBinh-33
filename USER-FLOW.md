@@ -4,7 +4,8 @@
 > `api/ping.js` (nhãn sự kiện mới). Đã chạy kiểm thử đầu-cuối bằng Chromium headless:
 > redirect hai pha, luật pí danh, hai hồ sơ, đổi/xoá/ẩn danh, checkpoint, khôi phục,
 > reset, tiêu đề Game On, Box Tổng tư lệnh, khung Tổ kỹ thuật, và một lượt rà riêng
-> các mốc Map → Easter Egg — 46 + 24 kiểm tra, tất cả đạt. Mọi tên khoá, tên hàm, tên sự
+> các mốc Map → Easter Egg, và luồng phá đảo M3 → lưu pí danh → vào bản đồ —
+> 46 + 24 + 21 kiểm tra, tất cả đạt. Mọi tên khoá, tên hàm, tên sự
 > kiện dưới đây là tên chốt — code đang dùng đúng tên này.
 
 Liên quan trực tiếp tới hai file:
@@ -163,8 +164,22 @@ phải vào được Map luôn.
 
 **"Vào được ở cả hai hướng"** từ khoảnh khắc này:
 
-- **Hồ sơ → Map**: nút Bản đồ góc màn hình + CTA trong hộp M3, đi chung `goMap()` —
-  cơ chế đã có sẵn, không đổi.
+- **Hồ sơ → Map**: nút Bản đồ góc màn hình + CTA trong hộp M3, đi chung `goMap()`.
+
+  **BẪY ĐÃ VẤP — đích phải CÙNG ORIGIN.** `MAPURL` vốn là địa chỉ tuyệt đối
+  (`https://dongchi-binh-33.vercel.app/`). Trên bản xem thử (preview của nhánh) hay máy
+  local, bấm nút là nhảy sang domain production — **khác origin nên `localStorage` không
+  theo sang**: pí danh mất, `nav1.mapUnlocked` mất, guard bên kia đá ngược về hồ sơ.
+  Nhìn y như "xong M3 rồi mà bản đồ vẫn không thành trang chính". Nay:
+
+  ```js
+  var MAPURL_ABS = 'https://dongchi-binh-33.vercel.app/';
+  /* Deploy chung repo (hồ sơ ở /dad/950901-a) → bản đồ là '/' cùng origin */
+  var MAPURL = /\/dad\/950901-a(\/|$)/.test(location.pathname) ? '/' : MAPURL_ABS;
+  ```
+
+  Deploy tách domain thì đường dẫn không còn chứa `/dad/950901-a`, tự rơi về địa chỉ
+  tuyệt đối — lúc đó chấp nhận mất chung `localStorage`, đúng ràng buộc ở mục 8.
 - **Map → hồ sơ**: redirect guard thấy `mapUnlocked` nên để yên; người chơi bấm toạ độ
   `DAD` → bảng hồ sơ → `DAD-950901-A` (vẫn qua cửa PASS `MIG-21` như luật hiện hành —
   thiết kế này không bỏ cửa khoá nào của Map).
@@ -260,9 +275,26 @@ bảng "Phá đảo (˶˃ ᵕ ˂˶)" → rồi spotlight chỉ chỗ ô pí danh
 Hộp **không còn câu giải thích dài** ("Pí danh gắn với bản lưu tiến trình — lần sau
 bấm vào pí danh ở góc phải trên cùng…"). Chỉ còn tiêu đề, ô nhập, hai dòng luật.
 
-- Đã có pí danh (chơi lại sau reset) → không hỏi lại, chỉ checkpoint đè.
-- Đang ẩn danh mà còn chỗ trống → tạo được cái thứ hai từ bảng xổ.
-- Đủ 2 pí danh → bỏ qua bước này.
+**Thứ tự chốt: LƯU TRƯỚC, box "vào bản đồ / chơi lại" SAU.** Hộp khai danh chen vào
+giữa `solveM3()` và bảng Phá đảo, nên không ai phá đảo xong mà chẳng có gì được lưu.
+
+Điều kiện mời khai danh là **"đang không đứng ở pí danh nào" + còn chỗ trống**
+(`!profCur() && profiles.length < PROF_MAX`), chứ **không** phải "chưa có pí danh nào":
+
+| Tình huống lúc phá đảo M3 | Hộp khai danh | Việc lưu |
+|---|---|---|
+| Chưa có pí danh nào | **Có** | Tạo mới rồi mới sang bảng Phá đảo |
+| Đang **ẩn danh**, còn chỗ (1/2) | **Có** | Tạo cái thứ hai — *bẫy đã vá, xem dưới* |
+| Đang đứng ở một pí danh | Không | `solveM3()` đã checkpoint đè, đi thẳng vào bảng |
+| Đủ 2 pí danh, đang ẩn danh | Không | Hết chỗ; muốn lưu thì xoá bớt rồi dùng lệnh "Lưu tiến trình" |
+
+**BẪY ĐÃ VẤP:** bản đầu xét `!profiles.length`, nên ai đã từng tạo pí danh rồi chuyển
+sang chơi ẩn danh thì lúc phá đảo M3 **bị bỏ thẳng sang box "vào bản đồ / chơi lại"** —
+không có hộp pí danh, và tiến độ không được ghi vào đâu cả.
+
+Sau bảng Phá đảo, người chơi **chọn một trong hai**: bấm *Mở khoá Bản đồ tác chiến ✈*
+đi thẳng sang bản đồ, hoặc **tắt box** — về trang bìa là thấy pí danh nằm trên dòng
+Mission (kèm spotlight chỉ chỗ lần đầu).
 
 ### 6.4. Bản ghi có mốc của CẢ HAI game
 

@@ -137,6 +137,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   color:var(--bad)}
 .msg:empty{min-height:4px;margin-top:0}
 .msg.ok{color:var(--ok)}
+.msg.hint{color:var(--ink2)}
 
 .hints{margin:14px 0 0;padding:0;list-style:none;font-size:12.5px;line-height:1.8;color:var(--ink2)}
 .hints:empty{margin:0}
@@ -170,6 +171,18 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .done-tit{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-weight:600;
   font-style:italic;margin:0 0 8px;text-align:center;color:var(--ink)}
 .done-txt{font-size:13px;line-height:1.68;text-align:center;color:var(--ink2);text-wrap:balance}
+/* Màn hết lượt: một dòng số, không giảng giải */
+.retry{margin-top:10px;text-align:center;font-family:"Oswald";font-size:10px;
+  font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2)}
+.retry b{color:var(--bad);font-weight:600}
+/* Nhãn "Phá Đảo Lòng EM" + ba trái tim nhấp nháy so le */
+.q-lab.pha{gap:8px;color:var(--orchid);letter-spacing:.24em}
+.tim{display:inline-flex;gap:3px;flex:none}
+.tim i{font-style:normal;font-size:12px;line-height:1;color:#E2718F;
+  animation:timNhay 1.35s ease-in-out infinite}
+.tim i:nth-child(2){animation-delay:.18s}
+.tim i:nth-child(3){animation-delay:.36s}
+@keyframes timNhay{0%,100%{opacity:.28;transform:scale(.88)}50%{opacity:1;transform:scale(1.12)}}
 .sign{margin-top:14px;text-align:right;font-style:italic;font-size:12px;color:rgba(122,103,149,.8)}
 
 /* ── chân trang: nút lùi · hoa cửa hậu · tem phiên bản ── */
@@ -188,7 +201,10 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
    tay giữa chuỗi 5 nhịp, rất dễ trượt — đã vấp lúc kiểm thử. */
 .flow.warm{color:var(--orchid)}
 .flow.warm svg{transform:scale(1.2)}
-.stampzone{display:flex;align-items:center;gap:8px}
+/* Cả cụm hoa + tem là một vùng bấm (cửa hậu 5 nhịp), padding cho dễ trúng ngón */
+.stampzone{display:flex;align-items:center;gap:8px;cursor:pointer;
+  padding:6px 2px 6px 6px;margin:-6px -2px -6px -6px;border-radius:12px}
+.stampzone:focus-visible{outline:2px solid var(--orchid);outline-offset:2px}
 .stamp{font-family:"Oswald";font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
   color:rgba(122,103,149,.5);text-align:right;line-height:1.5}
 
@@ -214,7 +230,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   border-bottom:2px solid rgba(200,168,233,.75)}
 .pin-cell.on{border-bottom-color:var(--orchid)}
 
-@media (prefers-reduced-motion:reduce){ .step.cur .bar i{animation:none} }
+@media (prefers-reduced-motion:reduce){ .step.cur .bar i,.tim i{animation:none} .tim i{opacity:1} }
 </style>
 </head>
 <body>
@@ -234,12 +250,13 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   </div>
 
   <div class="foot">
-    <button class="back" id="back" type="button">&#8592; Hồ sơ HAN</button>
-    <span class="stampzone">
-      <button class="flow" id="flow" type="button" aria-label="Bảng điều phối">
+    <button class="back" id="back" type="button">&#8592; Bản đồ</button>
+    <span class="stampzone" id="stampzone" role="button" tabindex="0"
+          aria-label="Khối vận hành">
+      <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.2a2.6 2.6 0 1 0 0 1.6 2.6 2.6 0 0 0 0-1.6Zm0-9.2c1.9 0 3.1 1.8 2.6 3.6-.2.8.6 1.5 1.3 1.1 1.7-.9 3.7.3 3.7 2.2 0 1.9-2 3.1-3.7 2.2-.7-.4-1.5.3-1.3 1.1.5 1.8-.7 3.6-2.6 3.6s-3.1-1.8-2.6-3.6c.2-.8-.6-1.5-1.3-1.1-1.7.9-3.7-.3-3.7-2.2 0-1.9 2-3.1 3.7-2.2.7.4 1.5-.3 1.3-1.1C8.9 3.8 10.1 2 12 2Z"/><path d="M12 15.6c-1 2.2-1.4 4.4-1.2 6.4h2.4c.2-2-.2-4.2-1.2-6.4Z" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="HAN-961030-A · V1.02<br>Last updated 13-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="HAN-961030-A · V1.03<br>Last updated 13-Aug-2026"></span>
     </span>
   </div>
 
@@ -265,7 +282,6 @@ var $ = function(id){ return document.getElementById(id); };
 var PIN_B    = '91969';             /* mã mở Secret Box — sinh nhật ÂM LỊCH của HongHan */
 var PIN_CTRL = '1959';              /* mã bảng điều phối — dùng chung với bản đồ */
 var HREF_B   = '/han/961030-b';
-var HREF_HAN = '/han/';             /* nút lùi về màn chọn hồ sơ, KHÔNG bắn thẳng ra bản đồ */
 var HREF_MAP = '/';
 var HINTW    = 45*1000;             /* chờ giữa hai gợi ý */
 var SAI_NGAY = 2;                   /* mỗi câu được thử SAI 2 lần mỗi ngày */
@@ -688,9 +704,8 @@ function drawLock(){
   $('stage').innerHTML =
     '<div class="card">'
     + '<p class="q-lab"><span>Câu ' + (st.pos+1) + ' / ' + TONG + '</span><em>Hết lượt hôm nay</em></p>'
-    + '<div class="done-tit">Câu này nghỉ tới mai nha ✦</div>'
-    + '<div class="done-txt">Mỗi câu chỉ được sai <b>' + SAI_NGAY + ' lần mỗi ngày</b>. '
-    + 'Làm lại từ đầu thì thứ tự câu hỏi sẽ <b>xáo mới</b> — biết đâu gặp câu dễ trước ✦</div>'
+    + '<div class="done-tit">See ya tmr 😉</div>'
+    + '<div class="retry">Lượt retry · <b>' + Math.max(0, conSai(q)) + '/' + SAI_NGAY + '</b></div>'
     + '<div class="wait" id="wait" style="text-align:center"></div>'
     + '<button class="btn" id="again">↻ Làm lại từ đầu</button>'
     + '</div>';
@@ -722,10 +737,10 @@ function xong(vuaXong){
   for(var k = 0; k < PIN_B.length; k++) pin += '<i>' + PIN_B[k] + '</i>';
   $('stage').innerHTML =
     '<div class="card">'
-    + '<p class="q-lab" style="justify-content:center"><span>Mã mở · HongHan’s Secret Box</span></p>'
-    + '<div class="done-tit">Anh hiểu em thật rồi ✦</div>'
-    + '<div class="done-txt">' + TONG + '/' + TONG + ' câu, không sót câu nào. '
-    + 'Giữ mã này để mở <b>Secret Box</b> nha.</div>'
+    + '<p class="q-lab pha" style="justify-content:center"><span>Phá Đảo Lòng EM</span>'
+    + '<span class="tim"><i>♥</i><i>♥</i><i>♥</i></span></p>'
+    + '<div class="done-tit">HongHan’s Secret</div>'
+    + '<div class="done-txt">Thương gửi anh PIN</div>'
     + '<div class="pin-show">' + pin + '</div>'
     + '<button class="btn" id="goB">Vào Secret Box ✦</button>'
     + '<button class="btn ghost" id="again" type="button">↻ Reset toàn bộ</button>'
@@ -755,8 +770,7 @@ ctrl.addEventListener('click', function(e){ if(e.target === ctrl) ctrlClose(); }
 
 function bangDieuPhoi(){
   ctrlOpen(
-    '<p class="ov-lab">Bảng điều phối</p>'
-    + '<p class="ov-tit">HAN-961030-A</p>'
+    '<p class="ov-lab">Khối vận hành</p>'
     + '<p class="ov-txt">Tiến độ: <b>' + Math.min(st.pos, TONG) + '/' + TONG + '</b>'
     + (st.done ? ' · đã xong' : '') + (st.reset ? ' · R' + st.reset : '') + '</p>'
     + '<div class="ov-row">'
@@ -777,14 +791,14 @@ function bangDieuPhoi(){
 /* "Hoàn thành" phải qua mã 1959 — dùng chung mã với Hack Map ngoài bản đồ */
 function hopPin(){
   var len = PIN_CTRL.length, buf = '';
+  /* Đúng khuôn hộp mã của Box Tổng tư lệnh ngoài bản đồ: một nhãn nhỏ, hàng ô
+     gạch chân, một dòng nhắc gõ mấy số — không tiêu đề, không kể lể mã ở đâu ra. */
   ctrlOpen(
-    '<p class="ov-lab">Mã điều phối</p>'
-    + '<p class="ov-tit">Nhập mã ✦</p>'
-    + '<p class="ov-txt">Mã này dùng chung với khu điều phối của bản đồ.</p>'
+    '<p class="ov-lab">Mã truy cập</p>'
     + '<div class="pin-cells" id="pc">'
     + '<input class="inp" id="pcIn" type="text" inputmode="numeric" autocomplete="off" '
-    + 'aria-label="Mã điều phối"></div>'
-    + '<p class="msg" id="cMsg"></p>');
+    + 'aria-label="Mã truy cập"></div>'
+    + '<p class="msg hint" id="cMsg">Gõ ' + len + ' số</p>');
   var box = $('pc'), inp = $('pcIn'), o = [];
   for(var k = 0; k < len; k++){
     var c = document.createElement('span'); c.className = 'pin-cell';
@@ -807,27 +821,29 @@ function hopPin(){
         st.pos = TONG; st.done = true; st.doneAt = Date.now(); save();
         ctrlClose(); xong(true);
       }else{
-        $('cMsg').textContent = 'Sai mã rồi ✦';
+        $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg'; $('cMsg').classList.remove('ok');
         buf = ''; inp.value = ''; paint();
       }
     }
   });
 }
+/* Vùng bấm là CẢ CỤM hoa + dòng tem, y như cửa hậu ngoài bản đồ nhận cả dòng
+   bản quyền chứ không riêng lá cờ 15px — trên điện thoại dễ trúng hơn hẳn.
+   Nhấp nháy thì vẫn chỉ mình bông hoa. */
 var fn = 0, fAt = 0;
-$('flow').addEventListener('click', function(){
+$('stampzone').addEventListener('click', function(){
   var now = Date.now();
   fn = (now - fAt < 900) ? fn + 1 : 1; fAt = now;
   var el = $('flow');
   el.classList.add('warm');
   setTimeout(function(){ el.classList.remove('warm'); }, 260);
-  if(fn >= 5){ fn = 0; ping('han_cua_hau', 'mở bảng điều phối'); bangDieuPhoi(); }
+  if(fn >= 5){ fn = 0; ping('han_cua_hau', 'mở khối vận hành'); bangDieuPhoi(); }
 });
 
 /* ═══════════ 9. KHỞI ĐỘNG ═══════════ */
-/* Lùi về màn chọn hồ sơ HAN — người xem tự bấm tiếp về bản đồ nếu muốn ra hẳn. */
 $('back').addEventListener('click', function(){
-  ping('han_ve_hub', 'từ phần câu hỏi');
-  setTimeout(function(){ location.href = HREF_HAN; }, 140);
+  ping('han_ve_ban_do', 'từ phần câu hỏi');
+  setTimeout(function(){ location.href = HREF_MAP; }, 140);
 });
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && ctrl.classList.contains('on')) ctrlClose();

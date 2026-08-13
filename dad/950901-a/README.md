@@ -128,11 +128,18 @@ Hồ sơ này là **nhà** của người chơi cho tới khi phá đảo Missio
 | Pí danh | Chưa mở | Ô thứ hai của dòng Mission |
 
 **Phá đảo Mission 3 mở hai thứ cùng lúc:** cờ `nav1.mapUnlocked` (bản đồ thành trang
-chính từ đó) và **pí danh**.
+chính từ đó) và **pí danh**. Lưu pí danh xong, người chơi chọn *Mở khoá Bản đồ ✈* để đi
+luôn, hoặc tắt box rồi về trang bìa xem lại — kiểu nào cũng đã lưu xong.
+
+**Đích của nút Bản đồ phải cùng origin.** Deploy chung repo thì `MAPURL` tự là `'/'`;
+chỉ khi deploy tách domain mới dùng địa chỉ tuyệt đối. Nhảy sang domain khác là mất
+`localStorage`, kéo theo mất cả pí danh lẫn cờ hai pha.
 
 ### Pí danh
 
-- Hộp `MISSION 3 · KHAI DANH` hiện ngay sau khi phá đảo. Luật: **tối đa 6 ký tự**, chữ
+- Hộp `MISSION 3 · KHAI DANH` hiện ngay sau khi phá đảo — **trước** bảng "Mở khoá Bản
+  đồ ✈ / Chơi lại", để không ai phá đảo xong mà chẳng lưu được gì. Chỉ bỏ qua khi người
+  chơi **đang đứng sẵn ở một pí danh** (lúc đó đã checkpoint tự động) hoặc đã đủ 2 cái. Luật: **tối đa 6 ký tự**, chữ
   thường / số / ký tự đặc biệt, **không viết hoa** (gõ hoa bị hạ thường ngay khi gõ).
 - Xong M3 thì dòng Mission đổi hình: **`✓ M3` đẩy lên chỗ `✓ M2`, ô thứ hai thành bảng
   xổ pí danh**. Ba trạng thái: `＋ Lưu pí danh` (chưa có) · `pdb ▾` (đang dùng) ·

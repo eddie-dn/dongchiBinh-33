@@ -1031,7 +1031,14 @@ render();
   var H = window.__msn || {};
   var ping = H.ping || function(){};
   var PHAN1 = H.PHAN1 != null ? H.PHAN1 : 3;
-  var MAPURL = 'https://dongchi-binh-33.vercel.app/';
+  /* Đích của mọi nút "Bản đồ".
+     BẪY: để đường dẫn TUYỆT ĐỐI thì bản xem thử (preview) hay máy local sẽ nhảy sang
+     domain production — KHÁC ORIGIN nên localStorage không theo sang: pí danh mất,
+     cờ hai pha mất, và guard bên kia đá ngược về hồ sơ. Deploy chung repo (hồ sơ nằm
+     ở /dad/950901-a) thì bản đồ luôn là '/' CÙNG ORIGIN. Chỉ khi deploy tách domain
+     — lúc đó đường dẫn không còn chứa /dad/950901-a — mới dùng địa chỉ tuyệt đối. */
+  var MAPURL_ABS = 'https://dongchi-binh-33.vercel.app/';
+  var MAPURL = /\/dad\/950901-a(\/|$)/.test(location.pathname) ? '/' : MAPURL_ABS;
   var PIN2 = '217N33', PIN3 = 'PHAMTUAN';
   var HINTS = ['12', '5121', 'MIG-21', 'Tên người gồm 2 chữ'];
   var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆',
@@ -1518,7 +1525,7 @@ render();
        tab, hôm sau gõ thẳng / vẫn phải vào được Map (USER-FLOW.md §4). */
     var nav = navRead();
     if(!nav.mapUnlocked){
-      nav.v = nav.v || 1; nav.mapUnlocked = true; nav.unlockedAt = Date.now();
+      nav.v = 2; nav.mapUnlocked = true; nav.unlockedAt = Date.now();
       navWrite(nav);
       ping('mo_pha_map', bySkip ? 'phá đảo bằng skip' : 'giải đúng PHAM TUAN');
     }
@@ -1564,9 +1571,14 @@ render();
   }
 
   function openDone(fresh){
-    /* PHÁ ĐẢO M3 LÀ CỬA MỞ PÍ DANH: từ đây mới được lưu bản ghi. Lần đầu phá đảo
-       mà chưa có pí danh nào thì mời khai danh ngay, xong mới tới bảng ghi công. */
-    if(fresh && !navRead().profiles.length){ openKhaiDanh(false, true); return; }
+    /* PHÁ ĐẢO M3 LÀ CỬA MỞ PÍ DANH: LƯU BẢN GHI TRƯỚC, bảng "vào bản đồ / chơi lại"
+       sau. Điều kiện là "đang KHÔNG đứng ở pí danh nào" chứ không phải "chưa có pí
+       danh nào" — người đang chơi ẩn danh mà vẫn còn chỗ trống thì cũng phải được
+       mời khai danh, nếu không họ phá đảo xong mà chẳng có gì được lưu.
+       Đang đứng ở một pí danh thì solveM3 đã checkpoint rồi, đi thẳng vào bảng. */
+    if(fresh && !profCur() && navRead().profiles.length < PROF_MAX){
+      openKhaiDanh(false, true); return;
+    }
     openOv('Mission 3 · Phá đảo (˶˃ ᵕ ˂˶)',
       '<div class="msn-tit">Chúc mừng Dongchi Bình ⚞^. .^⚟!</div>'
       + '<div class="msn-txt">Chúc đồng chí giữ vững phong độ tiếp tục phá đảo '

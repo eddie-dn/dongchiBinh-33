@@ -104,6 +104,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   color:var(--bad)}
 .msg:empty{min-height:4px;margin-top:0}
 .msg.ok{color:var(--orchid)}
+.msg.hint{color:var(--ink2)}
 .hints{margin:12px 0 0;padding:0;list-style:none;font-size:12.5px;line-height:1.8;
   color:var(--ink2);text-align:center}
 .hints:empty{margin:0}
@@ -154,7 +155,10 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
    tay giữa chuỗi 5 nhịp, rất dễ trượt — đã vấp lúc kiểm thử. */
 .flow.warm{color:var(--orchid)}
 .flow.warm svg{transform:scale(1.2)}
-.stampzone{display:flex;align-items:center;gap:8px}
+/* Cả cụm hoa + tem là một vùng bấm (cửa hậu 5 nhịp) */
+.stampzone{display:flex;align-items:center;gap:8px;cursor:pointer;
+  padding:6px 2px 6px 6px;margin:-6px -2px -6px -6px;border-radius:12px}
+.stampzone:focus-visible{outline:2px solid var(--orchid);outline-offset:2px}
 .stamp{font-family:"Oswald";font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
   color:rgba(246,239,251,.4);text-align:right;line-height:1.5}
 
@@ -191,12 +195,13 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   </div>
 
   <div class="foot">
-    <button class="back" id="back" type="button">&#8592; Hồ sơ HAN</button>
-    <span class="stampzone">
-      <button class="flow" id="flow" type="button" aria-label="Bảng điều phối">
+    <button class="back" id="back" type="button">&#8592; Câu hỏi</button>
+    <span class="stampzone" id="stampzone" role="button" tabindex="0"
+          aria-label="Khối vận hành">
+      <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.2a2.6 2.6 0 1 0 0 1.6 2.6 2.6 0 0 0 0-1.6Zm0-9.2c1.9 0 3.1 1.8 2.6 3.6-.2.8.6 1.5 1.3 1.1 1.7-.9 3.7.3 3.7 2.2 0 1.9-2 3.1-3.7 2.2-.7-.4-1.5.3-1.3 1.1.5 1.8-.7 3.6-2.6 3.6s-3.1-1.8-2.6-3.6c.2-.8-.6-1.5-1.3-1.1-1.7.9-3.7-.3-3.7-2.2 0-1.9 2-3.1 3.7-2.2.7.4 1.5-.3 1.3-1.1C8.9 3.8 10.1 2 12 2Z"/><path d="M12 15.6c-1 2.2-1.4 4.4-1.2 6.4h2.4c.2-2-.2-4.2-1.2-6.4Z" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="HAN-961030-B · V1.02<br>Last updated 13-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="HAN-961030-B · V1.03<br>Last updated 13-Aug-2026"></span>
     </span>
   </div>
 
@@ -224,7 +229,6 @@ var SOSGHEO  = ['Bấm nữa đi, bấm nữa đi ✦', 'Chưa đủ nhịp đâ
                 'Kiên trì lên, sắp tới rồi ✦', 'Ngón tay mỏi chưa? ✦'];
 var PIN_CTRL = '1959';
 var HREF_A   = '/han/961030-a';
-var HREF_HAN = '/han/';             /* nút lùi về màn chọn hồ sơ */
 
 /* ═══════════ LƯU TRỮ — dùng chung khoá hanv1 với 961030-a ═══════════ */
 var KEY = 'hanv1';
@@ -364,12 +368,10 @@ function stampText(){
 /* ═══════════ CỬA MÃ ═══════════ */
 function drawGate(){
   var len = PIN.length, buf = '';
-  $('lead').innerHTML = 'Nhập mã em vừa tặng để mở ✦';
+  $('lead').innerHTML = '';
   $('stage').innerHTML =
     '<div class="card">'
-    + '<p class="c-lab">Mã truy cập · ' + len + ' số</p>'
-    + '<p class="c-txt">Mã nằm ở màn cuối của phần <b>Who’s my kindred spirit?</b>. '
-    + 'Chưa có thì quay lại lấy nha ✦</p>'
+    + '<p class="c-txt">Vui lòng nhập mã PIN ✦</p>'
     + '<div class="cells" id="cells">'
     + '<input class="inp" id="inp" type="text" inputmode="numeric" autocomplete="one-time-code" '
     + 'aria-label="Ô nhập mã"></div>'
@@ -469,8 +471,7 @@ ctrl.addEventListener('click', function(e){ if(e.target === ctrl) ctrlClose(); }
 
 function bangDieuPhoi(){
   ctrlOpen(
-    '<p class="ov-lab">Bảng điều phối</p>'
-    + '<p class="ov-tit">HAN-961030-B</p>'
+    '<p class="ov-lab">Khối vận hành</p>'
     + '<p class="ov-txt">Trạng thái: <b>' + (st.bOpen ? 'đã mở khoá' : 'còn cửa mã') + '</b>'
     + (st.reset ? ' · R' + st.reset : '') + '</p>'
     + '<div class="ov-row">'
@@ -489,14 +490,14 @@ function bangDieuPhoi(){
 }
 function hopPin(){
   var len = PIN_CTRL.length, buf = '';
+  /* Cùng khuôn hộp mã với Box Tổng tư lệnh ngoài bản đồ: nhãn nhỏ, hàng ô gạch
+     chân, một dòng nhắc gõ mấy số — không tiêu đề, không kể mã ở đâu ra. */
   ctrlOpen(
-    '<p class="ov-lab">Mã điều phối</p>'
-    + '<p class="ov-tit">Nhập mã ✦</p>'
-    + '<p class="ov-txt">Mã này dùng chung với khu điều phối của bản đồ.</p>'
+    '<p class="ov-lab">Mã truy cập</p>'
     + '<div class="cells" id="pc" style="margin-top:16px">'
     + '<input class="inp" id="pcIn" type="text" inputmode="numeric" autocomplete="off" '
-    + 'aria-label="Mã điều phối"></div>'
-    + '<p class="msg" id="cMsg"></p>');
+    + 'aria-label="Mã truy cập"></div>'
+    + '<p class="msg hint" id="cMsg">Gõ ' + len + ' số</p>');
   var box = $('pc'), inp = $('pcIn'), o = [];
   for(var k = 0; k < len; k++){
     var c = document.createElement('span'); c.className = 'cell';
@@ -519,27 +520,27 @@ function hopPin(){
         ping('han_dieu_phoi', 'mở khoá bằng mã');
         ctrlClose(); drawBox();
       }else{
-        $('cMsg').textContent = 'Sai mã rồi ✦';
+        $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg';
         buf = ''; inp.value = ''; paint();
       }
     }
   });
 }
+/* Vùng bấm là CẢ CỤM hoa + dòng tem, như cửa hậu ngoài bản đồ nhận cả dòng bản
+   quyền chứ không riêng lá cờ — dễ trúng ngón tay hơn hẳn. Nhấp nháy vẫn chỉ hoa. */
 var fn = 0, fAt = 0;
-$('flow').addEventListener('click', function(){
+$('stampzone').addEventListener('click', function(){
   var now = Date.now();
   fn = (now - fAt < 900) ? fn + 1 : 1; fAt = now;
   var el = $('flow');
   el.classList.add('warm');
   setTimeout(function(){ el.classList.remove('warm'); }, 260);
-  if(fn >= 5){ fn = 0; ping('han_cua_hau', 'mở bảng điều phối'); bangDieuPhoi(); }
+  if(fn >= 5){ fn = 0; ping('han_cua_hau', 'mở khối vận hành'); bangDieuPhoi(); }
 });
 
 /* ═══════════ KHỞI ĐỘNG ═══════════ */
-/* Lùi về màn chọn hồ sơ HAN chứ không nhảy thẳng sang phần A hay ra bản đồ. */
 $('back').addEventListener('click', function(){
-  ping('han_ve_hub', 'từ Secret Box');
-  setTimeout(function(){ location.href = HREF_HAN; }, 140);
+  setTimeout(function(){ location.href = HREF_A; }, 140);
 });
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && ctrl.classList.contains('on')) ctrlClose();
