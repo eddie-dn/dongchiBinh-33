@@ -849,15 +849,18 @@ là **một trang riêng** để vừa xem thoải mái vừa có chỗ đặt n
 | Nút | Chân trang, tách khỏi khối chữ |
 | Ra về | Nút ✕, gõ đúp vào khoảng trống, hoặc Esc → về `/?stay=1&cred=1` |
 
-**Hai chế độ:**
+**Nhịp xem:** không đụng gì thì bắn **30 giây** (`AUTO_MS`) rồi tự nghỉ — đủ xem, không
+lê thê. Xong thì đóng, hoặc bấm **Bắn lại** cho lượt nữa. Bắn theo **đợt** 1–3 quả rồi
+nghỉ lấy nhịp; đều đặn từng quả một nhìn như máy.
 
-- **Auto-fire** (mặc định) — bắn liên tục, hằng `AUTO_MS` đang để **15 phút** rồi tự nghỉ.
-  Bắn theo **đợt** 1–3 quả rồi nghỉ lấy nhịp; đều đặn từng quả một nhìn như máy.
-- **Tap-fire** — chạm một cái bắn một quả lên đúng chỗ chạm; **giữ tay thì bắn tiếp**,
-  chặn cứng ở `GIU_MAX` = 5 giây.
+**Hai nút:** *Bắn lại* · *Vào Easter Egg* → đi thẳng `/dad/950901-b`.
 
-Gõ đúp để thoát và chạm để bắn đi chung một trình nghe: cú thứ hai trong 320 ms là thoát,
-ngoài ra là bắn. Bấm lên nút thì bỏ qua, khỏi vừa bấm nút vừa bắn.
+Chạm màn hình vẫn bắn thêm một quả cho vui tay. Gõ đúp để thoát và chạm để bắn đi chung
+một trình nghe: cú thứ hai trong 320 ms là thoát, ngoài ra là bắn. Bấm lên nút thì bỏ qua.
+
+**Màn trứng nứt.** Trước khi sang trang này, khung Collected chạy 1,9 giây: quả trứng
+phóng to ra giữa khung, lắc lư, **nứt đôi** rồi loé tia — *Oh? → Nứt rồi! → Bùm ✦*. Máy
+nào bật "giảm chuyển động" thì bỏ qua, đi thẳng.
 
 ### Bộ pháo hoa dựng riêng — không xài lại hình của cảnh SGN
 
@@ -869,6 +872,9 @@ Ba lớp, đúng cách một quả pháo thật đi:
    dần; chính cái đuôi đó tạo ra dáng "chùm tua" như ảnh mẫu. Bốn kiểu: `chum` · `tua`
    (rủ xuống, nặng hơn) · `vong` (tròn đều) · `nhon`.
 3. **Tàn** — hạt rơi theo trọng lực, một phần ba nhấp nháy rồi tắt.
+
+Năm kiểu chùm, trong đó `sao` (quả sao lớn, tia dài mảnh, lõi trắng nóng) được rút hai
+lần trong bảng nên hay gặp hơn — một loạt bắn xen kẽ mới đỡ đơn điệu.
 
 Vẽ chồng sáng (`globalCompositeOperation = 'lighter'`) cho chỗ giao nhau bùng trắng.
 Canvas vẫn **trong suốt** — không dùng mẹo phủ nền mờ để tạo vệt, vì làm thế là che mất
@@ -911,6 +917,56 @@ Bản đồ **chỉ đọc** `hanv1`, không bao giờ ghi đè — hai hệ ti�
 
 > **BẪY ĐÃ VẤP:** hằng `HANBOX` (mốc 01-10) phải khai **trước** mảng `NODES` — `NODES` là
 > `const` khởi tạo ngay, tham chiếu ngược là dính temporal dead zone y như mục 20.
+
+---
+
+## 21f. Cổng HAN — máy bay chỉ đường
+
+Cả phần HAN-961030 nằm sau MỘT cái chốt: `mtv1.eggWin` — **đã vào được hồ sơ niêm
+phong `DAD-950901-B`**, tức phá xong Easter Egg thật sự, chứ không phải chỉ tìm ra cửa
+(`credFound`).
+
+| Mốc | Bản đồ | `/han/961030-a` |
+|---|---|---|
+| Chưa `credFound` | Node HAN im như SGN/UIH | (chưa có đường vào) |
+| `credFound`, chưa `eggWin` | Node HAN vẫn im | Vào từ khung Collected được, nhưng gặp **màn nhắn nhủ** "giải mã xong Easter Egg hẵng quay lại" |
+| `eggWin` | Node HAN mở hai hồ sơ 961030 | Vào thẳng bộ câu hỏi |
+
+**Máy bay là mũi tên chỉ đường.** Nó chỉ đậu ở MỘT toạ độ — nơi đang có việc để đi:
+`DAD` trước khi phá Easter Egg, `HAN` sau đó. Người chơi nhìn là biết chặng tiếp theo
+nằm đâu, không cần ai nhắc (`mayBayO()`).
+
+**Đường lùi nhớ chỗ vừa rời.** `/han/961030-a` đọc `?from=`:
+`egg` → về `/?stay=1&cred=1` (mở lại khung Collected) · `map` → về `/?stay=1&node=HAN`
+(mở lại khung hồ sơ HAN) · không có gì → về bản đồ. Cờ `?node=` được dọn khỏi thanh địa
+chỉ ngay sau khi mở.
+
+---
+
+## 21g. Nhắc bài tìm Easter Egg
+
+Phá đảo bản đồ rồi mà chưa tìm ra khung Collected thì **mỗi lần mở trang**:
+
+1. Dòng *Game On · Độ khó* nhấp nháy trước **6,5 giây**;
+2. hết lượt đó mới tới tem *Last updated* nhấp nháy.
+
+Mắt người chơi tự đi từ chỗ này sang chỗ kia — không có mũi tên, không có câu "bấm vào
+đây". Trong lúc chuỗi này chạy thì **lượt nháy tem hằng ngày bị tắt**: nháy cùng lúc là
+mất sạch ý "nhìn chỗ này rồi mới nhìn chỗ kia".
+
+**Gõ đúp dòng Game On** → tem chuyển sang **sáng nhẹ và giữ luôn** (`.stampzone.glow`),
+như ngọn đèn để sẵn.
+
+**Bấm vào tem** thì được nhắc rõ dần, theo số nhịp liên tiếp:
+
+| Nhịp | Câu nhắc |
+|---|---|
+| 4 | Đúng hướng rồi đó, cứ bấm tiếp ✦ |
+| 7 | Sắp ra rồi, đừng dừng tay ✦ |
+| 9 | Một nhịp nữa thôi ✦ |
+
+Ngưng tay quá 900 ms là bộ đếm về 0 và lời nhắc tự rút — **bỏ cuộc thì im lại như cũ**,
+không có gì lải nhải. Tìm ra rồi (`credFound`) thì cả hệ này tắt hẳn.
 
 ---
 

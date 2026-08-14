@@ -105,8 +105,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
 
   <div class="dock">
     <div class="modes">
-      <button id="mAuto" type="button">Auto-fire</button>
-      <button id="mTap" type="button">Tap-fire</button>
+      <button id="mAuto" type="button">Bắn lại</button>
+      <button id="mEgg" type="button">Vào Easter Egg</button>
     </div>
     <p class="tip" id="tip"></p>
   </div>
@@ -121,8 +121,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
 'use strict';
 var $ = function(id){ return document.getElementById(id); };
 
-var AUTO_MS = 15*60*1000;      /* Auto-fire chạy liên tục bấy lâu rồi nghỉ */
-var GIU_MAX = 5000;            /* giữ tay tối đa 5 giây một nhịp */
+/* Không ai đụng gì thì màn bắn kéo 30 giây rồi tự nghỉ — đủ xem, không lê thê.
+   Xong thì đóng, hoặc bấm "Bắn lại" cho một lượt nữa. */
+var AUTO_MS  = 30*1000;
+var EGG_HREF = '/dad/950901-b';
 
 function ping(ev, detail){
   try{
@@ -195,7 +197,7 @@ function ban(x, dinh){
 /* ---- 2. nở ---- */
 function no(q){
   var m = q.mau, k = q.kieu;
-  var n = k === 'vong' ? 96 : (k === 'tua' ? 128 : 116);
+  var n = k === 'vong' ? 96 : (k === 'tua' ? 128 : (k === 'sao' ? 150 : 116));
   n = Math.round(n * q.to);
   var goc0 = Math.random()*6.283;
   for(var i = 0; i < n; i++){
@@ -204,18 +206,19 @@ function no(q){
     if(k === 'vong')      sp = rnd(4.3, 4.9);                       /* vòng tròn đều */
     else if(k === 'tua')  sp = rnd(1.8, 5.8);                       /* tua rủ, dài ngắn lẫn lộn */
     else if(k === 'nhon') sp = rnd(2.8, 5.6) * (0.62 + 0.5*Math.abs(Math.cos(3*a)));
+    else if(k === 'sao')  sp = rnd(5.2, 7.4);                       /* sao lớn, tia bắn xa */
     else                  sp = rnd(2.6, 5.4);                       /* chùm thường */
     sp *= q.to;
-    var song = k === 'tua' ? rnd(0.9, 1.5) : rnd(0.62, 1.0);
+    var song = k === 'tua' ? rnd(0.9, 1.5) : (k === 'sao' ? rnd(0.85, 1.25) : rnd(0.62, 1.0));
     hat.push({
       x: q.x, y: q.y,
       vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
-      h: m.h + rnd(-9, 9), s: m.s,
+      h: m.h + rnd(-9, 9), s: k === 'sao' ? Math.max(46, m.s - 34) : m.s,
       song: song, doi: song,
       nang: k === 'tua' ? 0.052 : 0.038,      /* tua rủ thì nặng hơn cho xoã xuống */
       /* Lực cản quyết định bán kính chùm: cản yếu quá thì chùm bung rộng hơn cả
          khung, cắt cụt hai bên. 0.968–0.974 cho chùm vừa lòng khung 390px. */
-      can: k === 'vong' ? 0.974 : 0.968,
+      can: k === 'vong' ? 0.974 : (k === 'sao' ? 0.982 : 0.968),
       nhay: Math.random() < 0.34,
       duoi: []
     });
@@ -294,7 +297,7 @@ function ve(){
 }
 
 /* ═══════════ HAI CHẾ ĐỘ ═══════════ */
-var che = '', autoT = 0, autoHet = 0, giuT = 0, giuTu = 0;
+var che = '', autoT = 0, autoHet = 0;
 function dungAuto(){ clearTimeout(autoT); autoT = 0; }
 
 /* Auto-fire bắn theo ĐỢT: một hai quả lẻ, thỉnh thoảng một loạt ba quả rồi
@@ -303,44 +306,38 @@ function dotTiep(){
   if(che !== 'auto') return;
   if(Date.now() > autoHet){
     dungAuto();
-    $('tip').textContent = 'Hết đợt — bấm Auto-fire để bắn tiếp';
+    $('mAuto').classList.remove('on');
+    $('tip').textContent = 'Hết đợt — bấm Bắn lại, hoặc đóng để ra về';
     return;
   }
   var loat = Math.random() < 0.28 ? 3 : (Math.random() < 0.55 ? 2 : 1);
   for(var i = 0; i < loat; i++) setTimeout(ban, i * rnd(140, 260));
   autoT = setTimeout(dotTiep, loat > 2 ? rnd(1500, 2100) : rnd(700, 1350));
 }
-function datChe(m){
-  if(che === m) return;
-  che = m;
-  $('mAuto').classList.toggle('on', m === 'auto');
-  $('mTap').classList.toggle('on', m === 'tap');
+function batDau(){
+  che = 'auto';
+  $('mAuto').classList.add('on');
   dungAuto();
-  if(m === 'auto'){
-    autoHet = Date.now() + AUTO_MS;
-    $('tip').textContent = 'Đang bắn liên tục — bấm Tap-fire để tự bắn';
-    ban(); dotTiep();
-    ping('phao_hoa_che', 'auto-fire');
-  }else{
-    $('tip').textContent = 'Chạm để bắn một nhịp · giữ tay để bắn dài (tối đa 5 giây)';
-    ping('phao_hoa_che', 'tap-fire');
-  }
+  autoHet = Date.now() + AUTO_MS;
+  $('tip').textContent = 'Chạm màn hình để bắn thêm · gõ đúp để ra về';
+  ban(); dotTiep();
 }
-$('mAuto').addEventListener('click', function(e){ e.stopPropagation(); datChe('auto'); });
-$('mTap').addEventListener('click', function(e){ e.stopPropagation(); datChe('tap'); });
+$('mAuto').addEventListener('click', function(e){
+  e.stopPropagation();
+  ping('phao_hoa_che', 'bắn lại một lượt');
+  batDau();
+});
+/* Nút phải: đi thẳng vào hồ sơ niêm phong — chỗ Easter Egg thật sự nằm */
+$('mEgg').addEventListener('click', function(e){
+  e.stopPropagation();
+  if(dangVe) return; dangVe = true;
+  ping('vao_easter_egg', 'từ màn pháo hoa');
+  setTimeout(function(){ location.href = EGG_HREF; }, 140);
+});
 
-/* Tap-fire: chạm đâu bắn lên đó; giữ tay thì bắn tiếp, chặn cứng ở 5 giây. */
-function batDauGiu(x, y){
-  if(che !== 'tap') return;
-  ban(x, y);
-  giuTu = Date.now();
-  clearInterval(giuT);
-  giuT = setInterval(function(){
-    if(Date.now() - giuTu > GIU_MAX){ clearInterval(giuT); giuT = 0; return; }
-    ban(x + rnd(-60, 60), y + rnd(-40, 60));
-  }, 320);
-}
-function thaTay(){ clearInterval(giuT); giuT = 0; }
+/* Chạm màn hình vẫn bắn thêm một quả cho vui tay, không còn là chế độ riêng */
+function batDauGiu(x, y){ ban(x, y); }
+function thaTay(){}
 
 /* ═══════════ RA VỀ ═══════════ */
 var dangVe = false;
@@ -374,7 +371,7 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') veLai()
 co();
 addEventListener('resize', co, {passive:true});
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches) ve();
-datChe('auto');
+batDau();
 ping('phao_hoa_mo', '');
 })();
 </script>

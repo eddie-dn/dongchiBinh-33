@@ -88,6 +88,8 @@ const NHAN = {
   gui_tam_tu_loi:     'Gửi tâm tư thất bại',
   vao_easter_egg:     'Vào Easter Egg từ khung Tổ kỹ thuật',
   easter_egg_found:   'EASTER EGG FOUND — màn pháo hoa lần đầu',
+  han_chua_toi_luot:  'Vào HAN sớm — chưa phá xong Easter Egg',
+  clue_game_on:       'Gõ đúp Game On → tem sáng lên',
   phao_hoa_mo:        'Mở trang pháo hoa',
   phao_hoa_che:       'Đổi chế độ bắn pháo hoa',
   phao_hoa_dong:      'Rời trang pháo hoa',
