@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>HongHan's Secret Box · HAN-961030-B</title>
+<title>HongHan's Secret Chamber · HAN-961030-B</title>
 <meta name="description" content="Hộp bí mật của Honghandangiu">
 <meta name="theme-color" content="#1A1230">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Phi đoàn Dongchi Bình">
-<meta property="og:title" content="HongHan's Secret Box · HAN-961030-B">
+<meta property="og:title" content="HongHan's Secret Chamber · HAN-961030-B">
 <meta property="og:description" content="Hộp bí mật của Honghandangiu">
 <meta property="og:image" content="/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,6 +132,14 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 @keyframes ttVao{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .tt-ico{width:19px;height:19px;flex:none;line-height:0;color:var(--orchid)}
 .tt-ico svg{width:100%;height:100%;fill:currentColor}
+/* ── icon gập/mở ở góc phải ── */
+.gap{position:absolute;top:6px;right:6px;width:34px;height:34px;border:none;
+  background:none;cursor:pointer;color:var(--ink2);padding:0;
+  display:flex;align-items:center;justify-content:center;opacity:.6;
+  transition:opacity .25s,color .25s}
+.gap:hover{opacity:1;color:var(--orchid)}
+.gap svg{width:17px;height:17px}
+
 /* ── bản thu gọn ── */
 .card.gon{padding:16px 16px 14px}
 .card.gon .cd2{margin-top:0}
@@ -223,11 +231,11 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   <span class="corner tl"></span><span class="corner tr"></span>
   <span class="corner bl"></span><span class="corner br"></span>
   <canvas id="galaxy" aria-hidden="true"></canvas>
-  <div class="classtag">Hồ sơ niêm phong · No.961030<b>Secret Box</b></div>
+  <div class="classtag">Zoey’s Castle · No.961030<b>Secret Chamber</b></div>
 
   <div class="wrap">
     <div class="eyebrow"><i></i></div>
-    <h1 class="title"><b>HongHan’s</b>Secret Box</h1>
+    <h1 class="title"><b>HongHan’s</b>Secret Chamber</h1>
     <p class="lead" id="lead">Nhập mã em vừa tặng để mở ✦</p>
     <div id="stage"></div>
   </div>
@@ -238,7 +246,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V1.06<br>Last updated 14-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V1.08<br>Last updated 14-Aug-2026"></span>
     </span>
   </div>
 
@@ -263,11 +271,13 @@ var PIN      = '91969';             /* phải khớp PIN_B bên 961030-a */
 var GOIY     = 'Ngày sinh ÂM LỊCH của HongHan';   /* lộ qua nút SOS */
 var SAI_SOS  = 3;                   /* sai quá bấy nhiêu lần thì hiện nút SOS */
 var MO_NGAY  = 1, MO_THANG = 10;    /* mốc mở nội dung: 01-10 */
-var SOSGHEO  = ['Bấm nữa đi, bấm nữa đi ✦', 'Chưa đủ nhịp đâu anh ơi ✦',
-                'Kiên trì lên, sắp tới rồi ✦', 'Ngón tay mỏi chưa? ✦'];
+/* Cùng giọng với bộ TREU bên 961030-a */
+var SOSGHEO  = ["Gất pất ổn's 𐔌՞. .՞𐦯", "Gần tứi gòy anh oyyy ִֶָ𓂃 ࣪˖ ִֶָ🐇་༘࿐",
+                "Hổng phải, thử lại i anh oyyy 🏰", "Lần nữa nà 🏰₊˚⊹♡"];
 var PIN_CTRL = '1959';
-var HREF_A   = '/han/961030-a';
-var HREF_HAN = '/han/';             /* nút lùi LUÔN về màn chọn hồ sơ */
+/* Lùi là về ĐÚNG khung hồ sơ HAN trên bản đồ — cái khung người xem vừa bấm để
+   vào đây. Không dựng thêm trang trung gian nào nữa. */
+var HREF_HAN = '/?stay=1&node=HAN';
 
 /* ═══════════ LƯU TRỮ — dùng chung khoá hanv1 với 961030-a ═══════════ */
 var KEY = 'hanv1';
@@ -535,21 +545,15 @@ function drawBox(){
   $('lead').innerHTML = '';
   $('stage').innerHTML =
     '<div class="card">'
+    + gapIcon('gon')
     + '<div class="gift" aria-hidden="true">' + GIFT + '</div>'
     + '<div class="tt-xoay"><span class="tt-ico" id="ttIco"></span><b id="ttTxt"></b></div>'
     + '<div class="cd2" id="cd2">'
     +   '<span class="cd2-cap">Cập nhật sau</span>'
     +   '<span class="cd2-num" id="cd2n"><b id="cd2d">--</b><i>ngày</i><b id="cd2t">--:--:--</b></span>'
     + '</div>'
-    + '<div class="ov-row" style="margin-top:16px">'
-    +   '<button class="btn ghost" id="thuGon" type="button">▾ Thu gọn</button>'
-    +   '<button class="btn ghost" id="goA" type="button">← Câu hỏi</button>'
-    + '</div>'
     + '</div>';
-  $('goA').addEventListener('click', function(){
-    setTimeout(function(){ location.href = HREF_A; }, 140);
-  });
-  $('thuGon').addEventListener('click', function(){ st.gon = true; save(); drawBox(); });
+  $('gapBtn').addEventListener('click', function(){ st.gon = true; save(); drawBox(); });
   xoayTT(); clearInterval(ttT); ttT = setInterval(xoayTT, 2600);
   demNgay(); clearInterval(cdT); cdT = setInterval(demNgay, 1000);
 }
@@ -561,6 +565,17 @@ function xoayTT(){
   var w = el.parentNode;
   w.classList.remove('vao'); void w.getBoundingClientRect(); w.classList.add('vao');
 }
+/* Icon gập/mở nằm nép ở góc phải thẻ — không phải nút to chiếm chỗ. Người xem
+   tự thấy tự bấm; không bấm thì vẫn nguyên như cũ. */
+function gapIcon(huong){
+  var mui = huong === 'gon' ? 'M6 9l6 6 6-6' : 'M6 15l6-6 6 6';
+  return '<button class="gap" id="gapBtn" type="button" aria-label="'
+    + (huong === 'gon' ? 'Thu gọn' : 'Mở rộng') + '">'
+    + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + mui + '" fill="none" '
+    + 'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '</button>';
+}
+
 /* ---- BẢN THU GỌN ----
    Xem hộp quà to một lần là đủ; những lần sau chỉ cần biết còn mấy ngày. Dạng
    gọn dùng đúng khung đồng hồ của bản mở rộng, thêm hộp quà nhỏ bên trái. */
@@ -568,20 +583,14 @@ function drawGon(){
   $('lead').innerHTML = '';
   $('stage').innerHTML =
     '<div class="card gon">'
+    + gapIcon('rong')
     + '<div class="cd2" id="cd2">'
     +   '<span class="gift-nho" aria-hidden="true">' + GIFT + '</span>'
     +   '<span class="cd2-txt"><b id="ttTxt"></b><span class="cd2-cap">Cập nhật sau</span></span>'
     +   '<span class="cd2-num" id="cd2n"><b id="cd2d">--</b><i>ngày</i><b id="cd2t">--:--:--</b></span>'
     + '</div>'
-    + '<div class="ov-row" style="margin-top:14px">'
-    +   '<button class="btn ghost" id="moRong" type="button">▴ Mở rộng</button>'
-    +   '<button class="btn ghost" id="goA" type="button">← Câu hỏi</button>'
-    + '</div>'
     + '</div>';
-  $('goA').addEventListener('click', function(){
-    setTimeout(function(){ location.href = HREF_A; }, 140);
-  });
-  $('moRong').addEventListener('click', function(){ st.gon = false; save(); drawBox(); });
+  $('gapBtn').addEventListener('click', function(){ st.gon = false; save(); drawBox(); });
   xoayTT(); clearInterval(ttT); ttT = setInterval(xoayTT, 2600);
   demNgay(); clearInterval(cdT); cdT = setInterval(demNgay, 1000);
 }
@@ -614,12 +623,8 @@ function moNoiDung(){
     + '<p class="c-txt">Tới ngày <b>' + MO_NGAY + '.' + (MO_THANG<10?'0':'') + MO_THANG
     + '</b> rồi — phần trong hộp em để sẵn ở đây.</p>'
     + '<p class="c-txt" style="margin-top:10px;opacity:.7">(nội dung sẽ cập nhật)</p>'
-    + '<button class="btn ghost" id="goA" type="button">← Về phần câu hỏi</button>'
     + '</div>';
   ping('han_hop_mo', 'tới mốc ' + MO_NGAY + '-' + MO_THANG);
-  $('goA').addEventListener('click', function(){
-    setTimeout(function(){ location.href = HREF_A; }, 140);
-  });
 }
 
 /* ═══════════ CỬA HẬU: HOA 5 NHỊP ═══════════ */
@@ -710,9 +715,8 @@ $('stampzone').addEventListener('click', function(){
 });
 
 /* ═══════════ KHỞI ĐỘNG ═══════════ */
-/* Lần đầu hay lần sau, nút lùi của trang này đều về màn chọn hồ sơ HAN. */
 $('back').addEventListener('click', function(){
-  ping('han_ve_hub', 'từ Secret Box');
+  ping('han_ve_ban_do', 'từ Secret Chamber');
   setTimeout(function(){ location.href = HREF_HAN; }, 140);
 });
 document.addEventListener('keydown', function(e){

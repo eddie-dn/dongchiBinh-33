@@ -27,9 +27,10 @@ Deploy thẳng lên Vercel từ GitHub.
 │   ├── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
 │   └── thu.js              ← nhận "tâm tư" từ khung Tổ kỹ thuật, gửi về hòm thư
 │
-├── phao-hoa/index.html     ← MÀN PHÁO HOA · nền bản đồ tắt đèn, Auto-fire / Tap-fire
-├── han/
-│   ├── index.html          ← MÀN CHỌN HỒ SƠ · hai thẻ A/B, nút về bản đồ
+├── phao-hoa/index.html     ← MAP 2 · màn pháo hoa, nền bản đồ tắt đèn
+├── han/                    ← MAP 3 · ZOEY'S CASTLE
+│   ├── CHU-MAP3.md         ← toàn bộ câu chữ của Map 3, gom một chỗ để sửa
+│   ├── index.html          ← KHU HỒ SƠ · hai thẻ A/B, nút về bản đồ
 │   ├── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
 │   ├── 961030-a/index.html ← WHO'S MY KINDRED SPIRIT · 5 câu hỏi, theme Sakura
 │   └── 961030-b/index.html ← SECRET BOX · nền dải ngân hà, mở bằng mã từ 961030-a
@@ -858,9 +859,16 @@ nghỉ lấy nhịp; đều đặn từng quả một nhìn như máy.
 Chạm màn hình vẫn bắn thêm một quả cho vui tay. Gõ đúp để thoát và chạm để bắn đi chung
 một trình nghe: cú thứ hai trong 320 ms là thoát, ngoài ra là bắn. Bấm lên nút thì bỏ qua.
 
-**Màn trứng nứt.** Trước khi sang trang này, khung Collected chạy 1,9 giây: quả trứng
-phóng to ra giữa khung, lắc lư, **nứt đôi** rồi loé tia — *Oh? → Nứt rồi! → Bùm ✦*. Máy
-nào bật "giảm chuyển động" thì bỏ qua, đi thẳng.
+**Màn trứng nứt** nằm ngay **đầu trang này**, không phải ở khung Collected — nứt trứng
+rồi nổ pháo là một mạch liền, tách ra hai trang thì đứt đoạn. Vỏ **vàng kim** của bản đồ,
+khắc **mạch điện xanh neon** cho ra chất cyber; lắc hai nhịp → nứt đôi, hai nửa văng ra →
+lõi loé sáng → pháo hoa bắt đầu. *Oh? → Nứt rồi! → Bùm ✦*, tổng 1,7 giây. Máy nào bật
+"giảm chuyển động" thì bỏ qua, vào thẳng.
+
+> **BẪY ĐÃ VẤP:** nút *Vào Easter Egg* ở trang này là **đường vào thứ ba** của Easter Egg
+> (hai đường kia: nút trong khung Collected, và link hồ sơ trong khung toạ độ). Lúc đầu
+> quên ghi `eggWin` ở đây — ai đi lối pháo hoa sẽ **không bao giờ mở được Map 3**. Thêm
+> đường vào mới thì nhớ ghi cờ ở cả ba chỗ.
 
 ### Bộ pháo hoa dựng riêng — không xài lại hình của cảnh SGN
 
@@ -943,19 +951,47 @@ chỉ ngay sau khi mở.
 
 ---
 
+## 21f-2. Cửa sổ Easter Egg — múi giờ và nhịp ăn mừng
+
+Mốc **00:00 ngày 01-09 giờ Việt Nam** dựng bằng chuỗi ISO có múi `+07:00` (hàm `atVN`),
+nên **máy đặt ở múi giờ nào cũng chốt đúng nửa đêm Việt Nam** — so sánh bằng mốc thời
+gian tuyệt đối, không phụ thuộc đồng hồ máy.
+
+Trong suốt cửa sổ 7 ngày kể từ mốc đó, **mỗi lần mở trang** là chạy lại màn ăn mừng:
+tiêu đề nhấp nháy vào cụm *Easter Egg ⇄ Game On*, băng rôn sinh nhật bay ra. Trước đây
+chỉ chạy **một lần mỗi ngày** (`eggTitleDay`) — nay bỏ hẳn giới hạn đó: người ta vào lúc
+nào cũng phải gặp đúng khoảnh khắc ăn mừng, đó mới là quà.
+
+> **BẪY khi tự kiểm thử:** `boot()` có nhánh "sang mùa mới thì xoá sạch tiến độ"
+> (`SEA.id === 'season' && s.season !== SEA.year`). Nếu nhét thẳng `mtv1` vào
+> localStorage mà quên khoá `season`, vặn đồng hồ tới gần 01-09 là mất sạch tiến độ vừa
+> nhét — không phải lỗi trang, chỉ là thiếu một khoá.
+
+---
+
 ## 21g. Nhắc bài tìm Easter Egg
 
 Phá đảo bản đồ rồi mà chưa tìm ra khung Collected thì **mỗi lần mở trang**:
 
-1. Dòng *Game On · Độ khó* nhấp nháy trước **6,5 giây**;
+1. Cả dòng *Game On · Độ khó: Q♥* nhấp nháy **10,5 giây** — riêng **quân Q♥** nháy lâu
+   hơn, thêm nhịp phồng và quầng sáng để nổi hơn phần chữ quanh nó;
 2. hết lượt đó mới tới tem *Last updated* nhấp nháy.
 
 Mắt người chơi tự đi từ chỗ này sang chỗ kia — không có mũi tên, không có câu "bấm vào
 đây". Trong lúc chuỗi này chạy thì **lượt nháy tem hằng ngày bị tắt**: nháy cùng lúc là
 mất sạch ý "nhìn chỗ này rồi mới nhìn chỗ kia".
 
-**Gõ đúp dòng Game On** → tem chuyển sang **sáng nhẹ và giữ luôn** (`.stampzone.glow`),
-như ngọn đèn để sẵn.
+### Dòng dẫn có hai nửa, hai vai khác hẳn nhau
+
+| Bấm vào | Việc xảy ra |
+|---|---|
+| Chữ *Game On · Độ khó:* — **gõ đúp** | Băng rôn sinh nhật bay lại. Lúc nào cũng chạy, tìm ra Easter Egg rồi hay chưa cũng vậy |
+| Quân **Q♥** — **chạm một cái** | Thắp tem *Last updated* (`.stampzone.glow`) rồi cho tem nháy theo tông Easter Egg |
+
+Tách vai như vậy vì hai việc này chỏi nhau: **băng rôn bay là ẩn luôn dòng dẫn 20 giây**
+(`.frame.won.flying .lead{display:none}`), nên nếu cùng một cú bấm vừa thổi băng rôn vừa
+chỉ đường thì người chơi mất luôn chỗ vừa bấm. Quân Q♥ nhỏ xíu, phải cố ý mới trúng —
+đúng vai một cái nút bí mật.
 
 **Bấm vào tem** thì được nhắc rõ dần, theo số nhịp liên tiếp:
 
@@ -1000,24 +1036,34 @@ Bốn chỗ đã sửa từ đợt soát này:
 
 ---
 
-## 22. HAN-961030 — Get to know me & Secret Box
+## 22. MAP 3 · ZOEY'S CASTLE (HAN-961030)
+
+> **Tên gọi chung.** Ba màn của trò chơi, gọi thống nhất từ đây về sau:
+>
+> | Tên | Ở đâu | Là gì |
+> |---|---|---|
+> | **Map 1** · Bản đồ tác chiến | `/` | Bốn toạ độ, giải mật thư |
+> | **Map 2** · Easter Egg | `/dad/950901-b` + `/phao-hoa` | Cửa hậu 10 nhịp, pháo hoa, hồ sơ niêm phong |
+> | **Map 3** · Zoey's Castle | `/han/` | Bộ câu hỏi + Secret Chamber |
+>
+> Chữ của Map 3 gom hết ở **`han/CHU-MAP3.md`** — sửa lời thoại thì mở file đó.
 
 Hai trang mới, vào từ khung **Tổ kỹ thuật** của bản đồ (nút *Get to know me*).
 
 | Trang | Là gì | Nền động |
 |---|---|---|
-| `/han/` | Màn chọn hồ sơ — **không nằm trong luồng chơi nữa**, chỉ còn gõ URL mới tới | Hoa anh đào rơi |
 | `/han/961030-a` | *Who's my kindred spirit?* — bộ câu hỏi về Honghandangiu; đúng hết thì được cấp **mã 5 số** | **Hoa anh đào rơi** — canvas, mỗi cánh vẽ bằng hai cung bezier, xoay quanh trục dọc nên lúc mỏng lúc dày |
 | `/han/961030-b` | **HongHan's Secret Box** — hiện còn *đang trong quá trình forming*, mở sau | **Dải ngân hà** — canvas, sao xếp theo hai nhánh xoắn, quay quanh lõi với tốc độ giảm dần theo bán kính |
 
-### Đường đi — thẳng, không có trạm trung chuyển
+### Đường đi — không có trang trung gian
 
-Đi từ đâu cũng **vào thẳng `961030-a`** (nút *Get to know me* trong khung cửa hậu của bản
-đồ). Lùi từ A là ra **bản đồ**; lùi từ B là về **A**. `961030-b` mở bằng nút ở màn hoàn
-thành của A, hoặc gõ thẳng URL rồi nhập mã.
+**Khu hồ sơ của Map 3 chính là khung HAN trên bản đồ**, không phải một trang riêng. Từng
+có trang `/han/index.html` làm "màn chọn hồ sơ" — **đã xoá**: bấm lùi mà khung đổi sang
+một trang lạ thì người xem mất phương hướng.
 
-Màn chọn hồ sơ `/han/` vẫn còn trên đĩa nhưng **không nằm trong luồng nữa** — bắt người
-xem dừng một trạm chỉ để bấm tiếp là dài dòng.
+Lùi từ `961030-a` hay `961030-b` đều về `/?stay=1&node=HAN` — bản đồ mở lại **đúng khung
+hồ sơ vừa rời**. Riêng khi vào từ khung Collected (`?from=egg`) thì lùi về `?cred=1` để
+khung đó mở lại.
 
 ### Theme mới — không dùng chung bảng màu với bản đồ
 
@@ -1177,5 +1223,4 @@ vẫn thấy được sau khi làm lại.
 - Nội dung hộp: hàm `drawBox()` trong `961030-b`.
 - Mã mở khoá: sửa `PIN_B` bên A **và** `PIN` bên B cho khớp; gợi ý SOS của cửa B nằm ở
   hằng `GOIY`. PIN bảng điều phối: `PIN_CTRL` (`1959`), giống khu điều phối ngoài bản đồ.
-- Thẻ trên màn chọn hồ sơ: sửa thẳng trong `han/index.html` (nhãn trạng thái do hàm
-  `nhan()` dán theo `hanv1`).
+- Nhãn hai hồ sơ trong khung HAN: mảng `NODES` + hàm `render()` bên `index.html`.

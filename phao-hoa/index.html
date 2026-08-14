@@ -47,6 +47,12 @@ body{margin:0;background:#02060f;color:var(--paper);overflow:hidden;
 
 canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
 
+/* Chữ của màn trứng — nằm ngay dưới quả trứng trên canvas */
+.eggcap{position:absolute;left:0;right:0;top:56%;z-index:4;text-align:center;
+  pointer-events:none;font-family:"Oswald";font-size:15px;font-weight:600;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--amber);
+  text-shadow:0 0 16px rgba(242,180,65,.6)}
+
 /* ── chữ trên cao, ngay vùng pháo nổ ── */
 .top{position:relative;z-index:3;flex:none;padding:56px 20px 0;text-align:center;
   pointer-events:none}
@@ -97,6 +103,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
 
   <canvas id="cv" aria-hidden="true"></canvas>
   <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
+
+  <p class="eggcap" id="eggCap">Oh?</p>
 
   <div class="top">
     <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
@@ -327,10 +335,22 @@ $('mAuto').addEventListener('click', function(e){
   ping('phao_hoa_che', 'bắn lại một lượt');
   batDau();
 });
-/* Nút phải: đi thẳng vào hồ sơ niêm phong — chỗ Easter Egg thật sự nằm */
+/* Nút phải: đi thẳng vào hồ sơ niêm phong — chỗ Easter Egg thật sự nằm.
+   BẪY ĐÃ VẤP: đây cũng là một đường vào Easter Egg, nên phải ghi eggWin y như
+   hai đường kia (nút trong khung Collected, và link hồ sơ trong khung toạ độ).
+   Thiếu chỗ này thì ai đi lối pháo hoa sẽ không bao giờ mở được Map 3. */
+function ghiEggWin(){
+  try{
+    var m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {};
+    if(m.eggWin) return;
+    m.eggWin = true;
+    localStorage.setItem('mtv1', JSON.stringify(m));
+  }catch(e){}
+}
 $('mEgg').addEventListener('click', function(e){
   e.stopPropagation();
   if(dangVe) return; dangVe = true;
+  ghiEggWin();
   ping('vao_easter_egg', 'từ màn pháo hoa');
   setTimeout(function(){ location.href = EGG_HREF; }, 140);
 });
@@ -371,7 +391,162 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') veLai()
 co();
 addEventListener('resize', co, {passive:true});
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches) ve();
-batDau();
+
+/* ═══════════════════════════════════════════════════════════════
+   MÀN MỞ ĐẦU — QUẢ TRỨNG
+   Vẽ thẳng lên canvas, dùng chung bộ hạt và cách chuyển động của pháo hoa nên
+   nhịp mượt y như nhau, không phải hai hệ hoạt hình rời rạc.
+   Ba nhịp:
+     1. LẮC   — trứng nảy nhẹ theo đường sin, tàn lửa vàng lượn quanh;
+     2. NỨT   — vết nứt bò dần theo đường zigzag, ánh sáng rịn ra từ khe;
+     3. VỠ    — hai nửa vỏ văng ra có xoay và trọng lực, lõi loé trắng, tia bắn
+                ra bằng đúng hàm nổ của pháo hoa.
+   ═══════════════════════════════════════════════════════════════ */
+var EGG_CAP = ['Oh?', 'Nứt rồi!', 'Bùm ✦'];
+var LAC_MS = 1250, NUT_MS = 850;        /* lắc · nứt; vỡ xong là sang pháo hoa */
+
+/* Vẽ MỘT nửa vỏ trứng. Tách hẳn ra ngoài để pha "vỡ" điều khiển hai nửa riêng
+   — mỗi nửa có vận tốc, độ xoay và độ mờ của chính nó. */
+function veNua(g, tren, cx, cy, R, dx, dy, xoay, mo){
+  /* Tỉ lệ quả trứng thật: cao gấp ~1,35 lần bề ngang, đỉnh thon, đáy tròn.
+     Để W2 = R*0.78 như lúc đầu thì ra quả bóng, không ra quả trứng. */
+  var W2 = R*0.70, H2 = R;
+  var zig = [[-1,-0.02],[-0.62,-0.14],[-0.3,0.04],[0,-0.1],[0.32,0.05],[0.66,-0.12],[1,0.01]];
+  g.save();
+  g.globalAlpha = mo;
+  g.translate(cx + dx, cy + dy);
+  g.rotate(xoay);
+  g.beginPath();
+  if(tren){
+    g.moveTo(-W2, 0);
+    g.bezierCurveTo(-W2*1.02, -H2*1.62, W2*1.02, -H2*1.62, W2, 0);
+    for(var i = zig.length - 1; i >= 0; i--) g.lineTo(zig[i][0]*W2, zig[i][1]*H2);
+  }else{
+    g.moveTo(-W2, 0);
+    for(var j = 0; j < zig.length; j++) g.lineTo(zig[j][0]*W2, zig[j][1]*H2);
+    g.bezierCurveTo(W2*1.16, H2*1.05, -W2*1.16, H2*1.05, -W2, 0);
+  }
+  g.closePath();
+  var gr = g.createLinearGradient(-W2, -H2, W2, H2);
+  gr.addColorStop(0, '#FFF3CE'); gr.addColorStop(.42, '#F2B441'); gr.addColorStop(1, '#8E5F10');
+  g.fillStyle = gr; g.fill();
+  g.strokeStyle = 'rgba(122,83,16,.9)'; g.lineWidth = 2; g.stroke();
+  /* mạch điện khắc trên vỏ — chất cyber, xanh neon của bản đồ */
+  g.strokeStyle = 'rgba(56,189,248,.75)'; g.lineWidth = 1.6; g.lineCap = 'round';
+  g.beginPath();
+  if(tren){
+    g.moveTo(-W2*0.55, -H2*0.62); g.lineTo(-W2*0.2, -H2*0.62); g.lineTo(-W2*0.2, -H2*0.34);
+    g.lineTo(W2*0.16, -H2*0.34);
+    g.moveTo(W2*0.6, -H2*0.8); g.lineTo(W2*0.28, -H2*0.8); g.lineTo(W2*0.28, -H2*0.52);
+  }else{
+    g.moveTo(-W2*0.5, H2*0.36); g.lineTo(-W2*0.16, H2*0.36); g.lineTo(-W2*0.16, H2*0.6);
+    g.moveTo(W2*0.52, H2*0.3); g.lineTo(W2*0.2, H2*0.3); g.lineTo(W2*0.2, H2*0.54);
+  }
+  g.stroke();
+  if(tren){                                  /* chấm lõi giữa vỏ */
+    g.beginPath(); g.arc(0, -H2*0.24, 3.4, 0, 6.2832);
+    g.fillStyle = 'rgba(139,224,255,.95)'; g.fill();
+  }
+  g.restore();
+}
+
+/* Quả trứng còn nguyên (hoặc đang hé ra `tach` pixel) */
+function veTrung(g, cx, cy, R, tach){
+  veNua(g, true,  cx, cy, R, 0, -tach*0.9, -tach*0.011, 1);
+  veNua(g, false, cx, cy, R, 0,  tach*0.62, tach*0.008, 1);
+  if(tach > 0){                              /* ánh sáng rịn ra từ khe nứt */
+    var W2 = R*0.70;
+    g.save();
+    var gg = g.createLinearGradient(cx - W2, cy, cx + W2, cy);
+    gg.addColorStop(0, 'rgba(255,246,220,0)');
+    gg.addColorStop(.5, 'rgba(255,246,220,' + Math.min(.95, tach/16) + ')');
+    gg.addColorStop(1, 'rgba(255,246,220,0)');
+    g.fillStyle = gg;
+    g.fillRect(cx - W2, cy - tach*0.9, W2*2, Math.max(2, tach*1.5));
+    g.restore();
+  }
+}
+
+(function moMan(){
+  var cap = $('eggCap');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ batDau(); return; }
+  var t0 = Date.now(), pha = 'lac', xong = false;
+
+  function khungTrung(){
+    if(xong) return;
+    var t = Date.now() - t0;
+    var cx = W/2, cy = H*0.42, R = Math.min(78, W*0.2);
+
+    if(pha === 'lac'){
+      /* nảy nhẹ + nghiêng qua lại, biên độ lớn dần cho có cảm giác sắp vỡ */
+      var k = t/LAC_MS, manh = 0.35 + 0.65*k;
+      var dy = Math.sin(t/150)*4*manh, gh = Math.sin(t/190)*0.09*manh;
+      c.save();
+      c.translate(cx, cy); c.rotate(gh); c.translate(-cx, -cy - dy);
+      veTrung(c, cx, cy, R, 0);
+      c.restore();
+      /* tàn lửa vàng lượn quanh, dùng đúng lớp hạt của pháo hoa */
+      if(Math.random() < 0.42){
+        var a = Math.random()*6.283, r2 = R*1.25;
+        hat.push({ x:cx + Math.cos(a)*r2, y:cy + Math.sin(a)*r2*1.1,
+          vx:Math.cos(a)*0.5, vy:Math.sin(a)*0.5 - 0.35,
+          h:44, s:100, song:rnd(.4,.75), doi:.75, nang:-0.004, can:0.97,
+          nhay:true, duoi:[] });
+      }
+      if(t > LAC_MS){ pha = 'nut'; t0 = Date.now(); cap.textContent = EGG_CAP[1]; }
+    }
+    else if(pha === 'nut'){
+      /* khe hở mở dần theo đường ease-out, sáng rịn ra mỗi lúc một mạnh */
+      var u = Math.min(1, (Date.now() - t0)/NUT_MS);
+      var e = 1 - Math.pow(1 - u, 3);
+      veTrung(c, cx, cy, R, e*7);
+      if(Math.random() < 0.5){
+        hat.push({ x:cx + rnd(-R*.7, R*.7), y:cy + rnd(-3,3),
+          vx:rnd(-.7,.7), vy:rnd(-1.5,-.4),
+          h:46, s:100, song:rnd(.35,.7), doi:.7, nang:0.01, can:0.96,
+          nhay:false, duoi:[] });
+      }
+      if(u >= 1){ pha = 'vo'; t0 = Date.now(); cap.textContent = EGG_CAP[2]; noVo(cx, cy, R); }
+    }
+    else if(pha === 'vo'){
+      /* HAI NỬA bay riêng: nửa trên hất lên trái, nửa dưới rơi xuống phải, mỗi
+         nửa có trọng lực và độ xoay của chính nó — vỡ thật chứ không phải cả
+         quả trứng cùng trôi lên. */
+      var tv = (Date.now() - t0)/1000;
+      var mo = Math.max(0, 1 - tv*1.35);
+      if(mo > 0){
+        veNua(c, true,  cx, cy, R, -78*tv,        -150*tv + 150*tv*tv, -2.2*tv, mo);
+        veNua(c, false, cx, cy, R,  70*tv,          46*tv + 240*tv*tv,  1.7*tv, mo);
+      }
+      if(tv > 0.95){ xong = true; capTan(); return; }
+    }
+    requestAnimationFrame(khungTrung);
+  }
+
+  /* Nổ vỏ: lõi loé trắng + một quả pháo thật ngay tại chỗ, nối liền hai màn */
+  function noVo(cx, cy, R){
+    for(var i = 0; i < 90; i++){
+      var a = Math.random()*6.283, sp = rnd(1.4, 5.2);
+      hat.push({ x:cx, y:cy, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
+        h:44 + rnd(-8, 8), s:100, song:rnd(.6,1.1), doi:1.1,
+        nang:0.03, can:0.972, nhay:Math.random()<0.4, duoi:[] });
+    }
+    for(var j = 0; j < 22; j++){        /* mảnh vỏ vụn bay ra, tối màu hơn */
+      var b = Math.random()*6.283, s2 = rnd(2.2, 6);
+      hat.push({ x:cx, y:cy, vx:Math.cos(b)*s2, vy:Math.sin(b)*s2 - 1,
+        h:34, s:70, song:rnd(.5,.9), doi:.9, nang:0.09, can:0.985,
+        nhay:false, duoi:[] });
+    }
+    ban(cx, cy - R*1.4);                /* pháo hoa mở màn ngay trên đầu trứng */
+    batDau();
+  }
+  function capTan(){
+    cap.style.transition = 'opacity .5s';
+    cap.style.opacity = '0';
+    setTimeout(function(){ if(cap.parentNode) cap.parentNode.removeChild(cap); }, 600);
+  }
+  khungTrung();
+})();
 ping('phao_hoa_mo', '');
 })();
 </script>
