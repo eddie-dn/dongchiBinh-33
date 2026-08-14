@@ -66,7 +66,11 @@ body{margin:0;background:#EFE6F7;color:var(--ink);
    ô bé xíu đó nên nhìn như hoa chỉ có ở đỉnh trang. Bắt buộc 100%/100%. */
 #sakura{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
 
+/* BẪY: hộp đặt absolute với left:50% thì bề rộng khả dụng chỉ còn NỬA khung,
+   nên chữ tự xuống dòng sớm và rớt lại một chữ lẻ. width:max-content mới cho nó
+   rộng theo đúng nội dung. */
 .classtag{position:absolute;top:13px;left:50%;transform:translateX(-50%);z-index:6;
+  width:max-content;max-width:min(84vw,300px);
   padding:6px 14px;border:1px solid var(--line);border-radius:5px;
   background:rgba(255,255,255,.55);backdrop-filter:blur(6px);
   font-family:"Oswald";font-size:8.5px;font-weight:500;letter-spacing:.24em;
@@ -189,12 +193,14 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .foot{position:relative;z-index:5;flex:none;display:flex;align-items:center;
   justify-content:space-between;gap:8px;padding:0 clamp(18px,5vw,24px) 22px}
 .back{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
-  background:rgba(255,255,255,.5);border-radius:999px;padding:9px 14px;cursor:pointer;
+  background:rgba(255,255,255,.5);border-radius:999px;padding:12px 16px;cursor:pointer;
   font-family:"Oswald";font-size:9.5px;font-weight:500;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink2)}
 .back:hover{border-color:var(--orchid);color:var(--ink)}
 /* Hoa = cửa hậu, đúng vai lá cờ ngoài bản đồ: bấm 5 nhịp liên tiếp mới mở */
-.flow{border:none;background:none;cursor:pointer;padding:8px;line-height:0;
+/* KHÔNG đổi con trỏ: để nguyên mũi tên thì không ai đoán ra chỗ này bấm được.
+   Ai biết thì tự bấm đủ nhịp, đúng tinh thần cửa hậu. */
+.flow{border:none;background:none;cursor:inherit;padding:8px;line-height:0;
   color:rgba(227,170,221,.75);transition:color .25s,transform .25s}
 .flow svg{width:19px;height:19px;fill:currentColor;transition:transform .25s}
 /* Chỉ CÁNH HOA to lên, vùng bấm đứng yên: nút tự phóng to sẽ dịch dưới ngón
@@ -202,7 +208,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .flow.warm{color:var(--orchid)}
 .flow.warm svg{transform:scale(1.2)}
 /* Cả cụm hoa + tem là một vùng bấm (cửa hậu 5 nhịp), padding cho dễ trúng ngón */
-.stampzone{display:flex;align-items:center;gap:8px;cursor:pointer;
+.stampzone{display:flex;align-items:center;gap:8px;
   padding:6px 2px 6px 6px;margin:-6px -2px -6px -6px;border-radius:12px}
 .stampzone:focus-visible{outline:2px solid var(--orchid);outline-offset:2px}
 .stamp{font-family:"Oswald";font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
@@ -251,12 +257,11 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 
   <div class="foot">
     <button class="back" id="back" type="button">&#8592; Bản đồ</button>
-    <span class="stampzone" id="stampzone" role="button" tabindex="0"
-          aria-label="Khối vận hành">
+    <span class="stampzone" id="stampzone">
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.2a2.6 2.6 0 1 0 0 1.6 2.6 2.6 0 0 0 0-1.6Zm0-9.2c1.9 0 3.1 1.8 2.6 3.6-.2.8.6 1.5 1.3 1.1 1.7-.9 3.7.3 3.7 2.2 0 1.9-2 3.1-3.7 2.2-.7-.4-1.5.3-1.3 1.1.5 1.8-.7 3.6-2.6 3.6s-3.1-1.8-2.6-3.6c.2-.8-.6-1.5-1.3-1.1-1.7.9-3.7-.3-3.7-2.2 0-1.9 2-3.1 3.7-2.2.7.4 1.5-.3 1.3-1.1C8.9 3.8 10.1 2 12 2Z"/><path d="M12 15.6c-1 2.2-1.4 4.4-1.2 6.4h2.4c.2-2-.2-4.2-1.2-6.4Z" opacity=".55"/></svg>
+        <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="HAN-961030-A · V1.03<br>Last updated 13-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V1.05<br>Last updated 13-Aug-2026"></span>
     </span>
   </div>
 
@@ -284,7 +289,16 @@ var PIN_CTRL = '1959';              /* mã bảng điều phối — dùng chung
 var HREF_B   = '/han/961030-b';
 var HREF_MAP = '/';
 var HINTW    = 45*1000;             /* chờ giữa hai gợi ý */
-var SAI_NGAY = 2;                   /* mỗi câu được thử SAI 2 lần mỗi ngày */
+/* ---- luật lượt sai ----
+   Bản cũ: sai 2 lần là câu đó khoá TỚI NỬA ĐÊM và ép reset toàn bộ. Reset lại
+   không hoàn lượt, nên xáo xong đi tới đúng câu đã cháy là tắc — hôm đó không
+   cách nào chơi hết bài. Bản này nới ba chỗ:
+     · sai SAI_PHIEN lần → câu đó NGHỈ 30 phút, tự gác lại và nhảy sang câu kế;
+     · mỗi câu mỗi ngày chỉ được cháy CHAY_NGAY lần, cháy lần cuối thì nghỉ tới mai;
+     · cả năm câu cùng nghỉ mới hiện màn MỜI làm lại — mời, không ép. */
+var SAI_PHIEN = 2;                  /* sai bấy nhiêu lần thì câu đó nghỉ */
+var CHAY_NGAY = 2;                  /* mỗi câu mỗi ngày được cháy bấy nhiêu lần */
+var NGHI      = 30*60*1000;         /* nghỉ 30 phút rồi chơi tiếp câu đó */
 
 var HOI = [
   { id:'manga', q:'Tên một Manga Nhật Bản mà em yêu thích?',
@@ -331,26 +345,53 @@ var st = (function(){
   var o = {
     order: (s.order instanceof Array && s.order.length === TONG) ? s.order : tron(TONG),
     pos: s.pos|0, hints: s.hints || {}, hintAt: s.hintAt || 0,
-    sai: s.sai || {}, day: s.day || ngay(),
+    /* dung: câu nào đã trả lời đúng · sai: số lần sai trong phiên hiện tại
+       chay: số lần cháy lượt trong ngày · nghi: mốc thời gian câu đó mở lại */
+    dung: s.dung || {}, sai: s.sai || {}, chay: s.chay || {}, nghi: s.nghi || {},
+    day: s.day || ngay(),
     done: !!s.done, bOpen: !!s.bOpen, reset: s.reset|0,
     tick: s.tick || {}, firstAt: s.firstAt || Date.now(), doneAt: s.doneAt || 0
   };
-  if(o.day !== ngay()){ o.day = ngay(); o.sai = {}; }   /* sang ngày mới: cấp lại lượt sai */
-  if(o.pos > TONG) o.pos = TONG;
+  /* Sang ngày mới: trả lại toàn bộ lượt sai, lượt cháy và mọi khoá đang treo */
+  if(o.day !== ngay()){ o.day = ngay(); o.sai = {}; o.chay = {}; o.nghi = {}; }
+  if(o.pos >= TONG) o.pos = 0;
   return o;
 })();
 function save(){
   var s = {};
   try{ s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){}
   s.order=st.order; s.pos=st.pos; s.hints=st.hints; s.hintAt=st.hintAt;
-  s.sai=st.sai; s.day=st.day; s.done=st.done; s.bOpen=st.bOpen; s.reset=st.reset;
+  s.dung=st.dung; s.sai=st.sai; s.chay=st.chay; s.nghi=st.nghi;
+  s.day=st.day; s.done=st.done; s.bOpen=st.bOpen; s.reset=st.reset;
   s.firstAt=st.firstAt; s.doneAt=st.doneAt;
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
 }
-function Q(){ return HOI[st.order[st.pos]]; }           /* câu đang hỏi */
-function conSai(q){ return SAI_NGAY - (st.sai[q.id]|0); }
-function khoa(q){ return conSai(q) <= 0; }
+function Q(){ return HOI[st.order[st.pos]]; }           /* câu con trỏ đang trỏ vào */
+function conSai(q){ return SAI_PHIEN - (st.sai[q.id]|0); }
+function nghiDen(q){ return st.nghi[q.id] || 0; }
+function dangNghi(q){ return nghiDen(q) > Date.now(); }
+function xong1(q){ return !!st.dung[q.id]; }
+function soDung(){ var n = 0; for(var i = 0; i < TONG; i++) if(st.dung[HOI[i].id]) n++; return n; }
 function nuaDem(){ var d = new Date(); d.setHours(24,0,0,0); return d.getTime(); }
+/* Câu kế còn chơi được, tính vòng tròn từ con trỏ hiện tại. null = cả năm câu
+   đang nghỉ (hoặc đã đúng hết — chỗ gọi kiểm soDung trước). */
+function timCau(){
+  for(var k = 0; k < TONG; k++){
+    var i = (st.pos + k) % TONG, q = HOI[st.order[i]];
+    if(!xong1(q) && !dangNghi(q)){ st.pos = i; return q; }
+  }
+  return null;
+}
+/* Mốc sớm nhất một câu nào đó mở lại — dùng cho đồng hồ ở màn cả-năm-câu-nghỉ */
+function mocMoLai(){
+  var m = 0;
+  for(var i = 0; i < TONG; i++){
+    var q = HOI[i]; if(xong1(q)) continue;
+    var t = nghiDen(q);
+    if(t > Date.now() && (!m || t < m)) m = t;
+  }
+  return m;
+}
 
 /* ═══════════ 3. ĐO ĐẠC ═══════════ */
 function ping(ev, detail){
@@ -478,10 +519,17 @@ function drawSteps(){
   var h = '';
   for(var i = 0; i < TONG; i++){
     var q = HOI[st.order[i]];
-    var cls = st.done || st.pos > i ? 'done' : (st.pos === i ? (khoa(q) ? 'lock' : 'cur') : '');
+    var cls = st.done || xong1(q) ? 'done'
+            : dangNghi(q) ? 'lock'
+            : (st.pos === i ? 'cur' : '');
     h += '<div class="step ' + cls + '"><div class="bar"><i></i></div><span>' + (i+1) + '</span></div>';
   }
   $('steps').innerHTML = h;
+}
+/* Nhãn lượt trên đầu thẻ: phiên này còn mấy lần sai, và hôm nay còn mấy vòng */
+function nhanLuot(q){
+  var vong = Math.max(0, CHAY_NGAY - (st.chay[q.id]|0));
+  return 'Còn ' + Math.max(0, conSai(q)) + '/' + SAI_PHIEN + ' lượt · ' + vong + '/' + CHAY_NGAY + ' vòng hôm nay';
 }
 var treuLast = -1;
 function treu(){
@@ -578,14 +626,16 @@ function xepO(box, inp, code, gaps){
 /* ---- màn hỏi ---- */
 function drawQ(){
   clearTick();
-  var q = Q();
-  if(khoa(q)){ drawLock(); return; }
+  if(soDung() >= TONG){ st.done = true; st.doneAt = st.doneAt || Date.now(); save(); xong(false); return; }
+  var q = timCau();
+  if(!q){ drawLock(); return; }        /* cả năm câu đang nghỉ */
+  save();
   var code = norm(q.a[0]), len = code.length, buf = '';
 
   $('stage').innerHTML =
     '<div class="card haspin" id="card">'
     + '<p class="q-lab"><span>Câu ' + (st.pos+1) + ' / ' + TONG + '</span>'
-    + '<em id="qTry">Còn ' + conSai(q) + '/' + SAI_NGAY + ' lượt sai hôm nay</em></p>'
+    + '<em id="qTry">' + nhanLuot(q) + '</em></p>'
     + '<p class="q-txt">' + q.q + '</p>'
     /* Gợi ý và đồng hồ đứng TRÊN ô nhập: đọc gợi ý rồi mới gõ, mắt không phải
        nhảy xuống dưới rồi ngược lên. Ô nhập luôn là thứ cuối cùng trước lời nhắn. */
@@ -649,22 +699,39 @@ function drawQ(){
       clearTick();
       ping('han_dung', q.id);
       msg(khen(), true);
-      st.pos++; st.hintAt = 0; save();
+      st.dung[q.id] = true; st.sai[q.id] = 0;
+      st.pos = (st.pos + 1) % TONG; st.hintAt = 0; save();
       drawSteps();
       setTimeout(function(){
-        if(st.pos >= TONG){ st.done = true; st.doneAt = Date.now(); save(); xong(true); }
+        if(soDung() >= TONG){ st.done = true; st.doneAt = Date.now(); save(); xong(true); }
         else drawQ();
       }, 640);
       return;
     }
-    /* SAI: trừ lượt của NGÀY, hết lượt thì khoá câu này tới nửa đêm */
+    /* SAI: trừ lượt của PHIÊN. Cháy lượt thì gác câu này lại (nghỉ 30 phút, hoặc
+       nghỉ tới mai nếu đã cháy đủ số lần trong ngày) rồi NHẢY SANG CÂU KẾ. */
     st.sai[q.id] = (st.sai[q.id]|0) + 1; save();
-    ping('han_sai', q.id + ' · sai ' + st.sai[q.id] + '/' + SAI_NGAY);
-    var el = $('qTry'); if(el) el.textContent = 'Còn ' + Math.max(0, conSai(q)) + '/' + SAI_NGAY + ' lượt sai hôm nay';
-    if(khoa(q)){
+    ping('han_sai', q.id + ' · sai ' + st.sai[q.id] + '/' + SAI_PHIEN);
+    var el = $('qTry'); if(el) el.textContent = nhanLuot(q);
+    if(conSai(q) <= 0){
       clearTick();
-      ping('han_het_luot', q.id);
-      drawSteps(); drawLock();
+      st.sai[q.id] = 0;
+      st.chay[q.id] = (st.chay[q.id]|0) + 1;
+      var hetNgay = st.chay[q.id] >= CHAY_NGAY;
+      st.nghi[q.id] = hetNgay ? nuaDem() : Date.now() + NGHI;
+      st.pos = (st.pos + 1) % TONG;        /* con trỏ nhích sang câu kế */
+      save();
+      ping('han_het_luot', q.id + (hetNgay ? ' · nghỉ tới mai' : ' · nghỉ 30 phút'));
+      drawSteps();
+      var ke = timCau();
+      if(!ke){ drawLock(); return; }       /* hết câu chơi được → màn mời làm lại */
+      drawQ();
+      /* Nói rõ vì sao màn hình vừa đổi câu, không thì người chơi tưởng lỗi */
+      var m = $('msg');
+      if(m){
+        m.innerHTML = 'Câu vừa rồi <b>gác lại</b> ' + (hetNgay ? 'tới mai' : '30 phút') + ' ✦ Qua câu khác trước nha';
+        m.classList.add('ok');
+      }
       return;
     }
     var moi = moGoiY(false);
@@ -697,32 +764,39 @@ function drawQ(){
   });
 }
 
-/* ---- hết lượt sai trong ngày: BẮT BUỘC làm lại từ đầu ---- */
+/* ---- CẢ NĂM CÂU cùng đang nghỉ ----
+   Không ép làm lại: chờ hết giờ là chơi tiếp đúng chỗ đang dở, các câu đã đúng
+   vẫn giữ nguyên. Nút làm lại chỉ là lời MỜI cho ai muốn xáo bài chơi lại. */
 function drawLock(){
   clearTick(); xepLai = null;
-  var q = Q();
+  var moc = mocMoLai();
   $('stage').innerHTML =
     '<div class="card">'
-    + '<p class="q-lab"><span>Câu ' + (st.pos+1) + ' / ' + TONG + '</span><em>Hết lượt hôm nay</em></p>'
+    + '<p class="q-lab"><span>Đúng ' + soDung() + ' / ' + TONG + '</span><em>Cả năm câu đang nghỉ</em></p>'
     + '<div class="done-tit">See ya tmr 😉</div>'
-    + '<div class="retry">Lượt retry · <b>' + Math.max(0, conSai(q)) + '/' + SAI_NGAY + '</b></div>'
+    + '<div class="retry">Còn <b>' + (TONG - soDung()) + '</b> câu chờ mở lại</div>'
     + '<div class="wait" id="wait" style="text-align:center"></div>'
-    + '<button class="btn" id="again">↻ Làm lại từ đầu</button>'
+    + '<button class="btn ghost" id="again">↻ Xáo bài chơi lại từ đầu</button>'
     + '</div>';
   function dem(){
     var el = $('wait'); if(!el) return;
-    var con = nuaDem() - Date.now(), p = function(n){ return (n<10?'0':'')+n; };
-    el.innerHTML = 'Cấp lại lượt sau <b>' + p(Math.floor(con/36e5)) + ':'
+    var con = (moc || nuaDem()) - Date.now(), p = function(n){ return (n<10?'0':'')+n; };
+    if(con <= 0){                        /* tới giờ là tự vào chơi tiếp, khỏi bấm */
+      clearTick(); drawSteps(); drawQ(); return;
+    }
+    el.innerHTML = 'Mở lại sau <b>' + p(Math.floor(con/36e5)) + ':'
       + p(Math.floor(con%36e5/6e4)) + ':' + p(Math.floor(con%6e4/1e3)) + '</b>';
   }
   dem(); tick = setInterval(dem, 1000);
-  $('again').addEventListener('click', function(){ lamLai('hết lượt'); });
+  $('again').addEventListener('click', function(){ lamLai('tự chọn xáo bài'); });
 }
 
-/* Xáo lại thứ tự + về câu đầu. Lượt sai của NGÀY thì giữ — reset không hoàn lượt. */
+/* Xáo lại thứ tự + về câu đầu, xoá luôn các câu đã đúng. Lượt cháy trong NGÀY
+   thì giữ — làm lại không phải là cách lách luật nghỉ. */
 function lamLai(vi){
   clearTick();
   st.order = tron(TONG); st.pos = 0; st.hintAt = 0;
+  st.dung = {}; st.sai = {};
   st.done = false; st.reset++;
   save(); stampText();
   ping('han_choi_lai', vi || '');
@@ -771,7 +845,7 @@ ctrl.addEventListener('click', function(e){ if(e.target === ctrl) ctrlClose(); }
 function bangDieuPhoi(){
   ctrlOpen(
     '<p class="ov-lab">Khối vận hành</p>'
-    + '<p class="ov-txt">Tiến độ: <b>' + Math.min(st.pos, TONG) + '/' + TONG + '</b>'
+    + '<p class="ov-txt">Tiến độ: <b>' + soDung() + '/' + TONG + '</b>'
     + (st.done ? ' · đã xong' : '') + (st.reset ? ' · R' + st.reset : '') + '</p>'
     + '<div class="ov-row">'
     + '<button class="btn ghost" id="cReset" type="button">↻ Reset</button>'
@@ -782,7 +856,7 @@ function bangDieuPhoi(){
   rs.addEventListener('click', function(){
     if(!armed){ armed = true; rs.textContent = 'Bấm lần nữa để xoá'; return; }
     ping('han_dieu_phoi', 'reset');
-    st.sai = {}; st.hints = {}; st.bOpen = false;
+    st.sai = {}; st.chay = {}; st.nghi = {}; st.hints = {}; st.dung = {}; st.bOpen = false;
     lamLai('bảng điều phối');
     ctrlClose();
   });
@@ -818,7 +892,8 @@ function hopPin(){
     if(buf.length === len){
       if(buf === PIN_CTRL){
         ping('han_dieu_phoi', 'hoàn thành bằng mã');
-        st.pos = TONG; st.done = true; st.doneAt = Date.now(); save();
+        for(var z = 0; z < TONG; z++) st.dung[HOI[z].id] = true;
+        st.done = true; st.doneAt = Date.now(); save();
         ctrlClose(); xong(true);
       }else{
         $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg'; $('cMsg').classList.remove('ok');
@@ -850,9 +925,9 @@ document.addEventListener('keydown', function(e){
 });
 save(); stampText(); drawLead(); drawSteps();
 if(st.done) xong(false); else drawQ();
-ping('han_mo', 'câu ' + Math.min(st.pos+1, TONG) + '/' + TONG);
+ping('han_mo', 'đúng ' + soDung() + '/' + TONG);
 addEventListener('pagehide', function(){
-  ping('han_dong', 'dừng ở câu ' + Math.min(st.pos+1, TONG) + '/' + TONG);
+  ping('han_dong', 'dừng ở đúng ' + soDung() + '/' + TONG);
 });
 })();
 </script>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Collected: Easter Egg</title>
+<meta name="theme-color" content="#040b18">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<noscript><link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500;600&display=swap"></noscript>
+<style>
+/* ============================================================
+   MÀN PHÁO HOA — trang riêng
+   Nền là ĐÚNG bản đồ tác chiến nhưng TẮT HẾT ĐÈN: không toạ độ, không đường
+   bay, không chữ; đất liền chỉ còn một bóng mờ. Có vậy ánh pháo hoa mới nổi.
+   Chữ nằm TRÊN CAO ngay vùng pháo nổ, nút bấm ở chân trang.
+   ============================================================ */
+:root{
+  --void:#040b18; --navy:#0B1B3A; --neon:#38BDF8; --amber:#F2B441;
+  --paper:#EAF0F7; --line:rgba(234,240,247,.28);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#02060f;color:var(--paper);overflow:hidden;
+  font-family:"Be Vietnam Pro",system-ui,sans-serif;
+  display:flex;align-items:center;justify-content:center}
+#app{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.frame{position:relative;width:100%;max-width:460px;height:100%;max-height:940px;
+  overflow:hidden;background:var(--void);display:flex;flex-direction:column;
+  box-shadow:0 30px 90px rgba(0,0,0,.7)}
+@media(min-width:480px){.frame{border-radius:26px;height:92vh;border:1px solid rgba(255,255,255,.06)}}
+.corner{position:absolute;width:20px;height:20px;border-color:rgba(234,240,247,.14);z-index:6}
+.corner.tl{top:13px;left:13px;border-top:2px solid;border-left:2px solid}
+.corner.tr{top:13px;right:13px;border-top:2px solid;border-right:2px solid}
+.corner.bl{bottom:13px;left:13px;border-bottom:2px solid;border-left:2px solid}
+.corner.br{bottom:13px;right:13px;border-bottom:2px solid;border-right:2px solid}
+
+/* bản đồ tắt đèn — chỉ còn bóng đất liền */
+.bg{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;
+  pointer-events:none}
+.bg svg{width:104%;height:104%;opacity:.42}
+.bg .land{fill:#0A1930;stroke:rgba(56,189,248,.11);stroke-width:1.1}
+
+canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+
+/* ── chữ trên cao, ngay vùng pháo nổ ── */
+.top{position:relative;z-index:3;flex:none;padding:56px 20px 0;text-align:center;
+  pointer-events:none}
+.tit{font-family:"Oswald";font-weight:600;font-size:clamp(16px,5.2vw,23px);
+  letter-spacing:.03em;text-transform:uppercase;margin:0;color:var(--amber);
+  white-space:nowrap;text-shadow:0 2px 22px rgba(4,11,24,.9)}
+.tit.blink{animation:egg 1.9s linear infinite}
+@keyframes egg{0%,100%{color:var(--amber);text-shadow:0 0 20px rgba(242,180,65,.5)}
+  50%{color:var(--neon);text-shadow:0 0 24px rgba(56,189,248,.55)}}
+/* Player và Unlock đi CHUNG một dòng, ngăn bằng dấu chấm giữa */
+.meta{margin:10px 0 0;font-family:"Oswald";font-size:clamp(8px,2.4vw,9.5px);
+  font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(234,240,247,.5);white-space:nowrap;
+  text-shadow:0 2px 14px rgba(4,11,24,.9)}
+.meta b{color:var(--paper);font-weight:600}
+.meta em{font-style:normal;color:var(--neon);font-weight:600}
+.meta i{font-style:normal;opacity:.4;margin:0 7px}
+
+/* ── nút bấm ở chân trang ── */
+.dock{position:relative;z-index:3;margin-top:auto;flex:none;padding:0 22px 26px}
+.modes{display:flex;gap:9px}
+.modes button{flex:1;padding:12px 8px;border-radius:999px;cursor:pointer;
+  font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(234,240,247,.72);
+  border:1px solid var(--line);background:rgba(11,27,58,.62);
+  backdrop-filter:blur(6px);transition:color .2s,background .25s,border-color .25s}
+.modes button.on{color:#08182e;border-color:transparent;
+  background:linear-gradient(120deg,var(--amber),#F7D07A);
+  box-shadow:0 10px 24px rgba(242,180,65,.34)}
+.tip{margin:11px 0 0;font-family:"Oswald";font-size:8.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(234,240,247,.34);text-align:center;
+  min-height:11px}
+.x{position:absolute;top:16px;right:16px;z-index:5;width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(4,11,24,.6);color:var(--paper);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion:reduce){ .tit.blink{animation:none} }
+</style>
+</head>
+<body>
+<div id="app">
+<div class="frame" id="frame">
+  <span class="corner tl"></span><span class="corner tr"></span>
+  <span class="corner bl"></span><span class="corner br"></span>
+
+  <div class="bg" aria-hidden="true">
+    <svg viewBox="0 0 746 966"><path class="land" d="M119.3,798.6 120.4,801.5 120.0,808.5 117.8,815.4 118.4,818.3 116.7,820.2 112.9,807.4 106.9,799.7 109.8,799.9 114.8,796.4 117.2,796.3 119.3,798.6ZM345.3,131.5 335.9,132.2 330.0,137.6 325.9,139.9 312.8,144.9 310.8,150.4 309.6,158.7 298.6,165.1 295.5,164.4 293.4,162.0 288.0,163.7 285.4,163.6 282.5,165.0 270.8,162.0 270.3,164.4 274.8,177.9 263.1,190.4 264.4,198.5 261.2,204.7 254.1,209.6 240.9,222.5 234.9,222.8 230.4,225.7 220.5,246.8 220.4,254.0 218.9,259.3 219.2,264.3 214.9,274.3 210.4,278.6 209.4,284.0 224.8,311.9 235.1,323.0 239.6,326.4 245.1,328.8 260.1,345.2 257.8,349.6 259.0,358.8 251.8,356.1 252.7,357.2 261.2,362.2 273.8,380.0 296.0,398.7 299.5,408.1 309.6,414.4 320.8,423.4 320.4,425.5 331.0,432.7 335.5,437.8 337.3,442.7 340.1,443.4 343.2,442.2 348.6,442.1 352.0,447.4 356.7,452.2 359.0,456.5 360.8,456.0 362.4,456.6 363.4,462.7 369.8,469.7 372.8,476.2 380.3,486.9 385.9,493.0 394.4,499.3 398.8,511.2 401.3,521.9 406.0,533.8 409.6,539.0 409.8,548.8 412.7,559.0 415.8,565.8 416.7,572.7 422.3,590.6 421.4,596.1 419.0,590.7 419.3,606.6 421.4,615.0 420.4,625.2 422.6,628.8 426.5,640.5 429.2,644.6 429.0,658.9 430.4,666.0 424.1,656.9 417.4,663.3 422.3,678.5 416.7,677.1 417.2,697.6 419.5,702.4 419.7,704.7 419.0,707.5 417.5,704.5 417.1,701.4 416.2,702.1 413.8,711.8 415.9,715.6 416.2,718.5 412.4,725.9 407.0,726.4 404.0,741.8 394.4,743.1 387.4,750.0 378.8,752.6 362.6,765.9 352.4,768.2 347.0,778.8 338.0,780.0 321.7,788.7 316.3,792.8 304.2,798.1 300.3,793.7 294.2,792.1 291.2,788.6 289.5,782.4 288.1,784.9 287.1,795.6 286.1,798.0 283.4,799.0 278.3,796.0 273.3,789.9 266.3,794.1 271.7,794.3 274.1,795.3 276.2,799.4 275.1,804.3 258.1,804.1 266.1,808.1 273.4,810.4 276.7,812.9 276.7,815.0 269.4,822.5 269.2,827.9 265.7,830.4 263.5,829.9 257.2,825.6 239.2,808.7 241.9,813.5 260.6,832.7 263.9,839.1 264.4,843.5 259.3,848.4 253.1,848.6 243.1,841.5 227.0,824.3 221.5,822.0 237.8,841.6 240.4,846.4 243.2,851.9 241.0,858.2 202.4,876.4 196.7,884.3 192.1,893.9 184.5,899.3 180.1,904.2 167.2,907.0 160.2,906.1 167.5,897.2 163.0,893.9 162.7,870.9 164.5,845.6 167.9,833.0 172.7,829.9 178.8,827.9 178.9,825.3 178.3,822.3 175.1,818.0 171.5,816.0 166.1,815.1 162.0,809.8 154.0,811.8 151.1,809.5 150.0,806.0 140.3,797.3 142.6,796.7 148.3,791.0 162.8,790.8 164.8,789.9 172.5,782.3 176.1,779.9 177.0,778.0 174.7,768.8 176.1,767.3 182.7,768.1 191.6,771.3 196.9,764.9 213.8,762.4 217.1,762.6 222.8,770.2 224.1,770.5 227.7,768.9 237.0,774.2 240.8,774.3 238.9,766.7 241.0,761.3 240.6,759.8 225.0,747.3 222.9,744.3 222.8,732.8 221.8,728.5 222.7,723.9 227.0,722.8 231.6,716.5 237.2,716.9 250.9,721.1 254.4,720.8 255.1,720.1 255.2,705.1 271.7,703.2 275.5,698.9 285.1,697.4 298.3,685.4 301.4,683.8 308.2,682.9 311.8,686.4 318.4,680.1 320.2,676.1 321.2,669.6 320.5,659.6 316.9,646.0 316.6,640.2 324.1,615.7 323.4,610.7 311.6,582.4 310.0,580.8 308.3,574.4 310.2,559.9 315.0,554.9 320.0,543.0 318.8,533.0 319.4,529.7 316.9,523.2 317.8,520.7 321.2,518.6 325.7,510.6 326.9,506.7 321.7,498.5 305.2,484.9 298.7,473.9 300.0,471.7 309.9,466.7 311.8,464.9 312.8,462.1 312.0,459.4 301.7,453.8 293.1,445.2 285.1,440.8 282.9,438.2 280.5,431.1 279.4,430.4 274.0,434.8 271.5,434.5 269.2,432.4 268.1,429.7 262.9,423.0 261.7,409.4 260.3,404.8 255.9,401.8 246.9,389.0 231.6,377.1 213.4,357.7 209.7,351.9 207.5,343.0 199.9,332.7 192.7,330.6 182.9,321.7 180.1,317.7 178.4,315.0 178.5,312.2 181.9,305.0 181.9,302.9 180.1,301.3 173.1,298.3 157.1,293.8 121.9,270.3 110.9,265.9 109.4,263.7 109.6,261.6 117.2,256.8 119.3,253.0 118.6,248.2 116.4,243.2 117.5,241.5 130.7,240.9 147.2,245.4 149.6,244.9 158.6,236.7 162.0,231.8 162.8,227.8 169.3,220.9 169.4,217.0 167.0,211.9 164.7,209.9 162.6,209.0 156.0,209.7 154.8,208.5 153.6,202.3 151.4,199.5 136.9,195.5 139.2,192.9 146.4,188.7 148.9,186.0 149.4,183.2 135.8,172.7 126.9,167.2 121.5,165.3 118.6,165.5 108.8,170.3 103.5,173.4 99.1,179.0 94.5,180.2 84.6,175.2 70.0,171.6 63.9,168.5 49.2,146.0 51.3,135.6 54.8,127.8 54.9,121.1 53.1,119.2 48.9,117.9 47.2,113.6 46.2,114.1 44.6,119.4 42.7,121.3 40.2,122.3 38.3,121.4 33.7,107.7 28.2,104.5 25.6,100.4 10.6,85.0 7.4,79.2 13.7,74.0 23.5,59.5 27.2,56.9 41.7,63.1 48.0,66.8 54.1,74.0 56.8,75.1 65.7,69.5 65.8,66.4 73.2,59.2 75.2,56.1 76.7,55.8 78.4,56.7 85.0,66.2 86.3,66.7 88.2,65.3 90.8,57.9 93.7,55.1 110.7,69.7 112.3,69.6 114.0,69.0 115.1,66.8 118.8,56.9 123.9,54.0 127.9,53.4 132.9,59.3 137.1,59.8 146.1,53.8 149.0,52.8 155.4,52.7 161.6,47.3 163.4,36.0 165.6,33.8 184.4,25.1 189.4,21.3 193.7,23.5 198.9,27.9 202.0,31.1 205.1,37.6 213.4,40.2 222.2,46.6 229.1,45.8 231.3,43.5 239.9,43.8 241.9,44.7 245.7,49.8 247.4,50.6 262.6,47.5 276.4,55.3 271.8,63.7 267.9,66.8 264.9,67.6 263.1,71.9 262.3,78.3 263.3,81.5 268.1,84.7 269.1,87.5 269.6,103.3 273.4,102.0 284.8,106.8 287.4,106.6 289.5,108.4 290.2,111.9 292.7,114.3 299.4,119.0 304.8,119.4 309.4,125.5 314.2,123.5 316.3,126.1 326.2,125.2 333.0,122.7 335.5,123.3 345.3,131.5ZM267.0,901.0 265.3,901.2 264.1,899.9 269.3,896.0 269.0,899.9 267.0,901.0ZM298.8,798.2 293.9,801.8 293.6,798.8 299.3,795.2 300.4,795.3 298.8,798.2ZM281.3,173.1 280.7,174.2 275.8,170.1 277.3,166.3 280.7,170.5 281.3,173.1ZM323.9,149.0 315.6,156.5 312.4,156.4 316.6,145.9 321.6,148.8 323.9,149.0ZM319.2,166.4 316.0,168.0 312.2,167.8 316.8,164.9 321.0,160.0 321.0,163.1 319.2,166.4ZM290.9,177.2 288.5,177.4 283.9,172.5 286.4,170.0 292.8,173.0 290.9,177.2Z"/></svg>
+  </div>
+
+  <canvas id="cv" aria-hidden="true"></canvas>
+  <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
+
+  <div class="top">
+    <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
+    <p class="meta">Player · <b>Dongchi Bình</b><i>◆</i><em>Unlock Gate 1</em></p>
+  </div>
+
+  <div class="dock">
+    <div class="modes">
+      <button id="mAuto" type="button">Auto-fire</button>
+      <button id="mTap" type="button">Tap-fire</button>
+    </div>
+    <p class="tip" id="tip"></p>
+  </div>
+</div>
+</div>
+
+<img src="/api/ping?ev=tai_trang&amp;detail=phao-hoa" alt="" width="1" height="1"
+     style="position:absolute;left:0;top:0;opacity:0;pointer-events:none" aria-hidden="true">
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+var AUTO_MS = 15*60*1000;      /* Auto-fire chạy liên tục bấy lâu rồi nghỉ */
+var GIU_MAX = 5000;            /* giữ tay tối đa 5 giây một nhịp */
+
+function ping(ev, detail){
+  try{
+    var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
+      solved:[], ua:navigator.userAgent.slice(0,120) });
+    if(navigator.sendBeacon &&
+       navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))) return;
+    fetch('/api/ping',{method:'POST',body:body,keepalive:true,
+      headers:{'Content-Type':'application/json'}}).catch(function(){});
+  }catch(e){}
+}
+function rnd(a, b){ return a + Math.random()*(b - a); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PHÁO HOA
+   Dựng riêng cho trang này, không xài lại bộ hình của cảnh SGN.
+   Ba lớp, đúng cách một quả pháo thật đi:
+     1. QUẢ BAY  — vọt lên từ mép dưới, chậm dần, rắc tàn lửa dọc đường;
+     2. NỞ       — hàng trăm tia toả đều, kéo ĐUÔI SÁNG dài (mỗi hạt nhớ 6 vị
+                   trí gần nhất rồi vẽ thành vệt nhạt dần) — chính cái đuôi này
+                   tạo ra dáng "chùm tua" như ảnh mẫu;
+     3. TÀN      — hạt nặng rơi theo trọng lực, nhấp nháy rồi tắt.
+   Vẽ chồng sáng (globalCompositeOperation = 'lighter') để chỗ giao nhau bùng
+   trắng, giống phim pháo hoa thật. Nền canvas vẫn TRONG SUỐT nên bóng bản đồ
+   phía dưới không bị phủ mờ.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bảng màu: vàng kim và xanh của bản đồ đứng chính, hồng/đỏ và tím điểm xuyết */
+var MAU = [
+  { h: 42,  s: 100 },   /* vàng kim — màu chủ đạo của bản đồ */
+  { h: 196, s: 100 },   /* xanh neon */
+  { h: 350, s: 96  },   /* đỏ hồng */
+  { h: 275, s: 92  },   /* tím */
+  { h: 150, s: 88  },   /* xanh ngọc */
+  { h: 20,  s: 100 }    /* cam lửa */
+];
+var KIEU = ['chum', 'tua', 'vong', 'nhon'];   /* chùm · tua rủ · vòng · chùm nhọn */
+
+var cv = $('cv'), c = cv.getContext('2d');
+var dpr = Math.min(devicePixelRatio || 1, 2);
+var W = 0, H = 0, raf = 0;
+var quaBay = [], hat = [];
+var TRAIL = 6;                 /* số vị trí mỗi hạt nhớ để vẽ đuôi */
+
+function co(){
+  var r = cv.getBoundingClientRect();
+  W = r.width; H = r.height;
+  cv.width = W*dpr; cv.height = H*dpr;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+/* ---- 1. bắn một quả lên ---- */
+function ban(x, dinh){
+  var m = MAU[(Math.random()*MAU.length)|0];
+  var tx = x == null ? rnd(W*0.26, W*0.74) : x;   /* chừa lề để chùm không cụt mép */
+  var ty = dinh == null ? rnd(H*0.24, H*0.52) : dinh;   /* né vùng chữ trên cùng */
+  var cao = Math.max(90, H - ty);
+  quaBay.push({
+    x: tx + rnd(-14, 14), y: H + 8,
+    vx: rnd(-0.35, 0.35),
+    /* tốc độ ban đầu tính ngược từ độ cao muốn tới, để quả nổ đúng tầm */
+    vy: -Math.sqrt(2 * 0.13 * cao),
+    dich: ty, mau: m,
+    kieu: KIEU[(Math.random()*KIEU.length)|0],
+    to: rnd(0.82, 1.25),
+    khoi: 0
+  });
+}
+
+/* ---- 2. nở ---- */
+function no(q){
+  var m = q.mau, k = q.kieu;
+  var n = k === 'vong' ? 96 : (k === 'tua' ? 128 : 116);
+  n = Math.round(n * q.to);
+  var goc0 = Math.random()*6.283;
+  for(var i = 0; i < n; i++){
+    var a = goc0 + (i/n)*6.283 + rnd(-0.03, 0.03);
+    var sp;
+    if(k === 'vong')      sp = rnd(4.3, 4.9);                       /* vòng tròn đều */
+    else if(k === 'tua')  sp = rnd(1.8, 5.8);                       /* tua rủ, dài ngắn lẫn lộn */
+    else if(k === 'nhon') sp = rnd(2.8, 5.6) * (0.62 + 0.5*Math.abs(Math.cos(3*a)));
+    else                  sp = rnd(2.6, 5.4);                       /* chùm thường */
+    sp *= q.to;
+    var song = k === 'tua' ? rnd(0.9, 1.5) : rnd(0.62, 1.0);
+    hat.push({
+      x: q.x, y: q.y,
+      vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
+      h: m.h + rnd(-9, 9), s: m.s,
+      song: song, doi: song,
+      nang: k === 'tua' ? 0.052 : 0.038,      /* tua rủ thì nặng hơn cho xoã xuống */
+      /* Lực cản quyết định bán kính chùm: cản yếu quá thì chùm bung rộng hơn cả
+         khung, cắt cụt hai bên. 0.968–0.974 cho chùm vừa lòng khung 390px. */
+      can: k === 'vong' ? 0.974 : 0.968,
+      nhay: Math.random() < 0.34,
+      duoi: []
+    });
+  }
+  /* lõi sáng bùng ra giữa tâm */
+  for(var j = 0; j < 16; j++){
+    var b = Math.random()*6.283, t = rnd(0.2, 1.1);
+    hat.push({ x:q.x, y:q.y, vx:Math.cos(b)*t, vy:Math.sin(b)*t,
+      h:m.h, s:40, song:0.42, doi:0.42, nang:0.02, can:0.94, nhay:false, duoi:[] });
+  }
+}
+
+/* ---- 3. vẽ ---- */
+function ve(){
+  c.clearRect(0, 0, W, H);
+  c.globalCompositeOperation = 'lighter';
+  c.lineCap = 'round';
+
+  var i, q, p;
+  /* quả đang bay + tàn lửa dọc đường */
+  for(i = quaBay.length - 1; i >= 0; i--){
+    q = quaBay[i];
+    q.x += q.vx; q.y += q.vy; q.vy += 0.13;
+    q.khoi++;
+    if(q.khoi % 2 === 0){
+      hat.push({ x:q.x + rnd(-1.4,1.4), y:q.y + rnd(0,3),
+        vx:rnd(-0.22,0.22), vy:rnd(0.1,0.5),
+        h:38, s:100, song:rnd(0.22,0.42), doi:0.42, nang:0.014, can:0.93,
+        nhay:false, duoi:[] });
+    }
+    c.globalAlpha = 1;
+    c.fillStyle = 'hsl(44,100%,86%)';
+    c.beginPath(); c.arc(q.x, q.y, 2.1, 0, 6.2832); c.fill();
+    if(q.vy >= -0.6 || q.y <= q.dich){ no(q); quaBay.splice(i, 1); }
+  }
+
+  /* hạt nổ — vẽ đuôi trước, chấm sáng sau */
+  for(i = hat.length - 1; i >= 0; i--){
+    p = hat[i];
+    p.duoi.push(p.x, p.y);
+    if(p.duoi.length > TRAIL*2) p.duoi.splice(0, 2);
+    p.x += p.vx; p.y += p.vy;
+    p.vy += p.nang; p.vx *= p.can; p.vy *= p.can;
+    p.song -= 0.0102;
+    if(p.song <= 0 || p.y > H + 30){ hat.splice(i, 1); continue; }
+
+    var k = p.song / p.doi;                       /* 1 → 0 theo tuổi */
+    /* Giữ MÀU: đẩy độ sáng lên gần trắng thì quả nào cũng hoá trắng như nhau,
+       mất hẳn bảng màu. Chỉ lõi mới trắng, phần tua giữ đúng sắc của quả. */
+    var sang = 48 + 26*k;
+    var mo = k*0.72 + 0.28;
+    if(p.nhay && k < 0.42) mo *= (Math.random() < 0.4 ? 0.25 : 1);
+
+    /* đuôi: nối các vị trí cũ, nhạt dần về phía sau */
+    var d = p.duoi, n = d.length/2;
+    if(n > 1){
+      for(var j = 0; j < n - 1; j++){
+        var f = (j + 1) / n;                      /* càng gần đầu càng đậm */
+        c.globalAlpha = mo * f * 0.82;
+        c.strokeStyle = 'hsl(' + p.h + ',' + p.s + '%,' + sang + '%)';
+        c.lineWidth = 0.7 + 1.9*f*(0.45 + 0.55*k);
+        c.beginPath();
+        c.moveTo(d[j*2], d[j*2+1]);
+        c.lineTo(d[j*2+2], d[j*2+3]);
+        c.stroke();
+      }
+    }
+    c.globalAlpha = mo;
+    c.fillStyle = 'hsl(' + p.h + ',' + p.s + '%,' + Math.min(88, sang + 22) + '%)';
+    c.beginPath(); c.arc(p.x, p.y, 1.0 + 1.5*k, 0, 6.2832); c.fill();
+  }
+
+  c.globalAlpha = 1;
+  c.globalCompositeOperation = 'source-over';
+  raf = requestAnimationFrame(ve);
+}
+
+/* ═══════════ HAI CHẾ ĐỘ ═══════════ */
+var che = '', autoT = 0, autoHet = 0, giuT = 0, giuTu = 0;
+function dungAuto(){ clearTimeout(autoT); autoT = 0; }
+
+/* Auto-fire bắn theo ĐỢT: một hai quả lẻ, thỉnh thoảng một loạt ba quả rồi
+   nghỉ lấy nhịp — đều đặn từng quả một nhìn như máy, không ra không khí lễ. */
+function dotTiep(){
+  if(che !== 'auto') return;
+  if(Date.now() > autoHet){
+    dungAuto();
+    $('tip').textContent = 'Hết đợt — bấm Auto-fire để bắn tiếp';
+    return;
+  }
+  var loat = Math.random() < 0.28 ? 3 : (Math.random() < 0.55 ? 2 : 1);
+  for(var i = 0; i < loat; i++) setTimeout(ban, i * rnd(140, 260));
+  autoT = setTimeout(dotTiep, loat > 2 ? rnd(1500, 2100) : rnd(700, 1350));
+}
+function datChe(m){
+  if(che === m) return;
+  che = m;
+  $('mAuto').classList.toggle('on', m === 'auto');
+  $('mTap').classList.toggle('on', m === 'tap');
+  dungAuto();
+  if(m === 'auto'){
+    autoHet = Date.now() + AUTO_MS;
+    $('tip').textContent = 'Đang bắn liên tục — bấm Tap-fire để tự bắn';
+    ban(); dotTiep();
+    ping('phao_hoa_che', 'auto-fire');
+  }else{
+    $('tip').textContent = 'Chạm để bắn một nhịp · giữ tay để bắn dài (tối đa 5 giây)';
+    ping('phao_hoa_che', 'tap-fire');
+  }
+}
+$('mAuto').addEventListener('click', function(e){ e.stopPropagation(); datChe('auto'); });
+$('mTap').addEventListener('click', function(e){ e.stopPropagation(); datChe('tap'); });
+
+/* Tap-fire: chạm đâu bắn lên đó; giữ tay thì bắn tiếp, chặn cứng ở 5 giây. */
+function batDauGiu(x, y){
+  if(che !== 'tap') return;
+  ban(x, y);
+  giuTu = Date.now();
+  clearInterval(giuT);
+  giuT = setInterval(function(){
+    if(Date.now() - giuTu > GIU_MAX){ clearInterval(giuT); giuT = 0; return; }
+    ban(x + rnd(-60, 60), y + rnd(-40, 60));
+  }, 320);
+}
+function thaTay(){ clearInterval(giuT); giuT = 0; }
+
+/* ═══════════ RA VỀ ═══════════ */
+var dangVe = false;
+function veLai(){
+  if(dangVe) return; dangVe = true;
+  ping('phao_hoa_dong', che || 'chưa chọn chế độ');
+  /* Về thẳng bản đồ kèm cờ cred=1 để khung Tổ kỹ thuật mở lại — quay lại mà
+     khung biến mất thì người xem phải đi gõ 10 nhịp lần nữa, vô duyên. */
+  setTimeout(function(){ location.href = '/?stay=1&cred=1'; }, 120);
+}
+$('close').addEventListener('click', function(e){ e.stopPropagation(); veLai(); });
+
+/* Gõ đúp vào KHOẢNG TRỐNG (không phải nút) cũng ra về */
+var chamCuoi = 0;
+function nenNen(e){
+  if(e.target.closest('button')) return;
+  var r = cv.getBoundingClientRect();
+  var t = e.touches ? e.touches[0] : e;
+  var x = t.clientX - r.left, y = t.clientY - r.top;
+  var now = Date.now();
+  if(now - chamCuoi < 320){ chamCuoi = 0; thaTay(); veLai(); return; }
+  chamCuoi = now;
+  batDauGiu(x, y);
+}
+$('frame').addEventListener('mousedown', nenNen);
+$('frame').addEventListener('touchstart', nenNen, {passive:true});
+addEventListener('mouseup', thaTay);
+addEventListener('touchend', thaTay);
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') veLai(); });
+
+co();
+addEventListener('resize', co, {passive:true});
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches) ve();
+datChe('auto');
+ping('phao_hoa_mo', '');
+})();
+</script>
+</body>
+</html>

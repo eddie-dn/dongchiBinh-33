@@ -68,7 +68,8 @@ const NHAN = {
   han_hub:            'Mở màn chọn hồ sơ HAN',
   han_hub_di:         'Từ màn chọn hồ sơ đi tiếp',
   han_ve_hub:         'Lùi về màn chọn hồ sơ HAN',
-  han_cua_hau:        'Mở bảng điều phối bằng hoa 5 nhịp',
+  han_hop_mo:         'HỘP BÍ MẬT tới ngày mở nội dung',
+  han_cua_hau:        'Mở khối vận hành bằng 5 nhịp',
   han_dieu_phoi:      'Lệnh trong bảng điều phối HAN',
 
   /* Hai pha điều hướng + hồ sơ người chơi (profile) — USER-FLOW.md */
@@ -87,6 +88,10 @@ const NHAN = {
   gui_tam_tu_loi:     'Gửi tâm tư thất bại',
   vao_easter_egg:     'Vào Easter Egg từ khung Tổ kỹ thuật',
   easter_egg_found:   'EASTER EGG FOUND — màn pháo hoa lần đầu',
+  phao_hoa_mo:        'Mở trang pháo hoa',
+  phao_hoa_che:       'Đổi chế độ bắn pháo hoa',
+  phao_hoa_dong:      'Rời trang pháo hoa',
+  clockwise:          'CLOCKWISE — vặn kim đồng hồ bản đồ',
   xem_lai_phao_hoa:   'Xem lại màn pháo hoa'
 };
 

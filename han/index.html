@@ -59,7 +59,11 @@ body{margin:0;background:#EFE6F7;color:var(--ink);
 /* canvas là replaced element — thiếu width/height:100% thì inset:0 không giãn nổi */
 #sakura{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
 
+/* BẪY: hộp đặt absolute với left:50% thì bề rộng khả dụng chỉ còn NỬA khung,
+   nên chữ tự xuống dòng sớm và rớt lại một chữ lẻ. width:max-content mới cho nó
+   rộng theo đúng nội dung. */
 .classtag{position:absolute;top:13px;left:50%;transform:translateX(-50%);z-index:6;
+  width:max-content;max-width:min(84vw,300px);
   padding:6px 14px;border:1px solid var(--line);border-radius:5px;
   background:rgba(255,255,255,.55);backdrop-filter:blur(6px);
   font-family:"Oswald";font-size:8.5px;font-weight:500;letter-spacing:.24em;
@@ -114,7 +118,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .foot{position:relative;z-index:5;flex:none;display:flex;align-items:center;
   justify-content:space-between;gap:8px;padding:0 clamp(18px,5vw,24px) 22px}
 .back{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
-  background:rgba(255,255,255,.5);border-radius:999px;padding:9px 14px;cursor:pointer;
+  background:rgba(255,255,255,.5);border-radius:999px;padding:12px 16px;cursor:pointer;
   font-family:"Oswald";font-size:9.5px;font-weight:500;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink2)}
 .back:hover{border-color:var(--orchid);color:var(--ink)}
@@ -154,7 +158,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 
   <div class="foot">
     <button class="back" id="back" type="button">&#8592; Bản đồ</button>
-    <span class="stamp" id="stamp" data-base="HAN-961030 · V1.00<br>Last updated 13-Aug-2026"></span>
+    <span class="stamp" id="stamp" data-base="HAN-961030 · V1.01<br>Last updated 13-Aug-2026"></span>
   </div>
 </div>
 </div>

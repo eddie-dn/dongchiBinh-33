@@ -27,6 +27,7 @@ Deploy thẳng lên Vercel từ GitHub.
 │   ├── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
 │   └── thu.js              ← nhận "tâm tư" từ khung Tổ kỹ thuật, gửi về hòm thư
 │
+├── phao-hoa/index.html     ← MÀN PHÁO HOA · nền bản đồ tắt đèn, Auto-fire / Tap-fire
 ├── han/
 │   ├── index.html          ← MÀN CHỌN HỒ SƠ · hai thẻ A/B, nút về bản đồ
 │   ├── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
@@ -311,17 +312,19 @@ Mở bằng cửa hậu **10 nhịp vào dòng Last updated**. Nội dung sửa 
 | Phần | Chi tiết |
 |---|---|
 | Ảnh chân dung | `.cred-hero` — ảnh ở `/han/honghan.jpg`, hai lớp sáng kiểu splash art (quầng gradient phía sau + lớp phủ bắt sáng phía trước). **Chưa có ảnh thì tự ẩn** (`onerror`) và còn lại quầng sáng, trang không vỡ |
-| Tiêu đề | **Collected: Easter Egg** ⇄ **Unlock Gate 1** — đổi qua lại lúc ăn mừng rồi đứng lại ở *Collected: Easter Egg*, nhấp nháy cùng cơ chế với cặp *Easter Egg ⇄ Game On* ở tiêu đề trang |
+| Tiêu đề | **Collected: Easter Egg** — nhấp nháy cùng cơ chế với cặp *Easter Egg ⇄ Game On* ở tiêu đề trang. Cụm chữ *Tổ kỹ thuật* phía trên đã bỏ để tiêu đề này làm chính |
 | Dòng dưới | Dòng chúc mừng kèm chìa khoá xoay. Trước đây còn một dòng `Collected: Easter Egg` nữa — **đã bỏ** vì trùng hệt tiêu đề |
+| Dòng chúc mừng | *Chúc mừng **Dongchi Bình** 🎉* với chiếc **jet lượn một vòng chéo** phía trước |
 | Hai nút | trái *Get to know me* → `/han/961030-a` · phải *Enter Easter Egg ✦* → **bay thẳng vào `/dad/950901-b`**, đồng thời bật `eggHack` + `credFound` nên quay ra bản đồ là đã GAME ON |
 | Dòng tâm tư | một dòng chữ có **dấu thư** dưới hai nút — bấm mở hộp nhập (Gửi / Quay lại), gửi về hòm thư qua `/api/thu` |
 
-**Pháo hoa lần đầu.** Lần **đầu tiên** mở khung này: pháo hoa **toàn màn hình trong 15 s**
-(`FW_MS`), overlay `#fwrap` **nuốt mọi cú bấm** — `closeCred()` thoát sớm khi `fwOn` nên
-không đóng ngang được. Dùng lại đúng bộ hình pháo hoa của cảnh SGN (`FWSHAPES`, `shapeR`).
+**Pháo hoa có TRANG RIÊNG — `/phao-hoa`.** Lần **đầu tiên** mở được khung này là bay
+thẳng sang đó (khung đóng lại trước khi đi, không ai vừa xem pháo hoa vừa nhìn khung).
+Đóng ở trang pháo hoa thì quay về bản đồ kèm `?cred=1` → khung **tự mở lại**, lúc này đã
+có nút cuộn phim; cờ `cred=1` được dọn khỏi thanh địa chỉ ngay sau đó.
 
-**Từ lần thứ hai:** chỉ nhấp nháy đổi chữ, không pháo hoa. Muốn xem lại thì bấm **icon
-xem lại** `#credRp` (chỉ hiện khi đã xem lần đầu) — giống các nút xem lại trong Hộp pí mật.
+**Từ lần thứ hai:** khung mở tại chỗ, chỉ nhấp nháy màu. Muốn xem lại pháo hoa thì bấm
+**icon cuộn phim** `#credRp` — cũng sang `/phao-hoa`.
 
 Cờ `eggParty` nằm **trong cùng bộ trạng thái với `mtv1`** (`save()` / `boot()`), nên
 **reset là reset cả cụm**: chơi lại từ đầu thì màn pháo hoa cũng mở lại từ đầu.
@@ -834,6 +837,113 @@ kiện là nguồn gốc của mọi vòng viền lơ lửng.
 
 ---
 
+## 21b. `/phao-hoa` — màn pháo hoa có trang riêng
+
+Trước đây pháo hoa là một overlay đè lên khung Tổ kỹ thuật, chặn thao tác 15 giây. Nay nó
+là **một trang riêng** để vừa xem thoải mái vừa có chỗ đặt nút.
+
+| | |
+|---|---|
+| Nền | **Đúng bản đồ tác chiến nhưng tắt hết đèn** — chỉ còn bóng đất liền mờ, không toạ độ, không đường bay, không chữ. Có vậy ánh pháo hoa mới nổi |
+| Chữ | Nằm **trên cao, ngay vùng pháo nổ**: `Collected: Easter Egg` (nhấp nháy) rồi `Player · Dongchi Bình ◆ Unlock Gate 1` **chung một dòng** |
+| Nút | Chân trang, tách khỏi khối chữ |
+| Ra về | Nút ✕, gõ đúp vào khoảng trống, hoặc Esc → về `/?stay=1&cred=1` |
+
+**Hai chế độ:**
+
+- **Auto-fire** (mặc định) — bắn liên tục, hằng `AUTO_MS` đang để **15 phút** rồi tự nghỉ.
+  Bắn theo **đợt** 1–3 quả rồi nghỉ lấy nhịp; đều đặn từng quả một nhìn như máy.
+- **Tap-fire** — chạm một cái bắn một quả lên đúng chỗ chạm; **giữ tay thì bắn tiếp**,
+  chặn cứng ở `GIU_MAX` = 5 giây.
+
+Gõ đúp để thoát và chạm để bắn đi chung một trình nghe: cú thứ hai trong 320 ms là thoát,
+ngoài ra là bắn. Bấm lên nút thì bỏ qua, khỏi vừa bấm nút vừa bắn.
+
+### Bộ pháo hoa dựng riêng — không xài lại hình của cảnh SGN
+
+Ba lớp, đúng cách một quả pháo thật đi:
+
+1. **Quả bay** — vọt lên từ mép dưới, chậm dần, rắc tàn lửa dọc đường. Tốc độ ban đầu
+   tính ngược từ độ cao muốn tới nên quả nổ đúng tầm.
+2. **Nở** — 96–128 tia toả đều, mỗi hạt **nhớ 6 vị trí gần nhất** rồi vẽ thành vệt nhạt
+   dần; chính cái đuôi đó tạo ra dáng "chùm tua" như ảnh mẫu. Bốn kiểu: `chum` · `tua`
+   (rủ xuống, nặng hơn) · `vong` (tròn đều) · `nhon`.
+3. **Tàn** — hạt rơi theo trọng lực, một phần ba nhấp nháy rồi tắt.
+
+Vẽ chồng sáng (`globalCompositeOperation = 'lighter'`) cho chỗ giao nhau bùng trắng.
+Canvas vẫn **trong suốt** — không dùng mẹo phủ nền mờ để tạo vệt, vì làm thế là che mất
+bóng bản đồ phía dưới.
+
+Hai số quyết định dáng chùm: **lực cản** `can` (0.968–0.974 cho chùm vừa lòng khung
+390 px — cản yếu hơn thì chùm bung rộng hơn cả màn, cụt hai bên) và **độ sáng** `sang`
+(48 + 26·tuổi — đẩy cao hơn thì quả nào cũng hoá trắng, mất sạch bảng màu).
+
+---
+
+## 21c. Clockwise — vặn kim đồng hồ của bản đồ
+
+Box Tổng tư lệnh → **MAP-01** → **Clockwise**: chọn một ngày rồi *Vặn kim*, trang tải lại
+với đồng hồ đặt đúng **00:00 giờ VN ngày đó**. Dùng để xem lại (hoặc xem trước) màn chúc
+mừng sinh nhật khi đã lỡ mốc 01-09. *Về hiện tại* trả kim.
+
+Cách làm: cộng một khoảng lệch `mtv1.lech` vào **`Date.now()`** ngay dòng đầu khối script,
+**trước** khi `season()` chạy — mọi cửa theo ngày trong trang (đếm ngược, cửa sổ Easter
+Egg, mốc mở hồ sơ) tự đi theo, khỏi phải sửa từng chỗ. Không có lệch thì không đụng gì tới
+`Date.now`.
+
+> **BẪY:** `BIRTHDAY` là chuỗi ISO có múi `+07:00`. Lấy ngày gợi ý qua `getDate()` thì máy
+> ở múi khác trả về **ngày hôm trước** — cắt thẳng `slice(0,10)` của chuỗi mới đúng.
+
+Nút tự ghi ngày đang đứng (`Clockwise · đang ở 1-9`) để không ai kẹt trong quá khứ mà
+không biết.
+
+---
+
+## 21d. Tab HAN trên bản đồ — ba trạng thái
+
+| Tình huống | Tab HAN thấy gì |
+|---|---|
+| Chưa tìm ra Easter Egg | Y như cũ — hai hồ sơ 961030 **chưa tồn tại** (`credGate`) |
+| Đã tìm ra, chưa xong bộ câu hỏi | `HAN-961030-A` mở vào được · `HAN-961030-B` còn niêm phong, ghi *Cần mã từ HAN-961030-A* |
+| Đã xong bộ câu hỏi (`hanv1.done`) | B đổi tên thành **HongHan's Secret Box**, bấm vào được, kèm đồng hồ *Nội dung cập nhật sau N ngày…* |
+
+Bản đồ **chỉ đọc** `hanv1`, không bao giờ ghi đè — hai hệ tiến độ ở hai khoá riêng.
+
+> **BẪY ĐÃ VẤP:** hằng `HANBOX` (mốc 01-10) phải khai **trước** mảng `NODES` — `NODES` là
+> `const` khởi tạo ngay, tham chiếu ngược là dính temporal dead zone y như mục 20.
+
+---
+
+## 21e. Soát UI trên nhiều cỡ màn
+
+Có bộ soát tự động chạy **8 trang × 6 cỡ màn** (320×568 → 1280×800), bắt bốn thứ:
+
+1. cả trang có phải kéo ngang không (`scrollWidth > clientWidth`);
+2. **chữ bị cắt** — phần tử có chữ mà nội dung rộng hơn hộp của chính nó trong khi hộp
+   lại `overflow:hidden`;
+3. **nút thấp dưới 32 px** — cỡ chạm tay;
+4. lỗi JS lúc tải trang.
+
+Bốn chỗ đã sửa từ đợt soát này:
+
+| Chỗ | Trước | Sau |
+|---|---|---|
+| Nút *1000% / Xem xét* của hộp xác nhận | cao **13 px** (chỉ có padding ngang) | `min-height:40px` |
+| Tay nắm bảng hồ sơ `.grip` | vùng bấm **4 px** | nút 32 px, vạch vẽ bằng `::before` |
+| Dòng bản quyền kiêm cửa hậu | 24 px | 34 px, nhìn không đổi |
+| Nút lùi ba trang HAN | 30 px | 38 px |
+
+> **BẪY ĐÃ VẤP — hai lỗi CSS kinh điển, cùng lộ ra ở màn 320 px:**
+>
+> - **Media query đặt sai chỗ.** Khối `@media(max-width:379px)` để giữa bảng kiểu thì
+>   thua các quy tắc khai sau nó (cùng độ đặc hiệu, thắng theo thứ tự nguồn) — sửa cỡ chữ
+>   mà màn hình không đổi gì. Phải để **cuối** bảng kiểu.
+> - **`position:absolute` + `left:50%` bóp bề rộng.** Bề rộng khả dụng của hộp chỉ còn
+>   **nửa khung**, nên tem phân loại tự xuống dòng sớm và rớt lại chữ "PHÚC" một mình.
+>   `width:max-content` mới cho nó rộng theo đúng nội dung.
+
+---
+
 ## 22. HAN-961030 — Get to know me & Secret Box
 
 Hai trang mới, vào từ khung **Tổ kỹ thuật** của bản đồ (nút *Get to know me*).
@@ -908,16 +1018,26 @@ ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()`
 | Tâm lý | Nhà tâm lý học vĩ đại nhất trong lòng em? | `CARL JUNG` |
 
 - **Thứ tự câu hỏi ngẫu nhiên** mỗi lượt chơi (`tron()` trộn mảng, lưu ở `hanv1.order`).
-- **Mỗi ngày mỗi câu chỉ được sai 2 lần** (`SAI_NGAY`). Hết lượt → câu đó khoá tới nửa
-  đêm (màn *See ya tmr 😉* với một dòng `Lượt retry · 0/2` và đồng hồ đếm), và người chơi
-  **phải reset toàn bộ**, trộn lại thứ tự, trả lời lại từ đầu. Bộ đếm sai reset theo ngày
-  **giờ máy** (`hanv1.day`).
+**Luật lượt sai** (ba hằng số đầu khối script):
 
-  > **Luật này còn ngặt và có ngõ cụt.** Reset **không hoàn lượt sai** — trộn lại thứ tự
-  > xong, đi tới đúng câu đã cháy lượt là tắc, hôm đó không cách nào chơi hết bài. Đề xuất
-  > nới: lượt sai đếm theo **phiên 30 phút** thay vì tới nửa đêm; cháy lượt một câu thì
-  > **gác câu đó lại và nhảy sang câu kế**, cuối vòng mới quay lại; chỉ khi cháy lượt cả
-  > năm câu mới **mời** (không ép) làm lại. Chưa đổi — chờ chốt.
+| Hằng | Mặc định | Nghĩa |
+|---|---|---|
+| `SAI_PHIEN` | 2 | Sai bấy nhiêu lần thì câu đó **cháy lượt** |
+| `NGHI` | 30 phút | Cháy lượt xong câu đó **nghỉ** bấy lâu |
+| `CHAY_NGAY` | 2 | Mỗi câu mỗi ngày chỉ được cháy bấy nhiêu vòng; vòng cuối thì nghỉ **tới mai** |
+
+- Cháy lượt là **gác câu đó lại và nhảy ngay sang câu kế** — người chơi luôn còn việc để
+  làm, và có lời nhắn nói rõ vì sao màn hình vừa đổi câu.
+- Câu đã trả lời đúng thì **giữ nguyên** (`hanv1.dung`), con trỏ chỉ chạy vòng qua những
+  câu còn nợ.
+- **Cả năm câu cùng nghỉ** mới hiện màn *See ya tmr 😉*: số câu đang chờ + đồng hồ đếm tới
+  lúc câu sớm nhất mở lại, và một nút **mời** xáo bài chơi lại (không ép). Hết giờ là màn
+  đó **tự vào chơi tiếp**, khỏi bấm gì.
+- Sang ngày mới trả lại sạch: lượt sai, lượt cháy, mọi khoá đang treo (`hanv1.day`).
+
+> **BẪY ĐÃ VẤP — luật cũ có ngõ cụt.** Bản trước khoá câu tới nửa đêm và **ép** reset
+> toàn bộ, mà reset lại **không hoàn lượt**: xáo bài xong đi tới đúng câu đã cháy là tắc,
+> hôm đó không cách nào chơi hết. Đây là quà sinh nhật, không phải bài thi.
 - **Gợi ý — đúng cơ chế Mission 3.** Sai lần đầu lộ gợi ý 1; gợi ý kế **tự mở sau 45
   giây** mà không cần sai thêm; muốn mở sớm thì bấm **SOS góc dưới trái 10 nhịp liên
   tiếp** (mỗi nhịp cách nhau dưới 900 ms). Bấm lai rai một hai cái chỉ bị ghẹo, tối đa
@@ -958,14 +1078,28 @@ thì không thấy, khỏi mời gọi. Hiện rồi thì bấm **10 nhịp liê
 Số lần sai ghi vào `hanv1.bSai`, nên **tải lại trang không mất nút SOS đã mở được** —
 bắt sai lại ba lần nữa mới cho thấy thì vô lý.
 
+### Đồng hồ trong Secret Box
+
+Mở khoá xong, `961030-b` **không** đổ nội dung ra ngay: một **hộp quà thắt nơ neon**, một
+dòng trạng thái ngắn xoay vòng — *Đang thu thập dữ liệu · Đang gói ghém · Đang sắp xếp*,
+mỗi câu một icon — và **đồng hồ đếm ngược tới 01-10** (`MO_NGAY` / `MO_THANG`). Tới mốc thì
+tự lật sang màn nội dung.
+
+Khối vận hành có nút **⏩ Tua tới 01.10** để xem thử màn đó ngay, bấm lần nữa là trả kim
+(`hanv1.tua` — một khoảng lệch mili-giây, không đụng đồng hồ máy).
+
 ### Cửa hậu hoa — Khối vận hành
 
 Giống lá cờ ngoài bản đồ: **bấm 5 nhịp** (mỗi nhịp cách nhau dưới 900 ms) → **Khối vận
 hành**, nhập **PIN 1959** → *Reset* (bấm hai lần để chắc) hoặc *Hoàn thành ngay*.
 
-Vùng bấm là **cả cụm hoa + dòng tem** (`#stampzone`), đúng như cửa hậu ngoài bản đồ nhận
+Vùng bấm là **cả cụm icon + dòng tem** (`#stampzone`), đúng như cửa hậu ngoài bản đồ nhận
 cả dòng bản quyền chứ không riêng lá cờ 15 px — trên điện thoại dễ trúng hơn hẳn. Nhấp
-nháy thì vẫn chỉ mình bông hoa.
+nháy thì vẫn chỉ mình cái icon.
+
+Icon là **nơ bướm**, và cụm này **không đổi con trỏ thành bàn tay** — để nguyên mũi tên
+thì không ai đoán ra chỗ đó bấm được; ai biết thì tự bấm đủ nhịp. Tem cũng **bỏ tên hồ sơ
+`HAN-961030-x`**, chỉ còn version + last updated.
 
 Hộp nhập mã dựng **y khuôn hộp mã của Box Tổng tư lệnh**: một nhãn nhỏ *Mã truy cập*,
 hàng ô gạch chân, một dòng nhắc *Gõ 4 số*. Không tiêu đề, và **không kể mã ở đâu ra** —
