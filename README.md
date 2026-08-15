@@ -403,13 +403,28 @@ vào `mtv1` ngay sau khi xoá. Đây là dấu vết duy nhất được phép t
 
 Sửa chuỗi ở thuộc tính `data-base` của `#stamp`; `stampText()` sẽ ghép thêm `· R(n)`.
 
-**Nhấp nháy tem:**
+### Nhấp nháy tem — BỐN lý do, đọc cả bảng trước khi thêm nhánh
 
-| Tình huống | Có nháy |
-|---|---|
-| Phiên đầu trong ngày, **chưa** từng mở khung giới thiệu | Có, mỗi ngày một lần |
-| Đã mở được khung giới thiệu | Không nháy hằng ngày nữa |
-| Vừa giải xong đủ 4 | Có, đúng một lần |
+Hàm `eggFlash(why)`. Bốn `why` khác nhau, mỗi cái một điều kiện riêng:
+
+| `why` | Gọi khi nào | Điều kiện | Đã tìm ra Easter Egg thì còn nháy? |
+|---|---|---|---|
+| `win` | vừa giải đủ 4, và mỗi lần mở trang sau đó | chỉ **một lần đời** (`eggDone`) | — |
+| `daily` | phiên đầu trong ngày | mỗi ngày một lần (`eggDay`) | **Không** |
+| `clue` | chuỗi nhắc bài tìm cửa hậu | mỗi lần mở trang | **Không** |
+| `gameon` | **mọi lần mở trang trong cửa sổ Game On** | không kèm điều kiện gì | **Có** |
+
+> **BẪY ĐÃ VẤP — tìm ra Easter Egg xong là tem tắt hẳn.** Ba nhánh đầu đều tắt
+> sau khi có `credFound` (`win` thì vướng `eggDone` một-lần-đời), nên người chơi
+> F5 mỏi tay trong lúc Game On mà không thấy gì nhấp nháy, tưởng hỏng. Nhánh
+> `gameon` sinh ra đúng để chữa chỗ đó: **trong cửa sổ ăn mừng thì tem nháy mỗi
+> lần mở trang, tìm ra Easter Egg rồi hay chưa cũng vậy** — nó là lời chúc mừng,
+> không phải lời chỉ đường. Ngoài cửa sổ thì `gameon` im, khỏi loạn.
+
+Thứ tự gọi lúc khởi động (trong `boot`, sau 900 ms):
+`eggFlash('win')` → `eggFlash('gameon')` nếu đang Game On → rồi **hoặc** chuỗi
+nhắc bài (`clueChay`) **hoặc** `eggFlash('daily')` khi KHÔNG ở Game On. Ba
+nhánh sau loại trừ nhau để không có hai lượt nháy chồng lên nhau.
 
 ---
 
@@ -752,6 +767,45 @@ Mọi mốc *"mỗi ngày một lần"* — `eggDay` (tem), `eggTitleDay` (Easte
 
 ---
 
+### Bộ đếm "mở được Easter Egg mấy lần" và nút Reset MAP-02
+
+Box Tổng tư lệnh → **MAP-02** có thêm một dòng: **`Mở được Easter Egg: n lần`**
+(`mtv1.eggMo`, `n = 0` là chưa lần nào). Bộ đếm cộng thêm 1 mỗi lần `credFound`
+bật từ chưa sang rồi — đi đường cửa hậu 10 nhịp hay đường nút *Enter Easter Egg*
+đều tính.
+
+**Reset MAP-02 nay trả Easter Egg về đúng lúc chưa ai tìm ra**: xoá
+`credFound` · `eggWin` · `eggDone` · `eggDay` · `eggTitleDay` · `coachDone`.
+Có vậy tem mới nháy lại được, chuỗi nhắc bài mới chạy lại, và cửa hậu 10 nhịp
+mới còn gì để mở. Bản trước chỉ tua băng rôn nên bấm Reset xong **vẫn không
+xem lại được hiệu ứng nào** — đó là lý do có mục này.
+
+| Reset MAP-02 làm gì | Kết quả |
+|---|---|
+| Giữ | tiến độ MAP-01 (4/4), bộ đếm `eggMo`, bộ đếm `R(n)`, toàn bộ `hanv1` của Map 3 |
+| Xoá | `credFound`, `eggWin`, `eggDone`, `eggDay`, `eggTitleDay`, `coachDone` |
+| Hệ quả | hồ sơ `DAD-950901-B` **và Map 3 khoá lại** cho tới khi tìm ra Easter Egg lần nữa — câu này ghi thẳng ở `hqNote` để không ai bấm nhầm |
+
+Xoá xong là vẽ lại bản đồ ngay (`refreshBeacons` + `paint`), vì máy bay chỉ
+đường phải quay về `DAD` và node HAN phải đóng lại — đợi tới lần tải sau thì
+người chơi thấy một bản đồ nói dối.
+
+### MAP-02 có HAI CHẶNG — đừng gọi lẫn
+
+**Tìm ra Easter Egg mới chỉ là xong Stage 1**, chưa phải xong Map 2. Ghi rõ ở đây một lần
+cho khỏi nhầm về sau:
+
+| Chặng | Việc người chơi làm | Cờ ghi lại | Xong thì được gì |
+|---|---|---|---|
+| **Stage 1** | Tìm ra cửa hậu — gõ 10 nhịp lên tem *Last updated*, mở được khung **Collected: Easter Egg** | `credFound` | Hồ sơ `DAD-950901-B` **bỏ ổ khoá**, hiện *"điểm kích hoạt"*. Đây chính là **điều kiện vào Stage 2** |
+| **Stage 2** | Đi qua cửa đó — được **điều hướng về `/dad/950901-b`** (thẳng từ khung Collected, từ hồ sơ trên bản đồ, hay từ nút *Vào Easter Egg* của trang pháo hoa) | `eggWin` | **Phá đảo Map 2**. Mở luôn **Map 3** — node HAN hiện hai hồ sơ `961030` |
+
+Nói gọn: `credFound` = **thấy cửa**, `eggWin` = **qua cửa**. Ba đường vào Stage 2 đều
+**bắt buộc** ghi `eggWin` (mục 21b có bẫy đã vấp đúng chỗ này) — thêm đường vào mới thì
+nhớ ghi cờ ở cả ba.
+
+---
+
 ## 19c. GAME ON — trạng thái khi MAP-02 đang chạy
 
 `gameOn()` = **đã hoàn thành MAP-01** và **`eggOpen()`**. Gọi qua hàm này, đừng viết lại hai
@@ -786,6 +840,22 @@ Hồ sơ này gắn cờ `eggGate:true` trong `NODES` — nó thuộc về MAP-0
 | Chưa Game On | Ổ khoá + đếm ngược tới 01-09 | Không phản hồi |
 | Game On, **chưa** có điểm kích hoạt | **Bỏ ổ khoá**, meta ghi *"Đã mở khoá · chưa có điểm kích hoạt"* | Báo *"cần tìm điểm kích hoạt để hạ cánh"* |
 | Game On, **đã** có điểm kích hoạt | Link thật | Bay thẳng vào `/dad/950901-b` |
+
+**Qua cửa rồi thì hồ sơ ĐỔI TÊN** thành **`Easter Egg · Gate 2`** (`openTitle`
+trong `NODES`, chỉ dùng khi `eggWin`) — cả trang `/dad/950901-b` cũng đổi tiêu
+đề theo. Tên "Hồ sơ niêm phong" chỉ còn đúng lúc nó **đang** niêm phong.
+
+**Mở SỚM trước 01-09.** Cửa hậu 10 nhịp không hề khoá theo ngày, nên người chơi
+có thể tìm ra Easter Egg trước sinh nhật, rồi bấm *Enter Easter Egg* (bật
+`eggHack`) để vào Gate 2 sớm. Cửa mở thật, nhưng **bên trong chưa có gì** — phải
+nói thẳng ở cả hai chỗ:
+- dòng meta của hồ sơ trên bản đồ: *"Mở sớm · nội dung lên sóng 01-09"*;
+- ngay trong trang `/dad/950901-b`: *"Anh mở được cửa này sớm hơn lịch — Gate 2
+  đã thông, nhưng bên trong thì chưa có gì để xem đâu. Nội dung lên sóng 00:00
+  ngày 01-09."*
+
+Ngày trong câu đó cắt thẳng từ chuỗi ISO `+07:00`, không qua `getDate()` — đúng
+cái bẫy múi giờ của mục 21c.
 
 **Điểm kích hoạt chính là cửa hậu `credFound`** — bấm 10 nhịp vào dòng Last updated. Ai lỡ
 tìm ra từ trước thì vào thẳng, không phải làm lại. Mở được cửa hậu lúc bảng hồ sơ đang mở
@@ -860,10 +930,52 @@ Chạm màn hình vẫn bắn thêm một quả cho vui tay. Gõ đúp để tho
 một trình nghe: cú thứ hai trong 320 ms là thoát, ngoài ra là bắn. Bấm lên nút thì bỏ qua.
 
 **Màn trứng nứt** nằm ngay **đầu trang này**, không phải ở khung Collected — nứt trứng
-rồi nổ pháo là một mạch liền, tách ra hai trang thì đứt đoạn. Vỏ **vàng kim** của bản đồ,
-khắc **mạch điện xanh neon** cho ra chất cyber; lắc hai nhịp → nứt đôi, hai nửa văng ra →
-lõi loé sáng → pháo hoa bắt đầu. *Oh? → Nứt rồi! → Bùm ✦*, tổng 1,7 giây. Máy nào bật
-"giảm chuyển động" thì bỏ qua, vào thẳng.
+rồi nổ pháo là một mạch liền, tách ra hai trang thì đứt đoạn. Máy nào bật "giảm chuyển
+động" thì bỏ qua, vào thẳng.
+
+### Quả trứng — vẽ tay trên canvas, không dùng ảnh
+
+Bản đầu ghép bằng thẻ HTML + CSS (vỏ vàng kim, mạch điện neon) đã **bỏ hẳn**: nó ra hình
+quả bóng chứ không ra quả trứng, và vỡ ra thì rời rạc với màn pháo hoa ngay sau đó. Nay
+trứng vẽ **chung một canvas với pháo hoa**, dựng theo ba gif mẫu (trứng raid có dải xoáy ·
+lúc rạn vỏ · lúc nổ bung).
+
+**Dáng trứng — bỏ bezier, dùng phương trình.** Ảnh trứng Phục sinh mẫu đo được
+**rộng/cao = 0,79**. Bản dựng bằng hai cung bezier chỉ ra **0,66** — nhìn là thấy "hơi
+dài", mà nhích tay điểm điều khiển thì không bao giờ khoá được tỉ lệ. Nay vẽ thẳng theo
+phương trình, bằng chuỗi đoạn thẳng ngắn (96 điểm mỗi bên):
+
+```js
+nửa bề rộng(u) = a · (1 − u²)^p · (1 − c·u)     // u: −1 ở đáy → +1 ở đỉnh
+var TRUNG_C = 0.22;    // bóp đỉnh, phình đáy → chỗ rộng nhất rơi xuống dưới tâm
+var TRUNG_P = 0.44;    // số mũ: nhỏ hơn 0,5 thì HAI ĐẦU BÈ RA cho tròn
+var RONG_CAO = 0.79;   // rộng/cao — đo từ ảnh mẫu
+```
+
+`a` **không đặt tay** mà tính ngược từ `RONG_CAO` (chia cho đỉnh của hàm, tính một lần lúc
+tải trang) — nên đổi tỉ lệ là dáng đi theo, khỏi dò lại. Để `p = 0,5` (nửa e-líp) thì đáy
+thon lại, ra quả lê chứ không ra trứng.
+
+**Bảng màu: cùng họ XANH NEON với nền, nhưng sáng hơn nền.** Nền trang là xanh đêm
+`#040b18`/`#0B1B3A`, nên vỏ đi cyan sáng `#BDEEFF → #63CDF3 → #2A93C8 → #12587F` — nổi hẳn
+lên mà vẫn cùng một nhà với `--neon #38BDF8`.
+
+Vỏ: cắt theo đường viền (`clip`) rồi tô gradient trên, đè **5 dải xoáy chéo** trắng-cyan,
+một vệt sáng ở vai trái trên, và một **đường nứt zigzag** mỗi lúc một rộng.
+
+**Lúc nứt và lúc nổ đi hai màu:** trong khe là **bạc xanh** (`#CEE8FF`) chuyển sang **ánh
+vàng** (`#FFE7A6`), kèm **kim tuyến vàng lấp lánh** rắc dọc khe (14 chấm mỗi khung, vẽ chồng
+sáng). Cú nổ giữ starburst 34 tia nhưng đổi sang lõi trắng · quầng bạc xanh · **xen tia
+vàng**, cộng 26 chấm kim tuyến nhấp nháy trong vầng sáng. Hạt bay ra cũng đổi tông:
+~38% màu vàng (`h≈44`), còn lại bạc xanh (`h≈196`).
+
+**Ba nhịp**, tổng 3,3 giây: `lac` (lắc + bụi bay, 1500 ms) → `nut` (vỏ rạn + rung, 900 ms)
+→ `no` (bung, 900 ms). Cú nổ là **starburst 34 tia dài ngắn xen kẽ**, trắng ngả tím —
+đúng hình gif mẫu. Nổ xong `batDau()` mới thả pháo hoa.
+
+> **Đo, đừng nhìn.** Hai lần trước đều "nhìn thấy ổn" trên mô tả mà thực tế ra quả bóng.
+> Cách kiểm duy nhất đáng tin: chụp `canvas.toDataURL()` rồi **nhìn tấm ảnh**, và đếm số
+> điểm sáng trong ô giữa khung bằng `getImageData`.
 
 > **BẪY ĐÃ VẤP:** nút *Vào Easter Egg* ở trang này là **đường vào thứ ba** của Easter Egg
 > (hai đường kia: nút trong khung Collected, và link hồ sơ trong khung toạ độ). Lúc đầu
@@ -973,13 +1085,27 @@ nào cũng phải gặp đúng khoảnh khắc ăn mừng, đó mới là quà.
 
 Phá đảo bản đồ rồi mà chưa tìm ra khung Collected thì **mỗi lần mở trang**:
 
-1. Cả dòng *Game On · Độ khó: Q♥* nhấp nháy **10,5 giây** — riêng **quân Q♥** nháy lâu
-   hơn, thêm nhịp phồng và quầng sáng để nổi hơn phần chữ quanh nó;
-2. hết lượt đó mới tới tem *Last updated* nhấp nháy.
+1. tem *Last updated* nhấp nháy **ngay lập tức** — tem nằm ở góc phải dưới, không bị thứ
+   gì che, nên đây là thứ luôn thấy được;
+2. **chờ băng rôn sinh nhật hạ cánh** (22 giây) rồi mới tới lượt dòng *Game On · Độ khó:
+   Q♥* nhấp nháy **10,5 giây** — riêng **quân Q♥** nháy lâu hơn, thêm nhịp phồng và quầng
+   sáng để nổi hơn phần chữ quanh nó;
+3. hết lượt đó thì tem nháy **lần nữa** để chốt hướng.
 
 Mắt người chơi tự đi từ chỗ này sang chỗ kia — không có mũi tên, không có câu "bấm vào
 đây". Trong lúc chuỗi này chạy thì **lượt nháy tem hằng ngày bị tắt**: nháy cùng lúc là
 mất sạch ý "nhìn chỗ này rồi mới nhìn chỗ kia".
+
+> **BẪY ĐÃ VẤP HAI LẦN — băng rôn che mất dòng dẫn.** Trong cửa sổ Easter Egg, mở trang
+> là băng rôn bay ra ngay, mà `.frame.won.flying .lead{display:none}` **ẩn luôn dòng dẫn
+> 20 giây**. Bản đầu cho **cả chuỗi** đợi băng rôn → F5 chỉ thấy băng rôn, hơn nửa phút
+> mới thấy gì nháy, tưởng hỏng. Bản sau chỉ hỏi *"băng rôn có đang bay không"* **một
+> nhát lúc bắt đầu** → vẫn hụt, vì băng rôn nổ ra sau đó vài trăm mili-giây, lượt nháy
+> chạy trong lúc dòng dẫn đang bị ẩn.
+> Cách đúng: **tách đôi** (tem nháy ngay, dòng dẫn đợi) và hỏi *"dòng dẫn có ĐANG NHÌN
+> THẤY ĐƯỢC không"* bằng `ld.offsetParent`, hỏi lại mỗi 600 ms, tối đa một phút rồi thôi.
+> Kiểm thử chỗ này phải **rình** `#lead.eggblink` trong 30 giây, chấm một nhát ở giây thứ
+> 15 là báo hỏng oan.
 
 ### Dòng dẫn có hai nửa, hai vai khác hẳn nhau
 
@@ -1132,6 +1258,29 @@ ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()`
   làm, và có lời nhắn nói rõ vì sao màn hình vừa đổi câu.
 - Câu đã trả lời đúng thì **giữ nguyên** (`hanv1.dung`), con trỏ chỉ chạy vòng qua những
   câu còn nợ.
+
+**Trả lời đúng thì DỪNG LẠI, không nhảy câu ngay.** Chữ khen nhấp nháy tông Easter Egg
+xong (1900 ms) thì màn **đứng nguyên tại câu vừa làm**, ô nhập **điền sẵn đáp án**. Muốn đi
+tiếp hay ngó lại thì bấm **hai mũi tên `‹ ›` ở hai bên đáy thẻ**.
+
+### Một màn cho ba trạng thái — không dựng giao diện mới
+
+`drawQ(pos)` vẽ **cùng một thẻ** cho cả ba trạng thái của một câu; `pos` bỏ trống là chơi
+câu tới lượt, có `pos` là mở đúng câu ở vị trí đó:
+
+| Trạng thái | Khác gì |
+|---|---|
+| Đang chơi | như cũ: hàng ô trống, có SOS, có đồng hồ gợi ý |
+| **Đã đúng** | hàng ô **điền sẵn đáp án**, nhãn đổi thành *Đã trả lời đúng ✦*, giấu SOS, ô nhập `disabled` |
+| Đang nghỉ | hàng ô trống, không gõ được, kèm đồng hồ *mở lại sau hh:mm:ss*; hết giờ tự vào chơi |
+
+> **BẢN TRƯỚC LÀM QUÁ TAY:** dựng hẳn hai màn riêng (`drawDung` khoe đáp án trong thẻ
+> `.dap-xong`, `drawXem` liệt kê tất cả) — người chơi phải học thêm hai bố cục nữa chỉ để
+> đọc lại một câu đã biết. Nay xem lại **y khuôn màn nhập**, chỉ khác là ô đã có chữ. Ít
+> thứ để học, mà cảm giác "tôi làm được rồi" lại rõ hơn vì thấy đúng chỗ mình vừa gõ.
+
+Hai mũi tên (`#navL` / `#navR`, class `.qnav`) cố ý **nhạt và không viền** — đây là thứ để
+lướt qua lại, không phải nút chính. Đi vòng tròn: hết câu cuối thì quay về câu đầu.
 - **Cả năm câu cùng nghỉ** mới hiện màn *See ya tmr 😉*: số câu đang chờ + đồng hồ đếm tới
   lúc câu sớm nhất mở lại, và một nút **mời** xáo bài chơi lại (không ép). Hết giờ là màn
   đó **tự vào chơi tiếp**, khỏi bấm gì.
@@ -1140,8 +1289,17 @@ ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()`
 > **BẪY ĐÃ VẤP — luật cũ có ngõ cụt.** Bản trước khoá câu tới nửa đêm và **ép** reset
 > toàn bộ, mà reset lại **không hoàn lượt**: xáo bài xong đi tới đúng câu đã cháy là tắc,
 > hôm đó không cách nào chơi hết. Đây là quà sinh nhật, không phải bài thi.
-- **Gợi ý — đúng cơ chế Mission 3.** Sai lần đầu lộ gợi ý 1; gợi ý kế **tự mở sau 45
-  giây** mà không cần sai thêm; muốn mở sớm thì bấm **SOS góc dưới trái 10 nhịp liên
+- **GỢI Ý KHOÁ TỚI 01-10-2026 — hiện giờ chơi chay.** Hằng `MO_GOIY` (mốc
+  `2026-10-01T00:00:00+07:00`) chốt cả hệ gợi ý: trước mốc đó thì **sai bao nhiêu lần
+  cũng không lộ gợi ý**, bấm SOS bao nhiêu nhịp cũng không, đồng hồ 45 giây cũng không
+  chạy. Bốn chỗ phải cùng chặn (`goiYMo()`): hàm `moGoiY` mở gợi ý, trình nghe bấm SOS,
+  nhịp đồng hồ mỗi giây, và `waitPaint()`.
+- **Khoá thì im, đừng treo bảng.** Nút SOS vẫn bấm được và **vẫn trêu như thường** —
+  chỉ là gõ đủ 10 nhịp cũng chẳng ra chữ nào. Ô đồng hồ để **trống**. Bản trước treo một
+  dòng *"Gợi ý mở từ 01-10-2026"* suốt cả ván: vừa chình ình, vừa tự tố cáo là còn thứ
+  đang giấu — mất sạch cái thú chơi chay.
+- **Sau mốc thì trả lại cơ chế Mission 3:** sai lần đầu lộ gợi ý 1; gợi ý kế **tự mở sau
+  45 giây** mà không cần sai thêm; muốn mở sớm thì bấm **SOS góc dưới trái 10 nhịp liên
   tiếp** (mỗi nhịp cách nhau dưới 900 ms). Bấm lai rai một hai cái chỉ bị ghẹo, tối đa
   6 câu mỗi phiên. Câu Alice tách `2020` → `Netflix Live Action` → `Arisu` thành ba
   gợi ý riêng.
@@ -1190,6 +1348,17 @@ tự lật sang màn nội dung.
 Khối vận hành có nút **⏩ Tua tới 01.10** để xem thử màn đó ngay, bấm lần nữa là trả kim
 (`hanv1.tua` — một khoảng lệch mili-giây, không đụng đồng hồ máy).
 
+### Dòng dẫn — chữ và chìa khoá đi CHUNG MỘT HÀNG
+
+Dòng dưới tiêu đề nay là **`HongHan's Secret Chamber đang chờ anh khám phá`**, đứng cạnh
+một **chìa khoá hồng công chúa** có hai ngôi sao nhấp nháy so le (`icoKhoa()` — SVG vẽ tay,
+gradient `#F2A7D0 → #D97BB6`).
+
+Vẽ tay chứ **không dùng emoji 🔑**: mỗi máy một cỡ, một màu, và hay tự rớt xuống dòng.
+Cụm này là `inline-flex` + `white-space:nowrap`, và có hàm **`khitLead()`** hạ cỡ chữ dần
+từ 12 px xuống 9 px cho tới khi vừa khung — đặt `nowrap` rồi thôi thì máy 320 px **tràn ra
+ngoài mép thẻ**, đo mới biết, nhìn thì không. Xoay ngang máy cũng gọi lại hàm này.
+
 ### Cửa hậu hoa — Khối vận hành
 
 Giống lá cờ ngoài bản đồ: **bấm 5 nhịp** (mỗi nhịp cách nhau dưới 900 ms) → **Khối vận
@@ -1220,6 +1389,8 @@ vẫn thấy được sau khi làm lại.
 ### Sửa nội dung
 
 - Câu hỏi và gợi ý: hằng `HOI` đầu khối script `961030-a`.
+- **Ngày mở gợi ý:** hằng `MO_GOIY` (`961030-a`) — đổi mốc là cả hệ gợi ý mở/đóng theo,
+  không phải sửa chỗ nào khác.
 - Nội dung hộp: hàm `drawBox()` trong `961030-b`.
 - Mã mở khoá: sửa `PIN_B` bên A **và** `PIN` bên B cho khớp; gợi ý SOS của cửa B nằm ở
   hằng `GOIY`. PIN bảng điều phối: `PIN_CTRL` (`1959`), giống khu điều phối ngoài bản đồ.

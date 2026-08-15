@@ -394,150 +394,244 @@ if(!matchMedia('(prefers-reduced-motion: reduce)').matches) ve();
 
 /* ═══════════════════════════════════════════════════════════════
    MÀN MỞ ĐẦU — QUẢ TRỨNG
-   Vẽ thẳng lên canvas, dùng chung bộ hạt và cách chuyển động của pháo hoa nên
-   nhịp mượt y như nhau, không phải hai hệ hoạt hình rời rạc.
-   Ba nhịp:
-     1. LẮC   — trứng nảy nhẹ theo đường sin, tàn lửa vàng lượn quanh;
-     2. NỨT   — vết nứt bò dần theo đường zigzag, ánh sáng rịn ra từ khe;
-     3. VỠ    — hai nửa vỏ văng ra có xoay và trọng lực, lõi loé trắng, tia bắn
-                ra bằng đúng hàm nổ của pháo hoa.
+   Dựng theo ba ảnh mẫu: vỏ sẫm có DẢI SÁNG XOẮN quấn quanh (kiểu quả trứng
+   raid), nảy lắc tại chỗ, rồi nứt và nổ bung thành một VẦNG SÁNG TRẮNG-TÍM có
+   tia dài toả đều. Vẽ thẳng lên canvas, dùng chung bộ hạt với pháo hoa nên
+   nhịp mượt y như nhau.
    ═══════════════════════════════════════════════════════════════ */
 var EGG_CAP = ['Oh?', 'Nứt rồi!', 'Bùm ✦'];
-var LAC_MS = 1250, NUT_MS = 850;        /* lắc · nứt; vỡ xong là sang pháo hoa */
+var LAC_MS = 1500, NUT_MS = 900;
 
-/* Vẽ MỘT nửa vỏ trứng. Tách hẳn ra ngoài để pha "vỡ" điều khiển hai nửa riêng
-   — mỗi nửa có vận tốc, độ xoay và độ mờ của chính nó. */
-function veNua(g, tren, cx, cy, R, dx, dy, xoay, mo){
-  /* Tỉ lệ quả trứng thật: cao gấp ~1,35 lần bề ngang, đỉnh thon, đáy tròn.
-     Để W2 = R*0.78 như lúc đầu thì ra quả bóng, không ra quả trứng. */
-  var W2 = R*0.70, H2 = R;
-  var zig = [[-1,-0.02],[-0.62,-0.14],[-0.3,0.04],[0,-0.1],[0.32,0.05],[0.66,-0.12],[1,0.01]];
-  g.save();
-  g.globalAlpha = mo;
-  g.translate(cx + dx, cy + dy);
-  g.rotate(xoay);
+/* ĐƯỜNG BAO QUẢ TRỨNG — theo ĐÚNG tỉ lệ quả trứng Phục sinh mẫu.
+   Ảnh mẫu đo được rộng/cao = 0,79. Hai cung bezier của bản trước chỉ ra 0,66 —
+   nhìn là biết "hơi dài", nhưng không sửa được bằng cách nhích tay điểm điều
+   khiển, vì bezier không cho khoá tỉ lệ.
+   Nay dùng thẳng phương trình quả trứng, vẽ bằng chuỗi đoạn thẳng ngắn:
+
+       nửa bề rộng(u) = a · (1 − u²)^p · (1 − c·u),  u chạy từ −1 (đáy) tới +1 (đỉnh)
+
+   Số mũ p = 0,44 (thay vì 0,5 của nửa e-líp) làm ĐÁY BÈ RA cho tròn đúng như
+   ảnh mẫu; để nguyên 0,5 thì đáy thon lại, nhìn ra quả lê chứ không ra trứng. Thừa số (1 − c·u)
+   bóp ĐỈNH lại và phình ĐÁY ra, nên chỗ rộng nhất rơi xuống dưới tâm, đúng dáng
+   trứng thật. `a` không đặt tay mà TÍNH NGƯỢC từ tỉ lệ muốn có, nên đổi RONG_CAO
+   là dáng đi theo, khỏi dò lại. */
+var TRUNG_C = 0.22;                 /* độ thon của đỉnh */
+var TRUNG_P = 0.44;                 /* số mũ — càng nhỏ thì hai đầu càng bè */
+var RONG_CAO = 0.79;                /* rộng / cao — đo từ ảnh mẫu */
+var TRUNG_MAX = (function(){        /* đỉnh của √(1−u²)(1−c·u), tính một lần */
+  var m = 0;
+  for(var u = -1; u <= 1; u += 0.002){
+    var v = Math.pow(Math.max(0, 1 - u*u), TRUNG_P)*(1 - TRUNG_C*u);
+    if(v > m) m = v;
+  }
+  return m;
+})();
+function nuaRong(u, R){
+  return (RONG_CAO*R/TRUNG_MAX)*Math.pow(Math.max(0, 1 - u*u), TRUNG_P)*(1 - TRUNG_C*u);
+}
+function bienTrung(g, cx, cy, R){
   g.beginPath();
-  if(tren){
-    g.moveTo(-W2, 0);
-    g.bezierCurveTo(-W2*1.02, -H2*1.62, W2*1.02, -H2*1.62, W2, 0);
-    for(var i = zig.length - 1; i >= 0; i--) g.lineTo(zig[i][0]*W2, zig[i][1]*H2);
-  }else{
-    g.moveTo(-W2, 0);
-    for(var j = 0; j < zig.length; j++) g.lineTo(zig[j][0]*W2, zig[j][1]*H2);
-    g.bezierCurveTo(W2*1.16, H2*1.05, -W2*1.16, H2*1.05, -W2, 0);
+  var u, N = 96;
+  for(var i = 0; i <= N; i++){                 /* mép phải: đỉnh → đáy */
+    u = 1 - 2*i/N;
+    g.lineTo(cx + nuaRong(u, R), cy - R*u);
+  }
+  for(var k = 0; k <= N; k++){                 /* mép trái: đáy → đỉnh */
+    u = -1 + 2*k/N;
+    g.lineTo(cx - nuaRong(u, R), cy - R*u);
   }
   g.closePath();
-  var gr = g.createLinearGradient(-W2, -H2, W2, H2);
-  gr.addColorStop(0, '#FFF3CE'); gr.addColorStop(.42, '#F2B441'); gr.addColorStop(1, '#8E5F10');
-  g.fillStyle = gr; g.fill();
-  g.strokeStyle = 'rgba(122,83,16,.9)'; g.lineWidth = 2; g.stroke();
-  /* mạch điện khắc trên vỏ — chất cyber, xanh neon của bản đồ */
-  g.strokeStyle = 'rgba(56,189,248,.75)'; g.lineWidth = 1.6; g.lineCap = 'round';
-  g.beginPath();
-  if(tren){
-    g.moveTo(-W2*0.55, -H2*0.62); g.lineTo(-W2*0.2, -H2*0.62); g.lineTo(-W2*0.2, -H2*0.34);
-    g.lineTo(W2*0.16, -H2*0.34);
-    g.moveTo(W2*0.6, -H2*0.8); g.lineTo(W2*0.28, -H2*0.8); g.lineTo(W2*0.28, -H2*0.52);
-  }else{
-    g.moveTo(-W2*0.5, H2*0.36); g.lineTo(-W2*0.16, H2*0.36); g.lineTo(-W2*0.16, H2*0.6);
-    g.moveTo(W2*0.52, H2*0.3); g.lineTo(W2*0.2, H2*0.3); g.lineTo(W2*0.2, H2*0.54);
-  }
-  g.stroke();
-  if(tren){                                  /* chấm lõi giữa vỏ */
-    g.beginPath(); g.arc(0, -H2*0.24, 3.4, 0, 6.2832);
-    g.fillStyle = 'rgba(139,224,255,.95)'; g.fill();
-  }
-  g.restore();
 }
 
-/* Quả trứng còn nguyên (hoặc đang hé ra `tach` pixel) */
-function veTrung(g, cx, cy, R, tach){
-  veNua(g, true,  cx, cy, R, 0, -tach*0.9, -tach*0.011, 1);
-  veNua(g, false, cx, cy, R, 0,  tach*0.62, tach*0.008, 1);
-  if(tach > 0){                              /* ánh sáng rịn ra từ khe nứt */
-    var W2 = R*0.70;
+/* Một quả trứng hoàn chỉnh. `nut` 0→1 là độ nứt.
+   BẢNG MÀU: cùng họ XANH NEON với nền trang, nhưng SÁNG HƠN nền — nền là xanh
+   đêm #040b18/#0B1B3A, nên vỏ đi tông cyan sáng để nổi hẳn lên mà vẫn cùng nhà. */
+function veTrung(g, cx, cy, R, nut, pha){
+  g.save();
+  bienTrung(g, cx, cy, R);
+  g.clip();                                  /* mọi thứ vẽ sau đều nằm trong vỏ */
+
+  /* nền vỏ: cyan sáng ở vai trái trên, đậm dần xuống đáy phải */
+  var nen = g.createLinearGradient(cx - R*0.8, cy - R, cx + R*0.6, cy + R);
+  nen.addColorStop(0,   '#BDEEFF');
+  nen.addColorStop(.38, '#63CDF3');
+  nen.addColorStop(.74, '#2A93C8');
+  nen.addColorStop(1,   '#12587F');
+  g.fillStyle = nen;
+  g.fillRect(cx - R*1.4, cy - R*1.4, R*2.8, R*2.8);
+
+  /* DẢI SÁNG XOẮN quấn quanh vỏ — nét chính của quả trứng mẫu */
+  g.lineCap = 'round';
+  for(var i = 0; i < 5; i++){
+    var y0 = cy - R*0.82 + i*R*0.43;
+    var day = R*0.14 + (i%2)*R*0.05;
+    var g2 = g.createLinearGradient(cx - R, y0, cx + R, y0 + R*0.3);
+    g2.addColorStop(0,   'rgba(224,250,255,.18)');
+    g2.addColorStop(.45, 'rgba(240,253,255,.95)');
+    g2.addColorStop(1,   'rgba(150,225,255,.3)');
+    g.strokeStyle = g2; g.lineWidth = day;
+    /* dải quấn chéo hẳn: hai đầu lệch nhau gần nửa bán kính mới ra dáng "quấn
+       quanh", chứ kẻ gần ngang thì nhìn như sọc ngang bình thường */
+    g.beginPath();
+    g.moveTo(cx - R*1.35, y0 + R*0.44);
+    g.bezierCurveTo(cx - R*0.45, y0 - R*0.02, cx + R*0.45, y0 + R*0.32, cx + R*1.35, y0 - R*0.32);
+    g.stroke();
+  }
+  /* ánh sáng dọi từ trên trái cho vỏ có khối */
+  var lo = g.createRadialGradient(cx - R*0.4, cy - R*0.58, 1, cx - R*0.4, cy - R*0.58, R*1.6);
+  lo.addColorStop(0, 'rgba(255,255,255,.45)'); lo.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = lo;
+  g.fillRect(cx - R*1.4, cy - R*1.4, R*2.8, R*2.8);
+
+  /* KHE NỨT: zigzag ngang thân, mở rộng dần. Trong khe là ánh BẠC XANH, viền
+     khe rịn thêm ÁNH VÀNG kim tuyến — hai màu này là chất của cả màn nứt vỡ. */
+  if(nut > 0){
+    var zz = [[-1,0],[-0.62,-0.13],[-0.3,0.05],[0,-0.09],[0.32,0.06],[0.66,-0.12],[1,0.01]];
+    var hd = nut*R*0.40;
+    g.beginPath();
+    g.moveTo(cx + zz[0][0]*R*0.95, cy + zz[0][1]*R - hd);
+    for(var k = 1; k < zz.length; k++) g.lineTo(cx + zz[k][0]*R*0.95, cy + zz[k][1]*R - hd);
+    for(var m = zz.length - 1; m >= 0; m--) g.lineTo(cx + zz[m][0]*R*0.95, cy + zz[m][1]*R + hd);
+    g.closePath();
+    var kh = g.createLinearGradient(cx, cy - hd, cx, cy + hd);
+    kh.addColorStop(0,  'rgba(206,232,255,.75)');            /* bạc xanh */
+    kh.addColorStop(.5, 'rgba(255,255,255,' + Math.min(1, .55 + nut) + ')');
+    kh.addColorStop(1,  'rgba(255,231,166,.75)');            /* ánh vàng */
+    g.fillStyle = kh; g.fill();
+    /* kim tuyến vàng lấp lánh rịn ra dọc khe */
+    g.globalCompositeOperation = 'lighter';
+    for(var s2 = 0; s2 < 14; s2++){
+      var xx = cx + rnd(-1, 1)*R*0.95, yy = cy + rnd(-1.4, 1.4)*hd;
+      var rr = rnd(0.6, 1.9)*nut;
+      g.fillStyle = s2 % 3 ? 'rgba(255,224,150,.95)' : 'rgba(214,240,255,.95)';
+      g.beginPath(); g.arc(xx, yy, rr, 0, 6.2832); g.fill();
+    }
+    g.globalCompositeOperation = 'source-over';
+  }
+  g.restore();
+
+  /* viền ngoài + quầng sáng quanh vỏ */
+  bienTrung(g, cx, cy, R);
+  g.strokeStyle = 'rgba(214,244,255,.8)'; g.lineWidth = 2; g.stroke();
+  if(nut > 0){
     g.save();
-    var gg = g.createLinearGradient(cx - W2, cy, cx + W2, cy);
-    gg.addColorStop(0, 'rgba(255,246,220,0)');
-    gg.addColorStop(.5, 'rgba(255,246,220,' + Math.min(.95, tach/16) + ')');
-    gg.addColorStop(1, 'rgba(255,246,220,0)');
-    g.fillStyle = gg;
-    g.fillRect(cx - W2, cy - tach*0.9, W2*2, Math.max(2, tach*1.5));
+    g.globalAlpha = Math.min(.85, nut);
+    g.shadowColor = 'rgba(150,224,255,.95)'; g.shadowBlur = 26;
+    bienTrung(g, cx, cy, R);
+    g.strokeStyle = 'rgba(236,252,255,.95)'; g.lineWidth = 3; g.stroke();
     g.restore();
   }
+}
+
+/* Vầng sáng nổ ra khi vỏ vỡ: lõi trắng, quầng BẠC XANH, tia dài toả đều, và
+   một lớp chấm VÀNG KIM TUYẾN bay ra cùng — đúng hai màu của lúc nứt vỏ. */
+function veNo(g, cx, cy, R, u){
+  var to = R*(0.6 + u*3.4), mo = Math.max(0, 1 - u);
+  g.save();
+  g.globalCompositeOperation = 'lighter';
+  var q = g.createRadialGradient(cx, cy, 0, cx, cy, to);
+  q.addColorStop(0,   'rgba(255,255,255,' + (mo*0.95) + ')');
+  q.addColorStop(.28, 'rgba(206,240,255,' + (mo*0.72) + ')');
+  q.addColorStop(.62, 'rgba(90,190,240,'  + (mo*0.32) + ')');
+  q.addColorStop(1,   'rgba(60,150,220,0)');
+  g.fillStyle = q;
+  g.beginPath(); g.arc(cx, cy, to, 0, 6.2832); g.fill();
+  /* tia: dài ngắn xen kẽ, mảnh dần về đầu mút */
+  var n = 34;
+  for(var i = 0; i < n; i++){
+    var a = (i/n)*6.2832;
+    var dai = to*(i%2 ? 1.5 : 1.05)*(0.75 + 0.25*Math.sin(i*2.3));
+    g.globalAlpha = mo*0.85;
+    g.strokeStyle = i%4 === 1 ? 'rgba(255,226,158,.95)'      /* xen tia vàng */
+                  : (i%3 ? 'rgba(255,255,255,.9)' : 'rgba(196,236,255,.92)');
+    g.lineWidth = Math.max(0.8, 3.2*(1 - u));
+    g.beginPath();
+    g.moveTo(cx + Math.cos(a)*to*0.16, cy + Math.sin(a)*to*0.16);
+    g.lineTo(cx + Math.cos(a)*dai, cy + Math.sin(a)*dai);
+    g.stroke();
+  }
+  /* kim tuyến vàng nhấp nháy trong vầng sáng */
+  for(var s3 = 0; s3 < 26; s3++){
+    var a2 = Math.random()*6.2832, r2 = to*rnd(0.15, 0.95);
+    g.globalAlpha = mo*rnd(.3, 1);
+    g.fillStyle = s3 % 3 ? 'rgba(255,222,140,1)' : 'rgba(224,246,255,1)';
+    g.beginPath();
+    g.arc(cx + Math.cos(a2)*r2, cy + Math.sin(a2)*r2, rnd(0.7, 2.1), 0, 6.2832);
+    g.fill();
+  }
+  g.restore();
 }
 
 (function moMan(){
   var cap = $('eggCap');
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){ batDau(); return; }
-  var t0 = Date.now(), pha = 'lac', xong = false;
+  var t0 = Date.now(), pha = 'lac', xong = false, noTu = 0;
 
   function khungTrung(){
     if(xong) return;
     var t = Date.now() - t0;
-    var cx = W/2, cy = H*0.42, R = Math.min(78, W*0.2);
+    var cx = W/2, cy = H*0.42, R = Math.min(74, W*0.19);
 
     if(pha === 'lac'){
-      /* nảy nhẹ + nghiêng qua lại, biên độ lớn dần cho có cảm giác sắp vỡ */
-      var k = t/LAC_MS, manh = 0.35 + 0.65*k;
-      var dy = Math.sin(t/150)*4*manh, gh = Math.sin(t/190)*0.09*manh;
+      /* nảy tại chỗ + nghiêng qua lại, mạnh dần như sắp bung */
+      var k = t/LAC_MS, manh = 0.3 + 0.7*k;
+      var dy = Math.abs(Math.sin(t/165))*-7*manh, gh = Math.sin(t/205)*0.1*manh;
       c.save();
-      c.translate(cx, cy); c.rotate(gh); c.translate(-cx, -cy - dy);
-      veTrung(c, cx, cy, R, 0);
+      c.translate(cx, cy + R*0.9); c.rotate(gh); c.translate(-cx, -(cy + R*0.9) - dy);
+      veTrung(c, cx, cy, R, 0, pha);
       c.restore();
-      /* tàn lửa vàng lượn quanh, dùng đúng lớp hạt của pháo hoa */
-      if(Math.random() < 0.42){
-        var a = Math.random()*6.283, r2 = R*1.25;
-        hat.push({ x:cx + Math.cos(a)*r2, y:cy + Math.sin(a)*r2*1.1,
-          vx:Math.cos(a)*0.5, vy:Math.sin(a)*0.5 - 0.35,
-          h:44, s:100, song:rnd(.4,.75), doi:.75, nang:-0.004, can:0.97,
+      if(Math.random() < 0.3){          /* bụi sáng lượn quanh */
+        var a = Math.random()*6.283, r2 = R*1.3;
+        hat.push({ x:cx + Math.cos(a)*r2, y:cy + Math.sin(a)*r2*1.15,
+          vx:Math.cos(a)*0.4, vy:Math.sin(a)*0.4 - 0.3,
+          h:194, s:88, song:rnd(.35,.7), doi:.7, nang:-0.004, can:0.97,
           nhay:true, duoi:[] });
       }
       if(t > LAC_MS){ pha = 'nut'; t0 = Date.now(); cap.textContent = EGG_CAP[1]; }
     }
     else if(pha === 'nut'){
-      /* khe hở mở dần theo đường ease-out, sáng rịn ra mỗi lúc một mạnh */
+      /* khe mở dần, rung mạnh hơn, sáng rịn ra mỗi lúc một gắt */
       var u = Math.min(1, (Date.now() - t0)/NUT_MS);
       var e = 1 - Math.pow(1 - u, 3);
-      veTrung(c, cx, cy, R, e*7);
-      if(Math.random() < 0.5){
-        hat.push({ x:cx + rnd(-R*.7, R*.7), y:cy + rnd(-3,3),
-          vx:rnd(-.7,.7), vy:rnd(-1.5,-.4),
-          h:46, s:100, song:rnd(.35,.7), doi:.7, nang:0.01, can:0.96,
+      var rung = (1 - u)*0 + u*2.5;
+      c.save();
+      c.translate(rnd(-rung, rung), rnd(-rung, rung));
+      veTrung(c, cx, cy, R, e, pha);
+      c.restore();
+      if(Math.random() < 0.55){
+        hat.push({ x:cx + rnd(-R*.7, R*.7), y:cy + rnd(-4,4),
+          vx:rnd(-.8,.8), vy:rnd(-1.6,-.4),
+          h:(Math.random() < .35 ? 44 : 196), s:95, song:rnd(.3,.65), doi:.65, nang:0.012, can:0.96,
           nhay:false, duoi:[] });
       }
-      if(u >= 1){ pha = 'vo'; t0 = Date.now(); cap.textContent = EGG_CAP[2]; noVo(cx, cy, R); }
+      if(u >= 1){ pha = 'no'; t0 = Date.now(); noTu = Date.now();
+                  cap.textContent = EGG_CAP[2]; noVo(cx, cy, R); }
     }
-    else if(pha === 'vo'){
-      /* HAI NỬA bay riêng: nửa trên hất lên trái, nửa dưới rơi xuống phải, mỗi
-         nửa có trọng lực và độ xoay của chính nó — vỡ thật chứ không phải cả
-         quả trứng cùng trôi lên. */
-      var tv = (Date.now() - t0)/1000;
-      var mo = Math.max(0, 1 - tv*1.35);
-      if(mo > 0){
-        veNua(c, true,  cx, cy, R, -78*tv,        -150*tv + 150*tv*tv, -2.2*tv, mo);
-        veNua(c, false, cx, cy, R,  70*tv,          46*tv + 240*tv*tv,  1.7*tv, mo);
-      }
-      if(tv > 0.95){ xong = true; capTan(); return; }
+    else if(pha === 'no'){
+      /* vầng sáng bung ra rồi loãng dần; mảnh vỏ đã thành hạt bay theo */
+      var v = (Date.now() - noTu)/900;
+      if(v < 1) veNo(c, cx, cy, R, v);
+      if(v > 1.05){ xong = true; capTan(); return; }
     }
     requestAnimationFrame(khungTrung);
   }
 
-  /* Nổ vỏ: lõi loé trắng + một quả pháo thật ngay tại chỗ, nối liền hai màn */
+  /* Vỏ vỡ: mảnh văng ra + tia sáng toả, rồi nối thẳng sang pháo hoa */
   function noVo(cx, cy, R){
-    for(var i = 0; i < 90; i++){
-      var a = Math.random()*6.283, sp = rnd(1.4, 5.2);
+    for(var i = 0; i < 120; i++){         /* tia sáng trắng-tím */
+      var a = Math.random()*6.283, sp = rnd(2.2, 7.5);
       hat.push({ x:cx, y:cy, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
-        h:44 + rnd(-8, 8), s:100, song:rnd(.6,1.1), doi:1.1,
-        nang:0.03, can:0.972, nhay:Math.random()<0.4, duoi:[] });
+        h:(Math.random() < .38 ? 44 + rnd(-6, 8) : 196 + rnd(-16, 16)),
+        s:rnd(40, 95), song:rnd(.55,1.15), doi:1.15,
+        nang:0.028, can:0.974, nhay:Math.random()<0.35, duoi:[] });
     }
-    for(var j = 0; j < 22; j++){        /* mảnh vỏ vụn bay ra, tối màu hơn */
-      var b = Math.random()*6.283, s2 = rnd(2.2, 6);
-      hat.push({ x:cx, y:cy, vx:Math.cos(b)*s2, vy:Math.sin(b)*s2 - 1,
-        h:34, s:70, song:rnd(.5,.9), doi:.9, nang:0.09, can:0.985,
+    for(var j = 0; j < 26; j++){          /* mảnh vỏ sẫm rơi xuống */
+      var b = Math.random()*6.283, s2 = rnd(2.4, 6.4);
+      hat.push({ x:cx, y:cy, vx:Math.cos(b)*s2, vy:Math.sin(b)*s2 - 1.2,
+        h:200, s:52, song:rnd(.5,.95), doi:.95, nang:0.1, can:0.987,
         nhay:false, duoi:[] });
     }
-    ban(cx, cy - R*1.4);                /* pháo hoa mở màn ngay trên đầu trứng */
+    ban(cx, cy - R*1.5);                  /* pháo hoa mở màn ngay trên đầu trứng */
     batDau();
   }
   function capTan(){

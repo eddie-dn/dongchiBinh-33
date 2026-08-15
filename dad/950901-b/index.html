@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DAD-950901-B · Hồ sơ niêm phong</title>
+<title>DAD-950901-B · Easter Egg Gate 2</title>
 <meta name="theme-color" content="#040b18">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,10 +48,26 @@ p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
       <path d="M3.3 6.2V4.3a2.7 2.7 0 0 1 5.4 0v1.9" fill="none" stroke="currentColor" stroke-width="1.3"/>
       <rect x="1.3" y="6" width="9.4" height="7.2" rx="1.5" fill="currentColor"/>
     </svg>
-    <p class="eyebrow">DAD-950901-B</p>
-    <h1>Hồ sơ đang<br>được chuẩn bị</h1>
-    <p>Niêm phong đã mở nhưng nội dung chưa được nạp lên khoang. Quay lại bản đồ và thử lại sau nhé.</p>
+    <p class="eyebrow">DAD-950901-B · Easter Egg</p>
+    <h1>Easter Egg<br>Gate 2</h1>
+    <p id="loi">Niêm phong đã mở nhưng nội dung chưa được nạp lên khoang. Quay lại bản đồ và thử lại sau nhé.</p>
   </div>
 </div></div>
+<script>
+/* Mò ra Easter Egg TRƯỚC 01-09 thì cửa này mở sớm thật, nhưng bên trong chưa
+   có gì — nói thẳng ngày lên sóng để người chơi khỏi tưởng mình làm sai bước.
+   Mốc dựng bằng chuỗi ISO có múi +07:00 nên máy ở múi giờ nào cũng chốt đúng
+   nửa đêm Việt Nam; ngày hiển thị cắt thẳng từ chuỗi, không qua getDate(). */
+(function(){
+  var y = new Date().getFullYear();
+  var ISO = y + '-09-01T00:00:00+07:00';
+  if(Date.now() >= new Date(ISO).getTime()) return;
+  var d = ISO.slice(0,10).split('-');
+  document.getElementById('loi').innerHTML =
+    'Anh mở được cửa này <b>sớm hơn lịch</b> — Gate 2 đã thông, nhưng bên trong '+
+    'thì chưa có gì để xem đâu.<br>Nội dung lên sóng <b>00:00 ngày ' +
+    d[2] + '-' + d[1] + '</b>. Hẹn anh đúng hôm đó nhé.';
+})();
+</script>
 </body>
 </html>

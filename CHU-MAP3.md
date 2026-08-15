@@ -19,6 +19,21 @@ trắng, không phân biệt hoa thường) · `gap` vị trí có khoảng các
 `hints` gợi ý theo thứ tự lộ dần — **mỗi gợi ý cách nhau 30 phút** (hằng `HINTW`),
 hoặc bấm SOS 10 nhịp để mở sớm.
 
+> **ĐANG KHOÁ GỢI Ý.** Tới **01-10-2026** cả hệ gợi ý mới bật; từ giờ tới đó người chơi
+> **chơi chay**: sai bao nhiêu lần, bấm SOS bao nhiêu nhịp cũng không lộ chữ nào.
+> Muốn dời mốc thì sửa **một chỗ duy nhất** —
+> hằng `MO_GOIY` đầu khối script `961030-a`:
+>
+> ```js
+> var MO_GOIY = new Date('2026-10-01T00:00:00+07:00').getTime();
+> ```
+>
+> Muốn mở gợi ý ngay thì đổi thành một ngày đã qua. Chữ trong `hints` vẫn giữ nguyên,
+> không mất đi đâu.
+>
+> Trong lúc khoá, nút **SOS vẫn trêu như thường** (bộ `TREU` ở mục 2) — không có dòng nào
+> báo "gợi ý mở từ ngày X" cả, để người chơi khỏi biết là còn thứ đang giấu.
+
 > **Lưu ý khi sửa chữ:** câu nào có dấu nháy đơn `'` (ví dụ *"Gất pất ổn's"*) thì phải
 > bọc bằng nháy kép `"..."`, không thì đứt chuỗi và cả trang trắng. Bộ chữ hiện tại đã
 > đổi sang nháy kép sẵn.
@@ -104,8 +119,11 @@ var TRANGTHAI = [
 |---|---|
 | `Chưa có chìa khoá vào lâu đài ✦` · `Cần chìa khoá` · `Pi sà vui lòng phá đảo Easter Egg` · `Enter Easter Egg` | hàm `drawChua()` — `961030-a` |
 | `Xíu nữa gặp lại nha` + hàng icon 🏰 👸🏻 🔮 🌷 · `Còn N câu chờ mở lại` · `Mở lại sau …` | hàm `drawLock()` — `961030-a` |
+| `Đã trả lời đúng ✦` · `Câu này xong rồi ✦ Dùng mũi tên để đi tiếp` | hàm `drawQ()` — `961030-a`, nhánh xem lại |
+| `Câu này đang nghỉ · mở lại sau hh:mm:ss` | hàm `napXem()` — `961030-a` |
+| `HongHan's Secret Chamber đang chờ anh khám phá` (kèm chìa khoá hồng) | hàm `drawLead()` — `961030-a` |
+| `↺ Xem lại các câu` | hàm `xong()` — `961030-a` |
 | `Phá Đảo Lòng EM` · `HongHan's Secret` · `Thương gửi anh PIN` | hàm `xong()` — `961030-a` |
-| `Trả lời đúng N/N câu hỏi để vào HongHan's Secret Chamber ✦` | hàm `drawLead()` — `961030-a` |
 | `Vui lòng nhập mã PIN ✦` | hàm `drawGate()` — `961030-b` |
 | `Cập nhật sau` · `Mở được rồi ✦` | hàm `drawBox()` / `moNoiDung()` — `961030-b` |
 | Nhãn hai hồ sơ trong khung HAN | mảng `NODES` + hàm `render()` — `index.html` (bản đồ) |
