@@ -100,13 +100,13 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
    nên cụm này là inline-flex và chữ tự co cỡ ở màn hẹp. */
 .lead-1{display:inline-flex;align-items:center;gap:7px;flex-wrap:nowrap;
   white-space:nowrap;font-size:12px}
-.ico-key{width:22px;height:16px;flex:none}
+.ico-key{width:16px;height:22px;flex:none}   /* chìa dựng DỌC */
 .ico-key .lap{fill:#F7C6E4}
 .ico-key .lap{animation:lapLanh 1.7s ease-in-out infinite}
 .ico-key .lap.l2{animation-delay:.55s;fill:#FBD9EE}
 @keyframes lapLanh{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
 @media(max-width:400px){.lead-1{font-size:11px;gap:6px}
-  .ico-key{width:19px;height:14px}}
+  .ico-key{width:14px;height:19px}}
 @media(max-width:340px){.lead-1{font-size:10px}}
 
 /* ── thanh tiến độ theo số câu ── */
@@ -135,8 +135,8 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   font-family:"Oswald";font-size:9px;font-weight:600;letter-spacing:.22em;
   text-transform:uppercase;color:var(--violet);margin:0 0 9px}
 .q-lab em{font-style:normal;color:rgba(122,103,149,.6);letter-spacing:.12em}
-.q-txt{font-family:"Cormorant Garamond",Georgia,serif;font-size:21px;line-height:1.35;
-  font-weight:600;margin:0;color:var(--ink);text-wrap:balance}
+.q-txt{font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.34;
+  font-weight:600;margin:0;color:var(--ink);text-wrap:pretty}
 
 .cells{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
   margin:18px 0 2px;cursor:text}
@@ -193,9 +193,12 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   font-style:italic;margin:0 0 8px;text-align:center;color:var(--ink)}
 .done-txt{font-size:13px;line-height:1.68;text-align:center;color:var(--ink2);text-wrap:balance}
 /* Màn hết lượt: một dòng số, không giảng giải */
-/* Hàng icon dưới câu chào — giãn chữ cho thoáng, không dính vào nhau */
-.ico-hang{margin-top:8px;text-align:center;font-size:19px;letter-spacing:.16em;
-  line-height:1.4}
+/* Câu chào + bộ icon đi CHUNG MỘT HÀNG, chữ ĐỨNG (không nghiêng) và nhỏ hơn
+   tiêu đề thường. Cỡ chữ do khitChao() hạ dần cho vừa, nên không đặt cỡ cứng. */
+.done-tit.chao{display:flex;align-items:center;justify-content:center;gap:8px;
+  white-space:nowrap;margin-bottom:0;font-style:normal;font-weight:600}
+.ico-hang{font-size:.68em;letter-spacing:.08em;line-height:1;flex:none;
+  font-style:normal}
 .retry{margin-top:10px;text-align:center;font-family:"Oswald";font-size:10px;
   font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2)}
 .retry b{color:var(--bad);font-weight:600}
@@ -293,7 +296,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V2.01<br>Last updated 14-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V2.04<br>Last updated 16-Aug-2026"></span>
     </span>
   </div>
 
@@ -337,6 +340,11 @@ var HINTW    = 30*60*1000;          /* chờ giữa hai gợi ý — 30 phút */
 /* Khoá TOÀN BỘ gợi ý tới 00:00 ngày 01-10-2026 giờ Việt Nam — trước mốc đó thì
    chơi chay, không SOS, không tự lộ. Dựng bằng chuỗi ISO có múi +07:00 nên máy
    ở múi giờ nào cũng chốt đúng nửa đêm Việt Nam. */
+/* MÃ VÀO BỘ CÂU HỎI — người chơi nhận được sau khi qua Easter Egg · Gate 2
+   (/dad/950901-b). Chữ, không phải số; so khớp bỏ dấu và không phân biệt hoa
+   thường, y như cách chấm đáp án. Đổi mã thì sửa ĐÚNG MỘT CHỖ này, và nhớ sửa
+   luôn chỗ phát mã bên trang Gate 2. */
+var PIN_A = 'TYRION';
 var MO_GOIY_ISO = '2026-10-01T00:00:00+07:00';
 var MO_GOIY  = new Date(MO_GOIY_ISO).getTime();
 function goiYMo(){ return Date.now() >= MO_GOIY; }
@@ -353,7 +361,9 @@ function ngayMoGoiY(){
    cách nào chơi hết bài. Bản này nới ba chỗ:
      · sai SAI_PHIEN lần → câu đó NGHỈ 30 phút, tự gác lại và nhảy sang câu kế;
      · mỗi câu mỗi ngày chỉ được cháy CHAY_NGAY lần, cháy lần cuối thì nghỉ tới mai;
-     · cả năm câu cùng nghỉ mới hiện màn MỜI làm lại — mời, không ép. */
+     · CẢ BỘ cùng nghỉ mới hiện màn MỜI làm lại — mời, không ép.
+   Mọi con số câu hỏi trong trang đều lấy từ TONG = HOI.length, KHÔNG viết tay:
+   thêm bớt câu trong HOI là cả trang tự đi theo. */
 var SAI_PHIEN = 2;                  /* sai bấy nhiêu lần thì câu đó nghỉ */
 var CHAY_NGAY = 2;                  /* mỗi câu mỗi ngày được cháy bấy nhiêu lần */
 var NGHI      = 30*60*1000;         /* nghỉ 30 phút rồi chơi tiếp câu đó */
@@ -412,6 +422,7 @@ var st = (function(){
     dung: s.dung || {}, sai: s.sai || {}, chay: s.chay || {}, nghi: s.nghi || {},
     day: s.day || ngay(),
     done: !!s.done, bOpen: !!s.bOpen, reset: s.reset|0,
+    aOpen: !!s.aOpen, aSai: s.aSai|0,      /* cửa mã của chính trang này */
     tick: s.tick || {}, firstAt: s.firstAt || Date.now(), doneAt: s.doneAt || 0
   };
   /* Sang ngày mới: trả lại toàn bộ lượt sai, lượt cháy và mọi khoá đang treo */
@@ -425,6 +436,7 @@ function save(){
   s.order=st.order; s.pos=st.pos; s.hints=st.hints; s.hintAt=st.hintAt;
   s.dung=st.dung; s.sai=st.sai; s.chay=st.chay; s.nghi=st.nghi;
   s.day=st.day; s.done=st.done; s.bOpen=st.bOpen; s.reset=st.reset;
+  s.aOpen=st.aOpen; s.aSai=st.aSai;
   s.firstAt=st.firstAt; s.doneAt=st.doneAt;
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
 }
@@ -435,7 +447,7 @@ function dangNghi(q){ return nghiDen(q) > Date.now(); }
 function xong1(q){ return !!st.dung[q.id]; }
 function soDung(){ var n = 0; for(var i = 0; i < TONG; i++) if(st.dung[HOI[i].id]) n++; return n; }
 function nuaDem(){ var d = new Date(); d.setHours(24,0,0,0); return d.getTime(); }
-/* Câu kế còn chơi được, tính vòng tròn từ con trỏ hiện tại. null = cả năm câu
+/* Câu kế còn chơi được, tính vòng tròn từ con trỏ hiện tại. null = cả bộ câu
    đang nghỉ (hoặc đã đúng hết — chỗ gọi kiểm soDung trước). */
 function timCau(){
   for(var k = 0; k < TONG; k++){
@@ -574,33 +586,57 @@ function stampText(){
 /* Chìa khoá hồng công chúa — lấp lánh bằng hai ngôi sao nhỏ nhấp nháy so le.
    Vẽ tay bằng SVG để nó nằm CÙNG MỘT HÀNG với chữ, canh đúng đường chân chữ;
    emoji 🔑 thì mỗi máy một cỡ, một màu, và hay tự rớt xuống dòng. */
+/* Chìa khoá hồng công chúa — DỰNG DỌC, tay cầm ở trên, răng khoá ở dưới, đúng
+   dáng một chiếc chìa treo. Hai ngôi sao nhỏ nhấp nháy so le cho lấp lánh.
+   Vẽ tay bằng SVG chứ không dùng emoji 🔑: emoji mỗi máy một cỡ, một màu, không
+   xoay dọc được, và hay tự rớt xuống dòng riêng. */
 function icoKhoa(){
-  return '<svg class="ico-key" viewBox="0 0 22 16" aria-hidden="true">'
-    + '<circle cx="6" cy="8" r="3.7" fill="none" stroke="url(#kg)" stroke-width="1.7"/>'
-    + '<path d="M9.7 8H19M16.4 8v3.1M13.4 8v2.2" fill="none" stroke="url(#kg)"'
+  return '<svg class="ico-key" viewBox="0 0 16 22" aria-hidden="true">'
+    + '<circle cx="8" cy="6" r="3.7" fill="none" stroke="url(#kg)" stroke-width="1.7"/>'
+    + '<path d="M8 9.7V19M8 16.4h3.1M8 13.4h2.2" fill="none" stroke="url(#kg)"'
     + ' stroke-width="1.7" stroke-linecap="round"/>'
-    + '<path class="lap" d="M19.6 1.2l.55 1.5 1.5.55-1.5.55-.55 1.5-.55-1.5-1.5-.55'
-    + ' 1.5-.55z"/><path class="lap l2" d="M2.4 12.1l.4 1.05 1.05.4-1.05.4-.4 1.05'
-    + '-.4-1.05-1.05-.4 1.05-.4z"/>'
+    + '<path class="lap" d="M14.2 2.1l.5 1.35 1.35.5-1.35.5-.5 1.35-.5-1.35-1.35-.5'
+    + ' 1.35-.5z"/><path class="lap l2" d="M1.9 15.2l.38 1 1 .38-1 .38-.38 1'
+    + '-.38-1-1-.38 1-.38z"/>'
     + '<defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1">'
     + '<stop offset="0" stop-color="#F2A7D0"/><stop offset="1" stop-color="#D97BB6"/>'
     + '</linearGradient></defs></svg>';
 }
-/* Ép cụm chữ + chìa khoá NẰM GỌN MỘT HÀNG ở mọi bề ngang: hạ cỡ chữ dần từ
-   12px xuống 9px, dừng ở cỡ lớn nhất còn vừa khung. Đặt nowrap rồi thôi là
-   máy 320px bị tràn ra ngoài mép thẻ — đo mới biết, nhìn thì không. */
-function khitLead(){
-  var e = document.querySelector('.lead-1'), box = $('lead');
-  if(!e || !box) return;
-  for(var px = 12; px >= 9; px -= 0.5){
+/* ═══ CO CHỮ CHO VỪA KHUNG ═══
+   Một dòng `nowrap` mà dài hơn khung thì TRÀN RA NGOÀI mép thẻ — đo mới biết,
+   nhìn thì không. Hàm này hạ cỡ chữ dần từ `to` xuống `nho`, dừng ở cỡ lớn
+   nhất còn vừa. Dùng chung cho dòng dẫn, câu chào, và câu hỏi. */
+function khit(el, box, to, nho, buoc){
+  if(!el || !box) return;
+  var rong = box.getBoundingClientRect().width;
+  for(var px = to; px >= nho; px -= (buoc || 0.5)){
+    el.style.fontSize = px + 'px';
+    if(el.scrollWidth <= rong + 0.5 && el.getBoundingClientRect().width <= rong + 0.5) return;
+  }
+}
+function khitLead(){ khit(document.querySelector('.lead-1'), $('lead'), 12, 9); }
+function khitChao(){ khit($('chaoLai'), $('chaoLai') && $('chaoLai').parentNode, 21, 13, 1); }
+/* CÂU HỎI: chữ serif 19px, câu dài thì tự nhỏ lại cho gọn TỐI ĐA HAI HÀNG.
+   Bản trước để `text-wrap:balance` ở cỡ cố định nên câu dài bị bẻ vào giữa cụm
+   từ — "Tên một Manga Nhật / Bản mà em yêu thích?" — đọc rất khó chịu. */
+function khitHoi(){
+  var e = document.querySelector('.q-txt');
+  if(!e) return;
+  var mot = parseFloat(getComputedStyle(e).lineHeight) || 26;
+  for(var px = 19; px >= 14; px -= 0.5){
     e.style.fontSize = px + 'px';
-    if(e.getBoundingClientRect().width <= box.getBoundingClientRect().width) return;
+    mot = parseFloat(getComputedStyle(e).lineHeight) || px*1.34;
+    if(e.getBoundingClientRect().height <= mot*2 + 1) return;
   }
 }
 function drawLead(){
+  /* KHÔNG viết số câu vào đây. Bộ câu hỏi sẽ còn dài ra, mà dòng này lại là chỗ
+     người ta đọc đầu tiên — ghi "6/6" hôm nay thì mai thêm câu là nói dối.
+     Số câu chỉ hiện ở MỘT chỗ duy nhất: nhãn "Câu n / TONG" trên đầu thẻ, và
+     thanh bước ngay dưới. Cả hai đều đọc từ TONG. */
   $('lead').innerHTML = st.done
-    ? '<span class="lead-1">' + icoKhoa() + '<b>HongHan’s Secret Chamber</b> mở được rồi — mã ngay bên dưới</span>'
-    : '<span class="lead-1">' + icoKhoa() + '<b>HongHan’s Secret Chamber</b> đang chờ anh khám phá</span>';
+    ? '<span class="lead-1">' + icoKhoa() + 'Đủ chìa khoá rồi — mã mở <b>Secret Chamber</b> ở ngay dưới</span>'
+    : '<span class="lead-1">' + icoKhoa() + 'Thu thập chìa khoá để mở <b>Secret Chamber</b></span>';
   khitLead();
 }
 function drawSteps(){
@@ -647,7 +683,7 @@ var xepLai = null;
 var xepT = 0;
 addEventListener('resize', function(){
   clearTimeout(xepT);
-  xepT = setTimeout(function(){ khitLead(); if(xepLai) xepLai(); }, 160);
+  xepT = setTimeout(function(){ khitLead(); khitChao(); khitHoi(); if(xepLai) xepLai(); }, 160);
 }, {passive:true});
 
 /* ---- xếp ô đáp án ----
@@ -724,7 +760,7 @@ function drawQ(pos){
   if(pos == null){
     if(soDung() >= TONG){ st.done = true; st.doneAt = st.doneAt || Date.now(); save(); xong(false); return; }
     q = timCau();
-    if(!q){ drawLock(); return; }      /* cả năm câu đang nghỉ */
+    if(!q){ drawLock(); return; }      /* cả bộ đang nghỉ */
     pos = st.pos;
   }else{
     pos = ((pos % TONG) + TONG) % TONG;
@@ -754,6 +790,7 @@ function drawQ(pos){
     + (doc ? '' : '<button class="sos" id="sos" type="button">SOS</button>')
     + '</div>';
   navGan(pos);
+  khitHoi();
 
   var box = $('cells'), inp = $('inp'), o = xepO(box, inp, code, q.gap);
   xepLai = function(){
@@ -930,11 +967,11 @@ function drawLock(){
   var moc = mocMoLai();
   $('stage').innerHTML =
     '<div class="card">'
-    + '<p class="q-lab"><span>Đúng ' + soDung() + ' / ' + TONG + '</span><em>Cả năm câu đang nghỉ</em></p>'
-    /* Bộ icon để riêng một dòng: nhét chung với chữ thì ở màn hẹp nó rớt xuống
-       nửa vời, nhìn như lỗi xuống dòng chứ không ra chủ ý. */
-    + '<div class="done-tit">Xíu nữa gặp lại nha</div>'
-    + '<div class="ico-hang">🏰 👸🏻 🔮 🌷</div>'
+    + '<p class="q-lab"><span>Đúng ' + soDung() + ' / ' + TONG + '</span>'
+    + '<em>Cả ' + TONG + ' câu đang nghỉ</em></p>'
+    /* Chữ và bộ icon đi CHUNG MỘT HÀNG, cỡ chữ tự co cho vừa (xem khitChao). */
+    + '<div class="done-tit chao" id="chaoLai">Xíu nữa gặp lại nha'
+    + '<span class="ico-hang">🏰 👸🏻 🔮 🌷</span></div>'
     + '<div class="retry">Còn <b>' + (TONG - soDung()) + '</b> câu chờ mở lại</div>'
     + '<div class="wait" id="wait" style="text-align:center"></div>'
     + '<button class="btn ghost" id="again">↻ Xáo bài chơi lại từ đầu</button>'
@@ -948,6 +985,7 @@ function drawLock(){
     el.innerHTML = 'Mở lại sau <b>' + p(Math.floor(con/36e5)) + ':'
       + p(Math.floor(con%36e5/6e4)) + ':' + p(Math.floor(con%6e4/1e3)) + '</b>';
   }
+  khitChao();
   dem(); tick = setInterval(dem, 1000);
   $('again').addEventListener('click', function(){ lamLai('tự chọn xáo bài'); });
 }
@@ -959,6 +997,7 @@ function lamLai(vi){
   st.order = tron(TONG); st.pos = 0; st.hintAt = 0;
   st.dung = {}; st.sai = {};
   st.done = false; st.reset++;
+  st.aOpen = false; st.aSai = 0;        /* reset là đóng luôn cửa mã lại */
   save(); stampText();
   ping('han_choi_lai', vi || '');
   drawLead(); drawSteps(); drawQ();
@@ -979,6 +1018,60 @@ function navGan(pos){
   var l = $('navL'), r = $('navR');
   if(l) l.addEventListener('click', function(){ drawQ(pos - 1); drawSteps(); });
   if(r) r.addEventListener('click', function(){ drawQ(pos + 1); drawSteps(); });
+}
+
+/* ---- CỬA MÃ CỦA CHÍNH TRANG NÀY ----
+   Y khuôn cửa mã bên Secret Chamber: một dòng nhắc, một hàng ô, không kể lể.
+   Mã lấy ở màn Easter Egg · Gate 2 — ai chưa qua đó thì có vào được trang này
+   cũng đứng ngoài cửa, đúng thứ tự chặng. */
+function drawGateA(){
+  clearTick(); xepLai = null;
+  var len = PIN_A.length, buf = '';
+  $('lead').innerHTML = '<span class="lead-1">' + icoKhoa() + 'Mã mở nằm ở <b>Easter Egg · Gate 2</b></span>';
+  khitLead();
+  $('stage').innerHTML =
+    '<div class="card">'
+    + '<p class="q-lab"><span>Cửa vào</span><em>Zoey’s Castle</em></p>'
+    + '<p class="q-txt">Vui lòng nhập mã ✦</p>'
+    + '<div class="cells" id="cells">'
+    + '<input class="inp" id="inp" type="text" autocomplete="off" autocapitalize="characters" '
+    + 'autocorrect="off" spellcheck="false" aria-label="Ô nhập mã"></div>'
+    + '<div class="msg" id="msg"></div>'
+    + '</div>';
+  var box = $('cells'), inp = $('inp'), o = xepO(box, inp, PIN_A, []);
+  xepLai = function(){
+    var cu = box.querySelectorAll('.crow');
+    for(var i = cu.length - 1; i >= 0; i--) box.removeChild(cu[i]);
+    o = xepO(box, inp, PIN_A, []); paint();
+  };
+  function paint(){
+    for(var k = 0; k < len; k++){
+      o[k].textContent = buf[k] || '';
+      o[k].classList.toggle('on', k === buf.length);
+      o[k].classList.toggle('fill', k < buf.length);
+    }
+  }
+  paint();
+  setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 120);
+  box.addEventListener('click', function(){ try{ inp.focus(); }catch(e){} });
+  inp.addEventListener('input', function(){
+    buf = norm(inp.value).slice(0, len); paint();
+    if(buf.length !== len) return;
+    if(buf === norm(PIN_A)){
+      st.aOpen = true; save();
+      ping('han_mo_cua_a', 'nhập đúng mã');
+      var m = $('msg'); m.textContent = 'Đúng rồi ✦'; m.classList.add('ok');
+      m.classList.remove('egg'); void m.getBoundingClientRect(); m.classList.add('egg');
+      setTimeout(function(){ drawLead(); drawSteps(); drawQ(); }, 900);
+    }else{
+      st.aSai++; save();
+      ping('han_ma_sai', 'lần ' + st.aSai);
+      var m2 = $('msg');
+      m2.textContent = st.aSai >= 3 ? 'Chưa đúng ✦ Mã nằm ở màn Easter Egg · Gate 2 nha' : treu();
+      m2.classList.remove('ok');
+      buf = ''; inp.value = ''; paint();
+    }
+  });
 }
 
 /* ---- CHƯA PHÁ XONG EASTER EGG ----
@@ -1138,6 +1231,7 @@ document.addEventListener('keydown', function(e){
 });
 save(); stampText();
 if(!daThangEgg()){ drawChua(); }
+else if(!st.aOpen){ drawGateA(); }
 else { drawLead(); drawSteps(); if(st.done) xong(false); else drawQ(); }
 ping('han_mo', 'đúng ' + soDung() + '/' + TONG);
 addEventListener('pagehide', function(){

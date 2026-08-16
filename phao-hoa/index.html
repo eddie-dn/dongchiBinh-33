@@ -89,6 +89,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   border:1px solid var(--line);background:rgba(4,11,24,.6);color:var(--paper);
   font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 @media (prefers-reduced-motion:reduce){ .tit.blink{animation:none} }
+/* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
+      bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
+.vstamp{position:fixed;right:10px;bottom:8px;z-index:60;pointer-events:none;
+  font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
+  color:rgba(234,240,247,.3)}
+
 </style>
 </head>
 <body>
@@ -105,6 +112,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
 
   <p class="eggcap" id="eggCap">Oh?</p>
+  <span class="vstamp">V3.01<br>Last updated 16-Aug-2026</span>
 
   <div class="top">
     <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
@@ -529,13 +537,30 @@ function veNo(g, cx, cy, R, u){
   var to = R*(0.6 + u*3.4), mo = Math.max(0, 1 - u);
   g.save();
   g.globalCompositeOperation = 'lighter';
+  /* QUẦNG SÁNG — chỗ này từng lộ rõ một VÒNG TRÒN có viền: gradient cũ nhảy từ
+     0,62 (còn 32% đục) xuống 1 (trong suốt), tức là tắt hết chỉ trong 38% bán
+     kính cuối. Mắt đọc cú chuyển dốc đó thành một đường biên — nhìn ra cái đĩa
+     dán lên nền, không ra vầng sáng.
+     Cách chữa: TÁN DÀI cái đuôi. Thêm nhiều nấc, giảm dần theo kiểu mũ chuông,
+     và nấc cuối gần như đã bằng 0 từ trước khi chạm mép. */
   var q = g.createRadialGradient(cx, cy, 0, cx, cy, to);
-  q.addColorStop(0,   'rgba(255,255,255,' + (mo*0.95) + ')');
-  q.addColorStop(.28, 'rgba(206,240,255,' + (mo*0.72) + ')');
-  q.addColorStop(.62, 'rgba(90,190,240,'  + (mo*0.32) + ')');
+  q.addColorStop(0,   'rgba(255,255,255,' + (mo*0.92) + ')');
+  q.addColorStop(.16, 'rgba(236,250,255,' + (mo*0.60) + ')');
+  q.addColorStop(.32, 'rgba(190,232,255,' + (mo*0.34) + ')');
+  q.addColorStop(.50, 'rgba(130,208,246,' + (mo*0.17) + ')');
+  q.addColorStop(.68, 'rgba(96,186,236,'  + (mo*0.075) + ')');
+  q.addColorStop(.84, 'rgba(74,164,220,'  + (mo*0.024) + ')');
   q.addColorStop(1,   'rgba(60,150,220,0)');
   g.fillStyle = q;
   g.beginPath(); g.arc(cx, cy, to, 0, 6.2832); g.fill();
+  /* Lõi nóng: một chấm nhỏ rất mềm ở tâm. Quầng đã tán ra thì tâm dễ bị nhạt,
+     chấm này giữ cho chỗ nổ vẫn có trọng lượng mà không tạo thêm đường biên. */
+  var lo = g.createRadialGradient(cx, cy, 0, cx, cy, to*0.3);
+  lo.addColorStop(0,  'rgba(255,255,255,' + (mo*0.85) + ')');
+  lo.addColorStop(.45,'rgba(255,252,236,' + (mo*0.3) + ')');
+  lo.addColorStop(1,  'rgba(255,240,200,0)');
+  g.fillStyle = lo;
+  g.beginPath(); g.arc(cx, cy, to*0.3, 0, 6.2832); g.fill();
   /* tia: dài ngắn xen kẽ, mảnh dần về đầu mút */
   var n = 34;
   for(var i = 0; i < n; i++){

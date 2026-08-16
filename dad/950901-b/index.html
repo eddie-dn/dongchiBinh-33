@@ -37,6 +37,24 @@ p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
   font-weight:500;letter-spacing:.18em;text-transform:uppercase;
   color:rgba(234,240,247,.85);text-decoration:none}
 #backHome b{color:var(--amber);font-weight:600;font-size:12px;line-height:1}
+/* Mã mở bộ câu hỏi HAN-961030-A — phần thưởng của việc qua được Gate 2. */
+.ma-wrap{margin:26px 0 0;padding:16px 14px 15px;border:1px solid var(--line);
+  border-radius:14px;background:rgba(56,189,248,.06)}
+.ma-lab{font-family:"Oswald";font-size:8.5px;font-weight:600;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--neon);margin:0}
+.ma-o{display:flex;justify-content:center;gap:6px;margin:11px 0 0}
+.ma-o i{width:27px;height:34px;display:flex;align-items:center;justify-content:center;
+  border-radius:7px;font-family:"Oswald";font-size:16px;font-weight:600;font-style:normal;
+  color:#0B1B3A;background:linear-gradient(150deg,#F2D08A,var(--amber));
+  box-shadow:0 8px 18px rgba(242,180,65,.28)}
+.ma-note{font-size:12px;line-height:1.55;color:rgba(219,230,243,.62);margin:11px 0 0}
+/* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
+      bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
+.vstamp{position:fixed;right:10px;bottom:8px;z-index:60;pointer-events:none;
+  font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
+  color:rgba(234,240,247,.32)}
+
 </style>
 </head>
 <body>
@@ -51,9 +69,23 @@ p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
     <p class="eyebrow">DAD-950901-B · Easter Egg</p>
     <h1>Easter Egg<br>Gate 2</h1>
     <p id="loi">Niêm phong đã mở nhưng nội dung chưa được nạp lên khoang. Quay lại bản đồ và thử lại sau nhé.</p>
+    <div class="ma-wrap">
+      <p class="ma-lab">Mã vào Zoey’s Castle</p>
+      <div class="ma-o" id="maO"></div>
+      <p class="ma-note">Gõ mã này ở cửa <b>HAN-961030-A · Who’s my kindred spirit?</b>
+        trên toạ độ Hà Nội.</p>
+    </div>
   </div>
+  <span class="vstamp">V1.01<br>Last updated 16-Aug-2026</span>
 </div></div>
 <script>
+/* Mã mở bộ câu hỏi bên HAN — dựng từ một chỗ duy nhất, sửa ở đây thì nhớ sửa
+   luôn hằng PIN_A bên han/961030-a. */
+(function(){
+  var MA = 'TYRION', h = '';
+  for(var i = 0; i < MA.length; i++) h += '<i>' + MA[i] + '</i>';
+  document.getElementById('maO').innerHTML = h;
+})();
 /* Mò ra Easter Egg TRƯỚC 01-09 thì cửa này mở sớm thật, nhưng bên trong chưa
    có gì — nói thẳng ngày lên sóng để người chơi khỏi tưởng mình làm sai bước.
    Mốc dựng bằng chuỗi ISO có múi +07:00 nên máy ở múi giờ nào cũng chốt đúng

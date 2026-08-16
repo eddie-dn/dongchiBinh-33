@@ -421,6 +421,10 @@ Hàm `eggFlash(why)`. Bốn `why` khác nhau, mỗi cái một điều kiện ri
 > lần mở trang, tìm ra Easter Egg rồi hay chưa cũng vậy** — nó là lời chúc mừng,
 > không phải lời chỉ đường. Ngoài cửa sổ thì `gameon` im, khỏi loạn.
 
+**Mỗi lần mở trang CHỈ MỘT ĐỢT nháy.** Bản trước còn cho tem nháy thêm một lượt nữa sau
+khi dòng dẫn nháy xong — thành ra *nháy → nghỉ → nháy*, nhìn như trang bị giật. Đã bỏ
+lượt đuôi đó; lượt nháy của dòng dẫn cũng rút còn 6,8 giây cho khớp với Q♥.
+
 Thứ tự gọi lúc khởi động (trong `boot`, sau 900 ms):
 `eggFlash('win')` → `eggFlash('gameon')` nếu đang Game On → rồi **hoặc** chuỗi
 nhắc bài (`clueChay`) **hoặc** `eggFlash('daily')` khi KHÔNG ở Game On. Ba
@@ -536,6 +540,27 @@ Chế độ `telegram` không cần server nhưng **token lộ trong mã nguồn
 ---
 
 ## 15. Design system
+
+### Một dòng hồ sơ có ĐÚNG HAI trạng thái
+
+Luật chung cho mọi node, kể cả node mở sau này — đừng bịa kiểu dòng meta thứ ba,
+cả bản đồ phải đọc giống nhau:
+
+| Trạng thái | Dòng trên | Dòng dưới (`.file-meta`) |
+|---|---|---|
+| **Chưa mở** | 🔒 + tên hồ sơ | **điều kiện mở** — đếm ngược · *"Cần mã từ HAN-961030-A"* · *"Đã mở khoá · chưa có điểm kích hoạt"* |
+| **Đã mở** | bỏ ổ khoá + tên lúc mở (`openTitle` nếu có) | **lý lịch file** — `Published date: DD-Mon YYYY | Vn` |
+
+Khai trong `NODES` là xong, hàm `metaMo(s)` lo phần còn lại:
+
+```js
+{ id:'DAD-950901-B', title:'Hồ sơ niêm phong', openTitle:'Easter Egg · Gate 2',
+  pub:'01-Sep 2026', ver:'V1', unlockAt: BIRTHDAY, eggGate:true }
+```
+
+Ngoại lệ **duy nhất**: mở được **trước** ngày phát hành thì nối thêm `· Mở sớm`
+vào cuối — giữ nguyên khuôn, chỉ thêm một mẩu. Không có `pub` thì `metaMo` trả về
+`s.meta` như cũ, nên hồ sơ cũ không phải sửa gì.
 
 ```css
 --void:#040b18;  --navy:#0B1B3A;  --airforce:#1E4E79;  --steel:#4A73A0;
@@ -831,6 +856,16 @@ Header thấp xuống thì `.mapwrap` (`flex:1`) tự chiếm chỗ trống. Nh�
 sau **hai khung hình** mỗi khi class `gameon` thực sự đổi. Chỉ chạy khi trạng thái đổi, không
 gọi mỗi lần vẽ lại.
 
+### Lần ĐẦU tìm ra: khung đứng yên 3 giây
+
+Mở được khung Collected lần đầu thì **khung đứng yên 3 giây** rồi mới tự sang
+`/phao-hoa`. Ai sốt ruột bấm nút trong khung thì đi luôn; ai đóng khung thì hẹn giờ
+bị huỷ (`fwT`).
+
+> **BẪY ĐÃ VẤP:** bản trước bay sang pháo hoa sau **140 ms**. Gõ nhanh tay thì khung vừa
+> nhảy lên đã tắt — mất trắng khoảnh khắc *"mở ra được rồi!"*, người chơi chỉ thấy màn
+> hình đổi trang. Phần thưởng phải kịp nhìn thấy mới là phần thưởng.
+
 ### Cửa hai tầng của hồ sơ `DAD-950901-B`
 
 Hồ sơ này gắn cờ `eggGate:true` trong `NODES` — nó thuộc về MAP-02, không phải MAP-01.
@@ -849,7 +884,8 @@ trong `NODES`, chỉ dùng khi `eggWin`) — cả trang `/dad/950901-b` cũng đ
 có thể tìm ra Easter Egg trước sinh nhật, rồi bấm *Enter Easter Egg* (bật
 `eggHack`) để vào Gate 2 sớm. Cửa mở thật, nhưng **bên trong chưa có gì** — phải
 nói thẳng ở cả hai chỗ:
-- dòng meta của hồ sơ trên bản đồ: *"Mở sớm · nội dung lên sóng 01-09"*;
+- dòng meta của hồ sơ trên bản đồ: `Published date: 01-Sep 2026 | V1 · Mở sớm`
+  (đúng khuôn lý lịch file của mục 15, chỉ nối thêm một mẩu);
 - ngay trong trang `/dad/950901-b`: *"Anh mở được cửa này sớm hơn lịch — Gate 2
   đã thông, nhưng bên trong thì chưa có gì để xem đâu. Nội dung lên sóng 00:00
   ngày 01-09."*
@@ -1025,6 +1061,25 @@ không biết.
 
 ---
 
+## 21d0. HAN có ĐÚNG HAI hồ sơ
+
+| Hồ sơ | Là gì |
+|---|---|
+| `HAN-961030-A` | *Who's my kindred spirit?* — bộ câu hỏi |
+| `HAN-961030-B` | *HongHan's Secret Chamber* |
+
+> **BẪY ĐÃ VẤP:** từng có thêm `HAN-261030` cũng mang tên *"Hồ sơ niêm phong"*, mà
+> `HAN-961030-B` lúc khoá **cũng** tên y hệt. Ba dòng, hai dòng trùng tên, người xem
+> không biết cái nào ra cái nào. Hai luật rút ra:
+> 1. **Một toạ độ chỉ chứa những hồ sơ THẬT SỰ dẫn đi đâu đó** — đừng để hồ sơ trang trí.
+> 2. **Tên hồ sơ giữ nguyên ở cả hai trạng thái.** Khoá hay mở thì `HAN-961030-B` vẫn là
+>    *HongHan's Secret Chamber*; chỉ **dòng meta bên dưới** đổi (điều kiện mở ⇄ lý lịch
+>    file). Tên chung chung kiểu "Hồ sơ niêm phong" là trạng thái, không phải tên.
+>
+> Trang `/han/261030/` vẫn còn trên đĩa nhưng **không còn đường nào dẫn tới** — xoá được.
+
+---
+
 ## 21d. Tab HAN trên bản đồ — ba trạng thái
 
 | Tình huống | Tab HAN thấy gì |
@@ -1119,13 +1174,43 @@ Tách vai như vậy vì hai việc này chỏi nhau: **băng rôn bay là ẩn 
 chỉ đường thì người chơi mất luôn chỗ vừa bấm. Quân Q♥ nhỏ xíu, phải cố ý mới trúng —
 đúng vai một cái nút bí mật.
 
+**Chạm Q♥ — đủ BỐN NHỊP mới ra một câu.** Chạm một hai cái thì tem sáng lên thôi,
+chưa nói gì; cố chạm thêm bốn nhịp nữa mới sang câu tiếp (gõ đúp hai lần cũng là bốn).
+Bộ `QCHAM`, hằng `QCHAM_NHIP = 4`:
+
+| Nhịp chạm dồn | Câu |
+|---|---|
+| 4 | *Nhầm chỗ gòi anh ưi* |
+| 8 | *Lấp lánh long lanh kìa~* |
+| 12 trở đi | *Nhìn qua góc trái anh ưi~* |
+
+Đếm **dồn qua cả phiên**, không reset theo nhịp tay — gõ đúp hai lần cách nhau vài giây
+vẫn tính đủ. Chuỗi này **không bao giờ chỉ ra cách làm**: chỉ nói *sai chỗ* rồi chỉ
+*hướng*, việc gõ mấy nhịp vào đâu là phần người chơi tự tìm.
+
+> **BẪY ĐÃ VẤP — hiệu ứng có chạy mà người chơi không thấy.** Bản đầu chạm Q♥ chỉ thắp
+> tem rồi cho tem đổi màu, **không hiện chữ nào**. Tem là dải chữ 8 px, mờ 30%, dựng dọc
+> sát mép trái — đo thì `animation: egg` chạy đủ chu kỳ, nhìn thì mắt trượt qua hoàn toàn.
+>
+> **Và cách chữa đầu tiên còn sai hơn:** thêm `scale()` vào tem cho dễ thấy. Tem có
+> `writing-mode:vertical-rl` + `rotate(180deg)`, chồng thêm scale là nó **trượt hẳn ra
+> ngoài màn hình**. Tem phải **nằm im đúng chỗ, chỉ đổi màu** — muốn người chơi để ý thì
+> nói bằng LỜI, đừng động vào transform của nó.
+>
+> Bài học kép: *đo được không có nghĩa là thấy được*, nhưng *chữa bằng chuyển động trên
+> một phần tử đã xoay thì hỏng nặng hơn cả bệnh*.
+
 **Bấm vào tem** thì được nhắc rõ dần, theo số nhịp liên tiếp:
 
 | Nhịp | Câu nhắc |
 |---|---|
-| 4 | Đúng hướng rồi đó, cứ bấm tiếp ✦ |
-| 7 | Sắp ra rồi, đừng dừng tay ✦ |
-| 9 | Một nhịp nữa thôi ✦ |
+| 4 | Đúng chỗ rồi đó ✦ |
+| 7 | Cứ đà này đi anh ưi ✦ |
+| 9 | Sắp rồi sắp rồi ✦ |
+
+> **LUẬT: chuỗi cổ vũ không được đếm hộ, không được chỉ cách làm.** Câu cũ *"Một nhịp
+> nữa thôi"* nói toạc là còn đúng một cú — biết vậy thì hết cả cái thú mò ra. Đây chỉ là
+> tiếng vỗ tay cho người đang gõ đúng chỗ, không phải bảng hướng dẫn.
 
 Ngưng tay quá 900 ms là bộ đếm về 0 và lời nhắc tự rút — **bỏ cuộc thì im lại như cũ**,
 không có gì lải nhải. Tìm ra rồi (`credFound`) thì cả hệ này tắt hẳn.
@@ -1159,6 +1244,23 @@ Bốn chỗ đã sửa từ đợt soát này:
 > - **`position:absolute` + `left:50%` bóp bề rộng.** Bề rộng khả dụng của hộp chỉ còn
 >   **nửa khung**, nên tem phân loại tự xuống dòng sớm và rớt lại chữ "PHÚC" một mình.
 >   `width:max-content` mới cho nó rộng theo đúng nội dung.
+
+---
+
+## 21h. Cửa mã của bộ câu hỏi — `PIN_A = TYRION`
+
+Bộ câu hỏi `HAN-961030-A` có **cửa mã riêng** ngay đầu trang, dựng y khuôn cửa mã của
+Secret Chamber: một dòng nhắc, một hàng ô, không kể lể. Mã là **`TYRION`** — chữ, không
+phải số; so khớp bỏ dấu và không phân biệt hoa thường, nên gõ *tyrion* cũng vào được.
+
+**Mã phát ở màn `Easter Egg · Gate 2`** (`/dad/950901-b`) — đây là phần thưởng thật của
+việc qua được Gate 2, và nó khoá đúng thứ tự chặng: Map 2 xong mới tới Map 3.
+
+Đổi mã thì sửa **hai chỗ, phải khớp nhau**: hằng `PIN_A` bên `han/961030-a`, và biến `MA`
+trong khối phát mã bên `dad/950901-b`.
+
+Trạng thái nhớ ở `hanv1.aOpen` nên **F5 không phải gõ lại**; số lần sai ở `hanv1.aSai`
+(sai 3 lần trở lên thì lời nhắn chỉ thẳng chỗ lấy mã). Reset toàn bộ thì cửa đóng lại.
 
 ---
 
@@ -1281,7 +1383,8 @@ câu tới lượt, có `pos` là mở đúng câu ở vị trí đó:
 
 Hai mũi tên (`#navL` / `#navR`, class `.qnav`) cố ý **nhạt và không viền** — đây là thứ để
 lướt qua lại, không phải nút chính. Đi vòng tròn: hết câu cuối thì quay về câu đầu.
-- **Cả năm câu cùng nghỉ** mới hiện màn *See ya tmr 😉*: số câu đang chờ + đồng hồ đếm tới
+- **Cả bộ cùng nghỉ** mới hiện màn *Xíu nữa gặp lại nha* (chữ và bộ icon 🏰 👸🏻 🔮 🌷
+  **chung một hàng**, cỡ chữ tự co): số câu đang chờ + đồng hồ đếm tới
   lúc câu sớm nhất mở lại, và một nút **mời** xáo bài chơi lại (không ép). Hết giờ là màn
   đó **tự vào chơi tiếp**, khỏi bấm gì.
 - Sang ngày mới trả lại sạch: lượt sai, lượt cháy, mọi khoá đang treo (`hanv1.day`).
@@ -1350,14 +1453,33 @@ Khối vận hành có nút **⏩ Tua tới 01.10** để xem thử màn đó ng
 
 ### Dòng dẫn — chữ và chìa khoá đi CHUNG MỘT HÀNG
 
-Dòng dưới tiêu đề nay là **`HongHan's Secret Chamber đang chờ anh khám phá`**, đứng cạnh
-một **chìa khoá hồng công chúa** có hai ngôi sao nhấp nháy so le (`icoKhoa()` — SVG vẽ tay,
-gradient `#F2A7D0 → #D97BB6`).
+Dòng dưới tiêu đề là **`Thu thập chìa khoá để mở Secret Chamber`** (xong hết thì đổi thành
+*"Đủ chìa khoá rồi — mã mở Secret Chamber ở ngay dưới"*), đứng cạnh một **chìa khoá hồng
+công chúa dựng DỌC** — tay cầm ở trên, răng khoá ở dưới — có hai ngôi sao nhấp nháy so le
+(`icoKhoa()`: SVG vẽ tay, gradient `#F2A7D0 → #D97BB6`).
 
-Vẽ tay chứ **không dùng emoji 🔑**: mỗi máy một cỡ, một màu, và hay tự rớt xuống dòng.
-Cụm này là `inline-flex` + `white-space:nowrap`, và có hàm **`khitLead()`** hạ cỡ chữ dần
-từ 12 px xuống 9 px cho tới khi vừa khung — đặt `nowrap` rồi thôi thì máy 320 px **tràn ra
-ngoài mép thẻ**, đo mới biết, nhìn thì không. Xoay ngang máy cũng gọi lại hàm này.
+Vẽ tay chứ **không dùng emoji 🔑**: mỗi máy một cỡ, một màu, không xoay dọc được, và hay
+tự rớt xuống dòng.
+
+> **KHÔNG viết số câu vào dòng này.** Bộ câu hỏi sẽ còn dài ra; ghi "6/6" hôm nay thì mai
+> thêm câu là dòng đầu tiên người ta đọc hoá ra nói dối. Số câu chỉ hiện ở **hai chỗ, cả
+> hai đều đọc từ `TONG = HOI.length`**: nhãn *"Câu n / TONG"* trên đầu thẻ, và thanh bước
+> ngay dưới. Nhãn màn nghỉ cũng vậy — *"Cả `TONG` câu đang nghỉ"*, không viết "cả năm câu".
+
+### Co chữ cho vừa khung — `khit()`
+
+Một hàm dùng chung ba chỗ, hạ cỡ chữ dần cho tới khi vừa:
+
+| Gọi | Chỗ nào | Khoảng cỡ |
+|---|---|---|
+| `khitLead()` | dòng dẫn + chìa khoá (một hàng, `nowrap`) | 12 → 9 px |
+| `khitChao()` | *"Xíu nữa gặp lại nha 🏰 👸🏻 🔮 🌷"* — chữ và icon **chung một hàng** | 25 → 15 px |
+| `khitHoi()` | câu hỏi, ép gọn **tối đa hai hàng** | 19 → 14 px |
+
+Đặt `nowrap` rồi thôi thì máy 320 px **tràn ra ngoài mép thẻ** — đo mới biết, nhìn thì
+không. Còn câu hỏi thì bản trước để `text-wrap:balance` ở cỡ cố định, nên câu dài bị bẻ
+vào **giữa cụm từ**: *"Tên một Manga Nhật / Bản mà em yêu thích?"*. Nay `text-wrap:pretty`
++ tự co cỡ, cụm từ không bị cắt đôi nữa. Xoay ngang máy gọi lại cả ba.
 
 ### Cửa hậu hoa — Khối vận hành
 

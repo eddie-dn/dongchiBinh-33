@@ -1,5 +1,9 @@
 # MAP 3 · ZOEY'S CASTLE — bảng chữ để chỉnh
 
+> **Thêm/bớt câu hỏi thì chỉ sửa mảng `HOI`** — mọi con số trong trang (nhãn *Câu n / N*,
+> thanh bước, *Cả N câu đang nghỉ*, *Còn N câu chờ mở lại*) đều đọc từ `TONG = HOI.length`,
+> không chỗ nào viết tay. Dòng dẫn cố ý **không ghi số câu** để khỏi phải sửa theo.
+
 Mọi câu chữ đổi được của Map 3 gom hết vào đây. Sửa xong thì chép **nguyên khối**
 tương ứng đè vào file HTML ở đúng dòng ghi kèm — không cần đụng gì khác.
 
@@ -118,10 +122,10 @@ var TRANGTHAI = [
 | Câu | Nằm ở |
 |---|---|
 | `Chưa có chìa khoá vào lâu đài ✦` · `Cần chìa khoá` · `Pi sà vui lòng phá đảo Easter Egg` · `Enter Easter Egg` | hàm `drawChua()` — `961030-a` |
-| `Xíu nữa gặp lại nha` + hàng icon 🏰 👸🏻 🔮 🌷 · `Còn N câu chờ mở lại` · `Mở lại sau …` | hàm `drawLock()` — `961030-a` |
+| `Xíu nữa gặp lại nha 🏰 👸🏻 🔮 🌷` (chữ + icon chung một hàng, chữ ĐỨNG không nghiêng) · `Cả N câu đang nghỉ` · `Còn N câu chờ mở lại` · `Mở lại sau …` | hàm `drawLock()` — `961030-a` |
 | `Đã trả lời đúng ✦` · `Câu này xong rồi ✦ Dùng mũi tên để đi tiếp` | hàm `drawQ()` — `961030-a`, nhánh xem lại |
 | `Câu này đang nghỉ · mở lại sau hh:mm:ss` | hàm `napXem()` — `961030-a` |
-| `HongHan's Secret Chamber đang chờ anh khám phá` (kèm chìa khoá hồng) | hàm `drawLead()` — `961030-a` |
+| `Thu thập chìa khoá để mở Secret Chamber` · `Đủ chìa khoá rồi — mã mở Secret Chamber ở ngay dưới` (kèm chìa khoá hồng dựng dọc) | hàm `drawLead()` / `icoKhoa()` — `961030-a` |
 | `↺ Xem lại các câu` | hàm `xong()` — `961030-a` |
 | `Phá Đảo Lòng EM` · `HongHan's Secret` · `Thương gửi anh PIN` | hàm `xong()` — `961030-a` |
 | `Vui lòng nhập mã PIN ✦` | hàm `drawGate()` — `961030-b` |
