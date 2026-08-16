@@ -2,153 +2,970 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>DAD-950901-B · Easter Egg Gate 2</title>
-<meta name="theme-color" content="#040b18">
+<meta name="theme-color" content="#0d1117">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Be+Vietnam+Pro:wght@400;500&display=swap" rel="stylesheet">
+<!-- 'Press Start 2P' KHÔNG có glyph tiếng Việt (chỉ latin + latin-ext), nên chữ
+     có dấu sẽ ra ô vuông. Vì vậy chia hai font: pixel cho phần ASCII (REZAR,
+     GNIMAG, ZHAO YUN, nút, ô nhập) và Roboto Mono cho lời thoại tiếng Việt. -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--void:#040b18;--navy:#0B1B3A;--neon:#38BDF8;--amber:#F2B441;
-  --paper:#EAF0F7;--line:rgba(234,240,247,.28)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:var(--void);color:var(--paper);
-  font-family:"Be Vietnam Pro",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-#app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(120% 90% at 50% 0%,#10243f 0%,var(--void) 68%)}
-.frame{position:relative;width:100%;max-width:460px;height:100%;max-height:940px;
-  background:var(--navy);overflow:hidden;display:flex;align-items:center;
-  justify-content:center;padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
-@media(min-width:480px){.frame{border-radius:26px;height:92vh;border:1px solid rgba(255,255,255,.06)}}
-.corner{position:absolute;width:22px;height:22px;border-color:var(--line);opacity:.85}
-.corner.tr{top:14px;right:14px;border-top:2px solid;border-right:2px solid}
-.corner.bl{bottom:14px;left:14px;border-bottom:2px solid;border-left:2px solid}
-.corner.br{bottom:14px;right:14px;border-bottom:2px solid;border-right:2px solid}
-.mid{text-align:center;max-width:320px}
-.lk{width:34px;height:40px;color:var(--amber);opacity:.9}
-.eyebrow{font-family:"Oswald";font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
-  color:var(--neon);margin:20px 0 0}
-h1{font-family:"Oswald";font-weight:700;text-transform:uppercase;font-size:30px;
-  margin:12px 0 0;line-height:1.05}
-p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
-#backHome{position:absolute;top:13px;left:13px;display:inline-flex;align-items:center;gap:8px;
-  padding:8px 14px;border-radius:999px;border:1px solid var(--line);
-  background:rgba(6,16,31,.55);backdrop-filter:blur(4px);font-family:"Oswald";font-size:10px;
-  font-weight:500;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(234,240,247,.85);text-decoration:none}
-#backHome b{color:var(--amber);font-weight:600;font-size:12px;line-height:1}
-/* Mã mở bộ câu hỏi HAN-961030-A — phần thưởng của việc qua được Gate 2. */
-.ma-wrap{margin:26px 0 0;padding:16px 14px 15px;border:1px solid var(--line);
-  border-radius:14px;background:rgba(56,189,248,.06)}
-.ma-lab{font-family:"Oswald";font-size:8.5px;font-weight:600;letter-spacing:.26em;
-  text-transform:uppercase;color:var(--neon);margin:0}
-.ma-o{display:flex;justify-content:center;gap:6px;margin:11px 0 0}
-.ma-o i{width:27px;height:34px;display:flex;align-items:center;justify-content:center;
-  border-radius:7px;font-family:"Oswald";font-size:16px;font-weight:600;font-style:normal;
-  color:#0B1B3A;background:linear-gradient(150deg,#F2D08A,var(--amber));
-  box-shadow:0 8px 18px rgba(242,180,65,.28)}
-.ma-note{font-size:12px;line-height:1.55;color:rgba(219,230,243,.62);margin:11px 0 0}
-/* Nút đi tiếp — chặng cuối của Gate 2 là đưa người chơi sang Map 3, không để
-   họ tự mò đường về bản đồ rồi tìm lại toạ độ Hà Nội. */
-.ma-go{display:block;margin:14px 0 0;padding:12px 14px;border-radius:999px;
-  font-family:"Oswald";font-size:11px;font-weight:600;letter-spacing:.2em;
-  text-transform:uppercase;text-align:center;text-decoration:none;color:#0B1B3A;
-  background:linear-gradient(135deg,#F2D08A,var(--amber));
-  box-shadow:0 10px 22px rgba(242,180,65,.3)}
-.ma-go:active{transform:translateY(1px)}
-.dem{margin:14px 0 0;font-family:"Oswald";font-size:11px;font-weight:500;
-  letter-spacing:.22em;text-transform:uppercase;color:rgba(219,230,243,.55)}
-.dem b{font-size:19px;font-weight:600;color:var(--neon);letter-spacing:.04em}
-/* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
-      bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
-.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;pointer-events:none;
-  font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
-  letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
-  color:rgba(234,240,247,.32)}
+/* ══════════════════════════════════════════════════════════════════════════
+   BẢNG ĐIỀU CHỈNH — sửa toạ độ / cỡ chữ đè lên ảnh ở NGAY ĐÂY.
 
+   Mọi toạ độ tính theo % của BỨC ẢNH (không phải của khung 16:9), và lớp chữ
+   nằm chung trong khung camera nên nó lia theo ảnh khi pan. Cứ mở trang trên
+   điện thoại rồi chỉnh --*-x / --*-y vài phần trăm là khớp.
+
+   Cỡ chữ tính theo % CHIỀU CAO khung stage (biến --stg-h do JS đo).
+   ══════════════════════════════════════════════════════════════════════════ */
+:root{
+  /* Tỉ lệ gốc của bg_r1.png và bg_r2.png. Ảnh gốc 2000×877 → 2000/877.
+     Đổi ảnh khác tỉ lệ thì sửa đúng một dòng này. */
+  --art-aspect: 2000 / 877;
+
+  /* ⚠ CHỖ DỄ PHẢI CHỈNH NHẤT — vị trí camera DỪNG sau khi lia xong.
+     0% = sát mép trái ảnh · 50% = giữa · 100% = sát mép phải.
+
+     Ảnh gốc rộng 2.28:1 mà khung lại 16:9 (1.78:1), nên khung chỉ nhìn thấy
+     ~78% bề ngang ảnh: dừng ở giữa là mất ~11% mỗi bên. Chữ REZAR ở 52% thì
+     không sao, nhưng GNIMAG ở 88.8% sẽ BỊ CẮT MẤT NỬA PHẢI — mà đó lại đúng
+     mấy ký tự sáng lên trước (G, A, M).
+
+     Đo trên máy 390px với tỉ lệ 2000×877: 50% thì GNIMAG cụt mất ~27px, 75%
+     vẫn hụt ~3px, từ 80% trở đi mới lọt. Nên mặc định để 88% cho dư biên —
+     lúc này khung nhìn phủ khoảng 21%–100% bề ngang ảnh, ôm trọn cả bệ đá
+     REZAR lẫn vòm cổng GNIMAG. Kéo về 50% nếu sau này xuất ảnh 16:9 (nhớ sửa
+     luôn --art-aspect thành 16 / 9, nhưng khi đó hết chỗ dư nên camera cũng
+     không còn lia được nữa). */
+  --cam-rest: 88%;
+
+  /* ── Chữ REZAR → RAZER · mặt trước bệ đá Round 1 ─────────────────────── */
+  --rezar-x: 52%;      /* tâm chữ theo chiều NGANG của ảnh  */
+  --rezar-y: 87.5%;    /* tâm chữ theo chiều DỌC của ảnh    */
+  --rezar-size: 5.4;   /* cỡ chữ = 5.4% chiều cao khung stage */
+  --rezar-step: 1.3em; /* khoảng cách giữa 2 ký tự (bề rộng 1 ô chữ) */
+  --rezar-plate: 0;    /* 0 = tắt. Bật lên .55–.9 nếu chữ REZAR đã khắc sẵn
+                          trong bg_r1.png và cần một tấm nền tối che nó đi. */
+
+  /* ── Chữ GNIMAG · phía trên vòm cổng xoáy bên phải ───────────────────── */
+  /* Cụm này NẰM ẨN HẲN lúc đầu (xem .ovl-gnimag .chi) — chỉ hiện khi nhập sai,
+     để trên màn hình không lởn vởn sẵn hai cụm chữ mờ cùng lúc. */
+  --gnimag-x: 88.8%;
+  --gnimag-y: 17%;
+  --gnimag-size: 3.8;  /* nhỏ hơn REZAR cho gần bằng chữ khắc thật trên vòm  */
+  --gnimag-step: 1.3em;
+  --gnimag-plate: 0;
+
+  /* ── Chữ ZHAO YUN · bệ đá Round 2 ────────────────────────────────────── */
+  --zhao-x: 50%;
+  --zhao-y: 84.4%;
+  --zhao-size: 4.6;
+  --zhao-step: 1.3em;
+  --zhao-plate: 0;
+
+  /* ── Bố cục chia đôi màn hình ────────────────────────────────────────── */
+  --top-ratio: 47%;    /* nửa trên chiếm bao nhiêu chiều cao  */
+  --top-ratio-kb: 32%; /* ... khi bàn phím ảo đang bật lên    */
+
+  /* ── Bảng màu Cyberpunk ──────────────────────────────────────────────── */
+  --bg:      #0d1117;
+  --panel:   #0a0f16;
+  --neon:    #00ff66;   /* xanh lá neon — GNIMAG, viền, log thường */
+  --amber:   #ffaa00;   /* cam neon     — REZAR / RAZER, ZHAO YUN  */
+  --danger:  #ff3355;   /* đỏ cảnh báo  — log lỗi                  */
+  --ink:     #cfe8d8;
+
+  --font-pixel: 'Press Start 2P', 'Silkscreen', monospace;
+  --font-term:  'Roboto Mono', 'Press Start 2P', ui-monospace, monospace;
+
+  /* JS ghi vào: chiều cao thật của khung stage (px) và của viewport nhìn thấy */
+  --stg-h: 200px;
+  --app-h: 100dvh;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--bg)}
+body{
+  color:var(--ink);font-family:var(--font-term);
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+
+#app{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--app-h);
+  display:flex;flex-direction:column;
+  max-width:520px;margin:0 auto;
+  background:radial-gradient(120% 70% at 50% 0%,#131c26 0%,var(--bg) 70%);
+}
+
+/* ══════════════════ NỬA TRÊN · GAME VISUAL VIEWPORT ══════════════════════ */
+.top{
+  flex:0 1 var(--top-ratio);
+  min-height:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 10px 6px;
+}
+body.kb-open .top{flex-basis:var(--top-ratio-kb)}
+
+/* Khung 16:9 căn giữa. Ảnh gốc rộng hơn 16:9 nên phần thừa hai bên chính là
+   quãng đường cho cú lia camera. */
+.stage{
+  position:relative;
+  width:100%;max-width:100%;
+  aspect-ratio:16 / 9;
+  max-height:100%;
+  overflow:hidden;
+  background:#05080c;
+  border:2px solid rgba(0,255,102,.22);
+  box-shadow:0 0 0 1px rgba(0,0,0,.9), 0 0 26px rgba(0,255,102,.10) inset,
+             0 14px 34px rgba(0,0,0,.55);
+}
+/* Rung nhẹ toàn khung khi nhập sai */
+.stage.hit{animation:stageHit .38s steps(4,end) 4}
+@keyframes stageHit{
+  0%,100%{transform:translate(0,0)}
+  25%{transform:translate(-2px,1px)}
+  50%{transform:translate(2px,-1px)}
+  75%{transform:translate(-1px,-2px)}
+}
+
+/* ── Viền góc neon retro ─────────────────────────────────────────────────── */
+.cn{position:absolute;width:16px;height:16px;z-index:6;pointer-events:none;
+    border-color:var(--neon);opacity:.75;
+    filter:drop-shadow(0 0 4px rgba(0,255,102,.7))}
+.cn.tl{top:4px;left:4px;border-top:3px solid;border-left:3px solid}
+.cn.tr{top:4px;right:4px;border-top:3px solid;border-right:3px solid}
+.cn.bl{bottom:4px;left:4px;border-bottom:3px solid;border-left:3px solid}
+.cn.br{bottom:4px;right:4px;border-bottom:3px solid;border-right:3px solid}
+
+/* Quét scanline mỏng cho ra chất CRT */
+.scan{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.28;
+  background:repeating-linear-gradient(to bottom,
+    rgba(0,0,0,0) 0 2px, rgba(0,0,0,.55) 2px 3px)}
+
+/* Chớp đỏ khi sai — vẫn đọc được kể cả khi thiếu file anim_wrong */
+.redflash{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;
+  background:radial-gradient(70% 70% at 50% 55%,rgba(255,51,85,0) 30%,rgba(255,51,85,.55) 100%)}
+.stage.hit .redflash{animation:redPulse 2s ease-out 1}
+@keyframes redPulse{
+  0%{opacity:0} 8%{opacity:1} 20%{opacity:.25} 32%{opacity:.95}
+  60%{opacity:.3} 100%{opacity:0}
+}
+
+.back{
+  position:absolute;top:9px;left:9px;z-index:7;
+  font-family:var(--font-pixel);font-size:7px;letter-spacing:.06em;
+  color:rgba(207,232,216,.62);text-decoration:none;
+  padding:5px 7px;border:1px solid rgba(0,255,102,.28);
+  background:rgba(5,8,12,.62);backdrop-filter:blur(3px);
+}
+.back:active{color:var(--neon);border-color:var(--neon)}
+
+/* Báo thiếu asset — chỉ hiện khi file ảnh load hỏng, để biết đường thả file vào */
+.missing{
+  position:absolute;right:26px;bottom:6px;z-index:7;margin:0;max-width:66%;
+  font-family:var(--font-pixel);font-size:6px;line-height:1.9;text-align:right;
+  color:rgba(255,170,0,.72);text-shadow:0 1px 3px #000;pointer-events:none;
+}
+
+/* ── Camera: hộp mang đúng tỉ lệ ẢNH, chữ đè nằm bên trong nên lia theo ảnh ── */
+/* left:P + translateX(-P) = ghim mốc P% của ẢNH vào mốc P% của KHUNG.
+   P=0 dán mép trái, P=50 canh giữa, P=100 dán mép phải. */
+.cam{
+  position:absolute;top:0;
+  height:100%;aspect-ratio:var(--art-aspect);
+  left:var(--cam-rest);
+  transform:translateX(calc(-1 * var(--cam-rest)));   /* trạng thái nghỉ */
+}
+/* Lia từ mép TRÁI sang phải trong 2.5s rồi dừng cố định (both giữ khung cuối). */
+@keyframes camPan{
+  0%  {left:0%;             transform:translateX(0%)}
+  100%{left:var(--cam-rest);transform:translateX(calc(-1 * var(--cam-rest)))}
+}
+.cam.pan{animation:camPan 2.5s cubic-bezier(.33,0,.15,1) both}
+
+.art{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+  image-rendering:pixelated;            /* giữ nét pixel art, không bị làm mượt */
+  transition:opacity .5s linear;
+}
+/* Nền vẽ bằng CSS, chỉ bật khi thiếu bg_r1.png / bg_r2.png để vẫn chơi được */
+.artfx{position:absolute;inset:0;display:none;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0) 45%),
+    radial-gradient(45% 60% at 50% 78%,rgba(255,170,0,.18),transparent 70%),
+    radial-gradient(30% 50% at 89% 30%,rgba(0,255,102,.22),transparent 70%),
+    repeating-linear-gradient(0deg,#1a2430 0 22px,#151d27 22px 24px),
+    repeating-linear-gradient(90deg,#1a2430 0 34px,#141c25 34px 36px)}
+body.miss-art .artfx{display:block}
+
+/* Clip ổ khoá rung đỏ — nằm trong .cam nên khớp khung cảnh với ảnh nền */
+.clip{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  display:none;z-index:3;image-rendering:pixelated}
+.clip.on{display:block}
+
+/* ══════════════════ LỚP CHỮ ĐÈ LÊN ẢNH ═══════════════════════════════════ */
+/* .ovl là một điểm neo kích thước 0 đặt đúng tâm chữ; từng ký tự tự dịch
+   sang trái/phải quanh điểm neo đó, nên đổi cỡ chữ không lệch tâm. */
+.ovl{
+  position:absolute;width:0;height:0;z-index:2;pointer-events:none;
+  font-family:var(--font-pixel);line-height:1;white-space:nowrap;
+  font-size:calc(var(--size) * var(--stg-h) / 100);
+}
+.ovl-rezar {left:var(--rezar-x); top:var(--rezar-y); --size:var(--rezar-size); --step:var(--rezar-step); --plate:var(--rezar-plate); --tone:var(--amber)}
+.ovl-gnimag{left:var(--gnimag-x);top:var(--gnimag-y);--size:var(--gnimag-size);--step:var(--gnimag-step);--plate:var(--gnimag-plate);--tone:var(--neon)}
+.ovl-zhao  {left:var(--zhao-x);  top:var(--zhao-y);  --size:var(--zhao-size);  --step:var(--zhao-step);  --plate:var(--zhao-plate); --tone:var(--amber)}
+
+/* Tấm nền tối tuỳ chọn để che chữ đã khắc sẵn trong ảnh */
+.ovl::before{
+  content:"";position:absolute;left:0;top:0;
+  width:calc(var(--n) * var(--step) + .35em);height:1.55em;
+  transform:translate(-50%,-50%);
+  background:#11161c;opacity:var(--plate);
+  box-shadow:0 0 .5em .35em #11161c;
+}
+
+/* Một ô chữ: .ch giữ VỊ TRÍ (trượt khi hoán đổi), .chi giữ MÀU + ÁNH SÁNG */
+.ch{
+  position:absolute;left:0;top:0;
+  transform:translate(-50%,-50%)
+            translateX(calc((var(--i) - (var(--n) - 1) / 2) * var(--step)));
+  transition:transform .65s cubic-bezier(.55,-.3,.35,1.35);
+}
+.chi{
+  display:block;font-style:normal;
+  color:var(--tone);opacity:.15;         /* TRẠNG THÁI BAN ĐẦU: tối / tắt đèn */
+  text-shadow:none;
+  transition:opacity .35s ease, text-shadow .35s ease, color .35s ease;
+}
+
+/* GNIMAG khởi đầu ẨN HẲN chứ không mờ .15 như REZAR: chỉ còn ĐÚNG MỘT cụm chữ
+   mờ trên bệ đá để người chơi nhắm vào, không bị chia trí. Cụm này chỉ hiện ra
+   khi đã nhập sai (class .lit / .flicker đè lên, độ ưu tiên cao hơn). */
+.ovl-gnimag .chi{opacity:0}
+
+/* Chớp sáng ~0.3s khi gõ trúng ký tự (real-time keystroke match) */
+.ch.blink > .chi{animation:keyFlash .34s ease-out 1}
+@keyframes keyFlash{
+  0%  {opacity:.15;text-shadow:none}
+  22% {opacity:1;  text-shadow:0 0 .22em var(--amber),0 0 .55em rgba(255,170,0,.85)}
+  100%{opacity:.15;text-shadow:none}
+}
+
+/* Gợi ý idle: cả cụm REZAR "thở" nhẹ đúng một nhịp rồi mờ lại */
+.ovl.hint .chi{animation:breathe 1.7s ease-in-out 1}
+@keyframes breathe{
+  0%  {opacity:.15}
+  45% {opacity:.72;text-shadow:0 0 .2em rgba(255,170,0,.6)}
+  100%{opacity:.15;text-shadow:none}
+}
+
+/* Ký tự đã bật đèn (dùng cho GNIMAG sáng dần phải→trái) */
+.ch.lit > .chi{
+  opacity:1;
+  text-shadow:0 0 .18em var(--tone),0 0 .5em var(--tone),0 0 1em rgba(0,255,102,.5);
+}
+
+/* Sai từ lần 3: cả cụm GNIMAG nhấp nháy liên tục */
+.ovl.flicker .chi{animation:flick 1.15s steps(1,end) infinite}
+@keyframes flick{
+  0%,42%,52%,74%,86%,100%{opacity:1;
+    text-shadow:0 0 .18em var(--neon),0 0 .55em var(--neon),0 0 1.1em rgba(0,255,102,.6)}
+  46%,48%{opacity:.22;text-shadow:none}
+  78%,82%{opacity:.34;text-shadow:0 0 .2em rgba(0,255,102,.5)}
+}
+
+/* Mở khoá xong: RAZER sáng rực 100%, giữ nguyên không tắt */
+.ovl.solved .chi{
+  opacity:1;color:var(--amber);
+  text-shadow:0 0 .12em #fff3d0,0 0 .3em var(--amber),
+              0 0 .75em var(--amber),0 0 1.6em rgba(255,170,0,.75);
+  animation:none;
+}
+/* Hai ký tự đổi chỗ nhấc lên / hạ xuống cho khỏi chồng lên nhau lúc trượt */
+.chi.arc-up{animation:arcUp .65s ease-in-out 1}
+.chi.arc-dn{animation:arcDn .65s ease-in-out 1}
+@keyframes arcUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-.75em)}}
+@keyframes arcDn{0%,100%{transform:translateY(0)}50%{transform:translateY(.75em)}}
+
+/* ══════════════════ NỬA DƯỚI · NARRATIVE & CONTROL TERMINAL ══════════════ */
+.bot{
+  flex:1 1 auto;min-height:0;
+  display:flex;flex-direction:column;gap:9px;
+  padding:4px 12px calc(10px + env(safe-area-inset-bottom));
+}
+
+/* ── Hộp thoại cốt truyện ────────────────────────────────────────────────── */
+.narr{
+  flex:1 1 auto;min-height:0;
+  display:flex;flex-direction:column;
+  border:2px dashed var(--neon);
+  background:linear-gradient(180deg,rgba(0,255,102,.05),rgba(0,0,0,.35));
+  box-shadow:0 0 14px rgba(0,255,102,.10) inset;
+}
+.narr.shake{animation:boxShake .42s steps(3,end) 3}
+@keyframes boxShake{
+  0%,100%{transform:translateX(0)}
+  33%{transform:translateX(-4px)} 66%{transform:translateX(4px)}
+}
+.narr.alert{border-color:var(--danger);box-shadow:0 0 16px rgba(255,51,85,.18) inset}
+
+.narr-hd{
+  flex:0 0 auto;
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  padding:7px 9px 6px;border-bottom:1px dashed rgba(0,255,102,.35);
+  font-family:var(--font-pixel);font-size:7px;letter-spacing:.05em;
+  color:rgba(0,255,102,.72);
+}
+.narr.alert .narr-hd{color:var(--danger);border-bottom-color:rgba(255,51,85,.45)}
+.dot{width:6px;height:6px;background:var(--neon);
+  box-shadow:0 0 7px var(--neon);animation:blip 1.1s steps(2,end) infinite}
+.narr.alert .dot{background:var(--danger);box-shadow:0 0 7px var(--danger)}
+@keyframes blip{0%,49%{opacity:1}50%,100%{opacity:.15}}
+
+.log{
+  flex:1 1 auto;min-height:0;overflow-y:auto;
+  padding:9px 10px 11px;
+  font-size:12.5px;line-height:1.72;letter-spacing:.01em;
+  scrollbar-width:none;
+}
+.log::-webkit-scrollbar{display:none}
+.log .ln{margin:0 0 7px;color:var(--neon);text-shadow:0 0 7px rgba(0,255,102,.35);
+  word-break:break-word}
+.log .ln.err{color:var(--danger);text-shadow:0 0 7px rgba(255,51,85,.4)}
+.log .ln.gold{color:var(--amber);text-shadow:0 0 8px rgba(255,170,0,.45)}
+.log .ln:not(:last-child){opacity:.42;text-shadow:none}
+/* Con trỏ nhấp nháy ở cuối dòng đang gõ */
+.log .ln.typing::after{content:"\2588";margin-left:1px;animation:blip .75s steps(2,end) infinite}
+
+/* ── Ô phần thưởng · CHÌA KHOÁ TYRION ────────────────────────────────────── */
+/* TYRION không còn là mã hiện sẵn nữa mà là CHÌA KHOÁ nhận được khi phá xong
+   FINAL ROUND, để mang sang Map 3 (một series khác). Final round chưa dựng nên
+   ô này đang khoá: tên chìa che bằng dấu hỏi, gọi grantKey() là mở. */
+.reward{
+  flex:0 0 auto;
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;
+  border:2px dashed rgba(207,232,216,.22);
+  background:rgba(255,255,255,.02);
+  font-family:var(--font-pixel);
+}
+.kico{flex:0 0 auto;width:20px;height:auto;color:rgba(207,232,216,.3)}
+.rw-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rw-lab{font-size:6.5px;letter-spacing:.16em;color:rgba(207,232,216,.38)}
+.rw-val{font-size:10px;letter-spacing:.1em;color:rgba(207,232,216,.42)}
+.rw-note{margin-left:auto;flex:0 0 auto;font-size:6px;letter-spacing:.1em;
+  text-align:right;color:rgba(207,232,216,.3)}
+
+/* Đã mở khoá: chìa sáng vàng, hiện tên thật */
+.reward.open{border-color:var(--amber);border-style:solid;
+  background:rgba(255,170,0,.07);box-shadow:0 0 16px rgba(255,170,0,.14) inset}
+.reward.open .kico{color:var(--amber);filter:drop-shadow(0 0 5px var(--amber))}
+.reward.open .rw-lab{color:rgba(255,170,0,.7)}
+.reward.open .rw-val{color:var(--amber);text-shadow:0 0 8px rgba(255,170,0,.75)}
+.reward.open .rw-note{color:rgba(255,170,0,.6)}
+
+/* ── Khu vực tương tác ───────────────────────────────────────────────────── */
+.ctrl{flex:0 0 auto}
+.inrow{display:flex;gap:8px;align-items:stretch}
+
+#pin{
+  flex:1 1 auto;min-width:0;
+  font-family:var(--font-pixel);
+  font-size:16px;                     /* >=16px để iOS không tự phóng to khi focus */
+  text-transform:uppercase;           /* tự động in hoa */
+  letter-spacing:.06em;
+  color:var(--neon);
+  background:#070b10;
+  border:2px solid rgba(0,255,102,.45);
+  border-radius:0;
+  padding:13px 11px 11px;
+  outline:none;
+  box-shadow:0 0 12px rgba(0,255,102,.10) inset;
+  -webkit-appearance:none;appearance:none;
+}
+#pin::placeholder{color:rgba(0,255,102,.28);letter-spacing:.02em}
+#pin:focus{border-color:var(--neon);box-shadow:0 0 16px rgba(0,255,102,.22) inset,
+  0 0 14px rgba(0,255,102,.20)}
+#pin:disabled{opacity:.4;border-color:rgba(255,51,85,.5);color:rgba(255,51,85,.75)}
+
+#go{
+  flex:0 0 auto;
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:.04em;
+  color:#06140b;
+  background:linear-gradient(180deg,#4bff9a,var(--neon));
+  border:0;border-radius:0;
+  padding:0 15px;
+  cursor:pointer;
+  /* Đổ bóng khối kiểu nút pixel: nhấn xuống là bóng tụt theo */
+  box-shadow:0 4px 0 #007a30, 0 4px 16px rgba(0,255,102,.32);
+  transition:transform .05s linear, box-shadow .05s linear;
+}
+#go:active:not(:disabled){transform:translateY(4px);
+  box-shadow:0 0 0 #007a30, 0 2px 9px rgba(0,255,102,.2)}
+#go:disabled{filter:grayscale(.85);opacity:.45;cursor:default;
+  box-shadow:0 4px 0 #263038}
+
+.ctrl.gone{opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .35s ease, transform .35s ease}
+
+.stamp{
+  margin:8px 0 0;text-align:center;
+  font-family:var(--font-pixel);font-size:6.5px;letter-spacing:.14em;
+  color:rgba(207,232,216,.3);
+}
+
+/* ══════════════════ CLIP NỔ SẬP PHÒNG LAB — TOÀN MÀN HÌNH ════════════════ */
+.boom{position:fixed;inset:0;z-index:99;background:#000;
+  display:flex;align-items:center;justify-content:center;
+  animation:boomIn .25s linear both}
+@keyframes boomIn{from{opacity:0}to{opacity:1}}
+.boom.out{animation:boomOut .6s ease-in both}
+@keyframes boomOut{to{opacity:0}}
+.boom img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+/* Không có anim_unlock thì vẫn có một màn nổ trắng/cam bằng CSS để không hụt nhịp */
+.boom .fx{position:absolute;inset:0;display:none;
+  background:radial-gradient(circle at 50% 55%,#fff6d8 0%,#ffaa00 18%,#c23c00 42%,#1a0a00 78%,#000 100%);
+  animation:boomFx 3.2s ease-out infinite}
+body.miss-boom .boom .fx{display:block}
+@keyframes boomFx{
+  0%{transform:scale(.05);opacity:0}
+  6%{transform:scale(1.5);opacity:1}
+  35%{transform:scale(2.6);opacity:.85}
+  100%{transform:scale(4);opacity:.05}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cam.pan{animation-duration:.01s}
+  .stage.hit,.narr.shake{animation:none}
+}
 </style>
 </head>
 <body>
-<div id="app"><div class="frame">
-  <a id="backHome" href="/"><b>&larr;</b> Bản đồ</a>
-  <span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-  <div class="mid">
-    <svg class="lk" viewBox="0 0 12 14" aria-hidden="true">
-      <path d="M3.3 6.2V4.3a2.7 2.7 0 0 1 5.4 0v1.9" fill="none" stroke="currentColor" stroke-width="1.3"/>
-      <rect x="1.3" y="6" width="9.4" height="7.2" rx="1.5" fill="currentColor"/>
-    </svg>
-    <p class="eyebrow">DAD-950901-B · Easter Egg</p>
-    <h1>Easter Egg<br>Gate 2</h1>
-    <p id="loi">Hẹn anh <b id="hen">00:00 ngày 01-09</b></p>
-    <div class="dem" id="dem"></div>
-    <div class="ma-wrap" id="maWrap" hidden>
-      <p class="ma-lab">Mã vào Zoey’s Castle</p>
-      <div class="ma-o" id="maO"></div>
-      <p class="ma-note">Gõ mã này ở cửa <b>HAN-961030-A · Who’s my kindred spirit?</b>
-        trên toạ độ Hà Nội.</p>
-      <a class="ma-go" id="maGo" href="/han/961030-a?from=map">Vào Zoey’s Castle &rarr;</a>
+
+<div id="app">
+
+  <!-- ═══════════ NỬA TRÊN · GAME VISUAL VIEWPORT (khung 16:9) ═══════════ -->
+  <section class="top">
+    <div class="stage" id="stage">
+
+      <!-- Camera: đúng tỉ lệ ảnh gốc, rộng hơn khung 16:9 → còn chỗ để lia -->
+      <div class="cam" id="cam">
+        <img class="art" id="artBg" alt="" draggable="false">
+        <div class="artfx"></div>
+        <img class="clip" id="clipWrong" alt="" draggable="false">
+
+        <!-- Ba lớp chữ đè, JS dựng từng ký tự vào đây -->
+        <div class="ovl ovl-rezar"  id="ovlRezar"></div>
+        <div class="ovl ovl-gnimag" id="ovlGnimag"></div>
+        <div class="ovl ovl-zhao"   id="ovlZhao"></div>
+      </div>
+
+      <div class="redflash"></div>
+      <div class="scan"></div>
+      <span class="cn tl"></span><span class="cn tr"></span>
+      <span class="cn bl"></span><span class="cn br"></span>
+      <a class="back" href="/"></a>
+      <p class="missing" id="missing" hidden></p>
     </div>
-  </div>
-  <span class="vstamp">V1.03<br>Last updated 16-Aug-2026</span>
-</div></div>
+  </section>
+
+  <!-- ═══════════ NỬA DƯỚI · NARRATIVE & CONTROL TERMINAL ═══════════ -->
+  <section class="bot">
+
+    <div class="narr" id="narr">
+      <div class="narr-hd">
+        <span id="narrTag">SYSTEM LOG // ROUND 1</span><span class="dot"></span>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+
+    <!-- Ô phần thưởng: chìa khoá TYRION, mở được sau khi phá xong FINAL ROUND -->
+    <div class="reward" id="reward">
+      <svg class="kico" viewBox="0 0 18 10" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M1 1h7v8H1V1zm2 2v4h3V3H3z"/>
+        <rect x="8" y="4" width="9" height="2"/>
+        <rect x="11" y="6" width="1" height="2"/>
+        <rect x="14" y="6" width="1" height="2"/>
+      </svg>
+      <span class="rw-txt">
+        <b class="rw-lab" id="rwLab"></b>
+        <b class="rw-val" id="rwVal"></b>
+      </span>
+      <span class="rw-note" id="rwNote"></span>
+    </div>
+
+    <div class="ctrl" id="ctrl">
+      <div class="inrow">
+        <input id="pin" type="text" inputmode="text" maxlength="16"
+               autocomplete="off" autocorrect="off" autocapitalize="characters"
+               spellcheck="false" aria-label="Nhap mat danh">
+        <button id="go" type="button"></button>
+      </div>
+      <p class="stamp" id="stamp"></p>
+    </div>
+
+  </section>
+</div>
+
+<!-- Clip nổ sập phòng lab, phủ toàn màn hình -->
+<div class="boom" id="boom" hidden>
+  <div class="fx"></div>
+  <img id="clipUnlock" alt="" draggable="false">
+</div>
+
 <script>
-/* ═══ VÀO ĐƯỢC ĐÂY = ĐÃ QUA GATE 2 ═══
-   BẪY ĐÃ VẤP: cờ `eggWin` trước đây CHỈ được ghi ở ba chỗ bên ngoài (link hồ sơ
-   trên bản đồ, nút trong khung Collected, nút ở trang pháo hoa). Ai tới thẳng
-   trang này — ví dụ bấm nút "Vào Zoey's Castle" ngay dưới đây rồi quay lại —
-   thì cờ không có, và Map 3 báo "chưa có chìa khoá vào lâu đài" dù vừa mới
-   thắng xong. Nay chính TRANG NÀY ghi cờ: đứng ở đây nghĩa là đã qua cửa, khỏi
-   phụ thuộc vào việc đi bằng đường nào. */
 (function(){
-  try{
-    var m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {};
-    if(m.eggWin) return;
-    m.eggWin = true;
-    localStorage.setItem('mtv1', JSON.stringify(m));
-  }catch(e){}
+'use strict';
+
+/* ══════════════════════════════════════════════════════════════════════════
+   1. HẰNG SỐ — chỉnh nhịp game ở đây
+   ══════════════════════════════════════════════════════════════════════════ */
+var PASS_R1 = 'RAZER';   // mật khẩu Round 1
+
+/* Đường dẫn TUYỆT ĐỐI TỪ GỐC SITE, không phải đường dẫn tương đối.
+   vercel.json bật cleanUrls nên trang chạy ở /dad/950901-b — KHÔNG có dấu "/"
+   ở cuối. Viết tương đối kiểu 'bg_r1.png' thì trình duyệt ghép vào thư mục cha
+   thành /dad/bg_r1.png (sai chỗ, 404). Bốn file này nằm cùng chỗ index.html.
+   Cùng lối viết với /han/honghan.jpg bên trang bản đồ. */
+var ASSETS = {
+  bg1:    '/dad/950901-b/bg_r1.png',
+  bg2:    '/dad/950901-b/bg_r2.png',
+  wrong:  '/dad/950901-b/anim_wrong.webp',    // animated WebP
+  unlock: '/dad/950901-b/anim_unlock.webp'
+};
+
+var T = {
+  WRONG_CLIP : 2000,   // ổ khoá rung đỏ chạy 2 giây
+  LOCK       : 2000,   // khoá ô nhập 2 giây rồi mở lại
+  SWAP       : 650,    // REZAR trượt thành RAZER
+  HOLD_LIT   : 3000,   // giữ RAZER sáng rực 3 giây cho kịp nhìn
+  UNLOCK_CLIP: 8000,   // clip nổ (mô tả asset ghi ~4s, luồng game ghi ~8s —
+                       //  lấy theo luồng game; đổi ở đúng dòng này)
+  IDLE_HINT  : 20000,  // 20 giây chưa mở được thì REZAR thở một nhịp
+  TYPE       : 22,     // tốc độ gõ chữ (ms / ký tự)
+  GNIMAG_STEP: 240     // giãn cách sáng từng ký tự GNIMAG
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOÀN BỘ CHỮ HIỂN THỊ CHO NGƯỜI CHƠI GOM HẾT VÀO ĐÂY — sửa lời thoại thì
+   sửa trong khối này, không phải mò xuống dưới.
+
+   ⚠ Phần `ui` chạy font pixel 'Press Start 2P' — font này KHÔNG có glyph
+     tiếng Việt, nên các nhãn đó phải viết KHÔNG DẤU, nếu không sẽ ra ô vuông.
+     Phần `story` chạy font Roboto Mono, viết tiếng Việt có dấu thoải mái.
+   ══════════════════════════════════════════════════════════════════════════ */
+var TEXT = {
+
+  /* ── Nhãn giao diện · BẮT BUỘC KHÔNG DẤU ────────────────────────────── */
+  ui: {
+    backMap     : '← BAN DO',            // nút quay lại bản đồ, góc trên trái
+    logR1       : 'SYSTEM LOG // ROUND 1',    // nhãn hộp thoại khi ở Round 1
+    logFinal    : 'SYSTEM LOG // FINAL ROUND',// ... khi đã sang final round
+    placeholder : 'NHAP MAT DANH...',         // chữ mờ trong ô nhập
+    unlockBtn   : 'UNLOCK',                   // chữ trên nút bấm
+    stamp       : 'V2.10 · DAD-950901-B · GATE 2',
+    assetTitle  : 'THIEU / HONG ASSET:',      // báo khi file ảnh lỗi
+
+    /* Ô phần thưởng — chìa khoá TYRION */
+    rwLabel     : 'CHIA KHOA MAP 3',
+    rwMasked    : '? ? ? ? ? ?',              // lúc chưa mở khoá
+    rwName      : 'TYRION',                   // lúc đã mở khoá
+    rwNoteLocked: 'CHUA MO KHOA',
+    rwNoteOpen  : 'DA NHAN'
+  },
+
+  /* ── Lời thoại · viết tiếng Việt có dấu bình thường ─────────────────── */
+  story: {
+    introR1 : '> CẢNH BÁO: Quả trứng cơ khí đang bị phong ấn bởi 3 mã độc. Hãy giải mã mật danh trên bệ đá để mở khóa...',
+    wrong   : '> TRUY CẬP BỊ TỪ CHỐI! Phát hiện tín hiệu lạ từ cổng dịch chuyển...',
+    ok      : '> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...',
+    introR2 : '> PHÒNG LAB ĐÃ SẬP! Bạch Long Triệu Vân đã thức tỉnh...',
+    final   : '> BẠCH LONG TRIỆU VÂN ĐÃ THỨC TỈNH! FINAL ROUND IS ACTIVATED!',
+    reward  : '> Phá xong FINAL ROUND sẽ nhận được CHÌA KHÓA TYRION — chìa này dùng để mở Map 3.',
+    wip     : '> Nhưng FINAL ROUND vẫn đang được dựng. Chìa khóa còn niêm phong, hẹn anh ở bản cập nhật sau.'
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   2. DOM
+   ══════════════════════════════════════════════════════════════════════════ */
+var $ = function(id){ return document.getElementById(id); };
+var stage=$('stage'), cam=$('cam'), artBg=$('artBg'), clipWrong=$('clipWrong'),
+    ovlRezar=$('ovlRezar'), ovlGnimag=$('ovlGnimag'), ovlZhao=$('ovlZhao'),
+    narr=$('narr'), narrTag=$('narrTag'), log=$('log'), ctrl=$('ctrl'),
+    pin=$('pin'), go=$('go'), boom=$('boom'), clipUnlock=$('clipUnlock'),
+    missing=$('missing'), reward=$('reward'), rwLab=$('rwLab'), rwVal=$('rwVal'),
+    rwNote=$('rwNote'), stamp=$('stamp'), backLink=document.querySelector('.back');
+
+/* Đổ chữ từ khối TEXT ra giao diện — gom một chỗ để sửa lời là đổi được hết */
+function applyText(){
+  var u = TEXT.ui;
+  backLink.textContent = u.backMap;
+  narrTag.textContent  = u.logR1;
+  pin.placeholder      = u.placeholder;
+  go.textContent       = u.unlockBtn;
+  stamp.textContent    = u.stamp;
+  rwLab.textContent    = u.rwLabel;
+  rwVal.textContent    = u.rwMasked;
+  rwNote.textContent   = u.rwNoteLocked;
+}
+
+/* Mở khoá ô phần thưởng. FINAL ROUND chưa dựng nên hiện chưa chỗ nào gọi hàm
+   này — dựng xong round cuối thì gọi grantKey() là chìa TYRION hiện ra. */
+function grantKey(){
+  reward.classList.add('open');
+  rwVal.textContent  = TEXT.ui.rwName;
+  rwNote.textContent = TEXT.ui.rwNoteOpen;
+}
+
+var round = 1;
+var wrongCount = 0;
+var busy = false;          // đang chạy hiệu ứng → chặn submit
+var idleTimer = null;
+var gnimagTimers = [];
+
+/* ══════════════════════════════════════════════════════════════════════════
+   3. ĐO KHUNG STAGE — cỡ chữ đè tính theo % chiều cao khung, nên phải đo lại
+      mỗi lần khung đổi kích thước (xoay máy, bật bàn phím ảo...)
+   ══════════════════════════════════════════════════════════════════════════ */
+function syncStageH(){
+  document.documentElement.style.setProperty('--stg-h', stage.clientHeight + 'px');
+}
+if(window.ResizeObserver){ new ResizeObserver(syncStageH).observe(stage); }
+else { window.addEventListener('resize', syncStageH); }
+syncStageH();
+
+/* Bàn phím ảo: bám theo visualViewport để ảnh không bị đẩy khuất, và thu nhỏ
+   nửa trên lại lấy chỗ cho hộp thoại + ô nhập. */
+(function(){
+  var vv = window.visualViewport;
+  var baseH = 0;   // chiều cao lớn nhất từng thấy = lúc CHƯA có bàn phím
+
+  function viewH(){ return vv ? vv.height : window.innerHeight; }
+
+  function syncVH(){
+    var h = viewH();
+    document.documentElement.style.setProperty('--app-h', h + 'px');
+    /* iOS: window.innerHeight giữ nguyên, chỉ visualViewport co lại.
+       Android Chrome: cả hai cùng co.
+       Nên không so với innerHeight được — phải so với mốc cao nhất từng đo. */
+    if(h > baseH){ baseH = h; }
+    document.body.classList.toggle('kb-open', h < baseH * 0.78);
+    syncStageH();
+  }
+  if(vv){
+    vv.addEventListener('resize', syncVH);
+    vv.addEventListener('scroll', syncVH);
+  }
+  window.addEventListener('resize', syncVH);
+  window.addEventListener('orientationchange', function(){
+    baseH = 0;                                   // xoay máy thì đo lại từ đầu
+    setTimeout(syncVH, 250);
+  });
+  syncVH();
 })();
-/* ═══ MỘT MỐC, HAI TRẠNG THÁI ═══
-   Chưa tới 00:00 ngày 01-09 giờ VN  → đếm ngược, KHÔNG phát mã.
-   Từ mốc đó trở đi                  → coi như đã thắng Gate 2, phát mã.
 
-   Mã TYRION là phần thưởng của việc THẮNG Gate 2, không phải của việc mò được
-   cửa sớm. Ai lách vào đây trước lịch thì chỉ thấy đồng hồ — có vào được cửa
-   cũng chưa có gì để mang đi.
-
-   Mốc dựng bằng chuỗi ISO có múi +07:00 nên máy ở múi giờ nào cũng chốt đúng
-   nửa đêm Việt Nam; ngày hiển thị cắt thẳng từ chuỗi, không qua getDate(). */
-(function(){
-  var y   = new Date().getFullYear();
-  var ISO = y + '-09-01T00:00:00+07:00';
-  var MOC = new Date(ISO).getTime();
-  var d   = ISO.slice(0, 10).split('-');
-  var hen = document.getElementById('hen'),
-      dem = document.getElementById('dem'),
-      wrap = document.getElementById('maWrap');
-  hen.textContent = '00:00 ngày ' + d[2] + '-' + d[1];
-
-  function phatMa(){
-    var MA = 'TYRION', h = '';
-    for(var i = 0; i < MA.length; i++) h += '<i>' + MA[i] + '</i>';
-    document.getElementById('maO').innerHTML = h;
-    wrap.hidden = false;
+/* ══════════════════════════════════════════════════════════════════════════
+   4. LỚP CHỮ ĐÈ — dựng từng ký tự thành một ô riêng để bật/tắt đèn và
+      hoán đổi vị trí được độc lập
+   ══════════════════════════════════════════════════════════════════════════ */
+function buildWord(el, word){
+  el.innerHTML = '';
+  el.style.setProperty('--n', word.length);
+  for(var i = 0; i < word.length; i++){
+    var slot = document.createElement('span');
+    slot.className = 'ch';
+    slot.style.setProperty('--i', i);
+    var glyph = document.createElement('i');
+    glyph.className = 'chi';
+    glyph.textContent = word[i];
+    slot.appendChild(glyph);
+    el.appendChild(slot);
   }
-  function p2(n){ return (n < 10 ? '0' : '') + n; }
-  function tick(){
-    var con = MOC - Date.now();
-    if(con <= 0){
-      dem.textContent = '';
-      document.getElementById('loi').innerHTML = 'Gate 2 mở rồi ✦';
-      phatMa();
-      clearInterval(t);
-      return;
-    }
-    dem.innerHTML = '<b>' + Math.floor(con/864e5) + '</b>N '
-      + '<b>' + p2(Math.floor(con%864e5/36e5)) + '</b>G '
-      + '<b>' + p2(Math.floor(con%36e5/6e4)) + '</b>P '
-      + '<b>' + p2(Math.floor(con%6e4/1e3)) + '</b>S';
+  return el.querySelectorAll('.ch');
+}
+
+buildWord(ovlRezar,  'REZAR');
+buildWord(ovlGnimag, 'GNIMAG');
+buildWord(ovlZhao,   'ZHAO YUN');
+
+/* Chớp một ký tự ~0.3s. Gỡ class trước rồi ép reflow để bấm liên tiếp vẫn nháy. */
+function blinkSlot(slot){
+  slot.classList.remove('blink');
+  void slot.offsetWidth;
+  slot.classList.add('blink');
+}
+[].forEach.call(ovlRezar.querySelectorAll('.ch'), function(s){
+  s.addEventListener('animationend', function(){ s.classList.remove('blink'); });
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   5. HỘP THOẠI — log kiểu terminal, dòng mới gõ từng ký tự
+   ══════════════════════════════════════════════════════════════════════════ */
+var typeToken = 0;
+function say(text, kind, done){
+  typeToken++;
+  var mine = typeToken;
+
+  var p = document.createElement('p');
+  p.className = 'ln typing' + (kind ? ' ' + kind : '');
+  log.appendChild(p);
+  while(log.children.length > 8){ log.removeChild(log.firstChild); }
+
+  var chars = Array.from(text), i = 0;
+  (function tick(){
+    if(mine !== typeToken){ return; }          // có dòng mới chen vào → bỏ dòng này
+    p.textContent = chars.slice(0, ++i).join('');
+    log.scrollTop = log.scrollHeight;
+    if(i < chars.length){ setTimeout(tick, T.TYPE); }
+    else { p.classList.remove('typing'); if(done){ done(); } }
+  })();
+}
+
+function alertMode(on){
+  narr.classList.toggle('alert', !!on);
+  if(on){
+    narr.classList.remove('shake'); void narr.offsetWidth; narr.classList.add('shake');
+    setTimeout(function(){ narr.classList.remove('shake'); }, 1400);
   }
-  tick(); var t = setInterval(tick, 1000);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   6. ASSET — dùng chung một chỗ nạp ảnh, thiếu file thì báo góc màn hình và
+      tự chuyển sang nền/hiệu ứng vẽ bằng CSS để game vẫn chơi trọn luồng
+   ══════════════════════════════════════════════════════════════════════════ */
+var missed = [];
+function noteMissing(path){
+  var name = path.split('/').pop();          // báo mỗi tên file cho gọn góc màn hình
+  if(missed.indexOf(name) < 0){ missed.push(name); }
+  missing.hidden = false;
+  missing.innerHTML = TEXT.ui.assetTitle + '<br>' + missed.join('<br>');
+}
+artBg.addEventListener('error', function(){
+  document.body.classList.add('miss-art');
+  noteMissing(round === 1 ? ASSETS.bg1 : ASSETS.bg2);
+});
+artBg.addEventListener('load', function(){ document.body.classList.remove('miss-art'); });
+clipWrong.addEventListener('error', function(){ noteMissing(ASSETS.wrong); });
+clipUnlock.addEventListener('error', function(){
+  document.body.classList.add('miss-boom'); noteMissing(ASSETS.unlock);
+});
+
+/* GIF chỉ chạy lại từ khung 1 khi src đổi — nối tem thời gian để ép nạp lại. */
+function playGif(img, file){ img.src = file + '?t=' + Date.now(); }
+
+function panCamera(){
+  cam.classList.remove('pan'); void cam.offsetWidth; cam.classList.add('pan');
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   7. GỢI Ý — GNIMAG (sai) và REZAR (idle)
+   ══════════════════════════════════════════════════════════════════════════ */
+/* Sáng dần TỪ PHẢI SANG TRÁI: G <- A <- M <- I <- N <- G, đọc ngược ra GAMING */
+function revealGnimag(){
+  var slots = ovlGnimag.querySelectorAll('.ch');
+  for(var i = slots.length - 1; i >= 0; i--){
+    (function(slot, order){
+      gnimagTimers.push(setTimeout(function(){ slot.classList.add('lit'); },
+                                   order * T.GNIMAG_STEP));
+    })(slots[i], slots.length - 1 - i);
+  }
+}
+function flickerGnimag(){
+  [].forEach.call(ovlGnimag.querySelectorAll('.ch'), function(s){ s.classList.add('lit'); });
+  ovlGnimag.classList.add('flicker');
+}
+
+function pulseRezar(){
+  if(round !== 1 || ovlRezar.classList.contains('solved')){ return; }
+  ovlRezar.classList.remove('hint'); void ovlRezar.offsetWidth;
+  ovlRezar.classList.add('hint');
+  setTimeout(function(){ ovlRezar.classList.remove('hint'); }, 1800);
+}
+function armIdleHint(){
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(function(){ pulseRezar(); armIdleHint(); }, T.IDLE_HINT);
+}
+function stopIdleHint(){ clearTimeout(idleTimer); idleTimer = null; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   8. Ô NHẬP
+   ══════════════════════════════════════════════════════════════════════════ */
+function lockInput(on, refocus){
+  pin.disabled = on; go.disabled = on;
+  if(!on && refocus){ try{ pin.focus(); }catch(e){} }
+}
+
+/* Phản hồi gõ phím thời gian thực: ký tự vừa gõ trùng chữ nào trong REZAR thì
+   chữ đó trên bệ đá chớp sáng. e.data rỗng khi Backspace → không phát sáng. */
+pin.addEventListener('input', function(e){
+  if(round !== 1 || ovlRezar.classList.contains('solved')){ return; }
+  var added = e.data;
+  if(!added){ return; }
+  var slots = ovlRezar.querySelectorAll('.ch');
+  Array.from(added.toUpperCase()).forEach(function(c){
+    [].forEach.call(slots, function(s){
+      if(s.textContent === c){ blinkSlot(s); }
+    });
+  });
+});
+
+pin.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ e.preventDefault(); submit(); }
+});
+go.addEventListener('click', submit);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   9. LUỒNG GAME
+   ══════════════════════════════════════════════════════════════════════════ */
+function submit(){
+  if(busy || round !== 1 || pin.disabled){ return; }
+  var val = pin.value.trim().toUpperCase();
+  if(!val){ return; }
+  if(val === PASS_R1){ onCorrect(); } else { onWrong(); }
+}
+
+/* ── SAI ─────────────────────────────────────────────────────────────────── */
+function onWrong(){
+  busy = true;
+  wrongCount++;
+  stopIdleHint();
+  pin.value = '';
+
+  // Nửa trên: khoá rung đỏ 2 giây
+  stage.classList.remove('hit'); void stage.offsetWidth; stage.classList.add('hit');
+  clipWrong.classList.add('on');
+  playGif(clipWrong, ASSETS.wrong);
+
+  // Nửa dưới: log đỏ + rung hộp thoại
+  alertMode(true);
+  say(TEXT.story.wrong, 'err');
+
+  // Khoá ô nhập 2 giây
+  lockInput(true);
+
+  setTimeout(function(){
+    stage.classList.remove('hit');
+    clipWrong.classList.remove('on');
+
+    // Gợi ý GNIMAG theo số lần sai — chạy sau khi clip tắt mới nhìn thấy
+    if(wrongCount === 2){ revealGnimag(); }
+    else if(wrongCount >= 3){ flickerGnimag(); }
+
+    // Sai nhiều lần thì nhắc luôn cụm REZAR một nhịp
+    if(wrongCount >= 2){ pulseRezar(); }
+  }, T.WRONG_CLIP);
+
+  setTimeout(function(){
+    busy = false;
+    alertMode(false);
+    lockInput(false, true);
+    armIdleHint();
+  }, T.LOCK);
+}
+
+/* ── ĐÚNG ────────────────────────────────────────────────────────────────── */
+function onCorrect(){
+  busy = true;
+  stopIdleHint();
+
+  // 1. Vô hiệu hoá và ẩn ngay thanh nhập
+  lockInput(true);
+  pin.blur();
+  ctrl.classList.add('gone');
+  setTimeout(function(){ ctrl.hidden = true; }, 400);
+
+  // 2. Báo mã hợp lệ
+  alertMode(false);
+  say(TEXT.story.ok, 'gold');
+
+  // 3. REZAR đổi thứ tự thành RAZER + bật sáng rực 100%
+  setTimeout(swapToRazer, 600);
+
+  // 4./5. Giữ sáng 3 giây rồi mới cho nổ
+  setTimeout(playUnlock, 600 + T.SWAP + T.HOLD_LIT);
+}
+
+/* REZAR → RAZER: cùng bộ ký tự, chỉ đảo chỗ E (ô 1) với A (ô 3), nên đổi biến
+   --i của đúng hai ô là chúng tự trượt sang vị trí mới. */
+function swapToRazer(){
+  var slots = ovlRezar.querySelectorAll('.ch');
+  var eSlot = slots[1], aSlot = slots[3];
+  eSlot.style.setProperty('--i', 3);
+  aSlot.style.setProperty('--i', 1);
+  eSlot.firstChild.classList.add('arc-up');   // nhấc lên / hạ xuống cho khỏi đè nhau
+  aSlot.firstChild.classList.add('arc-dn');
+  ovlRezar.classList.add('solved');           // sáng rực cam neon, giữ nguyên
+  setTimeout(function(){
+    eSlot.firstChild.classList.remove('arc-up');
+    aSlot.firstChild.classList.remove('arc-dn');
+  }, T.SWAP);
+}
+
+/* Clip nổ sập phòng lab, phủ toàn màn hình */
+function playUnlock(){
+  boom.hidden = false;
+  playGif(clipUnlock, ASSETS.unlock);
+  setTimeout(function(){
+    boom.classList.add('out');
+    startRound2();
+    setTimeout(function(){ boom.hidden = true; boom.classList.remove('out'); }, 600);
+  }, T.UNLOCK_CLIP);
+}
+
+/* ── ROUND 2 ─────────────────────────────────────────────────────────────── */
+function startRound2(){
+  round = 2;
+
+  gnimagTimers.forEach(clearTimeout); gnimagTimers = [];
+  ovlGnimag.classList.remove('flicker');
+
+  // Đổi nền sang rừng tàn tích; chỉ chữ ZHAO YUN ở lại, và đang TỐI
+  document.body.classList.remove('miss-art');
+  artBg.src = ASSETS.bg2;
+  ovlRezar.hidden = true;
+  ovlGnimag.hidden = true;
+  ovlZhao.hidden = false;
+
+  panCamera();                    // lia camera lần nữa khi mới vào round
+  narrTag.textContent = TEXT.ui.logFinal;
+
+  /* Bốn dòng nối tiếp nhau: trứng nổ → final round bật → nói rõ phần thưởng là
+     chìa TYRION cho Map 3 → thú thật là round cuối chưa dựng xong. */
+  chain([
+    [TEXT.story.introR2, null],
+    [TEXT.story.final,   'gold'],
+    [TEXT.story.reward,  null],
+    [TEXT.story.wip,     null]
+  ]);
+}
+
+/* Gõ lần lượt một loạt dòng, dòng trước xong mới tới dòng sau */
+function chain(list){
+  (function next(i){
+    if(i >= list.length){ return; }
+    say(list[i][0], list[i][1], function(){
+      setTimeout(function(){ next(i + 1); }, 500);
+    });
+  })(0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   10. VÀO GAME
+   ══════════════════════════════════════════════════════════════════════════ */
+applyText();                     // đổ chữ từ khối TEXT ra giao diện
+ovlZhao.hidden = true;           // chỉ hiện khi sang final round
+artBg.src = ASSETS.bg1;
+panCamera();
+say(TEXT.story.introR1, null, armIdleHint);
+
 })();
 </script>
 </body>
