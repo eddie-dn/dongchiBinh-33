@@ -48,9 +48,20 @@ p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
   color:#0B1B3A;background:linear-gradient(150deg,#F2D08A,var(--amber));
   box-shadow:0 8px 18px rgba(242,180,65,.28)}
 .ma-note{font-size:12px;line-height:1.55;color:rgba(219,230,243,.62);margin:11px 0 0}
+/* Nút đi tiếp — chặng cuối của Gate 2 là đưa người chơi sang Map 3, không để
+   họ tự mò đường về bản đồ rồi tìm lại toạ độ Hà Nội. */
+.ma-go{display:block;margin:14px 0 0;padding:12px 14px;border-radius:999px;
+  font-family:"Oswald";font-size:11px;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;text-align:center;text-decoration:none;color:#0B1B3A;
+  background:linear-gradient(135deg,#F2D08A,var(--amber));
+  box-shadow:0 10px 22px rgba(242,180,65,.3)}
+.ma-go:active{transform:translateY(1px)}
+.dem{margin:14px 0 0;font-family:"Oswald";font-size:11px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:rgba(219,230,243,.55)}
+.dem b{font-size:19px;font-weight:600;color:var(--neon);letter-spacing:.04em}
 /* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
       bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
-.vstamp{position:fixed;right:10px;bottom:8px;z-index:60;pointer-events:none;
+.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;pointer-events:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
   color:rgba(234,240,247,.32)}
@@ -68,37 +79,76 @@ p{font-size:14px;line-height:1.55;color:rgba(219,230,243,.7);margin:14px 0 0}
     </svg>
     <p class="eyebrow">DAD-950901-B · Easter Egg</p>
     <h1>Easter Egg<br>Gate 2</h1>
-    <p id="loi">Niêm phong đã mở nhưng nội dung chưa được nạp lên khoang. Quay lại bản đồ và thử lại sau nhé.</p>
-    <div class="ma-wrap">
+    <p id="loi">Hẹn anh <b id="hen">00:00 ngày 01-09</b></p>
+    <div class="dem" id="dem"></div>
+    <div class="ma-wrap" id="maWrap" hidden>
       <p class="ma-lab">Mã vào Zoey’s Castle</p>
       <div class="ma-o" id="maO"></div>
       <p class="ma-note">Gõ mã này ở cửa <b>HAN-961030-A · Who’s my kindred spirit?</b>
         trên toạ độ Hà Nội.</p>
+      <a class="ma-go" id="maGo" href="/han/961030-a?from=map">Vào Zoey’s Castle &rarr;</a>
     </div>
   </div>
-  <span class="vstamp">V1.01<br>Last updated 16-Aug-2026</span>
+  <span class="vstamp">V1.03<br>Last updated 16-Aug-2026</span>
 </div></div>
 <script>
-/* Mã mở bộ câu hỏi bên HAN — dựng từ một chỗ duy nhất, sửa ở đây thì nhớ sửa
-   luôn hằng PIN_A bên han/961030-a. */
+/* ═══ VÀO ĐƯỢC ĐÂY = ĐÃ QUA GATE 2 ═══
+   BẪY ĐÃ VẤP: cờ `eggWin` trước đây CHỈ được ghi ở ba chỗ bên ngoài (link hồ sơ
+   trên bản đồ, nút trong khung Collected, nút ở trang pháo hoa). Ai tới thẳng
+   trang này — ví dụ bấm nút "Vào Zoey's Castle" ngay dưới đây rồi quay lại —
+   thì cờ không có, và Map 3 báo "chưa có chìa khoá vào lâu đài" dù vừa mới
+   thắng xong. Nay chính TRANG NÀY ghi cờ: đứng ở đây nghĩa là đã qua cửa, khỏi
+   phụ thuộc vào việc đi bằng đường nào. */
 (function(){
-  var MA = 'TYRION', h = '';
-  for(var i = 0; i < MA.length; i++) h += '<i>' + MA[i] + '</i>';
-  document.getElementById('maO').innerHTML = h;
+  try{
+    var m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {};
+    if(m.eggWin) return;
+    m.eggWin = true;
+    localStorage.setItem('mtv1', JSON.stringify(m));
+  }catch(e){}
 })();
-/* Mò ra Easter Egg TRƯỚC 01-09 thì cửa này mở sớm thật, nhưng bên trong chưa
-   có gì — nói thẳng ngày lên sóng để người chơi khỏi tưởng mình làm sai bước.
+/* ═══ MỘT MỐC, HAI TRẠNG THÁI ═══
+   Chưa tới 00:00 ngày 01-09 giờ VN  → đếm ngược, KHÔNG phát mã.
+   Từ mốc đó trở đi                  → coi như đã thắng Gate 2, phát mã.
+
+   Mã TYRION là phần thưởng của việc THẮNG Gate 2, không phải của việc mò được
+   cửa sớm. Ai lách vào đây trước lịch thì chỉ thấy đồng hồ — có vào được cửa
+   cũng chưa có gì để mang đi.
+
    Mốc dựng bằng chuỗi ISO có múi +07:00 nên máy ở múi giờ nào cũng chốt đúng
    nửa đêm Việt Nam; ngày hiển thị cắt thẳng từ chuỗi, không qua getDate(). */
 (function(){
-  var y = new Date().getFullYear();
+  var y   = new Date().getFullYear();
   var ISO = y + '-09-01T00:00:00+07:00';
-  if(Date.now() >= new Date(ISO).getTime()) return;
-  var d = ISO.slice(0,10).split('-');
-  document.getElementById('loi').innerHTML =
-    'Anh mở được cửa này <b>sớm hơn lịch</b> — Gate 2 đã thông, nhưng bên trong '+
-    'thì chưa có gì để xem đâu.<br>Nội dung lên sóng <b>00:00 ngày ' +
-    d[2] + '-' + d[1] + '</b>. Hẹn anh đúng hôm đó nhé.';
+  var MOC = new Date(ISO).getTime();
+  var d   = ISO.slice(0, 10).split('-');
+  var hen = document.getElementById('hen'),
+      dem = document.getElementById('dem'),
+      wrap = document.getElementById('maWrap');
+  hen.textContent = '00:00 ngày ' + d[2] + '-' + d[1];
+
+  function phatMa(){
+    var MA = 'TYRION', h = '';
+    for(var i = 0; i < MA.length; i++) h += '<i>' + MA[i] + '</i>';
+    document.getElementById('maO').innerHTML = h;
+    wrap.hidden = false;
+  }
+  function p2(n){ return (n < 10 ? '0' : '') + n; }
+  function tick(){
+    var con = MOC - Date.now();
+    if(con <= 0){
+      dem.textContent = '';
+      document.getElementById('loi').innerHTML = 'Gate 2 mở rồi ✦';
+      phatMa();
+      clearInterval(t);
+      return;
+    }
+    dem.innerHTML = '<b>' + Math.floor(con/864e5) + '</b>N '
+      + '<b>' + p2(Math.floor(con%864e5/36e5)) + '</b>G '
+      + '<b>' + p2(Math.floor(con%36e5/6e4)) + '</b>P '
+      + '<b>' + p2(Math.floor(con%6e4/1e3)) + '</b>S';
+  }
+  tick(); var t = setInterval(tick, 1000);
 })();
 </script>
 </body>

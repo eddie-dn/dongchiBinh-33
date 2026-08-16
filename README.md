@@ -856,15 +856,22 @@ Header thấp xuống thì `.mapwrap` (`flex:1`) tự chiếm chỗ trống. Nh�
 sau **hai khung hình** mỗi khi class `gameon` thực sự đổi. Chỉ chạy khi trạng thái đổi, không
 gọi mỗi lần vẽ lại.
 
-### Lần ĐẦU tìm ra: khung đứng yên 3 giây
+### Lần ĐẦU tìm ra: khung KHOÁ 3 giây rồi TỰ sang pháo hoa
 
-Mở được khung Collected lần đầu thì **khung đứng yên 3 giây** rồi mới tự sang
-`/phao-hoa`. Ai sốt ruột bấm nút trong khung thì đi luôn; ai đóng khung thì hẹn giờ
-bị huỷ (`fwT`).
+Mở được khung Collected lần đầu thì khung **bị khoá** (`credKhoa` + class `.locked`)
+trong 3 giây: **nền mờ, dấu ×, phím Esc đều không ăn**. Hết 3 giây là tự bay sang
+`/phao-hoa` — người chơi **không phải bấm gì**. Từ lần thứ hai trở đi khung mở/đóng
+bình thường.
 
-> **BẪY ĐÃ VẤP:** bản trước bay sang pháo hoa sau **140 ms**. Gõ nhanh tay thì khung vừa
-> nhảy lên đã tắt — mất trắng khoảnh khắc *"mở ra được rồi!"*, người chơi chỉ thấy màn
-> hình đổi trang. Phần thưởng phải kịp nhìn thấy mới là phần thưởng.
+> **BẪY ĐÃ VẤP HAI LẦN, cùng một hậu quả — mất khoảnh khắc "mở ra được rồi!":**
+> 1. Bản đầu bay sang pháo hoa sau **140 ms**: khung vừa nhảy lên đã tắt, người chơi
+>    chỉ thấy màn hình đổi trang.
+> 2. Bản sau cho khung đứng 3 giây **nhưng vẫn đóng được**. Mà gõ 10 nhịp nghĩa là tay
+>    đang đập liên tục — nhịp thứ 11 rơi trúng nền mờ hoặc dấu × là khung tắt, hẹn giờ
+>    huỷ theo, thế là **không bao giờ tới được pháo hoa**. Đúng thiết kế mà sai thực tế.
+>
+> Bài học: một hẹn giờ tự động thì **đường huỷ nó phải khoá lại**, không thì cú bấm
+> thừa của chính người chơi sẽ huỷ mất phần thưởng của họ.
 
 ### Cửa hai tầng của hồ sơ `DAD-950901-B`
 
@@ -886,7 +893,8 @@ có thể tìm ra Easter Egg trước sinh nhật, rồi bấm *Enter Easter Egg
 nói thẳng ở cả hai chỗ:
 - dòng meta của hồ sơ trên bản đồ: `Published date: 01-Sep 2026 | V1 · Mở sớm`
   (đúng khuôn lý lịch file của mục 15, chỉ nối thêm một mẩu);
-- ngay trong trang `/dad/950901-b`: *"Anh mở được cửa này sớm hơn lịch — Gate 2
+- trong trang `/dad/950901-b`: một dòng hẹn + đồng hồ đếm ngược, **không phát mã**
+  (xem mục 21h). Đoạn giải thích dài dòng dưới đây đã bỏ: *"Anh mở được cửa này sớm hơn lịch — Gate 2
   đã thông, nhưng bên trong thì chưa có gì để xem đâu. Nội dung lên sóng 00:00
   ngày 01-09."*
 
@@ -1182,7 +1190,10 @@ Bộ `QCHAM`, hằng `QCHAM_NHIP = 4`:
 |---|---|
 | 4 | *Nhầm chỗ gòi anh ưi* |
 | 8 | *Lấp lánh long lanh kìa~* |
-| 12 trở đi | *Nhìn qua góc trái anh ưi~* |
+| 12 | *Nhìn qua góc trái anh ưi~* |
+| 16 | *Khúm ai bấm 2 lần ở cùng 1 chỗ ==~* |
+| 20 | *Trừi ưi, zẫn còn pấm ở đây!* |
+| 24 trở đi | *Bên trái đồng chí ưiii!!!* |
 
 Đếm **dồn qua cả phiên**, không reset theo nhịp tay — gõ đúp hai lần cách nhau vài giây
 vẫn tính đủ. Chuỗi này **không bao giờ chỉ ra cách làm**: chỉ nói *sai chỗ* rồi chỉ
@@ -1253,8 +1264,30 @@ Bộ câu hỏi `HAN-961030-A` có **cửa mã riêng** ngay đầu trang, dựn
 Secret Chamber: một dòng nhắc, một hàng ô, không kể lể. Mã là **`TYRION`** — chữ, không
 phải số; so khớp bỏ dấu và không phân biệt hoa thường, nên gõ *tyrion* cũng vào được.
 
-**Mã phát ở màn `Easter Egg · Gate 2`** (`/dad/950901-b`) — đây là phần thưởng thật của
-việc qua được Gate 2, và nó khoá đúng thứ tự chặng: Map 2 xong mới tới Map 3.
+**Mã chỉ phát khi đã THẮNG Gate 2**, không phải khi mò được cửa. Trang
+`/dad/950901-b` có **một mốc, hai trạng thái**:
+
+| Lúc nào | Trang hiện gì |
+|---|---|
+| Chưa tới `00:00 · 01-09` (giờ VN) | *"Hẹn anh 00:00 ngày 01-09"* + **đồng hồ đếm ngược**. Không có mã. |
+| Từ mốc đó trở đi | *"Gate 2 mở rồi ✦"* + **ô mã `TYRION`** |
+
+Ai lách vào cửa này sớm thì chỉ thấy đồng hồ — vào được cửa cũng chưa có gì mang đi.
+Thứ tự chặng nhờ vậy mà giữ được: Map 2 xong mới tới Map 3.
+
+> Bản trước viết cả một đoạn *"Anh mở được cửa này sớm hơn lịch — Gate 2 đã thông, nhưng
+> bên trong thì chưa có gì để xem đâu…"* rồi vẫn phát mã ngay. Vừa dài dòng, vừa mâu
+> thuẫn: đã bảo chưa có gì mà lại đưa phần thưởng. Nay một dòng hẹn + một cái đồng hồ.
+
+**Phát mã là chặng CUỐI của Gate 2**, và phát xong thì **đưa người chơi đi luôn**: ngay
+dưới ô mã là nút *Vào Zoey's Castle →* trỏ thẳng `/han/961030-a?from=map`. Không bắt ai
+tự mò đường về bản đồ rồi tìm lại toạ độ Hà Nội.
+
+> **BẪY ĐÃ VẤP:** cờ `eggWin` trước đây chỉ được ghi ở **ba chỗ bên ngoài** (link hồ sơ
+> trên bản đồ · nút trong khung Collected · nút ở trang pháo hoa). Ai tới thẳng
+> `/dad/950901-b` — kể cả bằng chính nút *Vào Zoey's Castle* rồi quay lại — thì cờ không
+> có, và Map 3 báo *"chưa có chìa khoá vào lâu đài"* dù vừa thắng xong. Nay **chính trang
+> Gate 2 ghi cờ**: đứng ở đó nghĩa là đã qua cửa, khỏi phụ thuộc đi bằng đường nào.
 
 Đổi mã thì sửa **hai chỗ, phải khớp nhau**: hằng `PIN_A` bên `han/961030-a`, và biến `MA`
 trong khối phát mã bên `dad/950901-b`.
