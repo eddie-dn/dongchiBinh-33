@@ -873,6 +873,26 @@ bình thường.
 > Bài học: một hẹn giờ tự động thì **đường huỷ nó phải khoá lại**, không thì cú bấm
 > thừa của chính người chơi sẽ huỷ mất phần thưởng của họ.
 
+> **BẪY ĐÃ VẤP LẦN BA — "mở được rồi mà chẳng thấy pháo hoa đâu".** Màn ăn mừng trước đây
+> chỉ chạy khi `eggParty` còn tắt, tức **đúng một lần trong đời bản lưu**. Ai lỡ mở khung
+> một lần ở phiên trước — kể cả khi chưa kịp xem gì — là cờ đã bật, từ đó về sau gõ đủ 10
+> nhịp cũng chỉ thấy cái khung đứng im.
+> Nay đếm riêng bằng **`eggAn`** (`EGG_AN_TU = 2`):
+>
+> | Lần mở khung | Chuyện gì xảy ra |
+> |---|---|
+> | 1 | khoá khung 3 giây → **tự** sang pháo hoa |
+> | 2 | y như lần 1 — **lượt dự phòng** cho ai lỡ tay bấm ra, mạng chậm, hoặc tắt máy giữa chừng |
+> | 3 trở đi | khung mở bình thường, muốn xem lại thì **bấm nút cuộn phim** trong khung |
+>
+> `eggParty` từ đây chỉ còn một việc — quyết định có hiện nút *xem lại* hay không.
+> Reset MAP-02 xoá `eggAn`, trả lại đủ hai lượt tự ăn mừng.
+> Đường quay về từ pháo hoa (`?cred=1`) không đi qua `openCredFx()` nên không có vòng lặp.
+>
+> **Trong 3 giây khoá, tem NGƯNG nhận nhịp** (`if(credKhoa) return`). Nền mờ che hết màn
+> hình rồi, nhưng cú chạm trên điện thoại vẫn có thể lọt xuống dưới — mà mỗi lần lọt là
+> ăn mất một lượt tự ăn mừng, mà chỉ có hai.
+
 ### Cửa hai tầng của hồ sơ `DAD-950901-B`
 
 Hồ sơ này gắn cờ `eggGate:true` trong `NODES` — nó thuộc về MAP-02, không phải MAP-01.
@@ -1193,7 +1213,11 @@ Bộ `QCHAM`, hằng `QCHAM_NHIP = 4`:
 | 12 | *Nhìn qua góc trái anh ưi~* |
 | 16 | *Khúm ai bấm 2 lần ở cùng 1 chỗ ==~* |
 | 20 | *Trừi ưi, zẫn còn pấm ở đây!* |
-| 24 trở đi | *Bên trái đồng chí ưiii!!!* |
+| 24 | *Bên trái đồng chí ưiii!!!* |
+| 28 trở đi | **xoay vòng** về lại câu đầu |
+
+Cố ý **xoay vòng chứ không khoá cứng ở câu chót**: ai lì mà nghe lặp đúng một câu thì
+tưởng màn hình hỏng.
 
 Đếm **dồn qua cả phiên**, không reset theo nhịp tay — gõ đúp hai lần cách nhau vài giây
 vẫn tính đủ. Chuỗi này **không bao giờ chỉ ra cách làm**: chỉ nói *sai chỗ* rồi chỉ
@@ -1267,10 +1291,24 @@ phải số; so khớp bỏ dấu và không phân biệt hoa thường, nên g�
 **Mã chỉ phát khi đã THẮNG Gate 2**, không phải khi mò được cửa. Trang
 `/dad/950901-b` có **một mốc, hai trạng thái**:
 
-| Lúc nào | Trang hiện gì |
-|---|---|
-| Chưa tới `00:00 · 01-09` (giờ VN) | *"Hẹn anh 00:00 ngày 01-09"* + **đồng hồ đếm ngược**. Không có mã. |
-| Từ mốc đó trở đi | *"Gate 2 mở rồi ✦"* + **ô mã `TYRION`** |
+| | Chưa tới `00:00 · 01-09` (giờ VN) | Từ mốc đó trở đi |
+|---|---|---|
+| Vai | `Player: Dongchi Bình` | `Winner: Dongchi Bình` |
+| Tiêu đề | `Easter Egg: Gate 2` + nhãn `Locked`, **không nháy** | `Phá Đảo` / `Easter Egg: Gate 2`, **nháy tông Easter Egg** |
+| Thân | *"Hẹn anh 00:00 ngày 01-09"* + đồng hồ đếm ngược | *"Phi ngựa tới Zoey's Castle 🦄"* |
+| Mã | không có | ô mã `TYRION` + hai nút (*Chơi lại* · *Zoey's Castle 🏰👸🏻*) |
+
+Dòng `Easter Egg: Gate 2` phải **gọn một hàng ở mọi cỡ màn** — hàm `khitTit()` hạ cỡ chữ
+từ 30 px xuống 15 px cho tới khi vừa, và đo lại một nhịp sau `document.fonts.ready`.
+
+> **BẪY ĐÃ VẤP — đo bên trong một khối đã tràn.** `.mid` là flex-item của `.frame`, mà
+> flex-item **được phép rộng hơn ô chứa**: `max-width:320px` trên máy 320 px thành ra rộng
+> đúng bằng cả màn, tràn qua cả `padding:30px` của khung. Chữ chạy sát mép rồi bị cắt, mà
+> mọi phép đo *bên trong* `.mid` vẫn báo "vừa" vì chỗ tràn nằm ở tầng trên. Chốt bằng
+> `max-width:min(320px,100%)` rồi mới đo được thật.
+>
+> Kèm theo: phần tử `display:block` luôn rộng đúng bằng khung, nên `getBoundingClientRect()`
+> của nó **không bao giờ** báo tràn — phải so `scrollWidth` với `clientWidth`.
 
 Ai lách vào cửa này sớm thì chỉ thấy đồng hồ — vào được cửa cũng chưa có gì mang đi.
 Thứ tự chặng nhờ vậy mà giữ được: Map 2 xong mới tới Map 3.
