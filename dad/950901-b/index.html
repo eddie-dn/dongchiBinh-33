@@ -154,6 +154,11 @@ h1.egg{animation:egg 1.8s linear infinite}
   var y   = new Date().getFullYear();
   var ISO = y + '-09-01T00:00:00+07:00';
   var MOC = new Date(ISO).getTime();
+  /* Cửa hậu từ Box Tổng tư lệnh → MAP-02 → "Vào thẳng màn cuối Gate 2": bật cờ
+     `mtv1.g2Hack` là coi như đã tới mốc, hiện luôn màn cuối. Chỉ để xem trước và
+     để vào chơi game bên trong khi chưa tới ngày — Reset MAP-02 xoá cờ đi. */
+  var BYPASS = false;
+  try{ BYPASS = !!(JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).g2Hack; }catch(e){}
   var d   = ISO.slice(0, 10).split('-');
   var hen = document.getElementById('hen'),
       dem = document.getElementById('dem'),
@@ -218,7 +223,7 @@ h1.egg{animation:egg 1.8s linear infinite}
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(khitTit);
   function p2(n){ return (n < 10 ? '0' : '') + n; }
   function tick(){
-    var con = MOC - Date.now();
+    var con = BYPASS ? 0 : MOC - Date.now();
     if(con <= 0){
       dem.textContent = '';
       document.getElementById('loi').innerHTML = 'Phi ngựa tới Zoey’s Castle 🦄';

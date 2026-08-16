@@ -758,6 +758,7 @@ Có **hai đường mở sớm**, dùng để thử hoặc để trình diễn:
 |---|---|---|
 | `?egg=1` | thêm vào URL | chỉ trong lần tải trang đó (hằng `EGG_FORCE`) |
 | **Hack Map · MAP-02** | Box Tổng tư lệnh → ô `MAP-02` → Hack Map → PIN `1959` | **vĩnh viễn**, cờ `eggHack` lưu trong `mtv1`, chỉ mất khi Reset MAP-01 |
+| **⏩ Vào thẳng màn cuối Gate 2** | Box Tổng tư lệnh → ô `MAP-02` → nút này, **không cần PIN** | Bật một lượt `eggHack` + `credFound` + `eggWin` + **`g2Hack`** rồi đi thẳng `/dad/950901-b`. `g2Hack` là cờ **bỏ qua mốc 01-09 của Gate 2**: trang đó thấy cờ là hiện luôn màn cuối (Phá Đảo · mã `TYRION` · đường vào game bên trong), khỏi đợi tới ngày. Reset MAP-02 xoá cờ, Gate 2 quay lại đếm ngược |
 
 Cửa sổ chỉ có hiệu lực khi **đã giải đủ 4/4** — nó thay chỗ của trạng thái chiến thắng.
 
@@ -1486,7 +1487,7 @@ lướt qua lại, không phải nút chính. Đi vòng tròn: hết câu cuối
 - So khớp bỏ dấu, bỏ khoảng trắng, không phân biệt hoa thường: gõ *"alice in borderland"*
   hay *"Đuôi Gãy"* đều nhận.
 - Xong hết → màn **Phá Đảo Lòng EM** (ba trái tim nhấp nháy so le) · *HongHan's Secret* ·
-  *Thương gửi anh PIN* · **mã `91969`** (hằng `PIN_B`) — **ngày sinh âm lịch của HongHan**
+  *Thương gửi anh PIN* · **mã `69991`** (hằng `PIN_B`) — **ngày sinh âm lịch của HongHan**
   — và nút *Vào Secret Chamber ✦*. Đi bằng nút này thì trang B khỏi hỏi mã lại (`hanv1.bOpen`).
 
 Tiến độ lưu ở `localStorage.hanv1` — **khoá riêng**, không đụng `mtv1` / `msn1` / `nav1`.

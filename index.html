@@ -1031,6 +1031,8 @@ a.file:active{background:rgba(242,180,65,.07)}
             border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08)">Hack Map</button>
           <button id="hqClock" style="width:100%;color:var(--neon);
             border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.08)">Clockwise</button>
+          <button id="hqG2" style="width:100%;color:var(--amber);
+            border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08)">⏩ Vào thẳng màn cuối Gate 2</button>
           <div id="hqClockBox" hidden style="margin-top:2px">
             <input type="date" id="hqDate" aria-label="Chọn ngày"
               style="width:100%;padding:11px 12px;border-radius:6px;
@@ -1445,6 +1447,10 @@ function ghiMoEgg(){ if(!credFound){ eggMo++; } }
    khung mở ra bình thường, muốn xem lại thì bấm nút cuộn phim trong khung. */
 let eggAn = 0;
 const EGG_AN_TU = 2;
+/* Bỏ qua mốc 01-09 của Easter Egg · Gate 2: trang /dad/950901-b đọc cờ này rồi
+   hiện thẳng màn cuối (Phá Đảo + mã + đường vào game bên trong), khỏi phải đợi
+   tới ngày. Chỉ bật từ Box Tổng tư lệnh, và Reset MAP-02 xoá đi. */
+let g2Hack = false;
 /* Đã chạy màn pháo hoa "Easter Egg Found" lần đầu chưa. Nằm trong mtv1 nên
    hardWipe xoá cùng bộ với mọi tiến độ khác — reset là màn ăn mừng mở lại. */
 let eggParty = false;
@@ -1772,6 +1778,7 @@ const store = {
   eggDay = s.eggDay || null;
   eggMo = s.eggMo || 0;
   eggAn = s.eggAn || 0;
+  g2Hack = !!s.g2Hack;
   eggWin = !!s.eggWin;
   pinFail = s.pinFail || 0;
   pinFailDay = s.pinFailDay || null;
@@ -1805,7 +1812,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3014,8 +3021,10 @@ function hqPick(g){
   rs.textContent = 'Reset: ' + G.name;
   const ok = (g === 'map') || eggSan();
   rs.disabled = !ok;
-  /* Clockwise chỉ gắn với MAP-01 — Bản đồ tác chiến là nơi có đồng hồ đếm ngược */
+  /* Clockwise chỉ gắn với MAP-01 — Bản đồ tác chiến là nơi có đồng hồ đếm ngược.
+     Ngược lại, cửa "vào thẳng màn cuối Gate 2" chỉ có nghĩa với MAP-02. */
   $('hqClock').hidden = g !== 'map';
+  $('hqG2').hidden = g !== 'egg';
   $('hqClockBox').hidden = true;
   if(g === 'map' && LECH){
     const d = new Date();
@@ -3051,6 +3060,7 @@ function eggReplay(){
   eggTitleDay = null; eggDay = null; winParty = false;
   credFound = false; eggWin = false; eggDone = false; coachDone = false;
   eggAn = 0;                          /* trả lại quyền tự ăn mừng hai lần đầu */
+  g2Hack = false;                     /* và trả Gate 2 về đúng lịch của nó */
   clearTimeout(partyT); clearTimeout(gridT); clearTimeout(flyT);
   frame.classList.remove('win','cheer','flying');
   winCheer = false; save();
@@ -3083,6 +3093,16 @@ document.querySelectorAll('.hq-card').forEach(b=>
   }));
 $('hqBack').addEventListener('click', ()=> hqShow(1));
 $('hqHack').addEventListener('click', ()=> openPin(hqGame === 'egg' ? 'egg' : 'map'));
+/* Mở SẴN mọi cửa dẫn tới màn cuối rồi đi thẳng: bật cửa sổ Easter Egg
+   (`eggHack`), coi như đã tìm ra và đã qua cửa (`credFound` + `eggWin`), và bỏ
+   qua mốc ngày của Gate 2 (`g2Hack`). Dùng để xem trước màn cuối và vào chơi
+   game bên trong mà không phải đợi tới 01-09. */
+$('hqG2').addEventListener('click', ()=>{
+  eggHack = true; g2Hack = true; eggTitleDay = null;
+  ghiMoEgg(); credFound = true; eggWin = true; save();
+  ping('hack_gate2', 'vào thẳng màn cuối Gate 2');
+  setTimeout(()=>{ location.href = EGG_HREF; }, 150);
+});
 
 /* ---- Clockwise ----
    Chọn một ngày rồi vặn kim: trang tải lại với đồng hồ đặt đúng 00:00 ngày đó,
