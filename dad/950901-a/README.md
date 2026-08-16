@@ -1,4 +1,6 @@
-# XG-950901-A · Hồ sơ Phi đoàn (bản deploy độc lập)
+# DAD-950901-A · Hồ sơ Phi đoàn (bản deploy độc lập)
+
+> Mã hồ sơ là **DAD-950901-A**. Tên cũ `XG-950901-A` chỉ còn trong tài liệu đời đầu.
 
 Gói này chạy được một mình, không cần trang bản đồ.
 
@@ -10,7 +12,7 @@ Gói này chạy được một mình, không cần trang bản đồ.
 └── api/
     ├── ping.js     ← endpoint nhận tín hiệu, bắn về Telegram/Discord
     ├── note.js     ← bí danh của ping.js (bắt buộc có — xem "Chống mất tín hiệu")
-    └── thu.js      ← nhận "tâm tư" từ khung Tổ kỹ thuật bên bản đồ, gửi về hòm thư
+    └── thu.js      ← endpoint nhận lời nhắn (bên bản đồ hiện KHÔNG còn nút gọi tới)
 ```
 
 > **Deploy chung với bản đồ** (cách đang dùng) thì gói này còn hai việc nữa: giữ cờ điều
@@ -25,7 +27,7 @@ Gói này chạy được một mình, không cần trang bản đồ.
 2. Vercel → Add New Project → Import repo → Framework **Other**, Build Command và Output
    Directory **để trống** → Deploy.
 3. Settings → Environment Variables: `NOTIFY_KIND=telegram`, `TG_TOKEN`, `TG_CHAT`.
-   Muốn nút *Gửi tâm tư* gửi được email thì thêm `RESEND_KEY`, `MAIL_FROM`, `MAIL_TO`.
+   Muốn `/api/thu` gửi được email thì thêm `RESEND_KEY`, `MAIL_FROM`, `MAIL_TO`.
 4. **Redeploy** — biến môi trường chỉ ăn từ lần deploy sau.
 
 ## Cấu hình đo đạc

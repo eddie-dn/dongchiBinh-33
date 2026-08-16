@@ -3,7 +3,8 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V15.05** — trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong.
+**Phiên bản hiện tại: V17.02** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
 > `MAP-01 · Bản đồ tác chiến` là game giải mật thư bốn toạ độ.
@@ -25,15 +26,14 @@ Deploy thẳng lên Vercel từ GitHub.
 ├── api/
 │   ├── ping.js             ← endpoint đo đạc, bắn về Telegram/Discord
 │   ├── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
-│   └── thu.js              ← nhận "tâm tư" từ khung Tổ kỹ thuật, gửi về hòm thư
+│   └── thu.js              ← endpoint nhận lời nhắn (hiện KHÔNG còn nút nào gọi tới)
 │
 ├── phao-hoa/index.html     ← MAP 2 · màn pháo hoa, nền bản đồ tắt đèn
 ├── han/                    ← MAP 3 · ZOEY'S CASTLE
 │   ├── CHU-MAP3.md         ← toàn bộ câu chữ của Map 3, gom một chỗ để sửa
-│   ├── index.html          ← KHU HỒ SƠ · hai thẻ A/B, nút về bản đồ
-│   ├── 261030/index.html   ← HAN-261030 · hồ sơ mốc 30-10 (trang tạm)
-│   ├── 961030-a/index.html ← WHO'S MY KINDRED SPIRIT · 5 câu hỏi, theme Sakura
-│   └── 961030-b/index.html ← SECRET BOX · nền dải ngân hà, mở bằng mã từ 961030-a
+│   ├── 961030-a/index.html ← WHO'S MY KINDRED SPIRIT · bộ câu hỏi, theme Sakura
+│   ├── 961030-b/index.html ← SECRET CHAMBER · nền dải ngân hà, mở bằng mã từ 961030-a
+│   └── 261030/index.html   ← MỒ CÔI: không còn đường nào trên bản đồ dẫn tới, xoá được
 ├── dad/
 │   ├── 950901-a/           ← DAD-950901-A · hồ sơ đã xuất bản
 │   │   ├── index.html
@@ -43,7 +43,7 @@ Deploy thẳng lên Vercel từ GitHub.
 │   │   └── api/            ← bản sao cho deploy tách riêng, monorepo không build
 │   │       ├── ping.js
 │   │       └── note.js
-│   └── 950901-b/index.html ← DAD-950901-B · hồ sơ niêm phong (trang tạm)
+│   └── 950901-b/index.html ← DAD-950901-B · EASTER EGG · GATE 2 (đếm ngược, phát mã)
 ├── uih/                    ← chưa có hồ sơ
 └── sgn/                    ← chưa có hồ sơ
 ```
@@ -57,8 +57,8 @@ mục chứa đúng một `index.html`.
 
 | Mã | Thành phố | Vai trò |
 |---|---|---|
-| `HAN` | Hà Nội | Mở hồ sơ `HAN-261030` khi vào pha tháng 10 |
-| `DAD` | Đà Nẵng | Hai hồ sơ: `DAD-950901-A` (đã xuất bản) và `DAD-950901-B` (niêm phong) |
+| `HAN` | Hà Nội | **Map 3 · Zoey's Castle** — hai hồ sơ `961030-A/B`, chỉ hiện sau khi tìm ra Easter Egg |
+| `DAD` | Đà Nẵng | Hai hồ sơ: `DAD-950901-A` (ba Mission) và `DAD-950901-B` (Easter Egg · Gate 2) |
 | `UIH` | Quy Nhơn | Chưa có hồ sơ |
 | `SGN` | TP.HCM | Chưa có hồ sơ · **là toạ độ chốt sổ**, xem mục 5 |
 
@@ -255,7 +255,7 @@ const SEASON = { armBefore:15, birthday:[9,1], phase2At:[9,3], milestone2:[10,30
 | Pha | Khoảng | Đếm ngược tới | Trạng thái |
 |---|---|---|---|
 | `season` | 17-08 → hết 02-09 | 01-09 | DAD có hồ sơ niêm phong |
-| `phase2` | 03-09 → 30-10 | 30-10 | HAN hiện hồ sơ `HAN-261030` |
+| `phase2` | 03-09 → 30-10 | 30-10 | Đồng hồ lớn đổi mốc; hồ sơ HAN đi theo Easter Egg chứ không theo pha |
 | `off` | 31-10 → 16-08 năm sau | 01-09 mùa kế | Chỉ đếm ngược |
 
 Bước vào pha `season` của một năm chưa từng chơi thì **tiến độ tự xoá sạch** — chỉ một lần
@@ -381,7 +381,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 12-Aug-2026 · V15.05** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 16-Aug-2026 · V17.02** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -974,7 +974,7 @@ kiện là nguồn gốc của mọi vòng viền lơ lửng.
 
 ## 21b. `/phao-hoa` — màn pháo hoa có trang riêng
 
-Trước đây pháo hoa là một overlay đè lên khung Tổ kỹ thuật, chặn thao tác 15 giây. Nay nó
+Trước đây pháo hoa là một overlay đè lên khung Collected, chặn thao tác 15 giây. Nay nó
 là **một trang riêng** để vừa xem thoải mái vừa có chỗ đặt nút.
 
 | | |
@@ -1114,7 +1114,7 @@ không biết.
 |---|---|
 | Chưa tìm ra Easter Egg | Y như cũ — hai hồ sơ 961030 **chưa tồn tại** (`credGate`) |
 | Đã tìm ra, chưa xong bộ câu hỏi | `HAN-961030-A` mở vào được · `HAN-961030-B` còn niêm phong, ghi *Cần mã từ HAN-961030-A* |
-| Đã xong bộ câu hỏi (`hanv1.done`) | B đổi tên thành **HongHan's Secret Box**, bấm vào được, kèm đồng hồ *Nội dung cập nhật sau N ngày…* |
+| Đã xong bộ câu hỏi (`hanv1.done`) | B bấm vào được, dòng meta đổi sang lý lịch file (mục 15) |
 
 Bản đồ **chỉ đọc** `hanv1`, không bao giờ ghi đè — hai hệ tiến độ ở hai khoá riêng.
 
@@ -1347,12 +1347,12 @@ Trạng thái nhớ ở `hanv1.aOpen` nên **F5 không phải gõ lại**; số 
 >
 > Chữ của Map 3 gom hết ở **`han/CHU-MAP3.md`** — sửa lời thoại thì mở file đó.
 
-Hai trang mới, vào từ khung **Tổ kỹ thuật** của bản đồ (nút *Get to know me*).
+Hai trang, vào từ khung **Collected: Easter Egg** của bản đồ (nút *Get to know me*).
 
 | Trang | Là gì | Nền động |
 |---|---|---|
 | `/han/961030-a` | *Who's my kindred spirit?* — bộ câu hỏi về Honghandangiu; đúng hết thì được cấp **mã 5 số** | **Hoa anh đào rơi** — canvas, mỗi cánh vẽ bằng hai cung bezier, xoay quanh trục dọc nên lúc mỏng lúc dày |
-| `/han/961030-b` | **HongHan's Secret Box** — hiện còn *đang trong quá trình forming*, mở sau | **Dải ngân hà** — canvas, sao xếp theo hai nhánh xoắn, quay quanh lõi với tốc độ giảm dần theo bán kính |
+| `/han/961030-b` | **HongHan's Secret Chamber** — hiện còn *đang trong quá trình forming*, mở sau | **Dải ngân hà** — canvas, sao xếp theo hai nhánh xoắn, quay quanh lõi với tốc độ giảm dần theo bán kính |
 
 ### Đường đi — không có trang trung gian
 
@@ -1417,6 +1417,10 @@ ra đúng nguyên nhân. **Đo trước khi chỉnh:** `getBoundingClientRect()`
 | Mèo | Chú mèo đầu tiên Honghandangiu nuôi tên là gì? | `DUOI GAY` |
 | LoL | Champion em chơi nhiều nhất trong LoL? | `AKALI` |
 | Tâm lý | Nhà tâm lý học vĩ đại nhất trong lòng em? | `CARL JUNG` |
+| Tên Hoa | Phiên âm tên tiếng Trung của em là… | `YAN XIN` |
+
+> **Bảng này chỉ để tra cứu — nguồn thật là mảng `HOI`.** Thêm/bớt câu thì sửa `HOI`, mọi
+> con số trong trang tự đi theo `TONG = HOI.length`; đừng viết số câu ra chỗ nào khác.
 
 - **Thứ tự câu hỏi ngẫu nhiên** mỗi lượt chơi (`tron()` trộn mảng, lưu ở `hanv1.order`).
 **Luật lượt sai** (ba hằng số đầu khối script):
@@ -1483,7 +1487,7 @@ lướt qua lại, không phải nút chính. Đi vòng tròn: hết câu cuối
   hay *"Đuôi Gãy"* đều nhận.
 - Xong hết → màn **Phá Đảo Lòng EM** (ba trái tim nhấp nháy so le) · *HongHan's Secret* ·
   *Thương gửi anh PIN* · **mã `91969`** (hằng `PIN_B`) — **ngày sinh âm lịch của HongHan**
-  — và nút *Vào Secret Box ✦*. Đi bằng nút này thì trang B khỏi hỏi mã lại (`hanv1.bOpen`).
+  — và nút *Vào Secret Chamber ✦*. Đi bằng nút này thì trang B khỏi hỏi mã lại (`hanv1.bOpen`).
 
 Tiến độ lưu ở `localStorage.hanv1` — **khoá riêng**, không đụng `mtv1` / `msn1` / `nav1`.
 
@@ -1512,7 +1516,7 @@ thì không thấy, khỏi mời gọi. Hiện rồi thì bấm **10 nhịp liê
 Số lần sai ghi vào `hanv1.bSai`, nên **tải lại trang không mất nút SOS đã mở được** —
 bắt sai lại ba lần nữa mới cho thấy thì vô lý.
 
-### Đồng hồ trong Secret Box
+### Đồng hồ trong Secret Chamber
 
 Mở khoá xong, `961030-b` **không** đổ nội dung ra ngay: một **hộp quà thắt nơ neon**, một
 dòng trạng thái ngắn xoay vòng — *Đang thu thập dữ liệu · Đang gói ghém · Đang sắp xếp*,
@@ -1585,6 +1589,35 @@ vẫn thấy được sau khi làm lại.
 - **Ngày mở gợi ý:** hằng `MO_GOIY` (`961030-a`) — đổi mốc là cả hệ gợi ý mở/đóng theo,
   không phải sửa chỗ nào khác.
 - Nội dung hộp: hàm `drawBox()` trong `961030-b`.
-- Mã mở khoá: sửa `PIN_B` bên A **và** `PIN` bên B cho khớp; gợi ý SOS của cửa B nằm ở
-  hằng `GOIY`. PIN bảng điều phối: `PIN_CTRL` (`1959`), giống khu điều phối ngoài bản đồ.
+- **Mã VÀO bộ câu hỏi:** `PIN_A` (`TYRION`) bên A **và** biến `MA` bên `dad/950901-b` —
+  hai chỗ phải khớp, xem mục 21h.
+- Mã mở khoá Secret Chamber: sửa `PIN_B` bên A **và** `PIN` bên B cho khớp; gợi ý SOS của
+  cửa B nằm ở hằng `GOIY`. PIN bảng điều phối: `PIN_CTRL` (`1959`), giống khu điều phối
+  ngoài bản đồ.
 - Nhãn hai hồ sơ trong khung HAN: mảng `NODES` + hàm `render()` bên `index.html`.
+
+---
+
+## 23. Bản đồ tài liệu — file nào nói chuyện gì
+
+| File | Nói về |
+|---|---|
+| `README.md` (file này) | Luật chơi và kỹ thuật của **cả ba map**, design system, mọi bẫy đã vấp |
+| `USER-FLOW.md` | Chỉ **điều hướng và pí danh**: khoá `nav1`, hai pha, redirect guard, bảng sự kiện đo đạc |
+| `han/CHU-MAP3.md` | Chỉ **câu chữ của Map 3** — sửa lời thoại thì mở đúng file này, khỏi lục HTML |
+| `dad/950901-a/MISSIONS.md` | Luật đầy đủ của hệ **3 Mission** trong hồ sơ DAD-950901-A |
+| `dad/950901-a/README.md` | Cách deploy hồ sơ đó **tách riêng** một domain, và hệ đo đạc bốn tầng |
+
+Quy ước để khỏi tam sao thất bản: **một chuyện chỉ nói ở một file**, chỗ khác thì trỏ
+sang. Ví dụ luật khoá gợi ý Map 3 nằm ở mục 22 của file này, `CHU-MAP3.md` chỉ nhắc lại
+đúng một hằng số cần sửa.
+
+### Trạng thái kiểm thử (16-Aug-2026)
+
+Bộ kiểm thử đầu-cuối chạy bằng Chromium headless, **không nằm trong repo** (nó là công cụ
+dựng trang, không phải nội dung trang). Lượt chạy gần nhất: **31 bộ · 0 FAIL · 0 crash**,
+cộng một lượt soát giao diện 8 trang × 6 cỡ màn (320 → 1280 px) báo *SẠCH*.
+
+Phủ các luồng: chơi từ đầu tới phá đảo · ba Mission M1→M2→M3 · cửa hậu 10 nhịp và màn
+Collected · pháo hoa + quả trứng · Gate 2 hai trạng thái · cửa mã `TYRION` · bộ câu hỏi
+Map 3 và Secret Chamber · Clockwise · mọi đường reset.

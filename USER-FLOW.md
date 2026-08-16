@@ -1,12 +1,13 @@
 # USER-FLOW.md — Thiết kế hướng chuyển mạch & hồ sơ người chơi (profile)
 
 > **Trạng thái: ĐÃ TRIỂN KHAI** vào `index.html`, `dad/950901-a/index.html` và hai bản
-> `api/ping.js` (nhãn sự kiện mới). Đã chạy kiểm thử đầu-cuối bằng Chromium headless:
-> redirect hai pha, luật pí danh, hai hồ sơ, đổi/xoá/ẩn danh, checkpoint, khôi phục,
-> reset, tiêu đề Game On, Box Tổng tư lệnh, khung Tổ kỹ thuật, và một lượt rà riêng
-> các mốc Map → Easter Egg, và luồng phá đảo M3 → lưu pí danh → vào bản đồ —
-> 46 + 24 + 21 kiểm tra, tất cả đạt. Mọi tên khoá, tên hàm, tên sự
-> kiện dưới đây là tên chốt — code đang dùng đúng tên này.
+> `api/ping.js` (nhãn sự kiện mới). Mọi tên khoá, tên hàm, tên sự kiện dưới đây là tên
+> chốt — code đang dùng đúng tên này.
+>
+> **File này chỉ nói về ĐIỀU HƯỚNG và PÍ DANH** (`nav1`, hai pha, redirect guard). Luật
+> chơi của từng map nằm ở `README.md`; câu chữ của Map 3 nằm ở `han/CHU-MAP3.md`.
+> Bộ kiểm thử đầu-cuối (Chromium headless) không nằm trong repo — kết quả mới nhất ghi ở
+> cuối README.
 
 Liên quan trực tiếp tới hai file:
 
@@ -123,8 +124,9 @@ Luật đã cân nhắc:
 - **Cửa test `?stay=1`** — đứng lại Map dù chưa mở khoá, cùng tinh thần với `?egg=1`
   (README §19b): chỉ sống trong lần tải đó, không lưu. `?egg=1` cũng được miễn trừ vì
   ai gõ được nó là người dựng trang.
-- Guard chỉ nằm ở `index.html` gốc. `han/261030`, `dad/950901-b` không đụng — chúng đã
-  có cửa riêng (unlockAt, eggGate).
+- Guard chỉ nằm ở `index.html` gốc. Các trang con (`dad/950901-b`, `han/961030-a`,
+  `han/961030-b`, `phao-hoa`) không đụng — chúng đã có cửa riêng (`unlockAt`, `eggGate`,
+  `credGate`, `hanGate`, cửa mã `PIN_A`).
 
 **BẪY ĐÃ VẤP — mở bằng `file://` thì trắng trang.** Bản đầu không xét giao thức, nên tải
 file về mở thử (kiểm tra trước khi upload) là guard bắn sang `file:///dad/950901-a` —
@@ -412,9 +414,9 @@ phòng giữ nguyên). Nhãn tiếng Việt khai trong `NHAN` của **cả hai**
 | `an_danh` | Hồ sơ | Bấm "Chơi ẩn danh" | mỗi lần |
 | `khoi_phuc_profile` | Hồ sơ | Quay về bản lưu, đã qua nhịp xác nhận (kèm `moc`) | mỗi lần |
 | `luu_tien_trinh` | Hồ sơ | Bấm "⟱ Lưu tiến trình" (kèm mốc) | mỗi lần |
-| `gui_tam_tu` | Map | Gửi lời nhắn trong khung Tổ kỹ thuật | mỗi lần |
+| `gui_tam_tu` | Map | *(đã bỏ nút — nhãn giữ lại cho dữ liệu cũ)* | — |
 | `gui_tam_tu_loi` | Map | Gửi hỏng (mất mạng / bị chặn) | mỗi lần |
-| `vao_easter_egg` | Map | Bấm "Enter Easter Egg" trong khung Tổ kỹ thuật | mỗi lần |
+| `vao_easter_egg` | Map | Bấm "Enter Easter Egg" trong khung Collected | mỗi lần |
 
 `mo_pha_map`, `luu_profile`, `khoi_phuc_profile` nằm trong danh sách `QUAN_TRONG` của hồ
 sơ (đi song song hai kênh, MISSIONS.md §12) — mất dấu mốc chuyển pha là mù cả phân tích.
@@ -456,7 +458,7 @@ thì soi ảnh chụp ở khổ 390px.
 - [x] Reset hồ sơ → `/` lại bị đẩy về hồ sơ; reset MAP-01 thì vẫn ở Map
 
 **Pí danh**
-- [x] Nhập đúng `217N33` → hộp ghi **"Nhập pí danh ✦"**, ô trống, có dòng luật
+- [x] Nhập đúng `JUNGLE` → hộp ghi **"Nhập pí danh ✦"**, ô trống, có dòng luật
 - [x] Gõ `CHUBINHXYZ` → tự thành `chubin` (hạ hoa + cắt 6 ký tự)
 - [x] Bỏ trống mà Lưu → báo *"Nhập pí danh đã nha ✦"*; trùng tên → *"Pí danh này có rồi ✦"*
 - [x] Lưu xong: nền tối lại + chip nhấp nháy đúng **một lần** (`chipTaught`)
@@ -485,19 +487,28 @@ thì soi ảnh chụp ở khổ 390px.
 
 ---
 
-## 10. Khung Tổ kỹ thuật — hai nút
+## 10. Khung "Collected: Easter Egg" — hai nút
 
-Khung `#credw` (mở bằng 10 nhịp vào dòng Last updated) nay có một hàng hai nút ở cuối:
+Khung `#credw` (mở bằng 10 nhịp vào dòng Last updated) — trước đây gọi là *khung Tổ kỹ
+thuật*, nay là **bảng chiến lợi phẩm**: tiêu đề `Collected: Easter Egg`, ảnh tròn, dòng
+*Say hi to me~ HongHandangiu*, một nút cuộn phim ở góc để xem lại pháo hoa, và hàng hai
+nút ở cuối:
 
 | Nút | Vị trí | Việc |
 |---|---|---|
-| **✉ Gửi tâm tư** | trái | Mở một ô nhập **ngay phía trên hàng nút**; gõ xong bấm **Gửi ✦** → `POST /api/thu` → về hòm thư `honghandn@gmail.com` |
-| **Enter Easter Egg ✦** | phải | **Bay thẳng vào hồ sơ niêm phong `/dad/950901-b`**. Trước khi đi có bật `eggHack` + `credFound` nên lúc quay ra bản đồ đã sẵn trạng thái GAME ON |
+| **Get to know me** | trái | Sang **Map 3 · Zoey's Castle** (`/han/961030-a?from=egg`) |
+| **Enter Easter Egg ✦** | phải | **Bay thẳng vào `/dad/950901-b`** (Easter Egg · Gate 2). Trước khi đi bật `eggHack` + `credFound` + `eggWin` nên quay ra bản đồ là đã GAME ON |
+
+> Nút *✉ Gửi tâm tư* đã **bỏ** khỏi khung này; endpoint `/api/thu` vẫn còn (mô tả bên dưới)
+> nhưng hiện không có nút nào gọi tới.
+
+**Mở khung lần đầu và lần hai thì khung tự bay sang `/phao-hoa`** sau 3 giây khoá — xem
+README §19b. Từ lần thứ ba mới phải bấm nút cuộn phim.
 
 Đích của nút phải lấy từ hằng `EGG_HREF`, **đọc thẳng từ `NODES`** (mục `DAD-950901-B`)
 chứ không viết cứng đường dẫn — đổi `href` trong `NODES` là nút đi theo, không lệch.
 
-Không chặn thêm cửa nào ở nút này: vào được khung Tổ kỹ thuật nghĩa là đã gõ đủ 10 nhịp
+Không chặn thêm cửa nào ở nút này: vào được khung Collected nghĩa là đã gõ đủ 10 nhịp
 vào dòng Last updated, mà đó **chính là điểm kích hoạt** (`credFound`) của hồ sơ niêm
 phong theo README §19c.
 

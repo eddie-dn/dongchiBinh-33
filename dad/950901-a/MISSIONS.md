@@ -1,6 +1,6 @@
 # MISSIONS.md — Luật chơi 3 Mission trên trang bìa hồ sơ
 
-Tài liệu chuẩn cho hệ Mission của `index.html` (hồ sơ XG-950901-A bản deploy độc lập).
+Tài liệu chuẩn cho hệ Mission của `index.html` (hồ sơ **DAD-950901-A**).
 Mọi thứ nằm trong vùng khối bổ sung cuối file, trước thẻ Vercel Analytics — xoá vùng đó
 là file về bản gốc.
 
@@ -75,7 +75,7 @@ là file về bản gốc.
   (600ms). Nút chỉ thực sự mở khi giải xong Mission 3.
 
 ### Mission 2 · Nhập mã — *Easy Cheesy*
-- Mở **ngay khi xong M1**, có **5 ngày (5D)** để giải. **Mã: `217N33`** (gõ thường
+- Mở **ngay khi xong M1**, có **5 ngày (5D)** để giải. **Mã: `JUNGLE`** (gõ thường
   vẫn nhận).
 - Chưa xong M1 mà vẫn mở được hộp (bấm dòng Mission lần 2, cửa test…) → hộp hiện câu
   dùng chung: *"Đồng chí vui lòng hoàn thành **Form** và liên hệ **Hội đồng MeowMeow**
@@ -85,7 +85,7 @@ là file về bản gốc.
   hiện dòng *"Hết cửa sổ 5 ngày rồi ⏳ Liên hệ **Hội đồng MeowMeow** để nhận chi viện ✦"*
   — **không lộ mẹo**. Cách chi viện thật: góc dưới **phải** có nút **gia hạn**, bấm
   **10 nhịp liên tục** (mỗi nhịp < 0,9s) → nạp lại trọn **5 ngày mới**, vẫn phải nhập đúng
-  `217N33`. Không bao giờ kẹt vĩnh viễn. Bắn sự kiện `gia_han_m2`.
+  `JUNGLE`. Không bao giờ kẹt vĩnh viễn. Bắn sự kiện `gia_han_m2`.
 - Nhập đúng → `✓ M2`, Mission 1 ẩn khỏi dòng, Mission 3 mở cửa sổ 5 ngày. Hộp đổi **ngay**
   (320ms) thành **bảng ghi công `MISSION 2 · HOÀN THÀNH`** (*"Thông Quan ✦"* — "Tiếp tục tiến
   trình ở Mission 3. Thời hạn Phá đảo: 5 ngày") và **đứng yên ở đó** — không còn
@@ -230,7 +230,7 @@ Mỗi lần dùng đều bắn sự kiện `test_unlock` về Telegram.
 | `ve_trang_bia` | Bấm CTA quay về bìa từ màn Hoàn tất |
 | `sai_pin` | Nhập sai mã (kèm mission + lượt phiên + lượt ngày) |
 | `khoa_pin` | Vừa bị khoá (30 phút hoặc hết 12 lượt ngày) |
-| `mo_khoa_m2` | Nhập đúng `217N33` |
+| `mo_khoa_m2` | Nhập đúng `JUNGLE` |
 | `gia_han_m2` | Bấm gia hạn 10 nhịp — nạp lại 5 ngày cho M2 |
 | `giai_m3` | Giải đúng `PHAM TUAN` |
 | `skip_m3` | Mở M3 bằng nút skip |
@@ -271,7 +271,7 @@ Tất cả đi qua hệ `ping` sẵn có (endpoint `/api/ping`, 3 tầng dự ph
 
 ```js
 var MAPURL = 'https://dongchi-binh-33.vercel.app/';  // đích chung của mọi nút Bản đồ
-var PIN2 = '217N33', PIN3 = 'PHAMTUAN';
+var PIN2 = 'JUNGLE', PIN3 = 'PHAMTUAN';
 var HINTS  = ['12', '5121', 'MIG-21', 'Tên người gồm 2 chữ'];
 var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆',
               'Nah nah nah — cố lên anh oyyyy 💪', 'Very earth very skyyy o_O 😩💦'];

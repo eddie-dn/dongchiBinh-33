@@ -67,6 +67,28 @@ var HOI = [
 
 ---
 
+## 1b. Cửa mã của bộ câu hỏi — `han/961030-a`
+
+Trang này có **cửa mã riêng ngay đầu**, mã lấy ở màn **Easter Egg · Gate 2**
+(`/dad/950901-b`). Chữ, không phải số; gõ thường cũng nhận.
+
+```js
+var PIN_A = 'TYRION';
+```
+
+Đổi mã thì phải sửa **hai chỗ cho khớp**: hằng `PIN_A` ở đây, và biến `MA` trong khối
+phát mã bên `dad/950901-b/index.html`.
+
+| Câu | Nằm ở |
+|---|---|
+| `Cửa vào` · `Zoey's Castle` · `Vui lòng nhập mã ✦` | hàm `drawGateA()` |
+| `Mã mở nằm ở Easter Egg · Gate 2` (dòng dẫn, kèm chìa khoá hồng) | hàm `drawGateA()` |
+| `Chưa đúng ✦ Mã nằm ở màn Easter Egg · Gate 2 nha` (từ lần sai thứ 3) | hàm `drawGateA()` |
+
+Qua cửa rồi thì nhớ ở `hanv1.aOpen` — F5 không phải gõ lại. Reset toàn bộ thì cửa đóng lại.
+
+---
+
 ## 2. Câu trêu khi trả lời sai — `han/961030-a`
 
 Random, không lặp câu liền trước.
