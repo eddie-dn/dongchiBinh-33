@@ -234,88 +234,75 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 }
 #scene-game .aura.on{opacity:.85}
 #scene-game .aura.empowered{animation-duration:1.6s;opacity:1;width:52%;height:88%}
-#scene-game .aura.angry{--aura-c:rgba(255,60,70,.6);--aura-c2:rgba(180,20,30,.3);
-  animation-duration:.55s}
 
 /* ── Bệ đá khắc chữ ─────────────────────────────────────────────────────── */
-/* Overlay TRÙNG KHÍT chữ khắc trong ảnh gốc (toạ độ dò bằng pixel, cỡ chữ do
-   fitSlabs() đo cho khớp đúng bề ngang chữ khắc). Mặc định chữ TẮT HẲN — người
-   chơi chỉ thấy chữ khắc trên đá như ảnh gốc, không lộ đáp án. */
-#scene-game .slab{
-  position:absolute;left:var(--sx);top:var(--sy);
-  transform:translate(-50%,-50%);
-  display:none;align-items:center;justify-content:center;
-  white-space:nowrap;pointer-events:none;z-index:2;
+/* ── BỆ ĐÁ: KHÔNG vẽ chữ đè lên ────────────────────────────────────────────
+   Phủ một lớp TỐI HẲN lên đúng ô chữ khắc, rồi cắt chính ảnh gốc thành từng ký
+   tự xếp chồng lên. Gõ trúng ký tự nào thì ô đó sáng lên — người chơi thấy
+   đúng nét chữ khắc trong tranh, không phải chữ do font vẽ ra. */
+#scene-game .slab{position:absolute;display:none;pointer-events:none;z-index:2}
+#scene-game .slab.vis{display:block}
+/* Lớp tối: rộng hơn ô chữ một chút, mép nhoè bằng box-shadow cùng màu */
+#scene-game .slab .veil{
+  position:absolute;inset:-14% -5%;background:rgba(4,7,11,.94);
+  box-shadow:0 0 10px 7px rgba(4,7,11,.94);
+  transition:opacity .5s ease;
 }
-/* Tấm nền chỉ hiện lúc GIẢI ĐÚNG, để che chữ khắc cũ khi đảo REZAR → RAZER.
-   .slab có transform nên tự tạo stacking context → z-index:-1 nằm sau chữ mà
-   vẫn nổi trên ảnh nền. */
-#scene-game .slab::before{
-  content:'';position:absolute;inset:-.34em -.5em;z-index:-1;opacity:0;
-  background:linear-gradient(180deg,rgba(6,10,16,.97),rgba(6,10,16,.92));
-  border:1px solid var(--slab-c);
-  box-shadow:0 0 18px color-mix(in srgb,var(--slab-c) 45%,transparent),
-             inset 0 0 20px color-mix(in srgb,var(--slab-c) 18%,transparent);
-  transition:opacity .55s ease;
+#scene-game .slab .cells{position:absolute;inset:0;display:flex}
+#scene-game .slab .cell{
+  height:100%;flex:0 0 auto;background-repeat:no-repeat;opacity:0;
+  transition:opacity .18s ease,filter .18s ease;
 }
-#scene-game .slab.solved::before{opacity:1}
-#scene-game .slab.vis{display:flex}
-#scene-game .slab .row{display:flex;gap:.16em;font-family:var(--f-pixel);line-height:1}
-#scene-game .slab .ltr{
-  display:inline-block;opacity:0;color:var(--slab-c);
-  transition:opacity .22s ease,text-shadow .22s ease,transform .55s cubic-bezier(.6,-.2,.3,1.4);
+/* Gõ trúng → ký tự đó bừng sáng 0.3s */
+#scene-game .slab .cell.hit{
+  opacity:1;filter:brightness(2.3) saturate(1.3)
+    drop-shadow(0 0 5px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c));
 }
-#scene-game .slab .ltr.sp{width:.6em}
-#scene-game .slab .ltr.hit{
-  opacity:1;
-  text-shadow:0 0 6px var(--slab-c),0 0 16px var(--slab-c),0 0 30px var(--slab-c);
+/* Idle hint: cả cụm hiện mờ một nhịp */
+#scene-game .slab.breathe .cell{animation:cellBreath 1.25s ease-in-out 1}
+@keyframes cellBreath{0%,100%{opacity:0}50%{opacity:.5;filter:brightness(1.5)}}
+/* Giải đúng → nháy sáng từng ký tự, PHẢI sang TRÁI (đúng chiều đọc ngược) */
+#scene-game .slab.solved .cell{animation:cellPop .55s ease-out both}
+@keyframes cellPop{
+  0%{opacity:0;filter:brightness(1)}
+  35%{opacity:1;filter:brightness(3.4) saturate(1.4)
+      drop-shadow(0 0 9px var(--slab-c)) drop-shadow(0 0 20px var(--slab-c))}
+  100%{opacity:1;filter:brightness(2) saturate(1.3)
+      drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 14px var(--slab-c))}
 }
-#scene-game .slab.breathe .ltr{animation:slabBreath 1.25s ease-in-out 1}
-@keyframes slabBreath{
-  0%,100%{opacity:0;text-shadow:none}
-  50%{opacity:.6;text-shadow:0 0 8px var(--slab-c),0 0 18px var(--slab-c)}
-}
-#scene-game .slab.solved .ltr{
-  opacity:1;animation:none;
-  text-shadow:0 0 6px var(--slab-c),0 0 14px var(--slab-c),0 0 34px var(--slab-c),0 0 60px var(--slab-c);
-}
-#scene-game .slab .tick{position:absolute;width:3px;height:3px;background:var(--slab-c);
-  opacity:0;transition:opacity .55s ease}
-#scene-game .slab .tick.a{left:-1px;top:-1px}
-#scene-game .slab .tick.b{right:-1px;top:-1px}
-#scene-game .slab .tick.c{left:-1px;bottom:-1px}
-#scene-game .slab .tick.d{right:-1px;bottom:-1px}
-#scene-game .slab.solved .tick{opacity:1;box-shadow:0 0 8px var(--slab-c)}
 
-/* ── Hotspot lá thư ─────────────────────────────────────────────────────── */
+/* ── Mắt rồng: nhập sai thì nháy đỏ rồi trả về bình thường ───────────────── */
+#scene-game .eye{
+  position:absolute;display:none;opacity:0;pointer-events:none;z-index:3;
+  border-radius:50%;mix-blend-mode:screen;
+  background:radial-gradient(ellipse at center,rgba(255,70,70,.95) 0%,
+             rgba(255,0,20,.55) 45%,transparent 72%);
+}
+#scene-game .eye.on{display:block}
+#scene-game .eye.flash{animation:eyeFlash .4s steps(1) 4}
+@keyframes eyeFlash{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* ── Cuộn thư: không khung, chỉ phóng to thu nhỏ chính vùng ảnh đó ───────── */
 #scene-game .hotspot{
-  position:absolute;left:var(--hx);top:var(--hy);width:var(--hw);height:var(--hh);
-  transform:translate(-50%,-50%);
-  display:none;align-items:center;justify-content:center;
+  position:absolute;display:none;align-items:center;justify-content:center;
   background:none;border:0;padding:0;z-index:4;cursor:pointer;
 }
 #scene-game .hotspot.on{display:flex}
-#scene-game .hotspot .glow{
-  position:absolute;inset:-8%;
-  background:radial-gradient(ellipse at center,rgba(255,225,140,.75) 0%,
-             rgba(255,190,60,.35) 40%,transparent 72%);
-  mix-blend-mode:screen;animation:hotPulse 1.15s ease-in-out infinite;
+#scene-game .hotspot .zoom{
+  position:absolute;background-repeat:no-repeat;
+  animation:zoomPulse 1.35s ease-in-out infinite;
 }
-#scene-game .hotspot .ring{
-  /* vùng chạm to cho ngón tay, còn vòng sáng thu lại ôm đúng cuộn thư */
-  position:absolute;inset:20% 8%;border:2px solid rgba(255,214,102,.9);
-  box-shadow:0 0 12px rgba(255,200,80,.9),inset 0 0 10px rgba(255,220,140,.6);
-  animation:hotRing 1.15s ease-in-out infinite;
+@keyframes zoomPulse{
+  0%,100%{transform:scale(1);filter:brightness(1.05) drop-shadow(0 0 4px rgba(255,200,90,.45))}
+  50%{transform:scale(1.17);filter:brightness(1.5) drop-shadow(0 0 13px rgba(255,215,120,.95))}
 }
-@keyframes hotPulse{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.1)}}
-@keyframes hotRing{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
 #scene-game .hotspot .tap{
-  position:absolute;top:102%;left:50%;transform:translateX(-50%);
+  position:absolute;top:50%;left:50%;transform:translateX(-50%);
   font-family:var(--f-pixel);font-size:8px;letter-spacing:.04em;white-space:nowrap;
   color:#ffe08a;text-shadow:0 0 8px rgba(255,180,40,.9),0 2px 0 #000;
   animation:tapBlink 1.15s steps(1) infinite;
 }
-@keyframes tapBlink{0%,49%{opacity:1}50%,100%{opacity:.25}}
+@keyframes tapBlink{0%,49%{opacity:1}50%,100%{opacity:.2}}
 
 #scene-game .anim-layer{position:absolute;inset:0;z-index:5;display:none;background:#05080d}
 #scene-game .anim-layer.on{display:block}
@@ -366,6 +353,16 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   vertical-align:-2px;animation:blink .9s steps(1) infinite}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 
+/* Thanh khoá: thay chỗ ô nhập trong lúc hệ thống đếm ngược */
+#scene-game .lockbar{
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;
+  border:3px solid var(--red);background:rgba(30,4,10,.6);padding:11px 12px;
+  box-shadow:0 0 20px rgba(255,51,85,.2),inset 0 0 22px rgba(255,51,85,.08);
+}
+#scene-game .lockbar[hidden]{display:none}
+#scene-game .lockbar b{font-family:var(--f-pixel);font-size:17px;color:var(--red);
+  text-shadow:0 0 12px rgba(255,51,85,.7);letter-spacing:.06em}
+#scene-game .lockbar span{font-size:11.5px;color:var(--muted);text-align:center}
 #scene-game .ctrl{flex:0 0 auto;display:flex;gap:8px;align-items:stretch}
 #scene-game .ctrl[hidden]{display:none}
 #scene-game #answer{
@@ -469,8 +466,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game #fx.on{display:block}
 
 @media (prefers-reduced-motion:reduce){
-  #scene-game .aura,#scene-game .dragon-layer,#scene-game .hotspot .glow,
-  #scene-game .hotspot .ring,#scene-game .glare{animation:none}
+  #scene-game .aura,#scene-game .dragon-layer,#scene-game .hotspot .zoom,
+  #scene-game .glare{animation:none}
 }
 </style>
 </head>
@@ -517,17 +514,18 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
               <div class="aura" id="aura"></div>
 
               <div class="slab" id="slab1">
-                <i class="tick a"></i><i class="tick b"></i><i class="tick c"></i><i class="tick d"></i>
-                <div class="row" id="row1"></div>
+                <div class="veil"></div><div class="cells" id="row1"></div>
               </div>
 
               <div class="slab" id="slab2">
-                <i class="tick a"></i><i class="tick b"></i><i class="tick c"></i><i class="tick d"></i>
-                <div class="row" id="row2"></div>
+                <div class="veil"></div><div class="cells" id="row2"></div>
               </div>
 
+              <span class="eye" id="eye0"></span>
+              <span class="eye" id="eye1"></span>
+
               <button class="hotspot" id="hotspot" type="button" aria-label="Đọc lá thư">
-                <span class="glow"></span><span class="ring"></span>
+                <span class="zoom" id="hotZoom"></span>
                 <span class="tap" id="tapLabel">[ TAP HERE ]</span>
               </button>
             </div>
@@ -545,6 +543,9 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 
   <section id="term">
     <div class="narr pf" id="narr" role="log" aria-live="polite"></div>
+    <div class="lockbar" id="lockbar" hidden>
+      <b id="lockTime">--:--</b><span id="lockNote"></span>
+    </div>
     <div class="ctrl" id="ctrl" hidden>
       <input id="answer" type="text" inputmode="text" autocomplete="off" autocorrect="off"
              autocapitalize="characters" spellcheck="false" maxlength="16"
@@ -595,10 +596,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
         <p class="ma-lab"><svg class="ico-key" viewBox="0 0 16 22" aria-hidden="true"><circle cx="8" cy="6" r="3.7" fill="none" stroke="url(#kg)" stroke-width="1.7"/><path d="M8 9.7V19M8 16.4h3.1M8 13.4h2.2" fill="none" stroke="url(#kg)" stroke-width="1.7" stroke-linecap="round"/><path class="lap" d="M14.2 2.1l.5 1.35 1.35.5-1.35.5-.5 1.35-.5-1.35-1.35-.5 1.35-.5z"/><path class="lap l2" d="M1.9 15.2l.38 1 1 .38-1 .38-.38 1-.38-1-1-.38 1-.38z"/><defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2A7D0"/><stop offset="1" stop-color="#D97BB6"/></linearGradient></defs></svg><span id="cMaLab"></span></p>
         <div class="ma-o" id="cMaO"></div>
         <button class="ma-go game" id="cReplay" type="button"></button>
-        <div class="ma-hang">
-          <button class="ma-go ghost" id="cReset" type="button"></button>
-          <a class="ma-go" id="cGo" href="/han/961030-a?from=map"></a>
-        </div>
+        <a class="ma-go" id="cGo" href="/han/961030-a?from=map"></a>
       </div>
     </div>
     <span class="vstamp" id="cStamp"></span>
@@ -754,7 +752,7 @@ const Gate = (function(){
 const Code = (function(){
   const G = GATE_CONFIG, T = G.text;
   const el = { vai:$('#cVai'), tit:$('#cTit'), loi:$('#cLoi'), maO:$('#cMaO'),
-               maLab:$('#cMaLab'), replay:$('#cReplay'), reset:$('#cReset'),
+               maLab:$('#cMaLab'), replay:$('#cReplay'),
                go:$('#cGo'), stamp:$('#cStamp'), back:$('#cBack') };
   let dungSan = false;
 
@@ -765,7 +763,6 @@ const Code = (function(){
     el.loi.textContent   = T.da_pha_dao;
     el.maLab.textContent = T.ma_nhan;
     el.replay.textContent= T.nut_choi_lai_game;
-    el.reset.textContent = T.nut_reset;
     el.go.innerHTML      = T.nut_castle + ' <span class="ico2">🏰👸🏻</span>';
     el.go.href           = G.ma_link;
     el.stamp.innerHTML   = T.version;
@@ -773,29 +770,6 @@ const Code = (function(){
     el.tit.innerHTML = '<span class="d">'+T.tieu_de_thang+'</span><span class="d">'+T.tieu_de+'</span>';
     el.maO.innerHTML = [...G.ma].map(c=>'<i>'+c+'</i>').join('');
   }
-
-  /* ═══ NÚT CHƠI LẠI TỪ ĐẦU ═══
-     Đi đúng luật reset của bản đồ: dọn `mtv1` rồi ghi lại MỘT khoá duy nhất là
-     bộ đếm R(n) — dấu vết được phép sống qua reset. Dọn thêm `hanv1` vì tiến độ
-     Map 3 nằm sau Easter Egg. `nav1` và `msn1` KHÔNG đụng.
-     Bấm HAI NHỊP mới ăn — nút này xoá sạch, không được để lỡ tay. */
-  let armed = false, tReset = 0;
-  el.reset.addEventListener('click', ()=>{
-    if(!armed){
-      armed = true; el.reset.textContent = T.nut_reset_hoi;
-      clearTimeout(tReset);
-      tReset = setTimeout(()=>{ armed = false; el.reset.textContent = T.nut_reset; }, 4000);
-      return;
-    }
-    const R = Store.get().resetCount || 0;
-    try{
-      ['mtv1','mtping','hanv1'].forEach(k=> localStorage.removeItem(k));
-      localStorage.setItem('mtv1', JSON.stringify({resetCount:R+1}));
-      ['mtseen','mtload','mtvisit','mtpf','msnw'].forEach(k=> sessionStorage.removeItem(k));
-    }catch(e){}
-    el.reset.textContent = T.nut_reset_chay;
-    setTimeout(()=>{ location.href = '/'; }, 260);
-  });
 
   el.replay.addEventListener('click', ()=>{ show('game'); Game.start(true); });
 
@@ -822,13 +796,15 @@ const el = {
   bar:$('#bar'), loadTxt:$('#loadTxt'), startBtn:$('#startBtn'),
   modal:$('#modal'), mhead:$('#mhead'), show:$('#show'), dots:$('#dots'),
   prev:$('#prev'), next:$('#next'), letterBox:$('#letterBox'), finish:$('#finish'),
-  fx:$('#fx'), back:$('#back')
+  fx:$('#fx'), back:$('#back'),
+  hotZoom:$('#hotZoom'), eyes:[$('#eye0'), $('#eye1')],
+  lockbar:$('#lockbar'), lockTime:$('#lockTime'), lockNote:$('#lockNote')
 };
 const fxCtx = el.fx.getContext('2d');
 
 const S = { round:0, busy:true, inputLocked:true, wrongs:{1:0,2:0},
-            slabWord:'', slabRow:null, slabEl:null, lastLen:0, idleTimer:0,
-            litRecently:{}, done:false, booted:false };
+            slabWord:'', slabRow:null, slabEl:null, revMap:null,
+            lastLen:0, lastNoSp:0, idleTimer:0, done:false, booted:false };
 
 /* Đổ chữ giao diện từ config */
 el.bootTitle.innerHTML  = C.ui.boot_title;
@@ -842,6 +818,7 @@ el.next.textContent     = C.ui.next_btn;
 el.finish.textContent   = C.ui.finish_btn;
 el.hudText.textContent  = C.ui.hud_locked;
 el.tapLabel.textContent = C.round2.tap_label;
+el.lockNote.textContent = C.ui.lock_note;
 el.back.textContent     = C.ui.back_label;
 el.root.style.setProperty('--frame-ratio', C.frame.ratio);
 el.root.style.setProperty('--world-ratio', C.frame.world_ratio);
@@ -860,26 +837,51 @@ function fitBezel(){
   const w    = Math.min(el.slot.clientWidth, Math.max(60, maxH) * C.frame.ratio);
   el.bezel.style.width = w.toFixed(1) + 'px';
 }
-/* Cỡ chữ bệ đá: đo hai nhịp cho khớp ĐÚNG bề ngang chữ khắc trong ảnh.
-   Đặt thử 100px → đọc bề ngang thật của cụm chữ → quy về tỷ lệ cần. Chính xác
-   hơn hẳn công thức áng chừng, và tự đúng với mọi độ dài chữ. */
+/* ═══ CẮT ẢNH THEO Ô ══════════════════════════════════════════════════════
+   Mỗi ô là một "cửa sổ" nhìn vào đúng một mẩu ảnh nền: đặt background-size
+   bằng cả khổ ảnh rồi dời background-position tới đúng toạ độ mẩu đó. Nhờ vậy
+   ký tự sáng lên là NÉT CHỮ KHẮC THẬT trong tranh, không phải chữ do font vẽ. */
+const pc = v => parseFloat(v) / 100;
+function cutOut(node, W, H, L, T2, w, h){
+  node.style.width  = w.toFixed(2) + 'px';
+  node.style.height = h.toFixed(2) + 'px';
+  node.style.backgroundSize     = W.toFixed(2) + 'px ' + H.toFixed(2) + 'px';
+  node.style.backgroundPosition = (-L).toFixed(2) + 'px ' + (-T2).toFixed(2) + 'px';
+}
 function fitSlabs(){
-  const worldW = el.world.offsetWidth;
-  if(!worldW) return;
+  const W = el.world.offsetWidth, H = el.world.offsetHeight;
+  if(!W || !H) return;
   [[el.slab1, el.row1, C.round1], [el.slab2, el.row2, C.round2]].forEach(([slab,row,cfg])=>{
-    if(!row.children.length || !slab.classList.contains('vis')) return;
-    const target = worldW * cfg.slab.width_pct / 100;
-    slab.style.fontSize = '100px';
-    const nat = row.scrollWidth;
-    if(!nat) return;
-    slab.style.fontSize = Math.max(4, 100 * target / nat).toFixed(2) + 'px';
+    const n = row.children.length;
+    if(!n) return;
+    const p = cfg.slab;
+    const L = W*pc(p.left), T2 = H*pc(p.top), SW = W*pc(p.w), SH = H*pc(p.h);
+    slab.style.left = L.toFixed(2)+'px';  slab.style.top = T2.toFixed(2)+'px';
+    slab.style.width = SW.toFixed(2)+'px'; slab.style.height = SH.toFixed(2)+'px';
+    const cw = SW / n;
+    [...row.children].forEach((c,i)=> cutOut(c, W, H, L + i*cw, T2, cw, SH));
+  });
+  (C.round2.eyes || []).forEach((e,i)=>{
+    const n = el.eyes[i]; if(!n) return;
+    n.style.left   = (W*pc(e.left)).toFixed(2)+'px';
+    n.style.top    = (H*pc(e.top)).toFixed(2)+'px';
+    n.style.width  = (W*pc(e.w)).toFixed(2)+'px';
+    n.style.height = (H*pc(e.h)).toFixed(2)+'px';
   });
 }
-/* Vùng chạm lá thư: % của ảnh nền, nhưng không bao giờ nhỏ hơn min_px */
+/* Cuộn thư: vùng chạm nới rộng cho vừa ngón tay, mẩu ảnh giữ đúng cỡ thật */
 function fitHotspot(){
-  const h = C.round2.hotspot;
-  el.hotspot.style.minWidth  = h.min_px + 'px';
-  el.hotspot.style.minHeight = h.min_px + 'px';
+  const W = el.world.offsetWidth, H = el.world.offsetHeight;
+  if(!W || !H) return;
+  const g = C.round2.hotspot;
+  const L = W*pc(g.left), T2 = H*pc(g.top), zw = W*pc(g.w), zh = H*pc(g.h);
+  const bw = Math.max(zw, g.min_px), bh = Math.max(zh, g.min_px);
+  el.hotspot.style.left   = (L + zw/2 - bw/2).toFixed(2)+'px';
+  el.hotspot.style.top    = (T2 + zh/2 - bh/2).toFixed(2)+'px';
+  el.hotspot.style.width  = bw.toFixed(2)+'px';
+  el.hotspot.style.height = bh.toFixed(2)+'px';
+  cutOut(el.hotZoom, W, H, L, T2, zw, zh);
+  el.tapLabel.style.marginTop = (zh/2 + 4).toFixed(1)+'px';   /* sát ngay dưới cuộn thư */
 }
 function sizeFx(){
   const r = Math.min(window.devicePixelRatio || 1, 2);
@@ -901,11 +903,14 @@ function camTo(x, ms, easing){
   el.world.style.transition = ms ? ('transform '+ms+'ms '+(easing||'cubic-bezier(.16,1,.3,1)')) : 'none';
   CAM.x = x; camApply();
 }
+/* Vào round: đứng ở mép TRÁI, lia hết sang PHẢI rồi mới thu về giữa — cho
+   người chơi cảm giác đang tự đảo mắt nhìn quanh phòng một vòng. */
 function camIntro(){
   CAM.max = camMax();
-  camTo(-CAM.max * 0.88, 0);
+  camTo(-CAM.max, 0);
   requestAnimationFrame(()=> requestAnimationFrame(()=>{
-    camTo(0, T.intro_pan, 'cubic-bezier(.22,.61,.36,1)');
+    camTo(CAM.max, T.intro_pan, 'cubic-bezier(.37,0,.28,1)');
+    setTimeout(()=> camTo(0, T.intro_back, 'cubic-bezier(.33,0,.2,1)'), T.intro_pan + 80);
   }));
 }
 el.screen.addEventListener('pointerdown', e=>{
@@ -979,55 +984,58 @@ function pump(){
 el.narr.addEventListener('click', ()=>{ if(typing) skip = true; });
 
 /* ═══ BỆ ĐÁ ═══════════════════════════════════════════════════════════════ */
+/* Dựng N ô cắt ảnh + bảng ánh xạ ĐỌC NGƯỢC.
+   Câu đố là đọc ngược (REZAR → RAZER), nên ký tự ĐẦU TIÊN người chơi gõ ứng
+   với ô ngoài cùng BÊN PHẢI. revMap[k] = chỉ số ô cho ký tự thứ k, duyệt từ
+   phải sang trái và bỏ qua ô trống (nên gõ "ZHAOYUN" liền hay "ZHAO YUN" có
+   dấu cách đều khớp). */
 function buildSlab(rowEl, word){
   rowEl.innerHTML = '';
-  [...word].forEach(ch=>{
-    const s = document.createElement('span');
-    s.className = 'ltr' + (ch === ' ' ? ' sp' : '');
-    s.textContent = ch === ' ' ? '' : ch;
-    s.dataset.ch = ch;
-    rowEl.appendChild(s);
+  [...word].forEach(()=>{
+    const c = document.createElement('i');
+    c.className = 'cell';
+    rowEl.appendChild(c);
   });
+  const map = [];
+  for(let i = word.length - 1; i >= 0; i--) if(word[i] !== ' ') map.push(i);
+  return map;
 }
 function placeSlabs(){
-  el.slab1.style.setProperty('--sx', C.round1.slab.x);
-  el.slab1.style.setProperty('--sy', C.round1.slab.y);
   el.slab1.style.setProperty('--slab-c', C.round1.color);
-  el.slab2.style.setProperty('--sx', C.round2.slab.x);
-  el.slab2.style.setProperty('--sy', C.round2.slab.y);
   el.slab2.style.setProperty('--slab-c', C.round2.color);
-  const h = C.round2.hotspot;
-  el.hotspot.style.setProperty('--hx', h.x);
-  el.hotspot.style.setProperty('--hy', h.y);
-  el.hotspot.style.setProperty('--hw', h.w);
-  el.hotspot.style.setProperty('--hh', h.h);
 }
-/* Chớp sáng đúng chữ cái vừa gõ trúng. Ưu tiên ô CÙNG VỊ TRÍ với ký tự vừa
-   nhập; không trùng thì lấy ô đầu tiên mang ký tự đó và chưa sáng gần đây. */
+/* Gõ trúng ký tự → đúng ô đó bừng sáng 0.3s. Gõ trượt thì không sáng gì,
+   xoá phím cũng không. */
 function flashLetter(ch, pos){
-  if(!S.slabRow || !ch) return;
-  const w = S.slabWord, cells = S.slabRow.children, c = ch.toUpperCase();
-  if(c === ' ' || w.indexOf(c) < 0) return;
-  let target = -1;
-  if(w[pos] === c) target = pos;
-  if(target < 0){
-    for(let i=0;i<w.length;i++){ if(w[i]===c && !S.litRecently[i]){ target = i; break; } }
-  }
-  if(target < 0) target = w.indexOf(c);
-  const cell = cells[target];
+  if(!S.slabRow || !ch || !S.revMap || pos >= S.revMap.length) return;
+  const idx = S.revMap[pos];
+  if(S.slabWord[idx] !== ch.toUpperCase()) return;
+  const cell = S.slabRow.children[idx];
   if(!cell) return;
-  S.litRecently[target] = true;
   cell.classList.add('hit');
   clearTimeout(cell._t);
-  cell._t = setTimeout(()=>{
-    cell.classList.remove('hit'); S.litRecently[target] = false;
-  }, 300);
+  cell._t = setTimeout(()=> cell.classList.remove('hit'), 300);
 }
-/* ═══ GỢI Ý THEO BẬC ═══════════════════════════════════════════════════════
+/* Giải đúng: nháy sáng lần lượt từ PHẢI sang TRÁI — đúng chiều đọc ngược. */
+function revealSolved(slab, row){
+  const cells = [...row.children], n = cells.length;
+  cells.forEach((c,i)=>{
+    c.classList.remove('hit');
+    c.style.animationDelay = ((n - 1 - i) * T.reveal_step) + 'ms';
+  });
+  const veil = slab.querySelector('.veil');
+  if(veil) veil.style.opacity = '.45';
+  slab.classList.add('solved');
+  return (n - 1) * T.reveal_step + 600;      /* tổng thời lượng màn nháy */
+}
+
+/* ═══ GỢI Ý THEO BẬC + KHOÁ ĐẾM NGƯỢC ═════════════════════════════════════
    Cứ SAI `hint_every_wrongs` lần thì mở thêm một gợi ý, nhưng hai gợi ý phải
-   cách nhau `hint_cooldown_ms`. Cả số lần sai lẫn mốc giờ đều nhớ trong
-   localStorage nên tải lại trang hay chơi lại đều không lách được. */
-const HINTS = { 1:{n:0,at:0,w:0}, 2:{n:0,at:0,w:0} };
+   cách nhau `hint_cooldown_ms`. Chưa đủ giờ thì Ô NHẬP BỊ KHOÁ và chạy đồng hồ
+   đếm ngược — trong lúc đó người chơi đi vuốt quanh phòng tìm manh mối.
+   Số lần sai, mốc giờ và cả hạn khoá đều nhớ trong localStorage nên tải lại
+   trang cũng không lách được. */
+const HINTS = { 1:{n:0,at:0,w:0,lock:0}, 2:{n:0,at:0,w:0,lock:0} };
 (function(){
   const h = Store.get().g2Hint || {};
   if(h.r1) Object.assign(HINTS[1], h.r1);
@@ -1035,24 +1043,63 @@ const HINTS = { 1:{n:0,at:0,w:0}, 2:{n:0,at:0,w:0} };
 })();
 function saveHints(){ Store.patch({ g2Hint:{ r1:HINTS[1], r2:HINTS[2] } }); }
 
-async function serveHint(round){
+async function grantHint(round){
   const list = (round === 1 ? C.round1 : C.round2).hints || [];
   const st = HINTS[round];
-  st.w++;
-  saveHints();
-  if(st.w < (st.n + 1) * T.hint_every_wrongs) return;   /* chưa đủ số lần sai */
-  if(st.n >= list.length){ await say(C.dialogues.hint_done, 'sys'); return; }
-  const con = st.at ? T.hint_cooldown_ms - (Date.now() - st.at) : 0;
-  if(con > 0){
-    await say(C.dialogues.hint_wait
-      .replace('{N}', st.n + 1)
-      .replace('{M}', Math.ceil(con / 60000)), 'sys');
-    return;
-  }
+  if(st.n >= list.length) return;
   st.n++; st.at = Date.now(); saveHints();
   await say(C.dialogues.hint_show
     .replace('{N}', st.n)
     .replace('{TEXT}', list[st.n - 1]), 'warn');
+}
+
+let lockTimer = 0;
+function startLock(until, round){
+  HINTS[round].lock = until; saveHints();
+  clearInterval(lockTimer);
+  showCtrl(false); setInput(false);
+  el.lockbar.hidden = false;
+  const tick = ()=>{
+    const left = until - Date.now();
+    if(left <= 0){ clearInterval(lockTimer); endLock(round); return; }
+    const m = Math.floor(left / 60000), sec = Math.floor(left % 60000 / 1000);
+    el.lockTime.textContent = m + ':' + (sec < 10 ? '0' : '') + sec;
+  };
+  tick();
+  lockTimer = setInterval(tick, 1000);
+}
+async function endLock(round){
+  el.lockbar.hidden = true;
+  HINTS[round].lock = 0; saveHints();
+  await grantHint(round);
+  showCtrl(true);
+  setInput(true, (round === 1 ? C.round1 : C.round2).placeholder);
+  S.busy = false;
+  await say(C.dialogues.hint_unlock, 'sys');
+}
+/* Vào round mà hạn khoá còn hiệu lực (vừa tải lại trang) → khoá tiếp */
+function resumeLock(round){
+  const st = HINTS[round];
+  if(st.lock && st.lock > Date.now()){ S.busy = true; startLock(st.lock, round); return true; }
+  st.lock = 0;
+  return false;
+}
+
+/* Trả về true nếu đã chuyển sang trạng thái KHOÁ (fail() khỏi mở lại ô nhập) */
+async function serveHint(round){
+  const list = (round === 1 ? C.round1 : C.round2).hints || [];
+  const st = HINTS[round];
+  st.w++; saveHints();
+  if(st.w < (st.n + 1) * T.hint_every_wrongs) return false;
+  if(st.n >= list.length){ await say(C.dialogues.hint_done, 'sys'); return false; }
+  const con = st.at ? T.hint_cooldown_ms - (Date.now() - st.at) : 0;
+  if(con > 0){
+    await say(C.dialogues.hint_lock.replace('{M}', Math.ceil(con / 60000)), 'err');
+    startLock(Date.now() + con, round);
+    return true;
+  }
+  await grantHint(round);
+  return false;
 }
 
 function breatheSlab(){
@@ -1068,32 +1115,13 @@ function armIdle(){
   if(S.done || S.inputLocked) return;
   S.idleTimer = setTimeout(breatheSlab, T.idle_hint);
 }
-/* Đổi vị trí chữ bằng kỹ thuật FLIP: đo trước, sắp lại DOM, đo sau, đặt
-   transform ngược rồi thả về 0 → chữ cái trượt sang chỗ mới. */
-function morphSlab(rowEl, toWord){
-  const spans = [...rowEl.children];
-  const first = spans.map(s=> s.getBoundingClientRect().left);
-  const used = new Array(spans.length).fill(false), order = [];
-  [...toWord].forEach(ch=>{
-    let i = spans.findIndex((s,k)=> !used[k] && s.dataset.ch === ch);
-    if(i < 0) i = spans.findIndex((s,k)=> !used[k]);
-    if(i < 0) i = 0;
-    used[i] = true; order.push(spans[i]);
+/* Nhập sai ở vòng 2: mắt rồng chuyển đỏ nháy mấy nhịp rồi trả về bình thường */
+function flashEyes(){
+  el.eyes.forEach(e=>{
+    e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash');
   });
-  order.forEach(s=> rowEl.appendChild(s));
-  const last = order.map(s=> s.getBoundingClientRect().left);
-  order.forEach((s,k)=>{
-    s.style.transition = 'none';
-    s.style.transform = 'translateX(' + (first[spans.indexOf(s)] - last[k]).toFixed(2) + 'px)';
-  });
-  requestAnimationFrame(()=> requestAnimationFrame(()=>{
-    order.forEach(s=>{
-      s.style.transition = 'transform .75s cubic-bezier(.6,-.2,.3,1.4), opacity .3s ease, text-shadow .3s ease';
-      s.style.transform = 'translateX(0)';
-    });
-  }));
+  setTimeout(()=> el.eyes.forEach(e=> e.classList.remove('flash')), T.eye_flash);
 }
-
 /* ═══ NẠP TÀI NGUYÊN ══════════════════════════════════════════════════════ */
 const cache = {};
 function load(src){
@@ -1136,9 +1164,10 @@ el.input.addEventListener('input', ()=>{
     el.input.value = up;
     try{ el.input.setSelectionRange(p,p); }catch(_){}
   }
-  const v = el.input.value;
-  if(v.length > S.lastLen) flashLetter(v[v.length-1], v.length-1);  /* CHỈ khi thêm ký tự */
-  S.lastLen = v.length;
+  const t = el.input.value.replace(/\s+/g,'');
+  if(t.length > S.lastNoSp) flashLetter(t[t.length-1], t.length-1);  /* CHỈ khi thêm ký tự */
+  S.lastNoSp = t.length;
+  S.lastLen = el.input.value.length;
   armIdle();
 });
 el.input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); submit(); }});
@@ -1169,12 +1198,12 @@ async function fail(){
   }else{
     el.narr.classList.remove('shake'); void el.narr.offsetWidth;
     el.narr.classList.add('shake');
-    el.aura.classList.add('angry');
-    setTimeout(()=> el.aura.classList.remove('angry'), 1400);
+    flashEyes();
     await say(C.dialogues.round2_wrong, 'err');
   }
-  await serveHint(S.round);
+  const locked = await serveHint(S.round);
   if(S.wrongs[S.round] >= T.idle_wrongs) breatheSlab();
+  if(locked) return;                    /* đang đếm ngược — không mở lại ô nhập */
 
   await wait(T.lock_after_bad);
   setInput(true);
@@ -1191,17 +1220,20 @@ async function startRound1(){
   el.hud.classList.remove('ok');
   el.hudText.textContent = C.ui.hud_locked;
 
-  el.bg.style.backgroundImage = 'url("'+A('bg_r1')+'")';
-  buildSlab(el.row1, C.round1.scrambled);
-  el.slab1.classList.add('vis');   /* hiện trước rồi mới đo — fitSlabs bỏ qua slab ẩn */
+  const url1 = 'url("'+A('bg_r1')+'")';
+  el.bg.style.backgroundImage = url1;
+  S.revMap = buildSlab(el.row1, C.round1.scrambled);
+  el.row1.querySelectorAll('.cell').forEach(c=> c.style.backgroundImage = url1);
+  el.slab1.classList.add('vis');
   layout();
   camIntro();
 
   await sayAll(C.dialogues.boot, 'sys');
   await sayAll(C.dialogues.round1_intro);
+  load(A('anim_unlock')); load(A('bg_r2'));
+  if(resumeLock(1)) return;             /* hạn khoá cũ còn hiệu lực */
   showCtrl(true); setInput(true, C.round1.placeholder);
   S.busy = false;
-  load(A('anim_unlock')); load(A('bg_r2'));
 }
 
 async function win1(){
@@ -1214,11 +1246,8 @@ async function win1(){
 
   await say(C.dialogues.round1_correct);
 
-  morphSlab(el.row1, C.round1.solved);
-  S.slabWord = C.round1.solved;
   el.slab1.classList.remove('breathe');
-  el.slab1.classList.add('solved');
-
+  await wait(revealSolved(el.slab1, el.row1));
   await wait(T.glow_hold);
   await load(A('anim_unlock'));
   say(C.dialogues.round1_boom, 'warn');
@@ -1245,8 +1274,12 @@ async function startRound2(){
   el.dragon.style.backgroundImage = 'url("'+A('bg_r2')+'")';
   el.bg.style.opacity = '1';
 
-  buildSlab(el.row2, C.round2.scrambled);
+  const url2 = 'url("'+A('bg_r2')+'")';
+  S.revMap = buildSlab(el.row2, C.round2.scrambled);
+  el.row2.querySelectorAll('.cell').forEach(c=> c.style.backgroundImage = url2);
+  el.hotZoom.style.backgroundImage = url2;
   el.slab2.classList.add('vis');
+  el.eyes.forEach(e=> e.classList.add('on'));
   layout();
   el.dragon.classList.add('on');
   el.aura.classList.add('on');
@@ -1256,6 +1289,7 @@ async function startRound2(){
 
   await sayAll(C.dialogues.round2_intro, 'cy');
   await sayAll(C.dialogues.round2_hint);
+  if(resumeLock(2)) return;
   showCtrl(true); setInput(true, C.round2.placeholder);
   S.busy = false;
 }
@@ -1267,15 +1301,13 @@ async function win2(){
   el.hud.classList.add('ok');
   el.hudText.textContent = C.ui.hud_unlocked;
 
-  morphSlab(el.row2, C.round2.solved);
-  S.slabWord = C.round2.solved;
   el.slab2.classList.remove('breathe');
-  el.slab2.classList.add('solved');
+  const dur = revealSolved(el.slab2, el.row2);
 
   el.dragon.classList.add('empowered');
   el.aura.classList.add('empowered');
 
-  await wait(700);
+  await wait(dur + 300);
   el.hotspot.classList.add('on');
   await say(C.dialogues.round2_correct, 'cy');
   S.busy = false;
@@ -1458,14 +1490,19 @@ el.startBtn.addEventListener('click', ()=>{
 /* Dọn sạch để chơi lại từ đầu */
 function reset(){
   S.round = 0; S.busy = true; S.wrongs = {1:0,2:0}; S.done = false;
-  S.lastLen = 0; S.litRecently = {};
-  clearTimeout(S.idleTimer);
+  S.lastLen = 0; S.lastNoSp = 0; S.revMap = null;
+  clearTimeout(S.idleTimer); clearInterval(lockTimer);
+  el.lockbar.hidden = true;
   Q.length = 0; typing = false;
   el.narr.innerHTML = '';
   el.input.value = '';
   showCtrl(false); setInput(false);
-  el.slab1.className = 'slab'; el.slab2.className = 'slab';
+  [el.slab1, el.slab2].forEach(sl=>{
+    sl.className = 'slab';
+    const v = sl.querySelector('.veil'); if(v) v.style.opacity = '';
+  });
   el.row1.innerHTML = ''; el.row2.innerHTML = '';
+  el.eyes.forEach(e=> e.classList.remove('on','flash'));
   el.dragon.className = 'dragon-layer'; el.aura.className = 'aura';
   el.hotspot.classList.remove('on');
   el.root.classList.remove('r2');

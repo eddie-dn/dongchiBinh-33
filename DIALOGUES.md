@@ -15,16 +15,16 @@ dad/950901-b/
 ├── index.html        ← 3 màn trong 1 file (đếm ngược · game · mã TYRION)
 ├── config.js         ← ★ SỬA Ở ĐÂY: GATE_CONFIG + GAME_CONFIG
 ├── DIALOGUES.md      ← file này
-├── bg_r1.png         3136×1376 · phòng lab ngầm, bệ đá "REZAR"
-├── bg_r2.png         3136×1376 · rừng tàn tích, Bạch Long ngậm thư
+├── bg_r1.png         3136×1376 · phòng lab ngầm
+├── bg_r2.png         3136×1376 · rừng tàn tích, Bạch Long ngậm cuộn thư
 ├── anim_wrong.webp   1280×561  · ổ khoá rung đỏ (~2s)
 ├── anim_unlock.webp  800×350   · nổ sập lab + thức tỉnh Bạch Long (~8s)
 └── photo_1..5.jpg    ⚠️ CHƯA CÓ — game tự vẽ ảnh pixel thay thế
 ```
 
 Thêm ảnh kỷ niệm thật: chép `photo_1.jpg` … `photo_5.jpg` vào đúng thư mục này.
-Thiếu tệp nào thì ô đó hiện ảnh pixel thay thế (trái tim + `MEMORY 0x · N/A`),
-game vẫn chạy. Muốn ít/nhiều hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
+Thiếu tệp nào thì ô đó hiện ảnh pixel thay thế, game vẫn chạy. Muốn ít/nhiều
+hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
 
 ---
 
@@ -32,7 +32,7 @@ game vẫn chạy. Muốn ít/nhiều hơn 5 ảnh thì sửa mảng `photos` v�
 
 ```
 ① #scene-gate  ĐẾM NGƯỢC tới 00:00 · 01-09 (giờ VN)
-      │  chưa tới mốc → đồng hồ + nút [ ← Về bản đồ ], không vào được game
+      │  chưa tới mốc → đồng hồ + nút [ ← Về bản đồ ]
       │  tới mốc, ghé lần đầu → đếm thêm 10 giây
       ↓  hiện nút [ ▶ Bắt đầu giải mã ]
 ② #scene-game  MINI-GAME 2 VÒNG
@@ -41,13 +41,12 @@ game vẫn chạy. Muốn ít/nhiều hơn 5 ảnh thì sửa mảng `photos` v�
 ③ #scene-code  PHÁ ĐẢO · phát mã TYRION · đi Zoey's Castle
 ```
 
-**Đổi so với bản cũ:** mã `TYRION` giờ là phần thưởng của việc **chơi xong
-mini-game**, không phải chỉ của việc tới đúng ngày.
+Mã `TYRION` là phần thưởng của việc **chơi xong mini-game**, không phải chỉ
+của việc tới đúng ngày.
 
-> ⚠️ Nghĩa là **không phá đảo được mini-game thì không lấy được mã vào Map 3**.
-> Đã chốt sẵn hai đường lùi: chơi xong một lần là nhớ vĩnh viễn (cờ `mtv1.g2Game`),
-> vào lại đi thẳng màn mã; và nút `< THOÁT` trong game luôn quay về được. Nếu
-> muốn nới ra, xem mục 6.
+> ⚠️ Không phá đảo được thì không lấy được mã vào Map 3. Hai đường lùi: chơi
+> xong một lần là nhớ vĩnh viễn (`mtv1.g2Game`), vào lại đi thẳng màn mã; và
+> nút `< THOÁT` trong game luôn quay về được. Muốn nới ra, xem mục 8.
 
 ### Cờ nhớ trong `localStorage` (khoá `mtv1`)
 
@@ -57,7 +56,7 @@ mini-game**, không phải chỉ của việc tới đúng ngày.
 | `g2Vao` | lần đầu ghé sau mốc | lần sau khỏi đếm lại 10 giây |
 | `g2Game` | bấm *Hoàn thành hành trình* | vào lại là tới thẳng màn mã |
 | `g2Hack` | cửa hậu từ Box Tổng tư lệnh | bỏ qua mốc 01-09 |
-| `g2Hint` | mỗi lần nhập sai | số gợi ý đã mở + mốc giờ mở gợi ý gần nhất |
+| `g2Hint` | mỗi lần nhập sai | số gợi ý đã mở · mốc giờ · **hạn khoá** |
 
 ---
 
@@ -65,14 +64,12 @@ mini-game**, không phải chỉ của việc tới đúng ngày.
 
 | Khoá | Mặc định | Ghi chú |
 |---|---|---|
-| `moc_iso` | `{YEAR}-09-01T00:00:00+07:00` | `{YEAR}` tự thay bằng năm hiện tại. Ghi múi `+07:00` nên máy ở đâu cũng chốt đúng nửa đêm VN |
+| `moc_iso` | `{YEAR}-09-01T00:00:00+07:00` | `{YEAR}` tự thay bằng năm hiện tại. Múi `+07:00` nên máy ở đâu cũng chốt đúng nửa đêm VN |
 | `cho_lan_dau_ms` | `10000` | ghé lần đầu sau mốc thì đếm thêm 10 giây. Đặt `0` để bỏ |
 | `ma` | `TYRION` | **phải khớp** hằng `PIN_A` bên `han/961030-a` |
 | `ma_link` | `/han/961030-a?from=map` | nút đi Map 3 |
 
-Chữ trong `GATE_CONFIG.text`:
-
-| Khoá | Nội dung |
+| Khoá `text` | Nội dung |
 |---|---|
 | `vai_truoc` / `vai_sau` | `Player: Dongchi Bình` / `Winner: Dongchi Bình` |
 | `tieu_de` / `nhan_khoa` | `Easter Egg: Gate 2` / `Locked` |
@@ -84,9 +81,11 @@ Chữ trong `GATE_CONFIG.text`:
 | `nut_vao_game` | `▶ Bắt đầu giải mã` |
 | `nut_ve_ban_do` | `← Về bản đồ` — chỉ hiện khi **chưa tới ngày** |
 | `nut_choi_lai_game` | `↻ Chơi lại Easter Egg: Gate 2` |
-| `ma_nhan` | `Zoey’s Castle Key` |
-| `nut_castle` / `nut_reset` | `Zoey’s Castle` / `↻ Chơi lại` |
-| `nut_reset_hoi` | `Chắc chưa?` — nút reset bấm **hai nhịp** mới ăn |
+| `ma_nhan` / `nut_castle` | `Zoey’s Castle Key` / `Zoey’s Castle` |
+
+> Màn mã trước có **hai** nút chơi lại chồng ý nghĩa nhau. Nay chỉ còn **một**
+> nút dài `↻ Chơi lại Easter Egg: Gate 2`; nút reset toàn bộ đã bỏ (chức năng
+> đó vẫn còn trên bản đồ).
 
 ---
 
@@ -96,74 +95,102 @@ Chữ trong `GATE_CONFIG.text`:
 
 | Khoá | Mặc định | Ghi chú |
 |---|---|---|
-| `ratio` | `4/3` | tỷ lệ khung. Đổi `16/9` là về khung dẹt bản cũ |
+| `ratio` | `4/3` | tỷ lệ khung. Đổi `16/9` là về khung dẹt |
 | `max_h` | `0.44` | trần chiều cao khung so với cả màn |
 | `max_h_kb` | `0.30` | khi bàn phím ảo bật |
-| `world_ratio` | `3136/1376` | tỷ lệ thật của ảnh nền — chỉ đổi khi thay ảnh |
+| `world_ratio` | `3136/1376` | tỷ lệ thật của ảnh nền |
 
-> Ảnh nền rộng **2.28:1**, khung chỉ **4:3** → phần dư ngang ~127 px mỗi bên
-> (máy 390 px) chính là biên độ vuốt ngắm cảnh.
+Ảnh nền rộng **2.28:1**, khung chỉ **4:3** → dư ngang **±127 px** (máy 390 px)
+chính là biên độ vuốt ngắm cảnh.
 
 ### Mật khẩu
 
-| Vòng | Chữ khắc trên bệ đá | Mật khẩu | Chấp nhận thêm | Màu neon |
-|---|---|---|---|---|
-| 01 | `REZAR` | `RAZER` | — | Cam `#ffaa00` |
-| 02 | `NUY OAHZ` | `ZHAO YUN` | `ZHAOYUN` | Cyan `#00f2ff` |
+| Vòng | Khắc trên bệ đá | Mật khẩu | Chấp nhận thêm |
+|---|---|---|---|
+| 01 | `REZAR` | `RAZER` | — |
+| 02 | `NUY OAHZ` | `ZHAO YUN` | `ZHAOYUN` |
 
-So khớp **bỏ hết dấu cách, không phân biệt hoa thường** — gõ `zhao yun`,
-`ZhaoYun`, `ZHAOYUN` đều vào được. Ô nhập tự in hoa.
+So khớp **bỏ hết dấu cách, không phân biệt hoa thường**. Ô nhập tự in hoa.
+Cả hai vòng dùng chung tông sáng **cam `#ffaa00`** cho nhất quán.
 
-### Chữ trên bệ đá — cơ chế
+### ★ Chữ trên bệ đá — cơ chế
 
-Overlay **trùng khít chữ khắc có sẵn trong ảnh**, không phải một tấm biển đè lên.
-Toạ độ đo bằng cách dò pixel chữ khắc, nên nhìn như chính chữ trên đá sáng lên:
+Game **không vẽ chữ đè lên tranh**. Nó phủ một **lớp tối hẳn** lên đúng ô chữ
+khắc, rồi **cắt chính ảnh gốc** thành từng ký tự xếp chồng lên. Gõ trúng ký tự
+nào thì ô đó bừng sáng — cái sáng lên là **nét chữ khắc thật trong tranh**.
 
 | Trạng thái | Hiện tượng |
 |---|---|
-| Không gõ / gõ sai ký tự | **Tắt hẳn** (`opacity: 0`) — chỉ thấy chữ khắc trong ảnh gốc |
-| Gõ trúng một ký tự có trong từ | Đúng chữ cái đó **chớp sáng 0.3s** |
+| Không gõ / gõ trượt | Vùng chữ **tối hẳn**, không đọc được gì |
+| Gõ trúng một ký tự | Đúng ô đó bừng sáng 0.3s rồi tối lại |
 | Xoá phím | Không sáng gì |
-| Sai 3 lần / 20s không gõ | Cả cụm chữ **thở nhẹ một nhịp** làm gợi ý |
-| Giải đúng | Chữ đảo về đúng thứ tự + **sáng rực 100%**, tấm nền mờ vào che chữ khắc cũ |
+| Sai 3 lần / 20s không gõ | Cả cụm hiện mờ một nhịp làm gợi ý |
+| Giải đúng | Nháy sáng lần lượt **từ PHẢI sang TRÁI**, rồi giữ sáng |
+
+**Chiều gõ là chiều ngược.** Câu đố là đọc ngược (`REZAR` → `RAZER`), nên ký tự
+**đầu tiên** người chơi gõ ứng với ô **ngoài cùng bên phải**:
+
+```
+ô:     0    1    2    3    4
+khắc:  R    E    Z    A    R
+gõ:    R←5  E←4  Z←3  A←2  R←1        (số = thứ tự phím bấm)
+```
+
+Bảng ánh xạ bỏ qua ô trống, nên gõ `ZHAOYUN` liền hay `ZHAO YUN` có dấu cách
+đều khớp đúng ô.
+
+### Toạ độ (tất cả tính theo % của **ảnh nền**, đo bằng dò pixel)
+
+| Lớp | left | top | w | h |
+|---|---|---|---|---|
+| Bệ đá Vòng 1 (`REZAR`) | 47.194% | 91.788% | 6.378% | 3.198% |
+| Bệ đá Vòng 2 (`NUY OAHZ`) | 46.971% | 84.811% | 6.154% | 2.180% |
+| Cuộn thư (`hotspot`) | 41.14% | 34.52% | 10.52% | 9.08% |
+| Mắt rồng trái (`eyes[0]`) | 44.20% | 29.9% | 1.9% | 7.4% |
+| Mắt rồng phải (`eyes[1]`) | 46.70% | 29.8% | 2.2% | 8.4% |
+
+`hotspot.min_px: 52` — vùng chạm được nới ra cho vừa ngón tay (thực tế
+**65 × 52 px**), còn mẩu ảnh cuộn thư giữ đúng cỡ thật (65 × 25 px).
+
+### Cuộn thư & mắt rồng
+
+- **Không có khung viền.** Chính mẩu ảnh cuộn thư được **phóng to thu nhỏ nhè
+  nhẹ** (scale 1 ↔ 1.17) kèm ánh vàng. Chữ `[ TAP HERE ]` nhấp nháy **ngay sát
+  dưới** cuộn thư (cách 4 px).
+- **Nhập sai ở vòng 2:** không còn hào quang đỏ. Thay vào đó **mắt rồng chuyển
+  đỏ nhấp nháy 4 nhịp** (1.6s) rồi trả về bình thường.
+
+### Camera
+
+Vào mỗi round, camera **đứng ở mép trái, lia hết sang phải, rồi mới thu về
+giữa** — như người chơi tự đảo mắt nhìn quanh một vòng. Sau đó vuốt tự do, thả
+tay thì trôi mượt về giữa.
 
 ### Mốc thời gian (`timing`, ms)
 
 | Khoá | Mặc định | Ý nghĩa |
 |---|---|---|
-| `intro_pan` | 2500 | camera lia vào round rồi neo giữa |
-| `recenter` | 900 | thả tay → trôi mượt về giữa |
+| `intro_pan` | 2600 | lia một vòng từ TRÁI sang PHẢI |
+| `intro_back` | 1300 | rồi thu về neo giữa |
+| `reveal_step` | 130 | giải đúng: nháy từng ký tự phải→trái |
+| `eye_flash` | 1600 | mắt rồng nháy đỏ khi nhập sai |
+| `recenter` | 900 | thả tay → trôi về giữa |
 | `anim_wrong` | 2000 | clip ổ khoá rung đỏ |
 | `lock_after_bad` | 2000 | khoá ô nhập sau mỗi lần sai |
-| `glow_hold` | 3000 | giữ chữ `RAZER` sáng rực trước khi nổ |
+| `glow_hold` | 3000 | giữ chữ sáng rực trước khi nổ |
 | `anim_unlock` | 8000 | clip nổ sập lab |
-| `type_speed` | 24 | mỗi ký tự hộp thoại |
-| `letter_speed` | 26 | mỗi ký tự bức thư |
-| `idle_hint` | 20000 | không gõ bao lâu thì chữ "thở" |
-| `idle_wrongs` | 3 | sai mấy lần thì chữ "thở" |
+| `type_speed` / `letter_speed` | 24 / 26 | mỗi ký tự hộp thoại / bức thư |
+| `idle_hint` / `idle_wrongs` | 20000 / 3 | khi nào chữ "thở" một nhịp |
 | **`hint_every_wrongs`** | **3** | **sai mấy lần thì mở thêm một gợi ý** |
-| **`hint_cooldown_ms`** | **900000** | **hai gợi ý phải cách nhau 15 phút** |
+| **`hint_cooldown_ms`** | **900000** | **hai gợi ý cách nhau 15 phút** |
 | `slide_auto` | 3000 | tự chuyển ảnh slideshow |
-
-### Toạ độ lớp phủ
-
-Tính theo **% của ảnh nền** (không phải màn hình) nên lia camera hay đổi cỡ máy
-vẫn dính đúng chỗ. `width_pct` = bề ngang cụm chữ so với ảnh nền; cỡ chữ được
-**đo hai nhịp lúc chạy** để khớp đúng bề ngang chữ khắc, đổi chữ dài ngắn thế
-nào cũng tự vừa.
-
-| Lớp | Vị trí (tâm) | Kích thước |
-|---|---|---|
-| Bệ đá Vòng 1 (`REZAR`) | `50.37%, 93.35%` | `width_pct 6.38` |
-| Bệ đá Vòng 2 (`NUY OAHZ`) | `50.03%, 85.86%` | `width_pct 6.15` |
-| Hotspot lá thư | `46.4%, 39%` | `16% × 22%`, không nhỏ hơn `min_px 56` |
-
-Vùng chạm lá thư thực tế **99 × 60 px** trên máy 390 px — thoải mái cho ngón tay,
-còn vòng sáng thu nhỏ ôm đúng cuộn thư.
 
 ---
 
 ## 4. Toàn bộ thoại (`GAME_CONFIG.dialogues`)
+
+> **Nguyên tắc: thoại KHÔNG được lộ gì về cách giải.** Không nhắc "chữ đảo
+> lộn", không nhắc "bệ đá khắc chữ gì". Chỉ nói nhiệm vụ: tìm mật khẩu.
 
 ### Khởi động (`boot`) — xám hệ thống
 
@@ -177,7 +204,7 @@ còn vòng sáng thu nhỏ ôm đúng cuộn thư.
 
 | Khoá | Nội dung | Màu |
 |---|---|---|
-| `round1_intro` | `> VÒNG 01 // Trước mặt anh là bệ đá khắc năm chữ cái đã bị đảo lộn: "REZAR".`<br>`> Sắp lại đúng thứ tự rồi gõ vào ô mã bên dưới để phá niêm phong.` | xanh lá |
+| `round1_intro` | `> VÒNG 01 // Cửa đã bị niêm phong. Tìm mật khẩu để thoát khỏi phòng lab.`<br>`> Vuốt quanh phòng để quan sát. Gõ mật khẩu vào ô bên dưới.` | xanh lá |
 | `round1_wrong` | `> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.` | đỏ |
 | `round1_correct` | `> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...` | xanh lá |
 | `round1_boom` | `> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!` | cam |
@@ -187,7 +214,7 @@ còn vòng sáng thu nhỏ ôm đúng cuộn thư.
 | Khoá | Nội dung | Màu |
 |---|---|---|
 | `round2_intro` | `> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.` | cyan |
-| `round2_hint` | `> VÒNG 02 // Bệ đá trong rừng tàn tích khắc: "NUY OAHZ".` | xanh lá |
+| `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.` | xanh lá |
 | `round2_wrong` | `> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.` | đỏ |
 | `round2_correct` | `> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...` | cyan |
 
@@ -200,13 +227,15 @@ còn vòng sáng thu nhỏ ôm đúng cuộn thư.
 
 ---
 
-## 5. Hệ thống gợi ý (mới)
+## 5. Gợi ý theo bậc + KHOÁ ĐẾM NGƯỢC
 
-**Luật:** cứ **sai 3 lần** mở thêm một gợi ý, nhưng **mỗi gợi ý cách nhau 15 phút**.
-Chưa đủ giờ thì game báo còn phải chờ bao lâu chứ không phát.
+**Luật:** cứ **sai 3 lần** mở thêm một gợi ý. Nhưng hai gợi ý phải **cách nhau
+15 phút** — chưa đủ giờ thì **ô nhập bị khoá hẳn** và chạy **đồng hồ đếm
+ngược**, không gõ được nữa. Trong lúc đó người chơi đi vuốt quanh phòng tìm
+manh mối. Hết giờ thì tự mở khoá và phát luôn gợi ý kế tiếp.
 
-Số lần sai và mốc giờ đều nhớ trong `localStorage` (`mtv1.g2Hint`), nên **tải lại
-trang hay bấm chơi lại đều không lách được**.
+Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage`
+(`mtv1.g2Hint`) → **F5 giữa lúc khoá thì vào lại vẫn khoá tiếp**.
 
 ### Vòng 1 (`round1.hints`)
 
@@ -226,18 +255,20 @@ trang hay bấm chơi lại đều không lách được**.
 | 3 | 9 lần sai + 30 phút | `Vị tướng này dùng Long Đảm Thương` |
 | 4 | 12 lần sai + 45 phút | `Một nhân vật Tam Quốc` |
 
-### Khuôn câu thông báo
+### Khuôn câu
 
 | Khoá | Nội dung | Khi nào |
 |---|---|---|
-| `hint_show` | `> GỢI Ý {N}: {TEXT}` | mở được gợi ý mới (màu cam) |
-| `hint_wait` | `> GỢI Ý {N} ĐÃ SẴN SÀNG NHƯNG CÒN KHOÁ {M} PHÚT NỮA.` | đủ số lần sai nhưng chưa đủ giờ (màu xám) |
+| `hint_show` | `> GỢI Ý {N}: {TEXT}` | mở được gợi ý mới (cam) |
+| `hint_lock` | `> HỆ THỐNG QUÁ TẢI! Ô NHẬP BỊ KHOÁ {M} PHÚT.` | đủ số lần sai nhưng chưa đủ giờ (đỏ) |
+| `hint_unlock` | `> ĐÃ MỞ KHOÁ. THỬ LẠI ĐI DONGCHI.` | hết giờ khoá |
 | `hint_done` | `> ĐÃ HẾT GỢI Ý. TỰ LỰC THÔI DONGCHI.` | đã mở hết 4 gợi ý |
+| `ui.lock_note` | `Vuốt quanh phòng tìm manh mối trong lúc chờ…` | dòng nhắc dưới đồng hồ |
 
-`{N}` số thứ tự · `{TEXT}` nội dung gợi ý · `{M}` số phút còn phải chờ.
+`{N}` số thứ tự · `{TEXT}` nội dung · `{M}` số phút bị khoá.
 
 > Muốn dễ hơn: hạ `hint_cooldown_ms` (ví dụ `60000` = 1 phút) hoặc
-> `hint_every_wrongs`. Muốn bỏ hẳn khoá giờ: đặt `hint_cooldown_ms: 0`.
+> `hint_every_wrongs`. Đặt `hint_cooldown_ms: 0` là bỏ hẳn khoá giờ.
 
 ---
 
@@ -248,13 +279,13 @@ trang hay bấm chơi lại đều không lách được**.
 `swipe_hint` `◄ VUỐT ĐỂ NGẮM BỐI CẢNH ►` · `unlock_btn` `UNLOCK` ·
 `modal_title` `BÍ TỊCH BẠCH LONG` · `prev_btn` `< PREV` · `next_btn` `NEXT >` ·
 `finish_btn` `[ HOÀN THÀNH HÀNH TRÌNH ]` · `hud_locked/unlocked` `LOCKED/UNLOCKED` ·
-`back_label` `< THOÁT` · `round1.placeholder` `NHẬP MÃ KHÓA...` ·
-`round2.placeholder` `NHẬP MẬT MÃ...` · `round2.tap_label` `[ TAP HERE ]`
+`back_label` `< THOÁT` · `lock_note` (xem mục 5) ·
+`round1.placeholder` `NHẬP MÃ KHÓA...` · `round2.placeholder` `NHẬP MẬT MÃ...` ·
+`round2.tap_label` `[ TAP HERE ]`
 
 > ⚠️ **Font `Press Start 2P` không có dấu tiếng Việt.** Chỗ dùng font pixel
-> (nút `UNLOCK`, HUD, `[ TAP HERE ]`, `PRESS START`, chữ trên bệ đá) phải giữ
-> **không dấu**. Chỗ có dấu đã chuyển sang `Roboto Mono`: hộp thoại, dòng gợi ý
-> vuốt, tiêu đề modal, nút hoàn thành, placeholder ô nhập.
+> (nút `UNLOCK`, HUD, `[ TAP HERE ]`, `PRESS START`, đồng hồ khoá) phải giữ
+> **không dấu**. Chỗ có dấu đã chuyển sang `Roboto Mono`.
 >
 > `boot_ready` cố tình để **ngắn một dòng** — câu dài sẽ rớt một chữ xuống dòng
 > riêng, nhìn rất vô duyên.
@@ -262,6 +293,9 @@ trang hay bấm chơi lại đều không lách được**.
 ---
 
 ## 7. Nội dung bức thư (`letter_content`)
+
+Thứ tự: lời mở → hai đoạn chính → lời chúc → câu kết → **chữ ký** → **p.s. cuối
+cùng**.
 
 ```
 Gửi Dongchi Bình,
@@ -274,41 +308,38 @@ Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biế
 những nuối tiếc về quá khứ của anh sớm được bù đắp vào rất nhiều năm tới đây.
 Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
-p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một
-trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người
-nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get
-what you deserve.
-
 Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, bớt lo nghĩ xa xôi, luôn dũng cảm
 và chân thành.
 
 Hết màn rồi đó. Về nhà thôi.
 
 — Em. Hồng Hân kí tên.
+
+p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một
+trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người
+nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get
+what you deserve.
 ```
 
-Xuống dòng được giữ nguyên khi hiển thị. Chạm vào khung thư là hiện hết chữ ngay,
-khỏi đợi gõ xong.
+Xuống dòng giữ nguyên khi hiển thị. Chạm vào khung thư là hiện hết chữ ngay.
 
 ---
 
 ## 8. Vài chỗ hay phải chỉnh
 
-**Muốn phát mã TYRION ngay khi tới mốc, không bắt chơi game** — trong
-`index.html`, hàm `Gate.moCong()`, đổi dòng
-`if(Store.get().g2Game){ Code.open(); return; }` thành `Code.open(); return;`.
-Nút *Chơi lại Easter Egg: Gate 2* trên màn mã vẫn vào game được.
+**Phát mã TYRION ngay khi tới mốc, không bắt chơi game** — trong `index.html`,
+hàm `Gate.moCong()`, đổi `if(Store.get().g2Game){ Code.open(); return; }` thành
+`Code.open(); return;`.
 
-**Muốn khung game dẹt như cũ** — `GAME_CONFIG.frame.ratio: 16/9`.
+**Khung game dẹt như cũ** — `GAME_CONFIG.frame.ratio: 16/9`.
 
-**Muốn khung game to/nhỏ hơn** — `GAME_CONFIG.frame.max_h` (0.44 = 44% chiều
-cao màn). Tăng thì khung to ra, hộp thoại terminal ngắn lại.
+**Khung game to/nhỏ hơn** — `GAME_CONFIG.frame.max_h` (0.44 = 44% chiều cao màn).
 
-**Muốn chữ trên bệ đá to/nhỏ hơn** — `slab.width_pct`. Nhưng đang khớp đúng chữ
-khắc trong ảnh, tăng lên là lệch ra ngoài bệ đá.
+**Vùng chữ sáng lệch chỗ** — sửa `round1.slab` / `round2.slab` (left/top/w/h).
+Đang khớp đúng chữ khắc trong ảnh; đổi ảnh nền thì phải đo lại.
 
-**Xoá tiến độ gợi ý để test** — `localStorage.removeItem('mtv1')` hoặc sửa riêng
-`mtv1.g2Hint`.
+**Xoá tiến độ gợi ý / hạn khoá để test** — `localStorage.removeItem('mtv1')`,
+hoặc sửa riêng `mtv1.g2Hint`.
 
 ---
 
@@ -318,35 +349,33 @@ Hai màn vốn là hai trang riêng, gộp vào là đụng nhau đúng ba chỗ
 ba biến `--neon` / `--amber` / `--paper` (khác giá trị nhau), và selector trần
 `h1{}` `p{}` bên màn đếm ngược sẽ ăn luôn vào markup game.
 
-Luật đã chốt trong `index.html`:
+Luật đã chốt:
 
 - **Không** khai biến màu nào ở `:root`. Màn đếm ngược + màn mã khai trong
   `.gate-look`, màn game khai trong `#scene-game`.
 - **Mọi** selector đều phải có tiền tố `.gate-look ` hoặc `#scene-game `.
 
-Thêm CSS mới cứ theo đúng hai luật đó là không bao giờ đụng.
-
 ---
 
 ## 10. Vài điều đã xử lý sẵn
 
-- **Chữ trên bệ đá không lộ đáp án**: overlay trùng khít chữ khắc, mặc định tắt
-  hẳn, chỉ chớp sáng đúng ký tự vừa gõ trúng.
-- **Nút trên màn đếm ngược không lệch góc**: `<button>` mặc định co theo nội dung
-  dù đã `display:block`, phải có `width:100%` mới căn giữa như thẻ `<a>`.
+- **Không lộ đáp án**: thoại không nhắc gì tới cách giải, và vùng chữ mặc định
+  tối hẳn — chỉ ký tự gõ trúng mới sáng.
+- **Chiều gõ ngược** dạy người chơi cơ chế: phím đầu tiên làm sáng ô bên phải.
+- **Biến CSS không nội suy**: đo hiệu ứng camera phải đọc `transform` thật, đọc
+  `--pan` chỉ ra giá trị đích nên tưởng nhầm là hiệu ứng không chạy.
+- **Nút trên màn đếm ngược không lệch góc**: `<button>` co theo nội dung dù đã
+  `display:block`, phải có `width:100%`.
 - **Bàn phím ảo** không đẩy vỡ khung: chiều cao thật lấy từ `visualViewport`,
-  khung tự co mà **không méo tỷ lệ** (trình duyệt không truyền `max-height`
-  ngược qua `aspect-ratio`, nên bề ngang khung do JS chốt bằng px).
-- **Không còn khoảng trống chết** giữa khung game và hộp thoại: `#stage` để
-  `height:auto`, chiều cao do đúng nội dung quyết định.
+  bề ngang khung do JS chốt bằng px (trình duyệt không truyền `max-height`
+  ngược qua `aspect-ratio`).
+- **Không còn khoảng trống chết** giữa khung game và hộp thoại (`#stage` để
+  `height:auto`).
 - **Chạm lá thư không bị nuốt** khi vuốt camera: vùng hotspot không khởi động
-  thao tác kéo (`setPointerCapture` sẽ kéo `click` lên khung máy), và đã vuốt
-  thì cú thả tay không tính là chạm.
-- **Thứ tự khởi tạo**: khối `Gate` chạy trước `Game`/`Code` nhưng nhịp đếm đầu
-  có thể gọi thẳng `Code.open()`, nên phải hoãn sang vòng sau để không vấp TDZ.
-  Chỗ canh dùng cờ thường, **không dùng `typeof`** — `typeof` trên một `const`
-  đang trong vùng chết vẫn ném lỗi.
+  thao tác kéo (`setPointerCapture` sẽ kéo `click` lên khung máy).
+- **Thứ tự khởi tạo**: khối `Gate` chạy trước `Game`/`Code` nên nhịp đếm đầu
+  phải hoãn sang vòng sau để không vấp TDZ. Chỗ canh dùng cờ thường, **không
+  dùng `typeof`** — `typeof` trên `const` đang trong vùng chết vẫn ném lỗi.
 - **Clip `.webp` lặp vô hạn** → mỗi lần phát tạo thẻ ảnh mới (cùng URL nên lấy
-  từ cache, không tải lại), hết thời lượng thì gỡ ra.
-- **Ảnh nặng** (bg 8 MB, clip 24 MB): màn `LOADING` chỉ chờ nền Vòng 1, phần
-  còn lại nạp ngầm; clip nổ được bảo đảm tải xong trước khi phát.
+  từ cache), hết thời lượng thì gỡ ra.
+- **Ảnh nặng**: màn `LOADING` chỉ chờ nền Vòng 1, phần còn lại nạp ngầm.
