@@ -41,9 +41,6 @@ const GATE_CONFIG = {
     nut_ve_ban_do : '← Về bản đồ',
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
-    nut_reset     : '↻ Chơi lại',
-    nut_reset_hoi : 'Chắc chưa?',
-    nut_reset_chay: 'Đang dọn bàn cờ…',
     ve_ban_do     : 'Bản đồ',
     version       : 'V2.00<br>Last updated 17-Aug-2026'
   }
@@ -79,7 +76,10 @@ const GAME_CONFIG = {
 
   /* ── Mốc thời gian (ms) ────────────────────────────────────────────────── */
   timing: {
-    intro_pan     : 2500,   /* camera lia vào round rồi neo giữa   */
+    intro_pan     : 2600,   /* lia một vòng từ TRÁI sang PHẢI       */
+    intro_back    : 1300,   /* rồi thu về neo giữa                  */
+    reveal_step   : 130,    /* giải đúng: nháy từng ký tự phải→trái */
+    eye_flash     : 1600,   /* mắt rồng nháy đỏ khi nhập sai        */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
@@ -111,10 +111,10 @@ const GAME_CONFIG = {
       'BÊN PHẢI PHÒNG LAB',
       'HÃNG GAMING NỔI TIẾNG'
     ],
-    /* Đo bằng cách dò pixel chữ khắc trong bg_r1.png → overlay trùng khít
-       chữ trên đá, không phải một tấm biển to đè lên.
-       x,y = tâm; width_pct = bề ngang cụm chữ tính theo % ẢNH NỀN. */
-    slab     : { x:'50.37%', y:'93.35%', width_pct:6.38 }
+    /* KHUNG CHỮ KHẮC trong bg_r1.png, đo bằng cách dò pixel — tính theo % ẢNH
+       NỀN. Game KHÔNG vẽ chữ đè lên: nó phủ một lớp tối lên đúng ô này, rồi
+       cắt chính ảnh gốc thành từng ký tự; gõ trúng thì ký tự đó sáng lên. */
+    slab     : { left:'47.194%', top:'91.788%', w:'6.378%', h:'3.198%' }
   },
 
   /* ── VÒNG 2 · THẦN LONG TRIỆU VÂN ──────────────────────────────────────── */
@@ -123,7 +123,7 @@ const GAME_CONFIG = {
     accept   : ['ZHAO YUN','ZHAOYUN'],
     scrambled: 'NUY OAHZ',
     solved   : 'ZHAO YUN',
-    color    : '#00f2ff',
+    color    : '#ffaa00',   /* cùng tông cam với vòng 1 cho nhất quán */
     placeholder: 'NHẬP MẬT MÃ...',
     hints: [
       'Một nhân vật có thật nổi tiếng',
@@ -131,10 +131,17 @@ const GAME_CONFIG = {
       'Vị tướng này dùng Long Đảm Thương',
       'Một nhân vật Tam Quốc'
     ],
-    slab     : { x:'50.03%', y:'85.86%', width_pct:6.15 },
-    /* vùng chạm lá thư trên miệng rồng — min_px bảo đảm ngón tay chạm được */
-    hotspot  : { x:'46.4%', y:'39%', w:'16%', h:'22%', min_px:56 },
-    tap_label: '[ TAP HERE ]'
+    slab     : { left:'46.971%', top:'84.811%', w:'6.154%', h:'2.180%' },
+    /* Cuộn thư trên miệng rồng. Không vẽ khung — cắt đúng vùng ảnh này rồi
+       cho phóng to thu nhỏ nhè nhẹ. min_px nới vùng chạm cho vừa ngón tay. */
+    hotspot  : { left:'41.14%', top:'34.52%', w:'10.52%', h:'9.08%', min_px:52 },
+    tap_label: '[ TAP HERE ]',
+
+    /* Hai mắt rồng — nhập sai thì nháy đỏ rồi trả về bình thường */
+    eyes: [
+      { left:'44.20%', top:'29.9%', w:'1.9%', h:'7.4%' },
+      { left:'46.70%', top:'29.8%', w:'2.2%', h:'8.4%' }
+    ]
   },
 
   /* ── TOÀN BỘ THOẠI DẪN TRUYỆN ──────────────────────────────────────────── */
@@ -145,15 +152,15 @@ const GAME_CONFIG = {
       '> CẢNH BÁO: MỘT CỔ VẬT ĐANG NIÊM PHONG CỔNG RA.'
     ],
     round1_intro: [
-      '> VÒNG 01 // Trước mặt anh là bệ đá khắc năm chữ cái đã bị đảo lộn: "REZAR".',
-      '> Sắp lại đúng thứ tự rồi gõ vào ô mã bên dưới để phá niêm phong.'
+      '> VÒNG 01 // Cửa đã bị niêm phong. Tìm mật khẩu để thoát khỏi phòng lab.',
+      '> Vuốt quanh phòng để quan sát. Gõ mật khẩu vào ô bên dưới.'
     ],
     round1_wrong      : '> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.',
     round1_correct    : '> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...',
     round1_boom       : '> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!',
 
     round2_intro: '> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.',
-    round2_hint : '> VÒNG 02 // Bệ đá trong rừng tàn tích khắc: "NUY OAHZ".',
+    round2_hint : '> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.',
     round2_wrong      : '> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.',
     round2_correct    : '> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...',
 
@@ -162,7 +169,8 @@ const GAME_CONFIG = {
 
     /* Gợi ý — {N} số thứ tự, {TEXT} nội dung, {M} số phút còn phải chờ */
     hint_show       : '> GỢI Ý {N}: {TEXT}',
-    hint_wait       : '> GỢI Ý {N} ĐÃ SẴN SÀNG NHƯNG CÒN KHOÁ {M} PHÚT NỮA.',
+    hint_lock       : '> HỆ THỐNG QUÁ TẢI! Ô NHẬP BỊ KHOÁ {M} PHÚT.',
+    hint_unlock     : '> ĐÃ MỞ KHOÁ. THỬ LẠI ĐI DONGCHI.',
     hint_done       : '> ĐÃ HẾT GỢI Ý. TỰ LỰC THÔI DONGCHI.',
 
     finale: [
@@ -186,7 +194,8 @@ const GAME_CONFIG = {
     finish_btn   : '[ HOÀN THÀNH HÀNH TRÌNH ]',
     hud_locked   : 'LOCKED',
     hud_unlocked : 'UNLOCKED',
-    back_label   : '< THOÁT'
+    back_label   : '< THOÁT',
+    lock_note    : 'Vuốt quanh phòng tìm manh mối trong lúc chờ…'
   },
 
   /* ── Ảnh kỷ niệm (thiếu file thì tự sinh ảnh pixel thay thế) ───────────── */
@@ -201,11 +210,11 @@ Em không biết anh có tới được đây không hoặc lúc này tụi mìn
 
 Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp vào rất nhiều năm tới đây. Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
-p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get what you deserve.
-
 Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành.
 
 Hết màn rồi đó. Về nhà thôi.
 
-— Em. Hồng Hân kí tên.`
+— Em. Hồng Hân kí tên.
+
+p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get what you deserve.`
 };
