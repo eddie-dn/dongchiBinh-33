@@ -42,7 +42,7 @@ const GATE_CONFIG = {
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V2.00<br>Last updated 17-Aug-2026'
+    version       : 'V2.10<br>Last updated 17-Aug-2026'
   }
 };
 
@@ -89,9 +89,11 @@ const GAME_CONFIG = {
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */
     idle_hint     : 20000,  /* không gõ bao lâu thì chữ "thở"      */
     idle_wrongs   : 3,      /* sai bao nhiêu lần thì chữ "thở"     */
-    /* Cứ SAI 3 LẦN mở thêm một gợi ý, nhưng mỗi gợi ý cách nhau 15 PHÚT.
-       Chưa đủ giờ thì game báo còn phải chờ bao lâu. Nhớ trong localStorage
-       nên tải lại trang không lách được. */
+    /* Sai lần ĐẦU là có ngay gợi ý 1. Từ gợi ý 2 trở đi: cứ thêm 3 lần sai mới
+       mở tiếp, và hai gợi ý phải cách nhau 15 PHÚT — chưa đủ giờ thì Ô NHẬP BỊ
+       KHOÁ, chạy đồng hồ đếm ngược. Nhớ trong localStorage nên tải lại trang
+       cũng không lách được. */
+    hint_first_wrong  : 1,
     hint_every_wrongs : 3,
     hint_cooldown_ms  : 900000,
     slide_auto    : 3000    /* tự chuyển ảnh slideshow             */
@@ -147,9 +149,9 @@ const GAME_CONFIG = {
   /* ── TOÀN BỘ THOẠI DẪN TRUYỆN ──────────────────────────────────────────── */
   dialogues: {
     boot: [
-      '> KHỞI ĐỘNG HỆ THỐNG DAD-950901-B... [OK]',
-      '> KẾT NỐI PHÒNG LAB NGẦM... [OK]',
-      '> CẢNH BÁO: MỘT CỔ VẬT ĐANG NIÊM PHONG CỔNG RA.'
+      '> Khởi động hệ thống Easter Egg: Gate 2',
+      '> Kết nối phòng lab ngầm... [OK]',
+      '> Phát hiện Easter Egg bị niêm phong'
     ],
     round1_intro: [
       '> VÒNG 01 // Cửa đã bị niêm phong. Tìm mật khẩu để thoát khỏi phòng lab.',
