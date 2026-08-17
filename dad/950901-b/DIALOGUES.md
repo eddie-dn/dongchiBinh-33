@@ -32,7 +32,7 @@ game vẫn chạy. Muốn ít/nhiều hơn 5 ảnh thì sửa mảng `photos` v�
 
 ```
 ① #scene-gate  ĐẾM NGƯỢC tới 00:00 · 01-09 (giờ VN)
-      │  chưa tới mốc → chỉ có đồng hồ, không vào được game
+      │  chưa tới mốc → đồng hồ + nút [ ← Về bản đồ ], không vào được game
       │  tới mốc, ghé lần đầu → đếm thêm 10 giây
       ↓  hiện nút [ ▶ Bắt đầu giải mã ]
 ② #scene-game  MINI-GAME 2 VÒNG
@@ -57,6 +57,7 @@ mini-game**, không phải chỉ của việc tới đúng ngày.
 | `g2Vao` | lần đầu ghé sau mốc | lần sau khỏi đếm lại 10 giây |
 | `g2Game` | bấm *Hoàn thành hành trình* | vào lại là tới thẳng màn mã |
 | `g2Hack` | cửa hậu từ Box Tổng tư lệnh | bỏ qua mốc 01-09 |
+| `g2Hint` | mỗi lần nhập sai | số gợi ý đã mở + mốc giờ mở gợi ý gần nhất |
 
 ---
 
@@ -77,11 +78,12 @@ Chữ trong `GATE_CONFIG.text`:
 | `tieu_de` / `nhan_khoa` | `Easter Egg: Gate 2` / `Locked` |
 | `tieu_de_thang` | `Phá Đảo` |
 | `hen` | `Hẹn anh <b>00:00 ngày {DATE}</b>` |
-| `cua_dang_mo` | `Cửa đang mở cho anh…` |
-| `moi_vao_game` | `Cổng đã thông. Vào giải mã thôi.` |
+| `cua_dang_mo` | `Cửa sẽ mở trong vài giây nữa…` |
+| `moi_vao_game` | `Cổng đã thông. Dongchi Bình đang tiến vào phòng lab.` |
 | `da_pha_dao` | `Phi ngựa tới Zoey’s Castle 🦄` |
 | `nut_vao_game` | `▶ Bắt đầu giải mã` |
-| `nut_choi_lai_game` | `↻ Chơi lại mini-game` |
+| `nut_ve_ban_do` | `← Về bản đồ` — chỉ hiện khi **chưa tới ngày** |
+| `nut_choi_lai_game` | `↻ Chơi lại Easter Egg: Gate 2` |
 | `ma_nhan` | `Zoey’s Castle Key` |
 | `nut_castle` / `nut_reset` | `Zoey’s Castle` / `↻ Chơi lại` |
 | `nut_reset_hoi` | `Chắc chưa?` — nút reset bấm **hai nhịp** mới ăn |
@@ -112,6 +114,19 @@ Chữ trong `GATE_CONFIG.text`:
 So khớp **bỏ hết dấu cách, không phân biệt hoa thường** — gõ `zhao yun`,
 `ZhaoYun`, `ZHAOYUN` đều vào được. Ô nhập tự in hoa.
 
+### Chữ trên bệ đá — cơ chế
+
+Overlay **trùng khít chữ khắc có sẵn trong ảnh**, không phải một tấm biển đè lên.
+Toạ độ đo bằng cách dò pixel chữ khắc, nên nhìn như chính chữ trên đá sáng lên:
+
+| Trạng thái | Hiện tượng |
+|---|---|
+| Không gõ / gõ sai ký tự | **Tắt hẳn** (`opacity: 0`) — chỉ thấy chữ khắc trong ảnh gốc |
+| Gõ trúng một ký tự có trong từ | Đúng chữ cái đó **chớp sáng 0.3s** |
+| Xoá phím | Không sáng gì |
+| Sai 3 lần / 20s không gõ | Cả cụm chữ **thở nhẹ một nhịp** làm gợi ý |
+| Giải đúng | Chữ đảo về đúng thứ tự + **sáng rực 100%**, tấm nền mờ vào che chữ khắc cũ |
+
 ### Mốc thời gian (`timing`, ms)
 
 | Khoá | Mặc định | Ý nghĩa |
@@ -125,29 +140,33 @@ So khớp **bỏ hết dấu cách, không phân biệt hoa thường** — gõ 
 | `type_speed` | 24 | mỗi ký tự hộp thoại |
 | `letter_speed` | 26 | mỗi ký tự bức thư |
 | `idle_hint` | 20000 | không gõ bao lâu thì chữ "thở" |
-| `idle_wrongs` | 3 | sai mấy lần thì chữ "thở" + hiện gợi ý |
+| `idle_wrongs` | 3 | sai mấy lần thì chữ "thở" |
+| **`hint_every_wrongs`** | **3** | **sai mấy lần thì mở thêm một gợi ý** |
+| **`hint_cooldown_ms`** | **900000** | **hai gợi ý phải cách nhau 15 phút** |
 | `slide_auto` | 3000 | tự chuyển ảnh slideshow |
 
 ### Toạ độ lớp phủ
 
-Tính theo **% của ảnh nền** (không phải màn hình), đo trực tiếp từ `bg_r1.png` /
-`bg_r2.png` nên lia camera hay đổi cỡ máy vẫn dính đúng chỗ.
+Tính theo **% của ảnh nền** (không phải màn hình) nên lia camera hay đổi cỡ máy
+vẫn dính đúng chỗ. `width_pct` = bề ngang cụm chữ so với ảnh nền; cỡ chữ được
+**đo hai nhịp lúc chạy** để khớp đúng bề ngang chữ khắc, đổi chữ dài ngắn thế
+nào cũng tự vừa.
 
-| Lớp | Vị trí | Kích thước |
+| Lớp | Vị trí (tâm) | Kích thước |
 |---|---|---|
-| Bệ đá Vòng 1 (`REZAR`) | `50.4%, 88%` | `width_frac 0.46` |
-| Bệ đá Vòng 2 (`NUY OAHZ`) | `50.1%, 86%` | `width_frac 0.60` |
+| Bệ đá Vòng 1 (`REZAR`) | `50.37%, 93.35%` | `width_pct 6.38` |
+| Bệ đá Vòng 2 (`NUY OAHZ`) | `50.03%, 85.86%` | `width_pct 6.15` |
 | Hotspot lá thư | `46.4%, 39%` | `16% × 22%`, không nhỏ hơn `min_px 56` |
 
-`width_frac` = bề ngang cụm chữ so với khung máy. Cỡ chữ tự tính từ số ký tự
-nên đổi chữ dài ngắn thế nào cũng không tràn khung. Vùng chạm lá thư thực tế
-**99 × 60 px** trên máy 390 px — thoải mái cho ngón tay.
+Vùng chạm lá thư thực tế **99 × 60 px** trên máy 390 px — thoải mái cho ngón tay,
+còn vòng sáng thu nhỏ ôm đúng cuộn thư.
 
 ---
 
 ## 4. Toàn bộ thoại (`GAME_CONFIG.dialogues`)
 
 ### Khởi động (`boot`) — xám hệ thống
+
 ```
 > KHỞI ĐỘNG HỆ THỐNG DAD-950901-B... [OK]
 > KẾT NỐI PHÒNG LAB NGẦM... [OK]
@@ -160,7 +179,6 @@ nên đổi chữ dài ngắn thế nào cũng không tràn khung. Vùng chạm 
 |---|---|---|
 | `round1_intro` | `> VÒNG 01 // Trước mặt anh là bệ đá khắc năm chữ cái đã bị đảo lộn: "REZAR".`<br>`> Sắp lại đúng thứ tự rồi gõ vào ô mã bên dưới để phá niêm phong.` | xanh lá |
 | `round1_wrong` | `> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.` | đỏ |
-| `round1_wrong_hint` | `> GỢI Ý: 5 KÝ TỰ. THỨ VŨ KHÍ ANH VẪN CẦM MỖI ĐÊM.` | cam — từ lần sai thứ 3 |
 | `round1_correct` | `> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...` | xanh lá |
 | `round1_boom` | `> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!` | cam |
 
@@ -168,77 +186,133 @@ nên đổi chữ dài ngắn thế nào cũng không tràn khung. Vùng chạm 
 
 | Khoá | Nội dung | Màu |
 |---|---|---|
-| `round2_intro` | `> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... HÃY GIẢI MÃ ĐỂ ĐỌC BÍ TỊCH.` | cyan |
-| `round2_hint` | `> VÒNG 02 // Bệ đá trong rừng tàn tích khắc: "NUY OAHZ".`<br>`> Gọi đúng tên vị thần tướng cưỡi Bạch Long, cổ thư sẽ mở.` | xanh lá |
-| `round2_wrong` | `> SAI RỒI! BẠCH LONG GẦM LÊN, HÀO QUANG CHUYỂN ĐỎ...` | đỏ |
-| `round2_wrong_hint` | `> GỢI Ý: 8 KÝ TỰ, HAI TỪ. THƯỜNG SƠN TRIỆU TỬ LONG.` | cam — từ lần sai thứ 3 |
+| `round2_intro` | `> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.` | cyan |
+| `round2_hint` | `> VÒNG 02 // Bệ đá trong rừng tàn tích khắc: "NUY OAHZ".` | xanh lá |
+| `round2_wrong` | `> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.` | đỏ |
 | `round2_correct` | `> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...` | cyan |
 
 ### Dùng chung & kết
 
 | Khoá | Nội dung |
 |---|---|
-| `unlocked_input` | `> ĐÃ MỞ LẠI Ô NHẬP. THỬ LẠI ĐI ANH.` |
+| `unlocked_input` | `> ĐÃ MỞ LẠI Ô NHẬP. DONGCHI VUI LÒNG THỬ LẠI.` |
 | `finale` | `> BÍ TỊCH ĐÃ ĐƯỢC GIẢI PHONG ẤN. HÀNH TRÌNH HOÀN TẤT!`<br>`> CHÚC MỪNG SINH NHẬT ĐÔNG CHÍ BÌNH — 01.09 🎉`<br>`> ĐANG MỞ KHOÁ MÃ VÀO ZOEY’S CASTLE...` |
 
-### Chữ giao diện (`ui`)
+---
 
-`boot_title` `EASTER EGG / GATE 02` · `start_btn` `▶ PRESS START` ·
+## 5. Hệ thống gợi ý (mới)
+
+**Luật:** cứ **sai 3 lần** mở thêm một gợi ý, nhưng **mỗi gợi ý cách nhau 15 phút**.
+Chưa đủ giờ thì game báo còn phải chờ bao lâu chứ không phát.
+
+Số lần sai và mốc giờ đều nhớ trong `localStorage` (`mtv1.g2Hint`), nên **tải lại
+trang hay bấm chơi lại đều không lách được**.
+
+### Vòng 1 (`round1.hints`)
+
+| # | Mở sau | Nội dung |
+|---|---|---|
+| 1 | 3 lần sai | `5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.` |
+| 2 | 6 lần sai + 15 phút | `TENET CONCEPT` |
+| 3 | 9 lần sai + 30 phút | `BÊN PHẢI PHÒNG LAB` |
+| 4 | 12 lần sai + 45 phút | `HÃNG GAMING NỔI TIẾNG` |
+
+### Vòng 2 (`round2.hints`)
+
+| # | Mở sau | Nội dung |
+|---|---|---|
+| 1 | 3 lần sai | `Một nhân vật có thật nổi tiếng` |
+| 2 | 6 lần sai + 15 phút | `Cưỡi ngựa trắng` |
+| 3 | 9 lần sai + 30 phút | `Vị tướng này dùng Long Đảm Thương` |
+| 4 | 12 lần sai + 45 phút | `Một nhân vật Tam Quốc` |
+
+### Khuôn câu thông báo
+
+| Khoá | Nội dung | Khi nào |
+|---|---|---|
+| `hint_show` | `> GỢI Ý {N}: {TEXT}` | mở được gợi ý mới (màu cam) |
+| `hint_wait` | `> GỢI Ý {N} ĐÃ SẴN SÀNG NHƯNG CÒN KHOÁ {M} PHÚT NỮA.` | đủ số lần sai nhưng chưa đủ giờ (màu xám) |
+| `hint_done` | `> ĐÃ HẾT GỢI Ý. TỰ LỰC THÔI DONGCHI.` | đã mở hết 4 gợi ý |
+
+`{N}` số thứ tự · `{TEXT}` nội dung gợi ý · `{M}` số phút còn phải chờ.
+
+> Muốn dễ hơn: hạ `hint_cooldown_ms` (ví dụ `60000` = 1 phút) hoặc
+> `hint_every_wrongs`. Muốn bỏ hẳn khoá giờ: đặt `hint_cooldown_ms: 0`.
+
+---
+
+## 6. Chữ giao diện (`ui`)
+
+`boot_title` `EASTER EGG / GATE 02` · `boot_sub` `Đang nạp dữ liệu phòng lab ngầm…` ·
+`boot_ready` `Dữ liệu đã sẵn sàng.` · `start_btn` `▶ PRESS START` ·
 `swipe_hint` `◄ VUỐT ĐỂ NGẮM BỐI CẢNH ►` · `unlock_btn` `UNLOCK` ·
 `modal_title` `BÍ TỊCH BẠCH LONG` · `prev_btn` `< PREV` · `next_btn` `NEXT >` ·
 `finish_btn` `[ HOÀN THÀNH HÀNH TRÌNH ]` · `hud_locked/unlocked` `LOCKED/UNLOCKED` ·
 `back_label` `< THOÁT` · `round1.placeholder` `NHẬP MÃ KHÓA...` ·
-`round2.placeholder` `NHẬP TÊN THẦN TƯỚNG...` · `round2.tap_label` `[ TAP HERE ]`
+`round2.placeholder` `NHẬP MẬT MÃ...` · `round2.tap_label` `[ TAP HERE ]`
 
 > ⚠️ **Font `Press Start 2P` không có dấu tiếng Việt.** Chỗ dùng font pixel
 > (nút `UNLOCK`, HUD, `[ TAP HERE ]`, `PRESS START`, chữ trên bệ đá) phải giữ
 > **không dấu**. Chỗ có dấu đã chuyển sang `Roboto Mono`: hộp thoại, dòng gợi ý
 > vuốt, tiêu đề modal, nút hoàn thành, placeholder ô nhập.
+>
+> `boot_ready` cố tình để **ngắn một dòng** — câu dài sẽ rớt một chữ xuống dòng
+> riêng, nhìn rất vô duyên.
 
 ---
 
-## 5. Nội dung bức thư (`letter_content`)
+## 7. Nội dung bức thư (`letter_content`)
 
 ```
-Gửi Đông Chí Bình,
+Gửi Dongchi Bình,
 
-Nếu anh đọc được những dòng này, nghĩa là anh đã đi hết căn phòng lab ngầm, đã
-gọi đúng tên vị thần tướng, và đã tới được nơi cuối cùng của hành trình.
+Em không biết anh có tới được đây không hoặc lúc này tụi mình đã nói chuyện lại
+với nhau chưa. Hôm anh bảo thích trang website, em đã nghĩ tới concept làm series
+mini-games cho anh chơi thay vì đi mua quà như dự tính. Em hy vọng anh thích.
 
-Em giấu lá thư này trong miệng Bạch Long, vì em biết kiểu gì anh cũng tìm ra.
-Anh luôn tìm ra.
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong
+những nuối tiếc về quá khứ của anh sớm được bù đắp vào rất nhiều năm tới đây.
+Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
-Cảm ơn anh của một năm vừa rồi — những đêm anh thức khuya, những lần anh mệt mà
-vẫn cười, và cả những lúc anh chẳng nói gì nhưng em vẫn hiểu.
+p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một
+trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người
+nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get
+what you deserve.
 
-Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, ít lo, và luôn có người đứng
-cạnh mỗi khi anh quay lại.
+Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, bớt lo nghĩ xa xôi, luôn dũng cảm
+và chân thành.
 
 Hết màn rồi đó. Về nhà thôi.
 
-— Hồng Hân
+— Em. Hồng Hân kí tên.
 ```
 
-> Bản nháp để game chạy được ngay — **nên viết lại bằng lời của mình**.
-> Xuống dòng được giữ nguyên. Chạm vào khung thư là hiện hết chữ, khỏi đợi.
+Xuống dòng được giữ nguyên khi hiển thị. Chạm vào khung thư là hiện hết chữ ngay,
+khỏi đợi gõ xong.
 
 ---
 
-## 6. Vài chỗ hay phải chỉnh
+## 8. Vài chỗ hay phải chỉnh
 
 **Muốn phát mã TYRION ngay khi tới mốc, không bắt chơi game** — trong
 `index.html`, hàm `Gate.moCong()`, đổi dòng
 `if(Store.get().g2Game){ Code.open(); return; }` thành `Code.open(); return;`.
-Nút *Chơi lại mini-game* trên màn mã vẫn vào game được.
+Nút *Chơi lại Easter Egg: Gate 2* trên màn mã vẫn vào game được.
 
 **Muốn khung game dẹt như cũ** — `GAME_CONFIG.frame.ratio: 16/9`.
 
 **Muốn khung game to/nhỏ hơn** — `GAME_CONFIG.frame.max_h` (0.44 = 44% chiều
 cao màn). Tăng thì khung to ra, hộp thoại terminal ngắn lại.
 
+**Muốn chữ trên bệ đá to/nhỏ hơn** — `slab.width_pct`. Nhưng đang khớp đúng chữ
+khắc trong ảnh, tăng lên là lệch ra ngoài bệ đá.
+
+**Xoá tiến độ gợi ý để test** — `localStorage.removeItem('mtv1')` hoặc sửa riêng
+`mtv1.g2Hint`.
+
 ---
 
-## 7. Chống va chạm CSS (đọc trước khi thêm style)
+## 9. Chống va chạm CSS (đọc trước khi thêm style)
 
 Hai màn vốn là hai trang riêng, gộp vào là đụng nhau đúng ba chỗ: id `#app`,
 ba biến `--neon` / `--amber` / `--paper` (khác giá trị nhau), và selector trần
@@ -254,8 +328,12 @@ Thêm CSS mới cứ theo đúng hai luật đó là không bao giờ đụng.
 
 ---
 
-## 8. Vài điều đã xử lý sẵn
+## 10. Vài điều đã xử lý sẵn
 
+- **Chữ trên bệ đá không lộ đáp án**: overlay trùng khít chữ khắc, mặc định tắt
+  hẳn, chỉ chớp sáng đúng ký tự vừa gõ trúng.
+- **Nút trên màn đếm ngược không lệch góc**: `<button>` mặc định co theo nội dung
+  dù đã `display:block`, phải có `width:100%` mới căn giữa như thẻ `<a>`.
 - **Bàn phím ảo** không đẩy vỡ khung: chiều cao thật lấy từ `visualViewport`,
   khung tự co mà **không méo tỷ lệ** (trình duyệt không truyền `max-height`
   ngược qua `aspect-ratio`, nên bề ngang khung do JS chốt bằng px).
@@ -264,8 +342,10 @@ Thêm CSS mới cứ theo đúng hai luật đó là không bao giờ đụng.
 - **Chạm lá thư không bị nuốt** khi vuốt camera: vùng hotspot không khởi động
   thao tác kéo (`setPointerCapture` sẽ kéo `click` lên khung máy), và đã vuốt
   thì cú thả tay không tính là chạm.
-- **Tấm biển neon che hẳn chữ khắc sẵn** trên đá, nên lúc `REZAR → RAZER`
-  không lộ chữ cũ bên dưới.
+- **Thứ tự khởi tạo**: khối `Gate` chạy trước `Game`/`Code` nhưng nhịp đếm đầu
+  có thể gọi thẳng `Code.open()`, nên phải hoãn sang vòng sau để không vấp TDZ.
+  Chỗ canh dùng cờ thường, **không dùng `typeof`** — `typeof` trên một `const`
+  đang trong vùng chết vẫn ném lỗi.
 - **Clip `.webp` lặp vô hạn** → mỗi lần phát tạo thẻ ảnh mới (cùng URL nên lấy
   từ cache, không tải lại), hết thời lượng thì gỡ ra.
 - **Ảnh nặng** (bg 8 MB, clip 24 MB): màn `LOADING` chỉ chờ nền Vòng 1, phần
