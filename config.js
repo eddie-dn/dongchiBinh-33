@@ -33,11 +33,12 @@ const GATE_CONFIG = {
     nhan_khoa     : 'Locked',
     tieu_de_thang : 'Phá Đảo',
     hen           : 'Hẹn anh <b>00:00 ngày {DATE}</b>',
-    cua_dang_mo   : 'Cửa đang mở cho anh…',
-    moi_vao_game  : 'Cổng đã thông. Vào giải mã thôi.',
+    cua_dang_mo   : 'Cửa sẽ mở trong vài giây nữa…',
+    moi_vao_game  : 'Cổng đã thông. Dongchi Bình đang tiến vào phòng lab.',
     da_pha_dao    : 'Phi ngựa tới Zoey’s Castle 🦄',
     nut_vao_game  : '▶ Bắt đầu giải mã',
-    nut_choi_lai_game : '↻ Chơi lại mini-game',
+    nut_choi_lai_game : '↻ Chơi lại Easter Egg: Gate 2',
+    nut_ve_ban_do : '← Về bản đồ',
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     nut_reset     : '↻ Chơi lại',
@@ -88,6 +89,11 @@ const GAME_CONFIG = {
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */
     idle_hint     : 20000,  /* không gõ bao lâu thì chữ "thở"      */
     idle_wrongs   : 3,      /* sai bao nhiêu lần thì chữ "thở"     */
+    /* Cứ SAI 3 LẦN mở thêm một gợi ý, nhưng mỗi gợi ý cách nhau 15 PHÚT.
+       Chưa đủ giờ thì game báo còn phải chờ bao lâu. Nhớ trong localStorage
+       nên tải lại trang không lách được. */
+    hint_every_wrongs : 3,
+    hint_cooldown_ms  : 900000,
     slide_auto    : 3000    /* tự chuyển ảnh slideshow             */
   },
 
@@ -99,8 +105,16 @@ const GAME_CONFIG = {
     solved   : 'RAZER',
     color    : '#ffaa00',
     placeholder: 'NHẬP MÃ KHÓA...',
-    /* x,y tính theo % của ẢNH NỀN; width_frac = bề ngang cụm chữ so với khung máy */
-    slab     : { x:'50.4%', y:'88%', width_frac:0.46 }
+    hints: [
+      '5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.',
+      'TENET CONCEPT',
+      'BÊN PHẢI PHÒNG LAB',
+      'HÃNG GAMING NỔI TIẾNG'
+    ],
+    /* Đo bằng cách dò pixel chữ khắc trong bg_r1.png → overlay trùng khít
+       chữ trên đá, không phải một tấm biển to đè lên.
+       x,y = tâm; width_pct = bề ngang cụm chữ tính theo % ẢNH NỀN. */
+    slab     : { x:'50.37%', y:'93.35%', width_pct:6.38 }
   },
 
   /* ── VÒNG 2 · THẦN LONG TRIỆU VÂN ──────────────────────────────────────── */
@@ -110,8 +124,14 @@ const GAME_CONFIG = {
     scrambled: 'NUY OAHZ',
     solved   : 'ZHAO YUN',
     color    : '#00f2ff',
-    placeholder: 'NHẬP TÊN THẦN TƯỚNG...',
-    slab     : { x:'50.1%', y:'86%', width_frac:0.60 },
+    placeholder: 'NHẬP MẬT MÃ...',
+    hints: [
+      'Một nhân vật có thật nổi tiếng',
+      'Cưỡi ngựa trắng',
+      'Vị tướng này dùng Long Đảm Thương',
+      'Một nhân vật Tam Quốc'
+    ],
+    slab     : { x:'50.03%', y:'85.86%', width_pct:6.15 },
     /* vùng chạm lá thư trên miệng rồng — min_px bảo đảm ngón tay chạm được */
     hotspot  : { x:'46.4%', y:'39%', w:'16%', h:'22%', min_px:56 },
     tap_label: '[ TAP HERE ]'
@@ -129,21 +149,21 @@ const GAME_CONFIG = {
       '> Sắp lại đúng thứ tự rồi gõ vào ô mã bên dưới để phá niêm phong.'
     ],
     round1_wrong      : '> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.',
-    round1_wrong_hint : '> GỢI Ý: 5 KÝ TỰ. THỨ VŨ KHÍ ANH VẪN CẦM MỖI ĐÊM.',
     round1_correct    : '> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...',
     round1_boom       : '> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!',
 
-    round2_intro: '> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... HÃY GIẢI MÃ ĐỂ ĐỌC BÍ TỊCH.',
-    round2_hint : [
-      '> VÒNG 02 // Bệ đá trong rừng tàn tích khắc: "NUY OAHZ".',
-      '> Gọi đúng tên vị thần tướng cưỡi Bạch Long, cổ thư sẽ mở.'
-    ],
-    round2_wrong      : '> SAI RỒI! BẠCH LONG GẦM LÊN, HÀO QUANG CHUYỂN ĐỎ...',
-    round2_wrong_hint : '> GỢI Ý: 8 KÝ TỰ, HAI TỪ. THƯỜNG SƠN TRIỆU TỬ LONG.',
+    round2_intro: '> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.',
+    round2_hint : '> VÒNG 02 // Bệ đá trong rừng tàn tích khắc: "NUY OAHZ".',
+    round2_wrong      : '> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.',
     round2_correct    : '> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...',
 
     locked          : '> HỆ THỐNG TẠM KHÓA... VUI LÒNG CHỜ.',
-    unlocked_input  : '> ĐÃ MỞ LẠI Ô NHẬP. THỬ LẠI ĐI ANH.',
+    unlocked_input  : '> ĐÃ MỞ LẠI Ô NHẬP. DONGCHI VUI LÒNG THỬ LẠI.',
+
+    /* Gợi ý — {N} số thứ tự, {TEXT} nội dung, {M} số phút còn phải chờ */
+    hint_show       : '> GỢI Ý {N}: {TEXT}',
+    hint_wait       : '> GỢI Ý {N} ĐÃ SẴN SÀNG NHƯNG CÒN KHOÁ {M} PHÚT NỮA.',
+    hint_done       : '> ĐÃ HẾT GỢI Ý. TỰ LỰC THÔI DONGCHI.',
 
     finale: [
       '> BÍ TỊCH ĐÃ ĐƯỢC GIẢI PHONG ẤN. HÀNH TRÌNH HOÀN TẤT!',
@@ -156,7 +176,7 @@ const GAME_CONFIG = {
   ui: {
     boot_title   : 'EASTER EGG<br>GATE 02',
     boot_sub     : 'Đang nạp dữ liệu phòng lab ngầm…',
-    boot_ready   : 'Dữ liệu đã sẵn sàng. Nhấn START để bắt đầu.',
+    boot_ready   : 'Dữ liệu đã sẵn sàng.',
     start_btn    : '▶ PRESS START',
     swipe_hint   : '◄ VUỐT ĐỂ NGẮM BỐI CẢNH ►',
     unlock_btn   : 'UNLOCK',
@@ -175,17 +195,17 @@ const GAME_CONFIG = {
 
   /* ── NỘI DUNG BỨC THƯ ──────────────────────────────────────────────────── */
   letter_content:
-`Gửi Đông Chí Bình,
+`Gửi Dongchi Bình,
 
-Nếu anh đọc được những dòng này, nghĩa là anh đã đi hết căn phòng lab ngầm, đã gọi đúng tên vị thần tướng, và đã tới được nơi cuối cùng của hành trình.
+Em không biết anh có tới được đây không hoặc lúc này tụi mình đã nói chuyện lại với nhau chưa. Hôm anh bảo thích trang website, em đã nghĩ tới concept làm series mini-games cho anh chơi thay vì đi mua quà như dự tính. Em hy vọng anh thích.
 
-Em giấu lá thư này trong miệng Bạch Long, vì em biết kiểu gì anh cũng tìm ra. Anh luôn tìm ra.
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp vào rất nhiều năm tới đây. Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
-Cảm ơn anh của một năm vừa rồi — những đêm anh thức khuya, những lần anh mệt mà vẫn cười, và cả những lúc anh chẳng nói gì nhưng em vẫn hiểu.
+p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get what you deserve.
 
-Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, ít lo, và luôn có người đứng cạnh mỗi khi anh quay lại.
+Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành.
 
 Hết màn rồi đó. Về nhà thôi.
 
-— Hồng Hân`
+— Em. Hồng Hân kí tên.`
 };

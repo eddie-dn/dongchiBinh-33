@@ -105,7 +105,9 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   font-weight:600;font-style:normal;color:#0B1B3A;
   background:linear-gradient(150deg,#F2D08A,var(--amber));
   box-shadow:0 8px 18px rgba(242,180,65,.28)}
-.gate-look .ma-go{display:block;margin:14px 0 0;padding:12px 8px;border-radius:999px;
+/* width:100% — <button> mặc định co theo nội dung dù đã display:block, nên nếu
+   thiếu dòng này nút sẽ nằm lệch về góc trái thay vì căn giữa như thẻ <a>. */
+.gate-look .ma-go{display:block;width:100%;margin:14px 0 0;padding:12px 8px;border-radius:999px;
   font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.12em;
   white-space:nowrap;text-transform:uppercase;text-align:center;text-decoration:none;
   color:#0B1B3A;background:linear-gradient(135deg,#F2D08A,var(--amber));
@@ -236,21 +238,31 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   animation-duration:.55s}
 
 /* ── Bệ đá khắc chữ ─────────────────────────────────────────────────────── */
+/* Overlay TRÙNG KHÍT chữ khắc trong ảnh gốc (toạ độ dò bằng pixel, cỡ chữ do
+   fitSlabs() đo cho khớp đúng bề ngang chữ khắc). Mặc định chữ TẮT HẲN — người
+   chơi chỉ thấy chữ khắc trên đá như ảnh gốc, không lộ đáp án. */
 #scene-game .slab{
   position:absolute;left:var(--sx);top:var(--sy);
   transform:translate(-50%,-50%);
   display:none;align-items:center;justify-content:center;
-  /* padding theo em, và fitSlabs() đặt font-size ngay trên .slab → cả tấm biển
-     co giãn cùng khung máy, không bao giờ thò ra ngoài mép dưới. */
-  padding:.34em .6em;white-space:nowrap;pointer-events:none;z-index:2;
-  background:linear-gradient(180deg,rgba(6,10,16,.96),rgba(6,10,16,.9));
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 2px 14px rgba(0,0,0,.65),inset 0 0 18px rgba(0,0,0,.6);
+  white-space:nowrap;pointer-events:none;z-index:2;
 }
+/* Tấm nền chỉ hiện lúc GIẢI ĐÚNG, để che chữ khắc cũ khi đảo REZAR → RAZER.
+   .slab có transform nên tự tạo stacking context → z-index:-1 nằm sau chữ mà
+   vẫn nổi trên ảnh nền. */
+#scene-game .slab::before{
+  content:'';position:absolute;inset:-.34em -.5em;z-index:-1;opacity:0;
+  background:linear-gradient(180deg,rgba(6,10,16,.97),rgba(6,10,16,.92));
+  border:1px solid var(--slab-c);
+  box-shadow:0 0 18px color-mix(in srgb,var(--slab-c) 45%,transparent),
+             inset 0 0 20px color-mix(in srgb,var(--slab-c) 18%,transparent);
+  transition:opacity .55s ease;
+}
+#scene-game .slab.solved::before{opacity:1}
 #scene-game .slab.vis{display:flex}
 #scene-game .slab .row{display:flex;gap:.16em;font-family:var(--f-pixel);line-height:1}
 #scene-game .slab .ltr{
-  display:inline-block;opacity:.15;color:var(--slab-c);
+  display:inline-block;opacity:0;color:var(--slab-c);
   transition:opacity .22s ease,text-shadow .22s ease,transform .55s cubic-bezier(.6,-.2,.3,1.4);
 }
 #scene-game .slab .ltr.sp{width:.6em}
@@ -260,17 +272,15 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 }
 #scene-game .slab.breathe .ltr{animation:slabBreath 1.25s ease-in-out 1}
 @keyframes slabBreath{
-  0%,100%{opacity:.15;text-shadow:none}
-  50%{opacity:.72;text-shadow:0 0 8px var(--slab-c),0 0 18px var(--slab-c)}
+  0%,100%{opacity:0;text-shadow:none}
+  50%{opacity:.6;text-shadow:0 0 8px var(--slab-c),0 0 18px var(--slab-c)}
 }
-#scene-game .slab.solved{border-color:var(--slab-c);
-  box-shadow:0 0 18px color-mix(in srgb,var(--slab-c) 45%,transparent),
-             inset 0 0 20px color-mix(in srgb,var(--slab-c) 18%,transparent)}
 #scene-game .slab.solved .ltr{
   opacity:1;animation:none;
   text-shadow:0 0 6px var(--slab-c),0 0 14px var(--slab-c),0 0 34px var(--slab-c),0 0 60px var(--slab-c);
 }
-#scene-game .slab .tick{position:absolute;width:4px;height:4px;background:var(--slab-c);opacity:.45}
+#scene-game .slab .tick{position:absolute;width:3px;height:3px;background:var(--slab-c);
+  opacity:0;transition:opacity .55s ease}
 #scene-game .slab .tick.a{left:-1px;top:-1px}
 #scene-game .slab .tick.b{right:-1px;top:-1px}
 #scene-game .slab .tick.c{left:-1px;bottom:-1px}
@@ -386,8 +396,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game #boot.gone{opacity:0;pointer-events:none}
 #scene-game #boot h1{font-family:var(--f-pixel);font-size:13px;line-height:1.8;
   margin:0;color:var(--amber);text-shadow:0 0 14px rgba(255,170,0,.5)}
-#scene-game #boot .sub{font-size:12px;color:var(--muted);max-width:300px;
-  line-height:1.6;margin:0}
+#scene-game #boot .sub{font-size:12px;color:var(--muted);max-width:330px;
+  line-height:1.6;margin:0;text-wrap:balance}
 #scene-game .bar{width:190px;height:12px;border:3px solid var(--bezel);padding:2px;
   background:#06111d}
 #scene-game .bar i{display:block;height:100%;width:0%;background:var(--neon);
@@ -481,6 +491,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
       <p id="gLoi"></p>
       <div class="dem" id="gDem"></div>
       <button class="ma-go game" id="gPlay" type="button" hidden>▶ Bắt đầu giải mã</button>
+      <!-- Chưa tới ngày thì không có gì để làm ở đây — mời quay về bản đồ. -->
+      <a class="ma-go ghost" id="gVeBanDo" href="/">← Về bản đồ</a>
     </div>
     <span class="vstamp" id="gStamp"></span>
   </div>
@@ -669,7 +681,8 @@ if(document.fonts && document.fonts.ready){
 const Gate = (function(){
   const G = GATE_CONFIG, T = G.text;
   const el = { vai:$('#gVai'), tit:$('#gTit'), loi:$('#gLoi'), dem:$('#gDem'),
-               play:$('#gPlay'), stamp:$('#gStamp'), back:$('#gBack') };
+               play:$('#gPlay'), stamp:$('#gStamp'), back:$('#gBack'),
+               veBanDo:$('#gVeBanDo') };
 
   const ISO = G.moc_iso.replace('{YEAR}', new Date().getFullYear());
   const MOC = new Date(ISO).getTime();
@@ -677,6 +690,7 @@ const Gate = (function(){
 
   el.vai.textContent   = T.vai_truoc;
   el.play.textContent  = T.nut_vao_game;
+  el.veBanDo.textContent = T.nut_ve_ban_do;
   el.stamp.innerHTML   = T.version;
   el.back.textContent  = T.ve_ban_do;
   el.tit.innerHTML = '<span class="d">'+T.tieu_de+'</span><span class="khoa">'+T.nhan_khoa+'</span>';
@@ -699,6 +713,7 @@ const Gate = (function(){
     if(Store.get().g2Game){ Code.open(); return; }
     el.loi.textContent = T.moi_vao_game;
     el.play.hidden = false;
+    el.veBanDo.hidden = true;     /* cổng mở rồi thì đường đi là vào game */
     Game.prefetch();                 /* nạp ngầm ảnh nền cho đỡ chờ lúc bấm */
     fitTitle(SCENES.gate);
   }
@@ -845,13 +860,19 @@ function fitBezel(){
   const w    = Math.min(el.slot.clientWidth, Math.max(60, maxH) * C.frame.ratio);
   el.bezel.style.width = w.toFixed(1) + 'px';
 }
-/* Cỡ chữ bệ đá tính theo bề ngang MÀN HÌNH để mọi máy đều đọc được */
+/* Cỡ chữ bệ đá: đo hai nhịp cho khớp ĐÚNG bề ngang chữ khắc trong ảnh.
+   Đặt thử 100px → đọc bề ngang thật của cụm chữ → quy về tỷ lệ cần. Chính xác
+   hơn hẳn công thức áng chừng, và tự đúng với mọi độ dài chữ. */
 function fitSlabs(){
-  const w = el.screen.clientWidth || 320;
+  const worldW = el.world.offsetWidth;
+  if(!worldW) return;
   [[el.slab1, el.row1, C.round1], [el.slab2, el.row2, C.round2]].forEach(([slab,row,cfg])=>{
-    if(!row.children.length) return;
-    const fs = Math.max(7, (w * cfg.slab.width_frac) / (row.children.length * 1.16));
-    slab.style.fontSize = fs.toFixed(1) + 'px';   /* .row kế thừa từ đây */
+    if(!row.children.length || !slab.classList.contains('vis')) return;
+    const target = worldW * cfg.slab.width_pct / 100;
+    slab.style.fontSize = '100px';
+    const nat = row.scrollWidth;
+    if(!nat) return;
+    slab.style.fontSize = Math.max(4, 100 * target / nat).toFixed(2) + 'px';
   });
 }
 /* Vùng chạm lá thư: % của ảnh nền, nhưng không bao giờ nhỏ hơn min_px */
@@ -1002,6 +1023,38 @@ function flashLetter(ch, pos){
     cell.classList.remove('hit'); S.litRecently[target] = false;
   }, 300);
 }
+/* ═══ GỢI Ý THEO BẬC ═══════════════════════════════════════════════════════
+   Cứ SAI `hint_every_wrongs` lần thì mở thêm một gợi ý, nhưng hai gợi ý phải
+   cách nhau `hint_cooldown_ms`. Cả số lần sai lẫn mốc giờ đều nhớ trong
+   localStorage nên tải lại trang hay chơi lại đều không lách được. */
+const HINTS = { 1:{n:0,at:0,w:0}, 2:{n:0,at:0,w:0} };
+(function(){
+  const h = Store.get().g2Hint || {};
+  if(h.r1) Object.assign(HINTS[1], h.r1);
+  if(h.r2) Object.assign(HINTS[2], h.r2);
+})();
+function saveHints(){ Store.patch({ g2Hint:{ r1:HINTS[1], r2:HINTS[2] } }); }
+
+async function serveHint(round){
+  const list = (round === 1 ? C.round1 : C.round2).hints || [];
+  const st = HINTS[round];
+  st.w++;
+  saveHints();
+  if(st.w < (st.n + 1) * T.hint_every_wrongs) return;   /* chưa đủ số lần sai */
+  if(st.n >= list.length){ await say(C.dialogues.hint_done, 'sys'); return; }
+  const con = st.at ? T.hint_cooldown_ms - (Date.now() - st.at) : 0;
+  if(con > 0){
+    await say(C.dialogues.hint_wait
+      .replace('{N}', st.n + 1)
+      .replace('{M}', Math.ceil(con / 60000)), 'sys');
+    return;
+  }
+  st.n++; st.at = Date.now(); saveHints();
+  await say(C.dialogues.hint_show
+    .replace('{N}', st.n)
+    .replace('{TEXT}', list[st.n - 1]), 'warn');
+}
+
 function breatheSlab(){
   const s = S.slabEl;
   if(!s || s.classList.contains('solved')) return;
@@ -1113,15 +1166,14 @@ async function fail(){
   if(S.round === 1){
     playClip(A('anim_wrong'), T.anim_wrong);      /* chạy song song với log */
     await say(C.dialogues.round1_wrong, 'err');
-    if(S.wrongs[1] >= T.idle_wrongs) await say(C.dialogues.round1_wrong_hint, 'warn');
   }else{
     el.narr.classList.remove('shake'); void el.narr.offsetWidth;
     el.narr.classList.add('shake');
     el.aura.classList.add('angry');
     setTimeout(()=> el.aura.classList.remove('angry'), 1400);
     await say(C.dialogues.round2_wrong, 'err');
-    if(S.wrongs[2] >= T.idle_wrongs) await say(C.dialogues.round2_wrong_hint, 'warn');
   }
+  await serveHint(S.round);
   if(S.wrongs[S.round] >= T.idle_wrongs) breatheSlab();
 
   await wait(T.lock_after_bad);
@@ -1141,8 +1193,8 @@ async function startRound1(){
 
   el.bg.style.backgroundImage = 'url("'+A('bg_r1')+'")';
   buildSlab(el.row1, C.round1.scrambled);
+  el.slab1.classList.add('vis');   /* hiện trước rồi mới đo — fitSlabs bỏ qua slab ẩn */
   layout();
-  el.slab1.classList.add('vis');
   camIntro();
 
   await sayAll(C.dialogues.boot, 'sys');
@@ -1194,8 +1246,8 @@ async function startRound2(){
   el.bg.style.opacity = '1';
 
   buildSlab(el.row2, C.round2.scrambled);
-  layout();
   el.slab2.classList.add('vis');
+  layout();
   el.dragon.classList.add('on');
   el.aura.classList.add('on');
 
