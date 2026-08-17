@@ -115,16 +115,28 @@ Cả hai vòng dùng chung tông sáng **cam `#ffaa00`** cho nhất quán.
 
 ### ★ Chữ trên bệ đá — cơ chế
 
-Game **không vẽ chữ đè lên tranh**. Nó phủ một **lớp tối hẳn** lên đúng ô chữ
-khắc, rồi **cắt chính ảnh gốc** thành từng ký tự xếp chồng lên. Gõ trúng ký tự
-nào thì ô đó bừng sáng — cái sáng lên là **nét chữ khắc thật trong tranh**.
+Game **không vẽ chữ đè lên tranh**, và lớp che **không phải một dải đen**.
+
+Lớp che chính là **mẩu ảnh bệ đá đó**, chỉ bị hạ sáng và khử màu
+(`brightness .44 · saturate .18 · contrast .82`) nên nét khắc thành **rãnh đá
+chưa thắp**. Mẩu ảnh lấy rộng hơn ô chữ và **nhoè mép cả hai chiều**, nên không
+thấy khung chữ nhật nào — nhìn tiệp hẳn vào tấm biển.
+
+Bên trên lớp che là từng ký tự **cắt từ chính ảnh gốc**. Gõ trúng ký tự nào thì
+ô đó bừng sáng — cái sáng lên là **nét chữ khắc thật trong tranh**, sáng vừa
+phải như được thắp lên chứ không cháy trắng.
+
+> **Clip "nhập sai" cũng chiếu nguyên chữ khắc đang sáng.** Nên `.anim-layer`
+> được đặt **bên trong `.world` và nằm dưới lớp che** (z-index 5 < 6); nếu để
+> clip đè lên thì mỗi lần sai là lộ hết đáp án.
 
 | Trạng thái | Hiện tượng |
 |---|---|
-| Không gõ / gõ trượt | Vùng chữ **tối hẳn**, không đọc được gì |
+| Không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
 | Gõ trúng một ký tự | Đúng ô đó bừng sáng 0.3s rồi tối lại |
 | Xoá phím | Không sáng gì |
 | Sai 3 lần / 20s không gõ | Cả cụm hiện mờ một nhịp làm gợi ý |
+| Chạy clip nhập sai | Lớp che vẫn phủ — không lộ chữ |
 | Giải đúng | Nháy sáng lần lượt **từ PHẢI sang TRÁI**, rồi giữ sáng |
 
 **Chiều gõ là chiều ngược.** Câu đố là đọc ngược (`REZAR` → `RAZER`), nên ký tự
@@ -181,7 +193,8 @@ tay thì trôi mượt về giữa.
 | `anim_unlock` | 8000 | clip nổ sập lab |
 | `type_speed` / `letter_speed` | 24 / 26 | mỗi ký tự hộp thoại / bức thư |
 | `idle_hint` / `idle_wrongs` | 20000 / 3 | khi nào chữ "thở" một nhịp |
-| **`hint_every_wrongs`** | **3** | **sai mấy lần thì mở thêm một gợi ý** |
+| **`hint_first_wrong`** | **1** | **sai lần đầu là có ngay gợi ý 1** |
+| **`hint_every_wrongs`** | **3** | **từ gợi ý 2: cứ thêm 3 lần sai** |
 | **`hint_cooldown_ms`** | **900000** | **hai gợi ý cách nhau 15 phút** |
 | `slide_auto` | 3000 | tự chuyển ảnh slideshow |
 
@@ -195,9 +208,9 @@ tay thì trôi mượt về giữa.
 ### Khởi động (`boot`) — xám hệ thống
 
 ```
-> KHỞI ĐỘNG HỆ THỐNG DAD-950901-B... [OK]
-> KẾT NỐI PHÒNG LAB NGẦM... [OK]
-> CẢNH BÁO: MỘT CỔ VẬT ĐANG NIÊM PHONG CỔNG RA.
+> Khởi động hệ thống Easter Egg: Gate 2
+> Kết nối phòng lab ngầm... [OK]
+> Phát hiện Easter Egg bị niêm phong
 ```
 
 ### Vòng 1
@@ -229,9 +242,9 @@ tay thì trôi mượt về giữa.
 
 ## 5. Gợi ý theo bậc + KHOÁ ĐẾM NGƯỢC
 
-**Luật:** cứ **sai 3 lần** mở thêm một gợi ý. Nhưng hai gợi ý phải **cách nhau
-15 phút** — chưa đủ giờ thì **ô nhập bị khoá hẳn** và chạy **đồng hồ đếm
-ngược**, không gõ được nữa. Trong lúc đó người chơi đi vuốt quanh phòng tìm
+**Luật:** **sai lần đầu là có ngay gợi ý 1**. Từ gợi ý 2 trở đi, cứ **thêm 3
+lần sai** mới mở tiếp, và hai gợi ý phải **cách nhau 15 phút** — chưa đủ giờ thì
+**ô nhập bị khoá hẳn** và chạy **đồng hồ đếm ngược**, không gõ được nữa. Trong lúc đó người chơi đi vuốt quanh phòng tìm
 manh mối. Hết giờ thì tự mở khoá và phát luôn gợi ý kế tiếp.
 
 Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage`
@@ -241,19 +254,19 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 
 | # | Mở sau | Nội dung |
 |---|---|---|
-| 1 | 3 lần sai | `5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.` |
-| 2 | 6 lần sai + 15 phút | `TENET CONCEPT` |
-| 3 | 9 lần sai + 30 phút | `BÊN PHẢI PHÒNG LAB` |
-| 4 | 12 lần sai + 45 phút | `HÃNG GAMING NỔI TIẾNG` |
+| 1 | **1 lần sai** (ngay) | `5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.` |
+| 2 | 4 lần sai + 15 phút | `TENET CONCEPT` |
+| 3 | 7 lần sai + 30 phút | `BÊN PHẢI PHÒNG LAB` |
+| 4 | 10 lần sai + 45 phút | `HÃNG GAMING NỔI TIẾNG` |
 
 ### Vòng 2 (`round2.hints`)
 
 | # | Mở sau | Nội dung |
 |---|---|---|
-| 1 | 3 lần sai | `Một nhân vật có thật nổi tiếng` |
-| 2 | 6 lần sai + 15 phút | `Cưỡi ngựa trắng` |
-| 3 | 9 lần sai + 30 phút | `Vị tướng này dùng Long Đảm Thương` |
-| 4 | 12 lần sai + 45 phút | `Một nhân vật Tam Quốc` |
+| 1 | **1 lần sai** (ngay) | `Một nhân vật có thật nổi tiếng` |
+| 2 | 4 lần sai + 15 phút | `Cưỡi ngựa trắng` |
+| 3 | 7 lần sai + 30 phút | `Vị tướng này dùng Long Đảm Thương` |
+| 4 | 10 lần sai + 45 phút | `Một nhân vật Tam Quốc` |
 
 ### Khuôn câu
 
@@ -359,8 +372,12 @@ Luật đã chốt:
 
 ## 10. Vài điều đã xử lý sẵn
 
-- **Không lộ đáp án**: thoại không nhắc gì tới cách giải, và vùng chữ mặc định
-  tối hẳn — chỉ ký tự gõ trúng mới sáng.
+- **Không lộ đáp án**: thoại không nhắc gì tới cách giải; nét khắc chìm vào đá,
+  chỉ ký tự gõ trúng mới sáng; và clip nhập sai bị xếp dưới lớp che nên cũng
+  không lộ.
+- **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
+  với easing đối xứng nên không còn cảm giác giật.
+- **Tem phiên bản**: game `V2.10`, bản đồ gốc `V17.04`, cùng ngày 17-Aug-2026.
 - **Chiều gõ ngược** dạy người chơi cơ chế: phím đầu tiên làm sáng ô bên phải.
 - **Biến CSS không nội suy**: đo hiệu ứng camera phải đọc `transform` thật, đọc
   `--pan` chỉ ra giá trị đích nên tưởng nhầm là hiệu ứng không chạy.

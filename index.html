@@ -210,14 +210,14 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   position:absolute;inset:0;background-size:100% 100%;opacity:0;
   -webkit-mask-image:radial-gradient(ellipse 15% 34% at 49.5% 34%,#000 0%,#000 52%,transparent 100%);
   mask-image:radial-gradient(ellipse 15% 34% at 49.5% 34%,#000 0%,#000 52%,transparent 100%);
-  animation:dragonFloat 5.2s ease-in-out infinite;transition:opacity .8s ease;
+  animation:dragonFloat 7.5s cubic-bezier(.45,0,.55,1) infinite;transition:opacity .8s ease;
 }
 @keyframes dragonFloat{
   0%,100%{transform:translateY(0) scale(1)}
-  50%{transform:translateY(-0.55%) scale(1.007)}
+  50%{transform:translateY(-0.26%) scale(1.0035)}
 }
 #scene-game .dragon-layer.on{opacity:1}
-#scene-game .dragon-layer.empowered{animation-duration:2.4s;
+#scene-game .dragon-layer.empowered{animation-duration:4.6s;
   filter:drop-shadow(0 0 10px rgba(0,242,255,.6)) brightness(1.08)}
 
 #scene-game .aura{
@@ -226,26 +226,34 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   background:radial-gradient(ellipse at center,var(--aura-c,rgba(190,240,255,.55)) 0%,
              var(--aura-c2,rgba(120,220,255,.22)) 38%,transparent 70%);
   mix-blend-mode:screen;opacity:0;pointer-events:none;
-  animation:auraBreath 4.2s ease-in-out infinite;transition:opacity .8s ease;
+  animation:auraBreath 6.8s cubic-bezier(.45,0,.55,1) infinite;transition:opacity .8s ease;
 }
 @keyframes auraBreath{
-  0%,100%{transform:translate(-50%,-50%) scale(.94);filter:brightness(.85)}
-  50%{transform:translate(-50%,-50%) scale(1.06);filter:brightness(1.2)}
+  0%,100%{transform:translate(-50%,-50%) scale(.985);filter:brightness(.95)}
+  50%{transform:translate(-50%,-50%) scale(1.022);filter:brightness(1.08)}
 }
 #scene-game .aura.on{opacity:.85}
-#scene-game .aura.empowered{animation-duration:1.6s;opacity:1;width:52%;height:88%}
+#scene-game .aura.empowered{animation-duration:3.8s;opacity:1;width:50%;height:84%}
 
 /* ── Bệ đá khắc chữ ─────────────────────────────────────────────────────── */
 /* ── BỆ ĐÁ: KHÔNG vẽ chữ đè lên ────────────────────────────────────────────
    Phủ một lớp TỐI HẲN lên đúng ô chữ khắc, rồi cắt chính ảnh gốc thành từng ký
    tự xếp chồng lên. Gõ trúng ký tự nào thì ô đó sáng lên — người chơi thấy
    đúng nét chữ khắc trong tranh, không phải chữ do font vẽ ra. */
-#scene-game .slab{position:absolute;display:none;pointer-events:none;z-index:2}
+#scene-game .slab{position:absolute;display:none;pointer-events:none;z-index:6}
 #scene-game .slab.vis{display:block}
 /* Lớp tối: rộng hơn ô chữ một chút, mép nhoè bằng box-shadow cùng màu */
+/* Lớp che KHÔNG phải dải đen — nó là chính mẩu ảnh bệ đá, chỉ bị hạ sáng và
+   khử màu để nét khắc thành rãnh đá chưa thắp. Mép nhoè hai chiều nên không
+   thấy khung chữ nhật nào, nhìn tiệp hẳn vào tấm biển. */
 #scene-game .slab .veil{
-  position:absolute;inset:-14% -5%;background:rgba(4,7,11,.94);
-  box-shadow:0 0 10px 7px rgba(4,7,11,.94);
+  position:absolute;background-repeat:no-repeat;
+  filter:brightness(.44) saturate(.18) contrast(.82);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 82%,transparent 100%),
+                     linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 82%,transparent 100%),
+             linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%);
+  -webkit-mask-composite:source-in;mask-composite:intersect;
   transition:opacity .5s ease;
 }
 #scene-game .slab .cells{position:absolute;inset:0;display:flex}
@@ -255,20 +263,20 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 }
 /* Gõ trúng → ký tự đó bừng sáng 0.3s */
 #scene-game .slab .cell.hit{
-  opacity:1;filter:brightness(2.3) saturate(1.3)
-    drop-shadow(0 0 5px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c));
+  opacity:1;filter:brightness(1.5) saturate(1.15)
+    drop-shadow(0 0 4px var(--slab-c)) drop-shadow(0 0 9px var(--slab-c));
 }
 /* Idle hint: cả cụm hiện mờ một nhịp */
 #scene-game .slab.breathe .cell{animation:cellBreath 1.25s ease-in-out 1}
-@keyframes cellBreath{0%,100%{opacity:0}50%{opacity:.5;filter:brightness(1.5)}}
+@keyframes cellBreath{0%,100%{opacity:0}50%{opacity:.42;filter:brightness(1.2)}}
 /* Giải đúng → nháy sáng từng ký tự, PHẢI sang TRÁI (đúng chiều đọc ngược) */
 #scene-game .slab.solved .cell{animation:cellPop .55s ease-out both}
 @keyframes cellPop{
   0%{opacity:0;filter:brightness(1)}
-  35%{opacity:1;filter:brightness(3.4) saturate(1.4)
-      drop-shadow(0 0 9px var(--slab-c)) drop-shadow(0 0 20px var(--slab-c))}
-  100%{opacity:1;filter:brightness(2) saturate(1.3)
-      drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 14px var(--slab-c))}
+  35%{opacity:1;filter:brightness(2.1) saturate(1.25)
+      drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 15px var(--slab-c))}
+  100%{opacity:1;filter:brightness(1.55) saturate(1.15)
+      drop-shadow(0 0 5px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c))}
 }
 
 /* ── Mắt rồng: nhập sai thì nháy đỏ rồi trả về bình thường ───────────────── */
@@ -304,6 +312,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 }
 @keyframes tapBlink{0%,49%{opacity:1}50%,100%{opacity:.2}}
 
+/* Nằm TRONG .world và DƯỚI .slab: clip nhập sai cũng chiếu nguyên chữ khắc
+   đang sáng, nếu để nó đè lên lớp che thì mỗi lần sai là lộ hết đáp án. */
 #scene-game .anim-layer{position:absolute;inset:0;z-index:5;display:none;background:#05080d}
 #scene-game .anim-layer.on{display:block}
 #scene-game .anim-layer img{width:100%;height:100%;object-fit:cover;display:block}
@@ -528,10 +538,11 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
                 <span class="zoom" id="hotZoom"></span>
                 <span class="tap" id="tapLabel">[ TAP HERE ]</span>
               </button>
+
+              <div class="anim-layer" id="animLayer"></div>
             </div>
           </div>
 
-          <div class="anim-layer" id="animLayer"></div>
           <div class="scan"></div>
           <div class="glare"></div>
         </div>
@@ -842,6 +853,8 @@ function fitBezel(){
    bằng cả khổ ảnh rồi dời background-position tới đúng toạ độ mẩu đó. Nhờ vậy
    ký tự sáng lên là NÉT CHỮ KHẮC THẬT trong tranh, không phải chữ do font vẽ. */
 const pc = v => parseFloat(v) / 100;
+/* Lớp che nới ra bao nhiêu so với ô chữ (khớp với dải nhoè trong CSS) */
+const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
 function cutOut(node, W, H, L, T2, w, h){
   node.style.width  = w.toFixed(2) + 'px';
   node.style.height = h.toFixed(2) + 'px';
@@ -858,6 +871,14 @@ function fitSlabs(){
     const L = W*pc(p.left), T2 = H*pc(p.top), SW = W*pc(p.w), SH = H*pc(p.h);
     slab.style.left = L.toFixed(2)+'px';  slab.style.top = T2.toFixed(2)+'px';
     slab.style.width = SW.toFixed(2)+'px'; slab.style.height = SH.toFixed(2)+'px';
+    /* Lớp che lấy mẩu ảnh RỘNG HƠN ô chữ, để mép nhoè rơi trên nền đá trống */
+    const veil = slab.querySelector('.veil');
+    if(veil){
+      const ex = SW * VEIL_PAD_X, ey = SH * VEIL_PAD_Y;
+      veil.style.left = (-ex).toFixed(2)+'px';
+      veil.style.top  = (-ey).toFixed(2)+'px';
+      cutOut(veil, W, H, L - ex, T2 - ey, SW + 2*ex, SH + 2*ey);
+    }
     const cw = SW / n;
     [...row.children].forEach((c,i)=> cutOut(c, W, H, L + i*cw, T2, cw, SH));
   });
@@ -1090,7 +1111,9 @@ async function serveHint(round){
   const list = (round === 1 ? C.round1 : C.round2).hints || [];
   const st = HINTS[round];
   st.w++; saveHints();
-  if(st.w < (st.n + 1) * T.hint_every_wrongs) return false;
+  /* Gợi ý 1 bật ngay lần sai ĐẦU TIÊN; từ gợi ý 2 trở đi cứ thêm 3 lần sai. */
+  const need = T.hint_first_wrong + st.n * T.hint_every_wrongs;
+  if(st.w < need) return false;
   if(st.n >= list.length){ await say(C.dialogues.hint_done, 'sys'); return false; }
   const con = st.at ? T.hint_cooldown_ms - (Date.now() - st.at) : 0;
   if(con > 0){
@@ -1223,7 +1246,7 @@ async function startRound1(){
   const url1 = 'url("'+A('bg_r1')+'")';
   el.bg.style.backgroundImage = url1;
   S.revMap = buildSlab(el.row1, C.round1.scrambled);
-  el.row1.querySelectorAll('.cell').forEach(c=> c.style.backgroundImage = url1);
+  el.slab1.querySelectorAll('.cell, .veil').forEach(c=> c.style.backgroundImage = url1);
   el.slab1.classList.add('vis');
   layout();
   camIntro();
@@ -1276,7 +1299,7 @@ async function startRound2(){
 
   const url2 = 'url("'+A('bg_r2')+'")';
   S.revMap = buildSlab(el.row2, C.round2.scrambled);
-  el.row2.querySelectorAll('.cell').forEach(c=> c.style.backgroundImage = url2);
+  el.slab2.querySelectorAll('.cell, .veil').forEach(c=> c.style.backgroundImage = url2);
   el.hotZoom.style.backgroundImage = url2;
   el.slab2.classList.add('vis');
   el.eyes.forEach(e=> e.classList.add('on'));
