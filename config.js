@@ -39,10 +39,11 @@ const GATE_CONFIG = {
     nut_vao_game  : '▶ Bắt đầu giải mã',
     nut_choi_lai_game : '↻ Chơi lại Easter Egg: Gate 2',
     nut_ve_ban_do : '← Về bản đồ',
+    nut_xem_lai   : '👁 Xem lại bối cảnh',
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V2.10<br>Last updated 17-Aug-2026'
+    version       : 'V2.11<br>Last updated 17-Aug-2026'
   }
 };
 
@@ -80,6 +81,7 @@ const GAME_CONFIG = {
     intro_back    : 1300,   /* rồi thu về neo giữa                  */
     reveal_step   : 130,    /* giải đúng: nháy từng ký tự phải→trái */
     eye_flash     : 1600,   /* mắt rồng nháy đỏ khi nhập sai        */
+    dirt_fall     : 640,    /* mảng đất rơi khỏi ký tự vừa lộ       */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
@@ -106,6 +108,11 @@ const GAME_CONFIG = {
     scrambled: 'REZAR',
     solved   : 'RAZER',
     color    : '#ffaa00',
+    /* 'flash'       — nét khắc chìm mờ sẵn, gõ trúng thì chớp sáng rồi tối lại.
+       'progressive' — chôn kín hoàn toàn, mỗi lần sai / gõ trúng mới bới ra
+                       thêm một ký tự và GIỮ LUÔN. */
+    reveal_mode: 'flash',
+    veil_filter: 'brightness(.44) saturate(.18) contrast(.82)',
     placeholder: 'NHẬP MÃ KHÓA...',
     hints: [
       '5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.',
@@ -126,6 +133,12 @@ const GAME_CONFIG = {
     scrambled: 'NUY OAHZ',
     solved   : 'ZHAO YUN',
     color    : '#ffaa00',   /* cùng tông cam với vòng 1 cho nhất quán */
+    /* Vòng 2 chôn kín: ban đầu không thấy nét chữ nào. Sai lần đầu mới bới ra
+       chữ ngoài cùng bên phải (Z), rồi lộ dần sang trái. */
+    reveal_mode: 'progressive',
+    /* Vòng 2 thêm blur: chỉ hạ sáng thôi thì nét khắc vẫn đọc được mờ mờ, phải
+       làm nhoè hẳn mới đúng ý "ban đầu không thấy chữ nào". */
+    veil_filter: 'brightness(.34) saturate(.1) contrast(.55) blur(1.1px)',
     placeholder: 'NHẬP MẬT MÃ...',
     hints: [
       'Một nhân vật có thật nổi tiếng',
@@ -134,15 +147,18 @@ const GAME_CONFIG = {
       'Một nhân vật Tam Quốc'
     ],
     slab     : { left:'46.971%', top:'84.811%', w:'6.154%', h:'2.180%' },
-    /* Cuộn thư trên miệng rồng. Không vẽ khung — cắt đúng vùng ảnh này rồi
-       cho phóng to thu nhỏ nhè nhẹ. min_px nới vùng chạm cho vừa ngón tay. */
+    /* Cuộn thư trên miệng rồng. Không vẽ khung, cũng không phóng to bản sao ảnh
+       (phóng lên là lệch với ảnh gốc, nhìn như bị nhân đôi) — chỉ chồng đúng
+       khít mẩu ảnh này lên chính nó rồi cho nhoà sáng theo nhịp thở.
+       min_px nới vùng chạm cho vừa ngón tay. */
     hotspot  : { left:'41.14%', top:'34.52%', w:'10.52%', h:'9.08%', min_px:52 },
     tap_label: '[ TAP HERE ]',
 
-    /* Hai mắt rồng — nhập sai thì nháy đỏ rồi trả về bình thường */
+    /* Rồng nhìn nghiêng 3/4 nên chỉ thấy MỘT mắt. Khung dưới đây bao quanh
+       con ngươi cyan, đo bằng dò pixel: mắt thật x[1484,1520] y[410,440].
+       Nhập sai thì vùng này nháy đỏ rồi trả về bình thường. */
     eyes: [
-      { left:'44.20%', top:'29.9%', w:'1.9%', h:'7.4%' },
-      { left:'46.70%', top:'29.8%', w:'2.2%', h:'8.4%' }
+      { left:'46.70%', top:'28.69%', w:'2.4%', h:'4.4%' }
     ]
   },
 
@@ -165,6 +181,8 @@ const GAME_CONFIG = {
     round2_hint : '> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.',
     round2_wrong      : '> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.',
     round2_correct    : '> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...',
+    round2_uncover    : '> MỘT MẢNG ĐẤT VỪA RƠI KHỎI BỆ ĐÁ... MỘT KÝ TỰ HIỆN RA.',
+    round2_uncover_all: '> CẢ BỆ ĐÁ ĐÃ LỘ HẾT. ĐỌC KỸ ĐI DONGCHI.',
 
     locked          : '> HỆ THỐNG TẠM KHÓA... VUI LÒNG CHỜ.',
     unlocked_input  : '> ĐÃ MỞ LẠI Ô NHẬP. DONGCHI VUI LÒNG THỬ LẠI.',
@@ -197,7 +215,11 @@ const GAME_CONFIG = {
     hud_locked   : 'LOCKED',
     hud_unlocked : 'UNLOCKED',
     back_label   : '< THOÁT',
-    lock_note    : 'Vuốt quanh phòng tìm manh mối trong lúc chờ…'
+    lock_note    : 'Vuốt quanh phòng tìm manh mối trong lúc chờ…',
+    gallery_r1   : 'VÒNG 01',
+    gallery_r2   : 'VÒNG 02',
+    gallery_exit : 'THOÁT',
+    gallery_note : '> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.'
   },
 
   /* ── Ảnh kỷ niệm (thiếu file thì tự sinh ảnh pixel thay thế) ───────────── */

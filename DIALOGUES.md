@@ -39,7 +39,17 @@ hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
       │  Vòng 1 RAZER → nổ sập lab → Vòng 2 ZHAO YUN → đọc thư
       ↓  bấm [ HOÀN THÀNH HÀNH TRÌNH ] → pháo hoa
 ③ #scene-code  PHÁ ĐẢO · phát mã TYRION · đi Zoey's Castle
+      ↺  nút [ 👁 Xem lại bối cảnh ] → quay lại ② ở CHẾ ĐỘ XEM LẠI
 ```
+
+**Chế độ xem lại (gallery).** Phá đảo rồi vẫn ngắm lại được hai bối cảnh mà
+không phải giải lại. Màn ② dựng lại đúng cảnh của vòng được chọn ở trạng thái
+**đã giải**: chữ sáng hết, rồng đã được tiếp sức, cuộn thư chạm được để đọc lại
+thư. Ô nhập tắt hẳn; dưới hộp thoại là thanh `VÒNG 01 · VÒNG 02 · THOÁT`. Đọc
+lại thư xong thì về thẳng cảnh, **không** bắn pháo hoa lại.
+
+> Chỗ này để dành cho ý sau: khi người chơi quay lại khung đối thoại có thể chào
+> mời gọi Gemini cho chat vài câu vu vơ mỗi ngày. Hiện **chưa** làm.
 
 Mã `TYRION` là phần thưởng của việc **chơi xong mini-game**, không phải chỉ
 của việc tới đúng ngày.
@@ -117,25 +127,63 @@ Cả hai vòng dùng chung tông sáng **cam `#ffaa00`** cho nhất quán.
 
 Game **không vẽ chữ đè lên tranh**, và lớp che **không phải một dải đen**.
 
-Lớp che chính là **mẩu ảnh bệ đá đó**, chỉ bị hạ sáng và khử màu
-(`brightness .44 · saturate .18 · contrast .82`) nên nét khắc thành **rãnh đá
-chưa thắp**. Mẩu ảnh lấy rộng hơn ô chữ và **nhoè mép cả hai chiều**, nên không
-thấy khung chữ nhật nào — nhìn tiệp hẳn vào tấm biển.
+Lớp che chính là **mẩu ảnh bệ đá đó**, chỉ bị hạ sáng và khử màu, nên nét khắc
+thành **rãnh đá chưa thắp**. Mẩu ảnh lấy rộng hơn ô chữ và **nhoè mép cả hai
+chiều**, nên không thấy khung chữ nhật nào — nhìn tiệp hẳn vào tấm biển. Độ
+mạnh đặt riêng cho từng vòng ở `veil_filter`.
 
-Bên trên lớp che là từng ký tự **cắt từ chính ảnh gốc**. Gõ trúng ký tự nào thì
-ô đó bừng sáng — cái sáng lên là **nét chữ khắc thật trong tranh**, sáng vừa
-phải như được thắp lên chứ không cháy trắng.
+Bên trên lớp che là từng ký tự **cắt từ chính ảnh gốc**. Cái sáng lên là **nét
+chữ khắc thật trong tranh**, không phải chữ do font vẽ.
+
+**Chỉ NÉT CHỮ sáng, không sáng cả mảng đá.** Mẩu ảnh của mỗi ký tự lấy **chính
+nó** làm mặt nạ theo **độ sáng** (`mask-mode: luminance`): nét khắc sáng → đục,
+mặt đá tối xung quanh → trong suốt. Chồng **hai lớp mặt nạ giống hệt nhau** rồi
+giao nhau (`mask-composite: intersect`) = nhân hai lần alpha, mặt đá chìm hẳn,
+chỉ còn nét chữ nổi lên kèm quầng sáng. Không còn mảng chữ nhật sáng như bản
+trước. Trình duyệt quá cũ không hiểu `mask-mode` thì mất mặt nạ, ô sáng cả mảng
+— vẫn chơi được, chỉ kém khéo hơn.
 
 > **Clip "nhập sai" cũng chiếu nguyên chữ khắc đang sáng.** Nên `.anim-layer`
 > được đặt **bên trong `.world` và nằm dưới lớp che** (z-index 5 < 6); nếu để
 > clip đè lên thì mỗi lần sai là lộ hết đáp án.
 
+### ★ Hiệu ứng RỚT ĐẤT
+
+Ký tự không bật sáng khan. Mỗi ô có sẵn một **mảng đất** phủ lên; lúc lộ ra thì
+mảng đất **trượt xuống, vỡ dần rồi tan**, đồng thời nét chữ **sáng lên theo**
+(`dirt_fall` = 640ms). Vài hạt bụi văng ra rơi theo. Đất và bụi bị cắt gọn trong
+lòng ô (`overflow:hidden`) nên không tràn ra ngoài tấm biển; quầng sáng của ký
+tự thì vẫn toả ra bình thường.
+
+### ★ Hai kiểu lộ chữ (`reveal_mode`)
+
+**Vòng 1 — `flash`.** Nét khắc chìm mờ sẵn (đọc được lờ mờ, vì cái phải giải là
+*đọc ngược*, không phải *tìm chữ*). Gõ trúng ký tự nào thì ô đó rớt đất, sáng
+một nhịp rồi **chìm lại**.
+
+**Vòng 2 — `progressive`.** Lớp che có thêm `blur` nên **ban đầu không thấy nét
+chữ nào**. Chữ lộ dần và **lộ tới đâu giữ sáng tới đó**:
+
+| Việc người chơi làm | Kết quả |
+|---|---|
+| Nhập sai lần đầu | Rớt đất, lộ **chữ `Z` ngoài cùng bên phải** |
+| Mỗi lần nhập sai tiếp theo | Lộ thêm một ký tự, **tiếp tục sang trái** |
+| Gõ trúng ký tự kế tiếp chưa lộ | Rớt đất, lộ luôn ký tự đó — mò ra trước gợi ý thì được thưởng |
+| Gõ trúng ký tự đã lộ / gõ trượt | Không lộ thêm gì |
+
+Cứ thế người chơi tự nhận ra **thứ tự đi từ phải sang trái**. Ô ứng với **dấu
+cách** không bao giờ thắp, nếu không sẽ thành vệt sáng vô nghĩa giữa hai chữ.
+Vòng 2 cũng **tắt hẳn nhịp "thở"** của cả cụm — chôn kín mà cho thở là lộ hết
+bài.
+
 | Trạng thái | Hiện tượng |
 |---|---|
-| Không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
-| Gõ trúng một ký tự | Đúng ô đó bừng sáng 0.3s rồi tối lại |
+| Vòng 1 · không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
+| Vòng 1 · gõ trúng một ký tự | Ô đó rớt đất, sáng ~0.9s rồi tối lại |
+| Vòng 2 · chưa lộ | Không thấy gì cả |
+| Vòng 2 · đã lộ | Giữ sáng vĩnh viễn cho tới hết vòng |
 | Xoá phím | Không sáng gì |
-| Sai 3 lần / 20s không gõ | Cả cụm hiện mờ một nhịp làm gợi ý |
+| Vòng 1 · sai 3 lần / 20s không gõ | Cả cụm hiện mờ một nhịp làm gợi ý |
 | Chạy clip nhập sai | Lớp che vẫn phủ — không lộ chữ |
 | Giải đúng | Nháy sáng lần lượt **từ PHẢI sang TRÁI**, rồi giữ sáng |
 
@@ -158,17 +206,23 @@ Bảng ánh xạ bỏ qua ô trống, nên gõ `ZHAOYUN` liền hay `ZHAO YUN` c
 | Bệ đá Vòng 1 (`REZAR`) | 47.194% | 91.788% | 6.378% | 3.198% |
 | Bệ đá Vòng 2 (`NUY OAHZ`) | 46.971% | 84.811% | 6.154% | 2.180% |
 | Cuộn thư (`hotspot`) | 41.14% | 34.52% | 10.52% | 9.08% |
-| Mắt rồng trái (`eyes[0]`) | 44.20% | 29.9% | 1.9% | 7.4% |
-| Mắt rồng phải (`eyes[1]`) | 46.70% | 29.8% | 2.2% | 8.4% |
+| Mắt rồng (`eyes[0]`) | 46.70% | 28.69% | 2.4% | 4.4% |
+
+> Rồng nhìn **nghiêng 3/4 nên chỉ thấy MỘT mắt**. Bản trước dò pixel bắt nhầm
+> cả vệt lửa cyan nên ra hai khung, cao gấp ba và một khung rơi vào chỗ trống.
 
 `hotspot.min_px: 52` — vùng chạm được nới ra cho vừa ngón tay (thực tế
 **65 × 52 px**), còn mẩu ảnh cuộn thư giữ đúng cỡ thật (65 × 25 px).
 
 ### Cuộn thư & mắt rồng
 
-- **Không có khung viền.** Chính mẩu ảnh cuộn thư được **phóng to thu nhỏ nhè
-  nhẹ** (scale 1 ↔ 1.17) kèm ánh vàng. Chữ `[ TAP HERE ]` nhấp nháy **ngay sát
-  dưới** cuộn thư (cách 4 px).
+- **Không có khung viền, và KHÔNG phóng to nữa.** Phóng bản sao ảnh lên là nó
+  lệch với ảnh gốc nằm dưới, nhìn như cuộn thư bị nhân đôi — thô hẳn. Bây giờ
+  mẩu ảnh chồng **đúng khít** lên chính nó, chỉ **nhoà sáng dần** theo nhịp thở
+  (`mix-blend-mode: screen`, opacity .16 ↔ .6) kèm một quầng vàng mềm phía sau.
+  Không lệch một pixel nào, chỉ thấy cuộn thư tự bừng lên rồi dịu xuống.
+- Chữ `[ TAP HERE ]` nhấp nháy **ngay sát dưới** cuộn thư (cách 4 px), viền đen
+  bốn phía cho đọc được trên nền sáng.
 - **Nhập sai ở vòng 2:** không còn hào quang đỏ. Thay vào đó **mắt rồng chuyển
   đỏ nhấp nháy 4 nhịp** (1.6s) rồi trả về bình thường.
 
@@ -186,6 +240,7 @@ tay thì trôi mượt về giữa.
 | `intro_back` | 1300 | rồi thu về neo giữa |
 | `reveal_step` | 130 | giải đúng: nháy từng ký tự phải→trái |
 | `eye_flash` | 1600 | mắt rồng nháy đỏ khi nhập sai |
+| `dirt_fall` | 640 | mảng đất rơi khỏi ký tự vừa lộ |
 | `recenter` | 900 | thả tay → trôi về giữa |
 | `anim_wrong` | 2000 | clip ổ khoá rung đỏ |
 | `lock_after_bad` | 2000 | khoá ô nhập sau mỗi lần sai |
@@ -230,6 +285,12 @@ tay thì trôi mượt về giữa.
 | `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.` | xanh lá |
 | `round2_wrong` | `> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.` | đỏ |
 | `round2_correct` | `> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...` | cyan |
+| `round2_uncover` | `> MỘT MẢNG ĐẤT VỪA RƠI KHỎI BỆ ĐÁ... MỘT KÝ TỰ HIỆN RA.` | cam |
+| `round2_uncover_all` | `> CẢ BỆ ĐÁ ĐÃ LỘ HẾT. ĐỌC KỸ ĐI DONGCHI.` | cam |
+
+Hai câu `uncover` chỉ chạy khi **nhập sai** làm lộ thêm chữ. Người chơi tự mò
+đúng ký tự kế tiếp thì **không có thoại** — hiệu ứng rớt đất là phần thưởng đủ
+rồi, thêm chữ vào chỉ làm hộp thoại ồn.
 
 ### Dùng chung & kết
 
@@ -296,6 +357,11 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 `round1.placeholder` `NHẬP MÃ KHÓA...` · `round2.placeholder` `NHẬP MẬT MÃ...` ·
 `round2.tap_label` `[ TAP HERE ]`
 
+**Chế độ xem lại:** `gallery_r1` `VÒNG 01` · `gallery_r2` `VÒNG 02` ·
+`gallery_exit` `THOÁT` · `gallery_note`
+`> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.` ·
+`GATE_CONFIG.text.nut_xem_lai` `👁 Xem lại bối cảnh` (nút trên màn mã)
+
 > ⚠️ **Font `Press Start 2P` không có dấu tiếng Việt.** Chỗ dùng font pixel
 > (nút `UNLOCK`, HUD, `[ TAP HERE ]`, `PRESS START`, đồng hồ khoá) phải giữ
 > **không dấu**. Chỗ có dấu đã chuyển sang `Roboto Mono`.
@@ -354,6 +420,17 @@ hàm `Gate.moCong()`, đổi `if(Store.get().g2Game){ Code.open(); return; }` th
 **Xoá tiến độ gợi ý / hạn khoá để test** — `localStorage.removeItem('mtv1')`,
 hoặc sửa riêng `mtv1.g2Hint`.
 
+**Vòng 2 vẫn đọc mờ được chữ / ngược lại quá kín** — `round2.veil_filter`, chỉnh
+`brightness` và `blur`. Bỏ `blur` là quay về kiểu vòng 1.
+
+**Muốn vòng 1 cũng chôn kín như vòng 2** (hoặc ngược lại) — đổi `reveal_mode`
+giữa `'flash'` và `'progressive'`, không phải sửa gì trong `index.html`.
+
+**Đất rơi nhanh/chậm** — `timing.dirt_fall` (mặc định 640ms).
+
+**Đổi chữ nút xem lại** — `GATE_CONFIG.text.nut_xem_lai`; chữ trong thanh gallery
+ở `GAME_CONFIG.ui.gallery_*`.
+
 ---
 
 ## 9. Chống va chạm CSS (đọc trước khi thêm style)
@@ -375,9 +452,14 @@ Luật đã chốt:
 - **Không lộ đáp án**: thoại không nhắc gì tới cách giải; nét khắc chìm vào đá,
   chỉ ký tự gõ trúng mới sáng; và clip nhập sai bị xếp dưới lớp che nên cũng
   không lộ.
+- **Sáng đúng nét chữ, không sáng cả ô**: mặt nạ lấy chính mẩu ảnh theo độ sáng,
+  chồng hai lớp cho mặt đá chìm hẳn — hết cảnh một mảng chữ nhật sáng lên.
+- **Cuộn thư không bị nhân đôi**: bỏ hẳn kiểu phóng to bản sao ảnh, chỉ chồng
+  đúng khít rồi nhoà sáng.
+- **Rồng chỉ có MỘT mắt** trong khung hình (nhìn nghiêng 3/4).
 - **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
   với easing đối xứng nên không còn cảm giác giật.
-- **Tem phiên bản**: game `V2.10`, bản đồ gốc `V17.04`, cùng ngày 17-Aug-2026.
+- **Tem phiên bản**: game `V2.11`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
 - **Chiều gõ ngược** dạy người chơi cơ chế: phím đầu tiên làm sáng ô bên phải.
 - **Biến CSS không nội suy**: đo hiệu ứng camera phải đọc `transform` thật, đọc
   `--pan` chỉ ra giá trị đích nên tưởng nhầm là hiệu ứng không chạy.

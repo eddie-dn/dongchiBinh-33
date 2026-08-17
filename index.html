@@ -248,7 +248,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    thấy khung chữ nhật nào, nhìn tiệp hẳn vào tấm biển. */
 #scene-game .slab .veil{
   position:absolute;background-repeat:no-repeat;
-  filter:brightness(.44) saturate(.18) contrast(.82);
+  filter:var(--veil-f,brightness(.44) saturate(.18) contrast(.82));
   -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 82%,transparent 100%),
                      linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%);
   mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 82%,transparent 100%),
@@ -257,14 +257,76 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   transition:opacity .5s ease;
 }
 #scene-game .slab .cells{position:absolute;inset:0;display:flex}
-#scene-game .slab .cell{
-  height:100%;flex:0 0 auto;background-repeat:no-repeat;opacity:0;
-  transition:opacity .18s ease,filter .18s ease;
+/* overflow:hidden để đất và bụi rơi khuất trong lòng ô, không tràn ra ngoài
+   tấm biển. Quầng sáng của ký tự do filter vẽ nên vẫn toả ra bình thường. */
+#scene-game .slab .cell{position:relative;height:100%;flex:0 0 auto;opacity:0;overflow:hidden;
+  transition:opacity .18s ease,filter .18s ease}
+/* Mẩu ảnh của một ký tự. Mặt nạ lấy CHÍNH mẩu ảnh đó theo ĐỘ SÁNG (luminance):
+   nét khắc sáng → đục, mặt đá tối xung quanh → trong suốt. Chồng hai lớp mặt nạ
+   giống hệt nhau rồi giao nhau = nhân hai lần alpha, nên mặt đá càng chìm hẳn,
+   chỉ còn nét chữ nổi lên. Lớp thứ ba xoá nốt mép trái/phải của ô.
+   Trình duyệt cũ không hiểu mask-mode thì mất mặt nạ, ô sáng cả mảng — vẫn chơi
+   được, chỉ kém khéo hơn. */
+#scene-game .slab .cell .gl{
+  position:absolute;inset:0;background-repeat:no-repeat;
+  -webkit-mask-image:var(--cut),var(--cut),
+                     linear-gradient(to right,transparent 0,#000 11%,#000 89%,transparent 100%);
+  mask-image:var(--cut),var(--cut),
+             linear-gradient(to right,transparent 0,#000 11%,#000 89%,transparent 100%);
+  -webkit-mask-size:var(--cut-s),var(--cut-s),100% 100%;
+  mask-size:var(--cut-s),var(--cut-s),100% 100%;
+  -webkit-mask-position:var(--cut-p),var(--cut-p),0 0;
+  mask-position:var(--cut-p),var(--cut-p),0 0;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  mask-mode:luminance,luminance,alpha;
+  -webkit-mask-composite:source-in,source-in;
+  mask-composite:intersect,intersect;
+}
+/* Ô ứng với DẤU CÁCH: không bao giờ thắp, nếu không sẽ thành vệt sáng vô nghĩa
+   giữa hai chữ. */
+#scene-game .slab .cell.blank{opacity:0!important;animation:none!important}
+/* Mảng đất phủ riêng từng ký tự — chỉ hiện đúng lúc bới ra rồi rơi xuống. */
+#scene-game .slab .cell .dirt{
+  position:absolute;inset:-8% -4%;opacity:0;pointer-events:none;z-index:2;
+  -webkit-mask-image:radial-gradient(ellipse 62% 70% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  mask-image:radial-gradient(ellipse 62% 70% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  background:repeating-linear-gradient(90deg,rgba(78,60,40,.85) 0 1px,rgba(46,35,24,.85) 1px 2px),
+             radial-gradient(ellipse 74% 70% at 50% 46%,rgba(34,26,17,.99) 0%,
+                             rgba(34,26,17,.94) 72%,rgba(34,26,17,.55) 100%);
+}
+#scene-game .slab .cell.digging .dirt{animation:dirtOff var(--dirt,640ms) ease-in 1 both}
+@keyframes dirtOff{
+  0%{opacity:1;transform:translateY(0);clip-path:inset(0 0 0 0)}
+  55%{opacity:.92}
+  100%{opacity:0;transform:translateY(88%);clip-path:inset(92% 0 0 0)}
+}
+/* Ký tự sáng DẦN theo nhịp đất rơi, không bật bụp một phát rồi mới rơi đất */
+#scene-game .slab .cell.digging{animation:cellDig var(--dirt,640ms) ease-out 1 both}
+@keyframes cellDig{
+  0%{opacity:1;filter:brightness(.78) saturate(.45)}
+  45%{opacity:1;filter:brightness(1.1) saturate(.9)}
+  100%{opacity:1;filter:brightness(2.15) saturate(1.45)
+       drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c))}
+}
+/* Bụi đất văng ra khi mảng đất rơi */
+#scene-game .slab .cell .dust{
+  position:absolute;top:52%;width:1px;height:1px;background:#6b533a;z-index:3;
+  opacity:.8;pointer-events:none;animation:dustFall .5s ease-in var(--dl,0ms) 1 both;
+}
+@keyframes dustFall{
+  0%{transform:translate(0,0);opacity:.9}
+  100%{transform:translate(var(--dx,0),300%);opacity:0}
+}
+/* Vòng 2: ký tự đã bới ra thì SÁNG LUÔN, không tối lại nữa */
+#scene-game .slab .cell.shown{
+  opacity:1;filter:brightness(2.05) saturate(1.4)
+    drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c));
 }
 /* Gõ trúng → ký tự đó bừng sáng 0.3s */
 #scene-game .slab .cell.hit{
-  opacity:1;filter:brightness(1.5) saturate(1.15)
-    drop-shadow(0 0 4px var(--slab-c)) drop-shadow(0 0 9px var(--slab-c));
+  opacity:1;filter:brightness(2.15) saturate(1.45)
+    drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c));
 }
 /* Idle hint: cả cụm hiện mờ một nhịp */
 #scene-game .slab.breathe .cell{animation:cellBreath 1.25s ease-in-out 1}
@@ -273,10 +335,10 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game .slab.solved .cell{animation:cellPop .55s ease-out both}
 @keyframes cellPop{
   0%{opacity:0;filter:brightness(1)}
-  35%{opacity:1;filter:brightness(2.1) saturate(1.25)
-      drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 15px var(--slab-c))}
-  100%{opacity:1;filter:brightness(1.55) saturate(1.15)
-      drop-shadow(0 0 5px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c))}
+  35%{opacity:1;filter:brightness(2.9) saturate(1.55)
+      drop-shadow(0 0 3px var(--slab-c)) drop-shadow(0 0 8px var(--slab-c)) drop-shadow(0 0 16px var(--slab-c))}
+  100%{opacity:1;filter:brightness(2.2) saturate(1.45)
+      drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c))}
 }
 
 /* ── Mắt rồng: nhập sai thì nháy đỏ rồi trả về bình thường ───────────────── */
@@ -296,21 +358,41 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   background:none;border:0;padding:0;z-index:4;cursor:pointer;
 }
 #scene-game .hotspot.on{display:flex}
+/* Quầng sáng nằm SAU cuộn thư — phần "thở" nặng do lớp này lo, nên mẩu ảnh
+   chỉ cần nhúc nhích rất nhẹ, không còn cảm giác phóng to thô. */
+#scene-game .hotspot .halo{
+  position:absolute;inset:-26% -14%;pointer-events:none;mix-blend-mode:screen;
+  background:radial-gradient(ellipse at center,rgba(255,214,130,.30) 0%,
+             rgba(255,176,60,.12) 46%,transparent 74%);
+  animation:haloBreath 2.6s cubic-bezier(.45,0,.55,1) infinite;
+}
+@keyframes haloBreath{
+  0%,100%{opacity:.32;transform:scale(.96)}
+  50%{opacity:.85;transform:scale(1.05)}
+}
+/* KHÔNG phóng to bản sao ảnh nữa — phóng lên là lệch với ảnh gốc nằm dưới, nhìn
+   như cuộn thư bị nhân đôi, thô hẳn. Thay vào đó chồng mẩu ảnh ĐÚNG KHÍT lên
+   chính nó rồi cho nhoà sáng dần theo nhịp thở: không lệch một pixel nào, chỉ
+   thấy cuộn thư tự bừng lên rồi dịu xuống. */
 #scene-game .hotspot .zoom{
-  position:absolute;background-repeat:no-repeat;
-  animation:zoomPulse 1.35s ease-in-out infinite;
+  position:absolute;background-repeat:no-repeat;mix-blend-mode:screen;
+  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 0%,#000 54%,transparent 100%);
+  mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 0%,#000 54%,transparent 100%);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  animation:zoomPulse 2.6s cubic-bezier(.45,0,.55,1) infinite;
 }
 @keyframes zoomPulse{
-  0%,100%{transform:scale(1);filter:brightness(1.05) drop-shadow(0 0 4px rgba(255,200,90,.45))}
-  50%{transform:scale(1.17);filter:brightness(1.5) drop-shadow(0 0 13px rgba(255,215,120,.95))}
+  0%,100%{opacity:.16;filter:brightness(.95)}
+  50%{opacity:.6;filter:brightness(1.45) saturate(1.2)}
 }
 #scene-game .hotspot .tap{
   position:absolute;top:50%;left:50%;transform:translateX(-50%);
   font-family:var(--f-pixel);font-size:8px;letter-spacing:.04em;white-space:nowrap;
-  color:#ffe08a;text-shadow:0 0 8px rgba(255,180,40,.9),0 2px 0 #000;
+  color:#ffe8a6;
+  text-shadow:0 1px 0 #000,0 -1px 0 #000,1px 0 0 #000,-1px 0 0 #000,0 0 7px rgba(255,170,20,.95);
   animation:tapBlink 1.15s steps(1) infinite;
 }
-@keyframes tapBlink{0%,49%{opacity:1}50%,100%{opacity:.2}}
+@keyframes tapBlink{0%,49%{opacity:1}50%,100%{opacity:.42}}
 
 /* Nằm TRONG .world và DƯỚI .slab: clip nhập sai cũng chiếu nguyên chữ khắc
    đang sáng, nếu để nó đè lên lớp che thì mỗi lần sai là lộ hết đáp án. */
@@ -373,6 +455,16 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game .lockbar b{font-family:var(--f-pixel);font-size:17px;color:var(--red);
   text-shadow:0 0 12px rgba(255,51,85,.7);letter-spacing:.06em}
 #scene-game .lockbar span{font-size:11.5px;color:var(--muted);text-align:center}
+/* Thanh chế độ xem lại bối cảnh */
+#scene-game .gbar{flex:0 0 auto;display:flex;gap:8px}
+#scene-game .gbar[hidden]{display:none}
+#scene-game .gbar button{
+  flex:1;font-family:var(--f-pixel);font-size:9px;letter-spacing:.04em;padding:12px 6px;
+  cursor:pointer;color:var(--cyan);background:#08151f;border:2px solid rgba(0,242,255,.4);
+}
+#scene-game .gbar button.on{color:#04140a;background:linear-gradient(180deg,#7df9ff,#00c2d6);
+  border-color:transparent}
+#scene-game .gbar button.exit{color:var(--muted);border-color:rgba(31,41,61,.9);background:#06111d}
 #scene-game .ctrl{flex:0 0 auto;display:flex;gap:8px;align-items:stretch}
 #scene-game .ctrl[hidden]{display:none}
 #scene-game #answer{
@@ -532,9 +624,9 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
               </div>
 
               <span class="eye" id="eye0"></span>
-              <span class="eye" id="eye1"></span>
 
               <button class="hotspot" id="hotspot" type="button" aria-label="Đọc lá thư">
+                <span class="halo"></span>
                 <span class="zoom" id="hotZoom"></span>
                 <span class="tap" id="tapLabel">[ TAP HERE ]</span>
               </button>
@@ -556,6 +648,11 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
     <div class="narr pf" id="narr" role="log" aria-live="polite"></div>
     <div class="lockbar" id="lockbar" hidden>
       <b id="lockTime">--:--</b><span id="lockNote"></span>
+    </div>
+    <div class="gbar" id="gbar" hidden>
+      <button id="gR1" type="button"></button>
+      <button id="gR2" type="button"></button>
+      <button id="gExit" class="exit" type="button"></button>
     </div>
     <div class="ctrl" id="ctrl" hidden>
       <input id="answer" type="text" inputmode="text" autocomplete="off" autocorrect="off"
@@ -607,6 +704,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
         <p class="ma-lab"><svg class="ico-key" viewBox="0 0 16 22" aria-hidden="true"><circle cx="8" cy="6" r="3.7" fill="none" stroke="url(#kg)" stroke-width="1.7"/><path d="M8 9.7V19M8 16.4h3.1M8 13.4h2.2" fill="none" stroke="url(#kg)" stroke-width="1.7" stroke-linecap="round"/><path class="lap" d="M14.2 2.1l.5 1.35 1.35.5-1.35.5-.5 1.35-.5-1.35-1.35-.5 1.35-.5z"/><path class="lap l2" d="M1.9 15.2l.38 1 1 .38-1 .38-.38 1-.38-1-1-.38 1-.38z"/><defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2A7D0"/><stop offset="1" stop-color="#D97BB6"/></linearGradient></defs></svg><span id="cMaLab"></span></p>
         <div class="ma-o" id="cMaO"></div>
         <button class="ma-go game" id="cReplay" type="button"></button>
+        <button class="ma-go ghost" id="cReview" type="button"></button>
         <a class="ma-go" id="cGo" href="/han/961030-a?from=map"></a>
       </div>
     </div>
@@ -763,7 +861,7 @@ const Gate = (function(){
 const Code = (function(){
   const G = GATE_CONFIG, T = G.text;
   const el = { vai:$('#cVai'), tit:$('#cTit'), loi:$('#cLoi'), maO:$('#cMaO'),
-               maLab:$('#cMaLab'), replay:$('#cReplay'),
+               maLab:$('#cMaLab'), replay:$('#cReplay'), review:$('#cReview'),
                go:$('#cGo'), stamp:$('#cStamp'), back:$('#cBack') };
   let dungSan = false;
 
@@ -774,6 +872,7 @@ const Code = (function(){
     el.loi.textContent   = T.da_pha_dao;
     el.maLab.textContent = T.ma_nhan;
     el.replay.textContent= T.nut_choi_lai_game;
+    el.review.textContent= T.nut_xem_lai;
     el.go.innerHTML      = T.nut_castle + ' <span class="ico2">🏰👸🏻</span>';
     el.go.href           = G.ma_link;
     el.stamp.innerHTML   = T.version;
@@ -783,6 +882,7 @@ const Code = (function(){
   }
 
   el.replay.addEventListener('click', ()=>{ show('game'); Game.start(true); });
+  el.review.addEventListener('click', ()=>{ show('game'); Game.review(1); });
 
   return { open(){ build(); show('code'); } };
 })();
@@ -808,13 +908,17 @@ const el = {
   modal:$('#modal'), mhead:$('#mhead'), show:$('#show'), dots:$('#dots'),
   prev:$('#prev'), next:$('#next'), letterBox:$('#letterBox'), finish:$('#finish'),
   fx:$('#fx'), back:$('#back'),
-  hotZoom:$('#hotZoom'), eyes:[$('#eye0'), $('#eye1')],
-  lockbar:$('#lockbar'), lockTime:$('#lockTime'), lockNote:$('#lockNote')
+  hotZoom:$('#hotZoom'), eyes:[...document.querySelectorAll('#scene-game .eye')],
+  lockbar:$('#lockbar'), lockTime:$('#lockTime'), lockNote:$('#lockNote'),
+  gbar:$('#gbar'), gR1:$('#gR1'), gR2:$('#gR2'), gExit:$('#gExit')
 };
 const fxCtx = el.fx.getContext('2d');
 
+/* mode/dug: xem khối "BỚI ĐẤT" bên dưới — 'flash' hay 'progressive', và đã bới
+   ra được mấy ký tự rồi. */
 const S = { round:0, busy:true, inputLocked:true, wrongs:{1:0,2:0},
             slabWord:'', slabRow:null, slabEl:null, revMap:null,
+            mode:'flash', dug:0,
             lastLen:0, lastNoSp:0, idleTimer:0, done:false, booted:false };
 
 /* Đổ chữ giao diện từ config */
@@ -831,6 +935,9 @@ el.hudText.textContent  = C.ui.hud_locked;
 el.tapLabel.textContent = C.round2.tap_label;
 el.lockNote.textContent = C.ui.lock_note;
 el.back.textContent     = C.ui.back_label;
+el.gR1.textContent      = C.ui.gallery_r1;
+el.gR2.textContent      = C.ui.gallery_r2;
+el.gExit.textContent    = C.ui.gallery_exit;
 el.root.style.setProperty('--frame-ratio', C.frame.ratio);
 el.root.style.setProperty('--world-ratio', C.frame.world_ratio);
 
@@ -858,8 +965,14 @@ const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
 function cutOut(node, W, H, L, T2, w, h){
   node.style.width  = w.toFixed(2) + 'px';
   node.style.height = h.toFixed(2) + 'px';
-  node.style.backgroundSize     = W.toFixed(2) + 'px ' + H.toFixed(2) + 'px';
-  node.style.backgroundPosition = (-L).toFixed(2) + 'px ' + (-T2).toFixed(2) + 'px';
+  const size = W.toFixed(2) + 'px ' + H.toFixed(2) + 'px';
+  const pos  = (-L).toFixed(2) + 'px ' + (-T2).toFixed(2) + 'px';
+  node.style.backgroundSize     = size;
+  node.style.backgroundPosition = pos;
+  /* Mặt nạ theo độ sáng dùng lại y hệt mẩu ảnh này (xem .cell .gl trong CSS) */
+  node.style.setProperty('--cut',   node.style.backgroundImage || 'none');
+  node.style.setProperty('--cut-s', size);
+  node.style.setProperty('--cut-p', pos);
 }
 function fitSlabs(){
   const W = el.world.offsetWidth, H = el.world.offsetHeight;
@@ -880,7 +993,10 @@ function fitSlabs(){
       cutOut(veil, W, H, L - ex, T2 - ey, SW + 2*ex, SH + 2*ey);
     }
     const cw = SW / n;
-    [...row.children].forEach((c,i)=> cutOut(c, W, H, L + i*cw, T2, cw, SH));
+    [...row.children].forEach((c,i)=>{
+      c.style.width = cw.toFixed(2) + 'px';
+      cutOut(c.querySelector('.gl'), W, H, L + i*cw, T2, cw, SH);
+    });
   });
   (C.round2.eyes || []).forEach((e,i)=>{
     const n = el.eyes[i]; if(!n) return;
@@ -1012,9 +1128,11 @@ el.narr.addEventListener('click', ()=>{ if(typing) skip = true; });
    dấu cách đều khớp). */
 function buildSlab(rowEl, word){
   rowEl.innerHTML = '';
-  [...word].forEach(()=>{
+  [...word].forEach(ch=>{
     const c = document.createElement('i');
-    c.className = 'cell';
+    c.className = 'cell' + (ch === ' ' ? ' blank' : '');
+    c.appendChild(document.createElement('em')).className = 'gl';   /* mẩu ảnh ký tự */
+    c.appendChild(document.createElement('b')).className  = 'dirt'; /* mảng đất phủ */
     rowEl.appendChild(c);
   });
   const map = [];
@@ -1025,23 +1143,67 @@ function placeSlabs(){
   el.slab1.style.setProperty('--slab-c', C.round1.color);
   el.slab2.style.setProperty('--slab-c', C.round2.color);
 }
-/* Gõ trúng ký tự → đúng ô đó bừng sáng 0.3s. Gõ trượt thì không sáng gì,
-   xoá phím cũng không. */
+
+/* ═══ BỚI ĐẤT ═════════════════════════════════════════════════════════════
+   Ký tự không bật sáng khan nữa: mảng đất phủ trên ô trượt xuống rồi vỡ ra
+   thành bụi, nét khắc lộ dần theo. `keep=true` thì bới xong giữ sáng luôn
+   (vòng 2 — lộ tới đâu nhớ tới đó), `keep=false` thì sáng một nhịp rồi chìm
+   lại (vòng 1 — chỉ báo gõ trúng).                                          */
+function dustBurst(cell){
+  for(let k = 0; k < 5; k++){
+    const d = document.createElement('u');
+    d.className = 'dust';
+    d.style.left = (6 + Math.random()*80).toFixed(1) + '%';
+    d.style.setProperty('--dx', (Math.random()*8 - 4).toFixed(1) + 'px');
+    d.style.setProperty('--dl', (k*45) + 'ms');
+    cell.appendChild(d);
+    setTimeout(()=> d.remove(), 1000 + k*45);
+  }
+}
+function digReveal(cell, keep){
+  if(!cell) return;
+  clearTimeout(cell._t);
+  cell.classList.remove('digging','hit');
+  void cell.offsetWidth;                       /* ép trình duyệt chạy lại animation */
+  cell.style.setProperty('--dirt', T.dirt_fall + 'ms');
+  cell.classList.add('digging','hit');
+  dustBurst(cell);
+  cell._t = setTimeout(()=>{
+    cell.classList.remove('digging','hit');
+    if(keep) cell.classList.add('shown');
+  }, T.dirt_fall + 240);
+}
+/* Vòng 2: bới ra ký tự KẾ TIẾP (phải → trái). Trả về 'one' / 'all' / null. */
+function uncoverNext(){
+  if(S.mode !== 'progressive' || !S.revMap || !S.slabRow) return null;
+  if(S.dug >= S.revMap.length) return null;
+  digReveal(S.slabRow.children[S.revMap[S.dug]], true);
+  S.dug++;
+  return S.dug >= S.revMap.length ? 'all' : 'one';
+}
+/* Gõ trúng ký tự → bới đúng ô đó ra. Gõ trượt thì không lộ gì, xoá phím cũng
+   không. Vòng 2 chỉ thưởng đúng ký tự kế tiếp chưa bới — người chơi mò được
+   trước khi gợi ý tới thì coi như tự giành lấy. */
 function flashLetter(ch, pos){
   if(!S.slabRow || !ch || !S.revMap || pos >= S.revMap.length) return;
   const idx = S.revMap[pos];
   if(S.slabWord[idx] !== ch.toUpperCase()) return;
   const cell = S.slabRow.children[idx];
   if(!cell) return;
-  cell.classList.add('hit');
-  clearTimeout(cell._t);
-  cell._t = setTimeout(()=> cell.classList.remove('hit'), 300);
+  if(S.mode === 'progressive'){
+    if(pos !== S.dug) return;                  /* chưa tới lượt ô này */
+    digReveal(cell, true);
+    S.dug++;
+  }else{
+    digReveal(cell, false);
+  }
 }
 /* Giải đúng: nháy sáng lần lượt từ PHẢI sang TRÁI — đúng chiều đọc ngược. */
 function revealSolved(slab, row){
   const cells = [...row.children], n = cells.length;
   cells.forEach((c,i)=>{
-    c.classList.remove('hit');
+    clearTimeout(c._t);
+    c.classList.remove('hit','digging');
     c.style.animationDelay = ((n - 1 - i) * T.reveal_step) + 'ms';
   });
   const veil = slab.querySelector('.veil');
@@ -1128,6 +1290,7 @@ async function serveHint(round){
 function breatheSlab(){
   const s = S.slabEl;
   if(!s || s.classList.contains('solved')) return;
+  if(S.mode === 'progressive') return;   /* vòng 2 chôn kín — thở là lộ hết bài */
   s.classList.remove('breathe');
   void s.offsetWidth;
   s.classList.add('breathe');
@@ -1223,6 +1386,11 @@ async function fail(){
     el.narr.classList.add('shake');
     flashEyes();
     await say(C.dialogues.round2_wrong, 'err');
+    /* Sai một lần thì đất rơi khỏi thêm một ký tự — bắt đầu từ ô ngoài cùng
+       BÊN PHẢI, để tự hiểu ra rằng phải đọc ngược. */
+    const dug = uncoverNext();
+    if(dug === 'all')      await say(C.dialogues.round2_uncover_all, 'warn');
+    else if(dug === 'one') await say(C.dialogues.round2_uncover, 'warn');
   }
   const locked = await serveHint(S.round);
   if(S.wrongs[S.round] >= T.idle_wrongs) breatheSlab();
@@ -1245,8 +1413,10 @@ async function startRound1(){
 
   const url1 = 'url("'+A('bg_r1')+'")';
   el.bg.style.backgroundImage = url1;
+  el.slab1.style.setProperty('--veil-f', C.round1.veil_filter);
+  S.mode = C.round1.reveal_mode; S.dug = 0;
   S.revMap = buildSlab(el.row1, C.round1.scrambled);
-  el.slab1.querySelectorAll('.cell, .veil').forEach(c=> c.style.backgroundImage = url1);
+  el.slab1.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url1);
   el.slab1.classList.add('vis');
   layout();
   camIntro();
@@ -1298,8 +1468,10 @@ async function startRound2(){
   el.bg.style.opacity = '1';
 
   const url2 = 'url("'+A('bg_r2')+'")';
+  el.slab2.style.setProperty('--veil-f', C.round2.veil_filter);
+  S.mode = C.round2.reveal_mode; S.dug = 0;
   S.revMap = buildSlab(el.row2, C.round2.scrambled);
-  el.slab2.querySelectorAll('.cell, .veil').forEach(c=> c.style.backgroundImage = url2);
+  el.slab2.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url2);
   el.hotZoom.style.backgroundImage = url2;
   el.slab2.classList.add('vis');
   el.eyes.forEach(e=> e.classList.add('on'));
@@ -1427,6 +1599,7 @@ el.finish.addEventListener('click', async ()=>{
   if(el.finish.disabled) return;
   el.modal.classList.remove('on');
   clearInterval(slideTimer);
+  if(galleryOn){ el.hotspot.classList.add('on'); return; }   /* xem lại → về cảnh */
   S.done = true;
   Store.patch({g2Game:true});          /* nhớ là đã phá đảo mini-game */
   confetti();
@@ -1479,8 +1652,77 @@ function confetti(){
   })(performance.now());
 }
 
+/* ═══ CHẾ ĐỘ XEM LẠI ══════════════════════════════════════════════════════
+   Phá đảo xong vẫn muốn ngắm lại hai bối cảnh mà không phải giải lại từ đầu.
+   Dựng đúng cảnh của vòng được chọn ở trạng thái ĐÃ GIẢI: chữ sáng hết, rồng
+   đã được tiếp sức, cuộn thư chạm được để đọc lại. Ô nhập tắt hẳn.           */
+let galleryOn = false;
+
+function galleryPaint(r){
+  const cfg  = r === 1 ? C.round1 : C.round2;
+  const url  = 'url("' + A(r === 1 ? 'bg_r1' : 'bg_r2') + '")';
+  const slab = r === 1 ? el.slab1 : el.slab2;
+  const row  = r === 1 ? el.row1  : el.row2;
+
+  el.bg.style.backgroundImage = url;
+  el.root.classList.toggle('r2', r === 2);
+  el.hudRound.textContent = r === 1 ? 'ROUND 01/02' : 'ROUND 02/02';
+
+  el.slab1.className = 'slab'; el.slab2.className = 'slab';
+  el.row1.innerHTML = ''; el.row2.innerHTML = '';
+  slab.style.setProperty('--veil-f', cfg.veil_filter);
+  S.slabWord = cfg.scrambled; S.slabRow = row; S.slabEl = slab;
+  S.revMap = buildSlab(row, cfg.scrambled);
+  S.mode = cfg.reveal_mode; S.dug = S.revMap.length;
+  slab.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url);
+  slab.classList.add('vis');
+
+  if(r === 2){
+    el.dragon.style.backgroundImage = url;
+    el.hotZoom.style.backgroundImage = url;
+  }
+  el.dragon.className = 'dragon-layer' + (r === 2 ? ' on empowered' : '');
+  el.aura.className   = 'aura'         + (r === 2 ? ' on empowered' : '');
+  el.eyes.forEach(e=> e.classList.toggle('on', r === 2));
+  el.hotspot.classList.toggle('on', r === 2);
+
+  layout();
+  revealSolved(slab, row);           /* cảnh đã giải → nét khắc sáng hết */
+  el.gR1.classList.toggle('on', r === 1);
+  el.gR2.classList.toggle('on', r === 2);
+  CAM.enabled = true;
+  camIntro();
+
+  /* Kể lại đúng đoạn dẫn truyện của vòng đó cho hộp thoại khỏi trống trơn */
+  Q.length = 0; typing = false;
+  el.narr.innerHTML = '';
+  say(C.ui.gallery_note, 'cy');
+  if(r === 1) sayAll(C.dialogues.round1_intro);
+  else{ say(C.dialogues.round2_intro, 'cy'); sayAll(C.dialogues.round2_hint); }
+}
+function enterGallery(r){
+  reset();
+  galleryOn = true;
+  S.done = true; S.busy = true;                 /* khoá hẳn đường gõ mật mã */
+  el.boot.classList.add('gone');
+  el.boot.style.display = 'none';
+  el.hud.classList.add('ok');
+  el.hudText.textContent = C.ui.hud_unlocked;
+  el.gbar.hidden = false;
+  showCtrl(false); setInput(false);
+  galleryPaint(r);                              /* tự dựng lại thoại của vòng đó */
+}
+function leaveGallery(){
+  galleryOn = false;
+  el.gbar.hidden = true;
+}
+el.gR1.addEventListener('click', ()=> galleryPaint(1));
+el.gR2.addEventListener('click', ()=> galleryPaint(2));
+el.gExit.addEventListener('click', ()=>{ leaveGallery(); Code.open(); });
+
 /* ═══ THOÁT / KHỞI ĐỘNG ═══════════════════════════════════════════════════ */
 el.back.addEventListener('click', ()=>{
+  leaveGallery();
   show(Store.get().g2Game ? 'code' : 'gate');
 });
 
@@ -1514,8 +1756,10 @@ el.startBtn.addEventListener('click', ()=>{
 function reset(){
   S.round = 0; S.busy = true; S.wrongs = {1:0,2:0}; S.done = false;
   S.lastLen = 0; S.lastNoSp = 0; S.revMap = null;
+  S.mode = 'flash'; S.dug = 0;
+  galleryOn = false;
   clearTimeout(S.idleTimer); clearInterval(lockTimer);
-  el.lockbar.hidden = true;
+  el.lockbar.hidden = true; el.gbar.hidden = true;
   Q.length = 0; typing = false;
   el.narr.innerHTML = '';
   el.input.value = '';
@@ -1544,7 +1788,8 @@ placeSlabs();
 return {
   layout,
   prefetch(){ load(A('bg_r1')); },
-  start(again){ if(again) reset(); layout(); bootUp(); }
+  start(again){ if(again) reset(); layout(); bootUp(); },
+  review(r){ load(A('bg_r2')); enterGallery(r || 1); }
 };
 })();
 
