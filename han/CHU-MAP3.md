@@ -62,7 +62,14 @@ var HOI = [
            'Sách đỏ (The Red Book)', 'Người Thuỵ Sĩ'] },
   { id:'tenhoa', q:'Phiên âm tên tiếng Trung của em là…',
     a:['YAN XIN', 'YANXIN'], gap:[3],
-    hints:['Xinh đẹp và vui vẻ', '妍欣'] }
+    hints:['Xinh đẹp và vui vẻ', '妍欣'] },
+  { id:'venus', q:'Venus (sao Kim) của em là cung gì?',
+    a:['LIBRA'], gap:[],
+    hints:['Trùng với Mars (sao Hoả) của anh', 'Partnership, Hoà bình',
+           'Công bằng', 'Đại diện là một chiếc cân'] },
+  { id:'amduong', q:'Lý thuyết căn bản của các môn Huyền học phương Đông là…?',
+    a:['AM DUONG'], gap:[2],
+    hints:['Sự đối lập như ngày và đêm', 'Bát quái'] }
 ];```
 
 ---

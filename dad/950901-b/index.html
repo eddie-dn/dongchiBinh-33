@@ -122,7 +122,7 @@ h1.egg{animation:egg 1.8s linear infinite}
       </div>
     </div>
   </div>
-  <span class="vstamp">V1.05<br>Last updated 16-Aug-2026</span>
+  <span class="vstamp">V1.06<br>Last updated 16-Aug-2026</span>
 </div></div>
 <script>
 /* ═══ VÀO ĐƯỢC ĐÂY = ĐÃ QUA GATE 2 ═══
@@ -222,8 +222,31 @@ h1.egg{animation:egg 1.8s linear infinite}
      nữa khi font đã sẵn sàng. */
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(khitTit);
   function p2(n){ return (n < 10 ? '0' : '') + n; }
+  /* ═══ GHÉ SAU MỐC: đếm 10 GIÂY rồi mới mở ═══
+     Tới nơi mà màn cuối bày sẵn ra thì mất hẳn cảm giác "cửa vừa mở cho mình".
+     Lần ĐẦU tới sau mốc thì đếm ngược 10 giây cho ra tấm ra món, xong mới hiện.
+     Những lần sau vào thẳng, khỏi bắt chờ lại. Nhớ ở `mtv1.g2Vao`. */
+  var VAO_ROI = false;
+  try{ VAO_ROI = !!(JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).g2Vao; }catch(e){}
+  var CHO10 = 10*1000, moTu = Date.now();
+  function ghiVao(){
+    try{
+      var m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {};
+      m.g2Vao = true; localStorage.setItem('mtv1', JSON.stringify(m));
+    }catch(e){}
+  }
   function tick(){
     var con = BYPASS ? 0 : MOC - Date.now();
+    /* Đã qua mốc mà chưa từng vào → thay đồng hồ dài bằng 10 giây đếm ngắn */
+    if(con <= 0 && !VAO_ROI){
+      var lai = CHO10 - (Date.now() - moTu);
+      if(lai > 0){
+        document.getElementById('loi').innerHTML = 'Cửa đang mở cho anh…';
+        dem.innerHTML = '<b>' + Math.ceil(lai/1000) + '</b>S';
+        return;
+      }
+      VAO_ROI = true; ghiVao();
+    }
     if(con <= 0){
       dem.textContent = '';
       document.getElementById('loi').innerHTML = 'Phi ngựa tới Zoey’s Castle 🦄';

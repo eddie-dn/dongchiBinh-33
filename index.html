@@ -912,7 +912,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 16-Aug-2026 · V17.02">Last updated 16-Aug-2026 · V17.02</span>
+        <span class="stamp" id="stamp" data-base="Last updated 16-Aug-2026 · V17.03">Last updated 16-Aug-2026 · V17.03</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1239,11 +1239,15 @@ const EGG_FORCE = /[?&]egg=1/.test(location.search);
    Đây là điều kiện dùng ở khắp nơi: đóng thẻ Phi vụ, khoá tiêu đề, mở hồ sơ
    niêm phong. Gọi qua hàm này, đừng viết lại hai vế ở chỗ khác. */
 function gameOn(){ return nSolved() === NODES.length && eggOpen(); }
+function mocSinhNhat(){ return new Date(atVN(SEA.year, SEASON.birthday)).getTime(); }
+/* Qua 00:00 ngày 01-09 (giờ VN) là cửa sổ Easter Egg MỞ VÀ Ở LẠI tới hết mùa.
+   BẪY ĐÃ VẤP: bản trước đóng cửa sau `EGG_DAYS = 7` ngày. Ai ghé muộn — mà quà
+   sinh nhật thì người ta hay ghé muộn — chơi xong MAP-01 là hết, không băng rôn,
+   không Easter Egg, không Map 3. Món quà tự khoá lại trước mặt người nhận.
+   Nay ngày 01-09 chỉ còn là mốc MỞ, không phải mốc đóng. */
 function eggOpen(){
   if(EGG_FORCE || eggHack) return true;
-  const s0 = new Date(atVN(SEA.year, SEASON.birthday)).getTime();
-  const now = Date.now();
-  return now >= s0 && now < s0 + EGG_DAYS*864e5;
+  return Date.now() >= mocSinhNhat();
 }
 
 /* Mốc nội dung của HongHan's Secret Box — trùng với MO_NGAY/MO_THANG bên
@@ -1423,6 +1427,12 @@ const nodeOf = c => NODES.find(n=>n.code===c);
 let hoverNode = null, pinned = null, morseSeen = false;
 let channel = null, unlocked = {}, wrongCount = 0, resetCount = 0, missionShown = false;
 let visits = 0, seasonMark = null, eggDone = false, winCheer = false, winParty = false;
+/* Đã chạy màn bàn giao "Unlock Easter Egg · Gate 1" chưa. Chỉ dùng cho người
+   ghé SAU 01-09: lúc đó ngày tháng không còn làm cò được nữa, nên chính việc
+   phá đảo MAP-01 trở thành cò — xong màn ăn mừng là đếm 10 giây rồi vào thẳng
+   màn chúc mừng sinh nhật. Ghé TRƯỚC 01-09 thì không đụng tới: đồng hồ đếm
+   ngược vẫn chạy như thường và ngày 01-09 vẫn là cò. */
+let eggG1 = false;
 let pinFiles = {};
 /* Khai báo ở đây, TRƯỚC boot(). Đặt sau boot() sẽ vướng "temporal dead zone"
    của `let` và ném ReferenceError ngay khi nạp trang. */
@@ -1779,6 +1789,7 @@ const store = {
   eggMo = s.eggMo || 0;
   eggAn = s.eggAn || 0;
   g2Hack = !!s.g2Hack;
+  eggG1 = !!s.eggG1;
   eggWin = !!s.eggWin;
   pinFail = s.pinFail || 0;
   pinFailDay = s.pinFailDay || null;
@@ -1812,7 +1823,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -1881,11 +1892,36 @@ function gridFlash(){
 /* Kết thúc màn ăn mừng: dừng hẳn ở "Mission Completed" (hoặc "Easter Egg"
    trong cửa sổ 01-09) và ĐỨNG IM — không đổi qua lại nữa. Muốn đổi thì bấm
    tay vào tiêu đề. */
+/* Người ghé SAU 01-09: ăn mừng MAP-01 xong thì bàn giao sang Easter Egg — báo
+   mở Gate 1 rồi đếm 10 giây, hết giờ là chạy màn chúc mừng sinh nhật. Chạy một
+   lần duy nhất (`eggG1`), và chỉ khi mốc sinh nhật ĐÃ QUA. */
+let g1T = null;
+function moGate1(){
+  if(eggG1 || !eggOpen()) return;
+  if(Date.now() < mocSinhNhat()) return;      /* chưa tới ngày → để ngày làm cò */
+  if(nSolved() !== NODES.length) return;
+  eggG1 = true; save();
+  ping('unlock_gate1', 'vào trễ hơn 01-09 → phá đảo MAP-01 là cò');
+  let n = 10;
+  const dem = ()=>{
+    if(n <= 0){
+      clearInterval(g1T); g1T = null;
+      flash('Easter Egg · Gate 1 <b>ĐÃ MỞ</b> ✦');
+      eggIntro(true);
+      return;
+    }
+    flash('Unlock <b>Easter Egg · Gate 1</b> — mở sau <b>' + n + 's</b>');
+    n--;
+  };
+  dem(); g1T = setInterval(dem, 1000);
+}
+
 function endParty(){
   clearTimeout(partyT); partyT = null;
   frame.classList.remove('win','cheer');
   winCheer = false; showPz();
   titleMC = true; titleSwap(false);
+  moGate1();                     /* ghé trễ hơn 01-09 → bàn giao sang Easter Egg */
 }
 
 /* tem phiên bản đổi màu như trứng phục sinh trong 4 giây */

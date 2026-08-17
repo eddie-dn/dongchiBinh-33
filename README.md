@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V17.02** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+**Phiên bản hiện tại: V17.03** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
 Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
@@ -381,7 +381,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 16-Aug-2026 · V17.02** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 16-Aug-2026 · V17.03** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -746,10 +746,28 @@ Trạng thái này bám theo `nSolved()` nên bấm chơi lại là tự trả v
 
 ---
 
-## 19b. Cửa sổ EASTER EGG — từ 00:00 ngày 01-09
+## 19b. Cửa sổ EASTER EGG — từ 00:00 ngày 01-09, KHÔNG có hạn trên
 
-Khi đồng hồ đếm ngược về 0, trang bước vào **cửa sổ Easter Egg** kéo dài `EGG_DAYS = 7`
-ngày. Cổng vào là `eggOpen()`, mốc sinh ra từ `SEASON.birthday` + `SEA.year` — **không
+Khi đồng hồ đếm ngược về 0, trang bước vào **cửa sổ Easter Egg** và **ở lại tới hết mùa**.
+
+> **BẪY ĐÃ VẤP — món quà tự khoá lại trước mặt người nhận.** Bản trước đóng cửa sổ sau
+> `EGG_DAYS = 7` ngày. Ai ghé muộn — mà quà sinh nhật thì người ta hay ghé muộn — chơi
+> xong MAP-01 là hết: không băng rôn, không Easter Egg, không Map 3. Nay **01-09 chỉ là
+> mốc MỞ, không phải mốc đóng**.
+
+### Ghé TRƯỚC hay SAU 01-09 — hai cò khác nhau
+
+| Ghé lúc nào | Đường đi |
+|---|---|
+| **Trước 01-09** | Đồng hồ đếm ngược chạy như thường → phá đảo MAP-01 vẫn được màn ăn mừng + băng rôn đầy đủ → tới 00:00 ngày 01-09 thì Game On tự bật. **Ngày là cò.** |
+| **Sau 01-09** | Không còn gì để đếm ngược. Phá đảo MAP-01 → màn ăn mừng Mission Completed → hết 15 giây thì báo **`Unlock Easter Egg · Gate 1`** kèm **đếm ngược 10 giây** → vào thẳng màn chúc mừng sinh nhật. **Việc phá đảo là cò.** |
+
+Hàm `moGate1()` lo nhánh thứ hai, chạy đúng một lần (cờ `eggG1`), và tự thoát nếu mốc
+sinh nhật chưa qua — để không giẫm lên nhánh thứ nhất.
+
+Tương tự ở **Gate 2** (`/dad/950901-b`): ghé sau mốc thì thay đồng hồ dài bằng **10 giây**
+"cửa đang mở cho anh…" ở **lần đầu**, xong mới hiện màn cuối; những lần sau vào thẳng
+(cờ `mtv1.g2Vao`). Cổng vào là `eggOpen()`, mốc sinh ra từ `SEASON.birthday` + `SEA.year` — **không
 hardcode năm**, đúng luật mục 8.
 
 Có **hai đường mở sớm**, dùng để thử hoặc để trình diễn:
@@ -1250,6 +1268,30 @@ vẫn tính đủ. Chuỗi này **không bao giờ chỉ ra cách làm**: chỉ 
 
 Ngưng tay quá 900 ms là bộ đếm về 0 và lời nhắc tự rút — **bỏ cuộc thì im lại như cũ**,
 không có gì lải nhải. Tìm ra rồi (`credFound`) thì cả hệ này tắt hẳn.
+
+---
+
+## 21i. Bốn nút reset — đứng riêng, không đè nhau
+
+Bốn khoá lưu, bốn đường xoá, mỗi đường chỉ chạm khoá của mình:
+
+| Nút | Ở đâu | Xoá | Giữ |
+|---|---|---|---|
+| **Reset MAP-01** | Box Tổng tư lệnh → `MAP-01` | `mtv1` (tiến độ bản đồ + mọi cờ Easter Egg) | `R(n)` · `msn1` · `hanv1` · `nav1` |
+| **Reset MAP-02** | Box Tổng tư lệnh → `MAP-02` | trong `mtv1` **chỉ** nhóm cờ Easter Egg: `credFound` `eggWin` `eggDone` `eggDay` `eggTitleDay` `coachDone` `eggAn` `g2Hack` | tiến độ 4 toạ độ · `eggMo` · `R(n)` · `msn1` · `hanv1` · `nav1` |
+| **Reset Map 3** | Khối vận hành trong `961030-a` | `hanv1` (kể cả cờ cửa mã `aOpen`) | `R(n)` riêng của Map 3 · `mtv1` · `msn1` · `nav1` |
+| **↻ Chơi lại** | Màn cuối Gate 2 | `mtv1` **và** `hanv1` | `R(n)` · `msn1` · `nav1` |
+
+Hai điểm cố ý khác nhau, không phải lỗi:
+
+- **Reset MAP-01 không đụng `hanv1`.** Xoá bản đồ thì Map 3 khoá lại (vì mất `eggWin`),
+  nhưng các câu đã trả lời vẫn còn — Map 3 có nút reset riêng của nó.
+- **"Chơi lại" ở Gate 2 thì xoá cả `hanv1`**, vì nút đó mang nghĩa *chơi lại từ đầu cả
+  chuỗi*, mà Map 3 nằm sau Easter Egg — giữ lại tiến độ Map 3 trong khi Easter Egg đã về
+  vạch xuất phát là vô lý.
+
+Ba khoá `msn1` (ba Mission) và `nav1` (pí danh + bản lưu) **không đường nào trong bản đồ
+chạm tới** — chúng có đường xoá riêng bên hồ sơ DAD-950901-A.
 
 ---
 
