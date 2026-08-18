@@ -10,15 +10,27 @@
  * Chưa khai khoá thì trả { loi: 'chua_co_khoa' } — trang hiện câu dự phòng,
  * không vỡ gì cả.
  *
- * Nhận:  { hoi, su:[{vai:'user'|'npc', text}], tinh_cach }
+ * Nhận:  { hoi, su:[{vai:'user'|'npc', text}] }
  * Trả:   { dap } hoặc { loi }
+ *
+ * Đoạn TÍNH CÁCH nằm ở `api/_lib/tinh-cach.js`, KHÔNG nằm trong config.js —
+ * nó có fact riêng tư về người chơi, mà mọi thứ trong `dad/` thì trình duyệt
+ * nào cũng đọc được. Trang chỉ gửi câu hỏi lên, giọng nhân vật ghép ở đây.
  */
+
+let TINH_CACH = '';
+try {
+  TINH_CACH = String(require('./_lib/tinh-cach.js') || '');
+} catch (e) {
+  /* Thiếu file thì vẫn chạy, chỉ là nhân vật nhạt đi — không sập cả hàm */
+  console.log('[CHAT] chưa nạp được tính cách:', e && e.message);
+}
 
 const MODEL_MAC_DINH = 'gemini-2.0-flash';
 
-/* Trần dùng chung cho cả instance: 40 câu / 10 phút. Hạn mức 10 câu mỗi ngày
-   của từng người chơi nằm ở phía trang (localStorage) — chỗ này chỉ để một
-   người nghịch ngợm không đốt sạch quota. */
+/* Trần dùng chung cho cả instance: 50 câu / 10 phút. Hạn mức mỗi ngày của
+   từng người chơi nằm ở phía trang (localStorage) — chỗ này chỉ để một người
+   nghịch ngợm không đốt sạch quota. */
 const CUA_SO = 10 * 60 * 1000;
 const TRAN = 50;
 let moc = Date.now(), daGoi = 0;
@@ -55,9 +67,9 @@ module.exports = async (req, res) => {
   }
   contents.push({ role: 'user', parts: [{ text: hoi }] });
 
-  /* Đoạn tính cách nay kèm cả bộ câu mẫu few-shot (hơn 12k ký tự) — cắt ở
-     2000 như trước là mất gần hết ví dụ, nhân vật tuột giọng ngay. */
-  const tinhCach = String(body.tinh_cach || '').slice(0, 20000);
+  /* Giọng nhân vật lấy từ file bên máy chủ. Trang có gửi `tinh_cach` lên thì
+     cũng bỏ qua — không để người ngoài tự đặt lời cho nhân vật. */
+  const tinhCach = TINH_CACH;
   const model = process.env.GEMINI_MODEL || MODEL_MAC_DINH;
 
   try {
