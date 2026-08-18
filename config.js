@@ -43,7 +43,7 @@ const GATE_CONFIG = {
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V03.04<br>Last updated 17-Aug-2026'
+    version       : 'V03.06<br>Last updated 18-Aug-2026'
   }
 };
 
@@ -52,9 +52,10 @@ const GATE_CONFIG = {
    ───────────────────────────────────────────────────────────────────────────*/
 const GAME_CONFIG = {
 
-  /* Ảnh nền + clip nằm cùng thư mục với index.html → để rỗng. */
-  assets_base : '',
-  photos_base : '',
+  /* Toàn bộ ảnh và clip nằm trong thư mục con `assets/` cho gọn thư mục chính.
+     Đổi chỗ để tài nguyên thì sửa hai dòng này, không phải sửa từng tên file. */
+  assets_base : 'assets/',
+  photos_base : 'assets/',
 
   assets: {
     bg_r1       : 'bg_r1.png',        /* Vòng 1 — phòng lab ngầm, bệ đá "REZAR"      */
@@ -228,12 +229,14 @@ const GAME_CONFIG = {
     finish_btn   : '[ HOÀN THÀNH HÀNH TRÌNH ]',
     hud_locked   : 'LOCKED',
     hud_unlocked : 'UNLOCKED',
-    back_label   : '< THOÁT',
+    back_label   : '< EXIT',
     lock_note    : 'Vuốt quanh phòng tìm manh mối trong lúc chờ…',
-    gallery_r1   : 'VÒNG 01',
-    gallery_r2   : 'VÒNG 02',
+    /* ⚠️ Bốn nhãn này nằm trên nút dùng FONT PIXEL — font đó không có dấu tiếng
+       Việt nên "VÒNG"/"THOÁT" bị vỡ chữ. Giữ tiếng Anh. */
+    gallery_r1   : 'ROUND 01',
+    gallery_r2   : 'ROUND 02',
     gallery_ow   : 'OPEN WORLD',
-    gallery_exit : 'THOÁT',
+    gallery_exit : 'EXIT',
     gallery_note : '> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.'
   },
 
@@ -247,8 +250,8 @@ const GAME_CONFIG = {
     moi_ngay   : 10,          /* mỗi ngày hỏi được bấy nhiêu câu */
     max_ky_tu  : 300,         /* độ dài tối đa một câu hỏi       */
     ten_npc    : 'BẠCH LONG',
-    placeholder: 'NOI GI DO...',
-    nut_gui    : 'GUI',
+    placeholder: 'Nói gì đó với robot...',   /* ô nhập ở đây dùng font thường */
+    nut_gui    : 'SEND',                     /* nút dùng font pixel → tiếng Anh */
     chao: [
       '> BẠCH LONG khẽ cúi đầu. Cổ thư đã trao, nhưng chuyện thì chưa hết.',
       '> Hỏi ta điều gì cũng được — mỗi ngày ta chỉ đáp {N} câu thôi.'
@@ -257,6 +260,28 @@ const GAME_CONFIG = {
     het_luot   : '> Hôm nay ta mỏi rồi. Mai quay lại nhé, Dongchi.',
     con_lai    : '> Còn {N} câu hôm nay.',
     dang_nghi  : '...',
+
+    /* ── NÉT MẶT ROBOT ──────────────────────────────────────────────────────
+       Thả 4 file .webp vào cùng thư mục index.html. Clip phải là loại LẶP VÔ
+       HẠN và cùng khổ với ảnh nền (tỷ lệ ~2.28:1) vì nó phủ kín khung máy.
+       Thiếu file nào thì bỏ qua nét mặt đó, thiếu cả 4 thì giữ nguyên cảnh cũ
+       — không vỡ gì.                                                          */
+    mat: {
+      chao : 'ow_2_4.webp',   /* chào người chơi — phát MỘT LẦN lúc mở khu này */
+      nhin : 'ow_2_1.webp',   /* nhìn xuống đọc chữ / theo dõi gõ phím — NGHỈ  */
+      nghi : 'ow_2_3.webp',   /* đăm chiêu — trong lúc chờ câu trả lời         */
+      gat  : 'ow_2_2.webp'    /* gật đầu — ngay khi câu trả lời hiện ra        */
+    },
+    /* 'kin' — clip là cả khung cảnh, phủ kín màn hình máy (giống anim_unlock).
+       'noi' — clip là hình robot cắt rời trên nền TRONG SUỐT: robot đứng ở góc
+               phải dưới, cảnh phía sau vẫn ngắm và vuốt được.               */
+    mat_kieu    : 'kin',
+    mat_cao     : '72%',      /* chỉ dùng cho kiểu 'noi' — robot cao bao nhiêu */
+    mat_chao_ms : 3000,       /* chào xong bao lâu thì về nét nghỉ */
+    mat_gat_ms  : 1800,       /* gật xong bao lâu thì về nét nghỉ  */
+    mat_nghi_min_ms : 800,    /* giữ nét đăm chiêu ít nhất bấy nhiêu, kẻo máy
+                                 trả lời nhanh quá thì nét này loé một cái rồi mất */
+
     loi_mang   : '> Sương mù dày quá, tiếng ngươi không tới được chỗ ta. Thử lại sau.',
     chua_noi   : '> Ta chưa nghe được. (Chưa nối khoá Gemini — xem OPEN-WORLD.md)',
 
@@ -283,7 +308,7 @@ Tuổi mới mong anh nhiều niềm vui, sức khoẻ, bớt lo nghĩ xa xôi, 
 
 Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước...?). Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
-Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có đang như thế nào, thì em cũng không ghét hay giận anh. Em đã nghĩ chúng ta còn rất nhiều điều có thể làm cùng nhau. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng, chu đáo và chăm sóc em.
+Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có như thế nào, thì em có buồn nhưng cũng không ghét hay giận anh. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng và chăm sóc em.
 
 Em tin anh đã luôn làm tốt nhất trong khả năng của bản thân rồi, hãy động viên chính mình nhiều hơn anh nhé (don't talk bad about yourself, event it's joke, your brain will think it's true).
 

@@ -16,17 +16,24 @@ dad/950901-b/
 ├── config.js         ← ★ SỬA Ở ĐÂY: GATE_CONFIG + GAME_CONFIG
 ├── DIALOGUES.md      ← file này
 ├── THU-VA-ANH.md     ← nội dung thư + quy ước đặt tên ảnh kỷ niệm
-├── OPEN-WORLD.md     ← cách nối Gemini cho khu trò chuyện
-├── bg_r1.png         3136×1376 · phòng lab ngầm
-├── bg_r2.png         3136×1376 · rừng tàn tích, Bạch Long ngậm cuộn thư
-├── anim_wrong.webp   1280×561  · ổ khoá rung đỏ (~2s)
-├── anim_unlock.webp  800×350   · nổ sập lab + thức tỉnh Bạch Long (~8s)
-└── photo_1..5.jpg    ⚠️ CHƯA CÓ — game tự vẽ ảnh pixel thay thế
+├── OPEN-WORLD.md     ← nối Gemini + 4 nét mặt robot cho khu trò chuyện
+├── OW-LOI-DAN.md     ← lời dẫn hệ thống + tính cách Bạch Long (sửa ở đây)
+└── assets/           ← ★ TOÀN BỘ ảnh và clip nằm trong này
+    ├── bg_r1.png         3136×1376 · phòng lab ngầm
+    ├── bg_r2.png         3136×1376 · rừng tàn tích, Bạch Long ngậm cuộn thư
+    ├── anim_wrong.webp   1280×561  · ổ khoá rung đỏ (~2s)
+    ├── anim_unlock.webp  800×350   · nổ sập lab + thức tỉnh Bạch Long (~8s)
+    ├── ow_2_1..4.webp    4 nét mặt robot Open World
+    └── photo_1..5.jpg    ⚠️ CHƯA CÓ — game tự vẽ ảnh pixel thay thế
 
 api/chat.js           ← ngoài thư mục này: hàm serverless gọi Gemini
 ```
 
-Thêm ảnh kỷ niệm thật: chép `photo_1.jpg` … `photo_5.jpg` vào đúng thư mục này.
+Đường dẫn thư mục tài nguyên nằm ở **`assets_base`** và **`photos_base`** trong
+`config.js` — đổi chỗ để tài nguyên thì sửa hai dòng đó, không phải sửa từng
+tên file.
+
+Thêm ảnh kỷ niệm thật: chép `photo_1.jpg` … `photo_5.jpg` vào **`assets/`**.
 Thiếu tệp nào thì ô đó hiện ảnh pixel thay thế, game vẫn chạy. Muốn ít/nhiều
 hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
 
@@ -67,6 +74,9 @@ khu này vẫn mở, chỉ trả câu dự phòng.
 - **Gọi hỏng thì không trừ lượt.**
 - Nội dung sửa ở `GAME_CONFIG.openworld` — đáng sửa nhất là `tinh_cach`, đoạn
   mô tả giọng của Bạch Long.
+- **Robot có 4 nét mặt** (`ow_2_*.webp`), bám theo nhịp trò chuyện: chào khi mở
+  → nhìn xuống theo dõi gõ (nét nghỉ) → đăm chiêu lúc chờ trả lời → gật đầu khi
+  câu trả lời tới. Thiếu file thì bỏ qua, không vỡ gì. Chi tiết ở `OPEN-WORLD.md`.
 
 Mã `TYRION` là phần thưởng của việc **chơi xong mini-game**, không phải chỉ
 của việc tới đúng ngày.
@@ -432,13 +442,13 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 `swipe_hint` `◄ VUỐT ĐỂ NGẮM BỐI CẢNH ►` · `unlock_btn` `UNLOCK` ·
 `modal_title` `BÍ TỊCH BẠCH LONG` · `prev_btn` `< PREV` · `next_btn` `NEXT >` ·
 `finish_btn` `[ HOÀN THÀNH HÀNH TRÌNH ]` · `hud_locked/unlocked` `LOCKED/UNLOCKED` ·
-`back_label` `< THOÁT` · `lock_note` (xem mục 5) ·
+`back_label` `< EXIT` · `lock_note` (xem mục 5) ·
 `round1.placeholder` `NHẬP MÃ KHÓA...` · `round2.placeholder` `NHẬP MẬT MÃ...` ·
 `round2.tap_label` `[ TAP HERE ]`
 
-**Chế độ xem lại:** `gallery_r1` `VÒNG 01` · `gallery_r2` `VÒNG 02` ·
+**Chế độ xem lại:** `gallery_r1` `ROUND 01` · `gallery_r2` `ROUND 02` ·
 `gallery_ow` `OPEN WORLD` ·
-`gallery_exit` `THOÁT` · `gallery_note`
+`gallery_exit` `EXIT` · `gallery_note`
 `> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.` ·
 `GATE_CONFIG.text.nut_xem_lai` `Xem lại bối cảnh` ·
 `GATE_CONFIG.text.nut_choi_lai_game` `Chơi lại`
@@ -448,9 +458,13 @@ Castle* (`.ma-pair .ico-btn`). Chữ **không nằm trong nút** — nó vào `d
 `title` và `aria-label`, nổi lên thành **tooltip phía dưới** khi rê chuột / giữ
 ngón. Nhờ vậy cuối màn chỉ còn một nút to duy nhất.
 
-> ⚠️ **Font `Press Start 2P` không có dấu tiếng Việt.** Chỗ dùng font pixel
-> (nút `UNLOCK`, HUD, `[ TAP HERE ]`, `PRESS START`, đồng hồ khoá) phải giữ
-> **không dấu**. Chỗ có dấu đã chuyển sang `Roboto Mono`.
+> ⚠️ **Font `Press Start 2P` không có dấu tiếng Việt** — gõ chữ có dấu vào là
+> vỡ, nửa font này nửa font kia. Mọi chữ nằm trên **nút** hoặc **thanh HUD**
+> phải giữ tiếng Anh: `UNLOCK`, `SEND`, `ROUND 01`, `ROUND 02`, `OPEN WORLD`,
+> `EXIT`, `< EXIT`, `LOCKED`, `UNLOCKED`, `PRESS START`, `[ TAP HERE ]`,
+> `< PREV`, `NEXT >`. Chữ trong **hộp thoại**, **ô nhập** và **lá thư** dùng
+> `Roboto Mono` nên có dấu thoải mái — kể cả ô nhập lúc trò chuyện Open World
+> (`.ctrl.ow #answer` đổi hẳn sang font đó).
 >
 > `boot_ready` cố tình để **ngắn một dòng** — câu dài sẽ rớt một chữ xuống dòng
 > riêng, nhìn rất vô duyên.
@@ -541,6 +555,8 @@ trong bộ nghe `input` và hàm `doanKyTu()`. Muốn dễ hơn thì cho `fail()
 **Vòng 1 cho đọc trước nét khắc như bản cũ** — bỏ `blur` khỏi `round1.veil_filter`.
 
 **Nối Gemini cho khu Open World** — xem `OPEN-WORLD.md`.
+**Sửa lời dẫn / tính cách Bạch Long** — xem `OW-LOI-DAN.md`.
+**Đổi chỗ để ảnh và clip** — `assets_base` + `photos_base` trong `config.js`.
 
 **Thư và tên ảnh kỷ niệm** — xem file riêng `THU-VA-ANH.md` cùng thư mục.
 
@@ -572,7 +588,7 @@ Luật đã chốt:
 - **Rồng chỉ có MỘT mắt** trong khung hình (nhìn nghiêng 3/4).
 - **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
   với easing đối xứng nên không còn cảm giác giật.
-- **Tem phiên bản**: game `V03.04`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
+- **Tem phiên bản**: game `V03.06`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
   Quy ước ở README: `Vx.yy`, `yy` chỉ chạy `00→09`, hết `09` thì `x` tăng 1 và
   `yy` về `00` — **không bao giờ có đuôi `.10`**. (Hai bản `V2.10`/`V2.11` trước
   đó là sai quy ước, đã nắn về `V03.02`.)

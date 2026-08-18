@@ -7,8 +7,8 @@ Game **không nạp file này**, nó chỉ đọc `config.js`.
 
 ## 1. Ảnh kỷ niệm — đặt tên file thế nào
 
-Ảnh nằm **cùng thư mục với `index.html`** (`/dad/950901-b/`). Đúng 5 tấm, đúng
-tên, đúng đuôi `.jpg`:
+Ảnh nằm trong **`/dad/950901-b/assets/`** — chung chỗ với ảnh nền và clip.
+Đúng 5 tấm, đúng tên, đúng đuôi `.jpg`:
 
 | Thứ tự | Tên file **bắt buộc** | Chú thích (`photo_captions`) |
 |---|---|---|
@@ -32,8 +32,8 @@ thoải mái; nặng quá thì máy yếu tải chậm.
 
 Slideshow **tự chạy 3 giây một tấm**, có nút `< PREV` / `NEXT >` và hàng chấm.
 
-> Muốn để ảnh ở thư mục khác thì sửa `GAME_CONFIG.photos_base`, ví dụ
-> `'/anh/'`, rồi tên file trong `photos` giữ nguyên.
+> Muốn để ảnh chỗ khác thì sửa `GAME_CONFIG.photos_base` (đang là `'assets/'`),
+> tên file trong `photos` giữ nguyên.
 
 ---
 
@@ -55,9 +55,7 @@ Gửi Dongchi Bình,
 
 Tuổi mới mong anh nhiều niềm vui, sức khoẻ, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành trong mọi sự (thành công ròi sẽ tới, với anh em tin là vậy).
 
-Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước; đừng quá lo lắng anh nhé, just do it). 
-
-Mong anh có được sự bình yên, tròn đầy mà anh hằng khao khát. Và, true happiness comes from within nên em nghĩ biết đâu dành 1 chút thời gian thăm nom lại anh-Bình-thuở-nhỏ và tìm hiểu bản thân lại là một ý hay cho anh tuổi mới này ^^. 
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước...?). Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
 Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có như thế nào, thì em có buồn nhưng cũng không ghét hay giận anh. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng và chăm sóc em.
 

@@ -441,6 +441,40 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 
 /* Nằm TRONG .world và DƯỚI .slab: clip nhập sai cũng chiếu nguyên chữ khắc
    đang sáng, nếu để nó đè lên lớp che thì mỗi lần sai là lộ hết đáp án. */
+/* ── Robot Open World ─────────────────────────────────────────────────────
+   Nằm TRÊN cả bệ đá (z-6) vì lúc trò chuyện thì cảnh cũ không còn việc gì.
+   Hai clip chồng nhau để đổi nét mặt bằng cách nhoà chứ không giật cụp.
+   Thiếu file thì lớp này rỗng, cảnh cũ vẫn còn nguyên — không vỡ gì. */
+/* KHUNG PHẢI KHỚP VỚI CÁC ROUND. `.world` rộng 2.28:1 còn màn hình máy chỉ 4:3,
+   tức người chơi luôn chỉ nhìn thấy khoảng 58% bề ngang của thế giới. Nếu trải
+   clip robot ra cả `.world` thì hai bên bị cắt mất, mà cắt bao nhiêu lại tuỳ tỷ
+   lệ file — mỗi clip một kiểu. Nên hộp này chốt đúng bằng BỀ NGANG MÀN HÌNH và
+   neo giữa: clip nào cũng lọt đúng khung người chơi đang nhìn, y như các round.
+   Bề ngang do fitOw() đo và ghi vào --ow-w. */
+#scene-game .ow-layer{
+  position:absolute;top:0;bottom:0;left:50%;width:var(--ow-w,100%);
+  transform:translateX(-50%);z-index:7;display:none;background:#05080d;
+}
+#scene-game .ow-layer.on{display:block}
+#scene-game .ow-layer img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transition:opacity .38s ease;
+}
+/* Ô nhập lúc trò chuyện: font pixel KHÔNG có dấu tiếng Việt, gõ "Ngươi" vào là
+   chữ vỡ lung tung nửa font này nửa font kia. Đổi hẳn sang font hộp thoại. */
+#scene-game .ctrl.ow #answer{
+  font-family:var(--f-term);font-size:13px;letter-spacing:.01em;
+  text-transform:none;color:var(--paper);
+}
+#scene-game .ctrl.ow #answer::placeholder{letter-spacing:.01em}
+#scene-game .ow-layer img.on{opacity:1}
+/* Kiểu "nổi": clip là hình robot cắt rời trên nền trong suốt → không phủ kín
+   khung nữa mà đứng ở góc phải dưới, cảnh phía sau vẫn ngắm và vuốt được. */
+#scene-game .ow-layer.noi{background:none;pointer-events:none}
+#scene-game .ow-layer.noi img{
+  inset:auto 3% 0 auto;width:auto;height:var(--ow-cao,72%);object-fit:contain;
+}
+
 #scene-game .anim-layer{position:absolute;inset:0;z-index:5;display:none;background:#05080d}
 #scene-game .anim-layer.on{display:block}
 #scene-game .anim-layer img{width:100%;height:100%;object-fit:cover;display:block}
@@ -723,6 +757,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
               </button>
 
               <div class="anim-layer" id="animLayer"></div>
+              <div class="ow-layer" id="owLayer"></div>
             </div>
           </div>
 
@@ -1020,7 +1055,7 @@ const el = {
   hotZoom:$('#hotZoom'), eyes:[...document.querySelectorAll('#scene-game .eye')],
   lockbar:$('#lockbar'), lockTime:$('#lockTime'), lockNote:$('#lockNote'),
   gbar:$('#gbar'), gR1:$('#gR1'), gR2:$('#gR2'), gOw:$('#gOw'), gExit:$('#gExit'),
-  owbar:$('#owbar'), owQuota:$('#owQuota')
+  owbar:$('#owbar'), owQuota:$('#owQuota'), owLayer:$('#owLayer')
 };
 const fxCtx = el.fx.getContext('2d');
 
@@ -1140,7 +1175,12 @@ function sizeFx(){
   el.fx.height = el.root.clientHeight * r;
   fxCtx.setTransform(r,0,0,r,0,0);
 }
-function layout(){ fitBezel(); fitSlabs(); fitHotspot(); sizeFx(); }
+/* Chốt hộp robot đúng bằng bề ngang màn hình máy — xem ghi chú ở .ow-layer */
+function fitOw(){
+  const w = el.screen.offsetWidth;
+  if(w) el.owLayer.style.setProperty('--ow-w', w.toFixed(2) + 'px');
+}
+function layout(){ fitBezel(); fitSlabs(); fitHotspot(); fitOw(); sizeFx(); }
 
 /* ═══ CAMERA ══════════════════════════════════════════════════════════════
    Khung 4:3 hẹp hơn ảnh nền 2.28:1 rất nhiều → dư ngang lớn, vuốt thoải mái.
@@ -1966,8 +2006,10 @@ function enterGallery(r){
 }
 function leaveGallery(){
   galleryOn = false; owOn = false;
+  owMatTat(); CAM.enabled = true; el.hint.style.visibility = '';
   el.gbar.hidden = true; el.owbar.hidden = true;
   el.unlock.textContent = C.ui.unlock_btn;
+  el.ctrl.classList.remove('ow');
   el.input.maxLength = 16; el.input.style.textTransform = '';
   showCtrl(false); setInput(false);
 }
@@ -1983,6 +2025,48 @@ el.gExit.addEventListener('click', ()=>{ leaveGallery(); Code.open(); });
    Hạn mức mỗi ngày nhớ trong localStorage theo NGÀY GIỜ VIỆT NAM.            */
 const OW = C.openworld || {};
 let owOn = false, owBan = false, owSu = [];
+
+/* ═══ NÉT MẶT ROBOT ════════════════════════════════════════════════════════
+   Bốn clip, mỗi clip một việc rõ ràng — bám theo đúng nhịp của cuộc trò
+   chuyện chứ không phát bừa:
+
+     chào  → mở khu này (phát một lần rồi về nghỉ)
+     nhìn  → NGHỈ: robot cúi xuống theo dõi người chơi gõ. Đây là nét mặc định
+     đăm   → đã gửi câu hỏi, đang chờ trả lời
+     gật   → câu trả lời vừa tới (phát một lần rồi về nghỉ)
+
+   Đổi nét bằng cách chồng clip mới lên rồi nhoà dần, clip cũ tan đi sau — đổi
+   thẳng `src` là hình giật cụp một cái rất xấu. */
+let owMatHienTai = '', owMatHen = 0;
+
+function owMatTat(){
+  clearTimeout(owMatHen);
+  owMatHienTai = '';
+  el.owLayer.classList.remove('on');
+  el.owLayer.innerHTML = '';
+}
+/* Đổi nét mặt. `giu_ms` > 0 = phát một lần rồi tự về nét nghỉ. */
+async function owMat(ten, giu_ms){
+  const ten_file = (OW.mat || {})[ten];
+  if(!ten_file || ten === owMatHienTai) return;
+  const src = C.assets_base + ten_file;
+  if(!(await load(src))) return;            /* thiếu file thì thôi, đừng vẽ gì */
+  if(!owOn) return;                          /* đã rời khu này trong lúc nạp   */
+
+  owMatHienTai = ten;
+  clearTimeout(owMatHen);
+  const cu = [...el.owLayer.children];
+  /* Tạo thẻ ảnh MỚI mỗi lần: cùng URL nên lấy từ cache trình duyệt, nhưng
+     animation chạy lại từ đầu — đúng ý cho mấy nét phát một lần. */
+  const im = new Image(); im.src = src;
+  el.owLayer.appendChild(im);
+  el.owLayer.classList.add('on');
+  requestAnimationFrame(()=> im.classList.add('on'));
+  setTimeout(()=> cu.forEach(n=> n.remove()), 420);
+
+  if(giu_ms) owMatHen = setTimeout(()=> owMat('nhin'), giu_ms);
+}
+function owNapMat(){ Object.values(OW.mat || {}).forEach(f=> f && load(C.assets_base + f)); }
 
 function homNay(){
   return new Date(Date.now() + 7*36e5).toISOString().slice(0,10);   /* +07:00 */
@@ -2014,9 +2098,21 @@ function owChips(){
 async function owBat(){
   if(owOn) return;
   owOn = true;
+  owNapMat();
   el.gR1.classList.remove('on'); el.gR2.classList.remove('on');
   el.gOw.classList.add('on');
   el.hudRound.textContent = 'OPEN WORLD';
+  /* Clip phủ kín khung thì không còn gì để vuốt — tắt camera, neo về giữa,
+     giấu luôn dòng "vuốt để ngắm bối cảnh". Kiểu "nổi" thì cảnh vẫn còn nên
+     giữ nguyên camera. */
+  const kin = (OW.mat_kieu || 'kin') !== 'noi';
+  el.owLayer.classList.toggle('noi', !kin);
+  if(OW.mat_cao) el.owLayer.style.setProperty('--ow-cao', OW.mat_cao);
+  if(kin){
+    CAM.enabled = false; camTo(0, 420);
+    el.hint.style.visibility = 'hidden';
+  }
+  owMat('chao', OW.mat_chao_ms || 3000);
   clearNarr();
   el.owbar.hidden = false;
   owChips(); owHienLuot();
@@ -2026,7 +2122,9 @@ async function owBat(){
   el.ctrl.classList.remove('nobtn');
   el.input.maxLength = OW.max_ky_tu || 300;
   el.input.style.textTransform = 'none';
+  el.ctrl.classList.add('ow');
   el.input.setAttribute('autocapitalize','sentences');
+  fitOw();
   const doi = narrEra;
   await sayAll((OW.chao || []).map(t=> t.replace('{N}', OW.moi_ngay || 10)), 'cy');
   if(narrEra !== doi) return;            /* đã bấm sang mục khác giữa chừng */
@@ -2036,11 +2134,15 @@ async function owBat(){
 function owTat(){
   if(!owOn) return;
   owOn = false;
+  owMatTat();
+  CAM.enabled = true;
+  el.hint.style.visibility = '';
   el.gOw.classList.remove('on');
   el.owbar.hidden = true;
   el.unlock.textContent = C.ui.unlock_btn;
   el.input.maxLength = 16;
   el.input.style.textTransform = '';
+  el.ctrl.classList.remove('ow');
   el.input.setAttribute('autocapitalize','characters');
   el.input.value = '';
   showCtrl(false); setInput(false);
@@ -2058,6 +2160,8 @@ async function owGui(){
   await say('> ' + q, 'me');
   if(narrEra !== doi){ owBan = false; return; }
 
+  owMat('nghi');                          /* gửi xong là robot đăm chiêu */
+  const nghiTu = Date.now();
   const cho = document.createElement('p');
   cho.className = 'line wait'; cho.textContent = OW.dang_nghi || '...';
   el.narr.appendChild(cho); el.narr.scrollTop = el.narr.scrollHeight;
@@ -2072,16 +2176,21 @@ async function owGui(){
     if(r.ok && j.dap) dap = String(j.dap).trim();
     else loi = j.loi === 'chua_co_khoa' ? (OW.chua_noi || '') : (OW.loi_mang || '');
   }catch(e){ loi = OW.loi_mang || ''; }
+  /* Máy trả lời nhanh quá thì nét "đăm chiêu" chỉ loé một cái rồi mất, nhìn
+     như robot không kịp nghĩ. Giữ lại đủ một nhịp cho ra dáng. */
+  await wait(Math.max(0, (OW.mat_nghi_min_ms || 800) - (Date.now() - nghiTu)));
   cho.remove();
   if(narrEra !== doi){ owBan = false; return; }   /* đã rời khu trò chuyện */
 
   if(dap){
     owSu.push({ vai:'user', text:q }, { vai:'npc', text:dap });
     owTru();
+    owMat('gat', OW.mat_gat_ms || 1800);   /* gật một cái rồi cúi xuống nghỉ */
     await say('> ' + dap, 'npc');
     if(owConLai() > 0) say((OW.con_lai || '> {N}').replace('{N}', owConLai()), 'sys');
     else say(OW.het_luot || '', 'warn');
   }else{
+    owMat('nhin');                    /* hỏng thì thôi, về nét nghỉ */
     await say(loi, 'err');            /* hỏng đường truyền thì KHÔNG trừ lượt */
   }
   owBan = false;
@@ -2127,7 +2236,10 @@ function reset(){
   S.lastLen = 0; S.lastNoSp = 0; S.revMap = null;
   S.mode = 'flash'; S.dug = 0; S.burn = false;
   galleryOn = false; owOn = false; owBan = false; owSu = [];
+  owMatTat();
+  el.ctrl.classList.remove('ow');
   el.owbar.hidden = true;
+  el.hint.style.visibility = '';
   el.unlock.textContent = C.ui.unlock_btn;
   el.input.maxLength = 16; el.input.style.textTransform = '';
   clearTimeout(S.idleTimer); clearInterval(lockTimer);
