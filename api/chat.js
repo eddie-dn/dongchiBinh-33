@@ -5,7 +5,7 @@
  * cầm khoá gọi sang Google rồi trả chữ về. Khoá nằm ở biến môi trường:
  *
  *     GEMINI_KEY   = khoá lấy ở https://aistudio.google.com/apikey
- *     GEMINI_MODEL = (không bắt buộc) mặc định gemini-2.0-flash
+ *     GEMINI_MODEL = (không bắt buộc) mặc định gemini-3.7-flash
  *
  * Chưa khai khoá thì trả { loi: 'chua_co_khoa' } — trang hiện câu dự phòng,
  * không vỡ gì cả.
@@ -13,20 +13,26 @@
  * Nhận:  { hoi, su:[{vai:'user'|'npc', text}] }
  * Trả:   { dap } hoặc { loi }
  *
- * Đoạn TÍNH CÁCH nằm ở `api/_lib/tinh-cach.js`, KHÔNG nằm trong config.js —
+ * Đoạn TÍNH CÁCH nằm ở `api/_lib/tinhcach.md` (nạp qua `_lib/tinhcach.js`),
+ * KHÔNG nằm trong config.js —
  * nó có fact riêng tư về người chơi, mà mọi thứ trong `dad/` thì trình duyệt
  * nào cũng đọc được. Trang chỉ gửi câu hỏi lên, giọng nhân vật ghép ở đây.
  */
 
 let TINH_CACH = '';
 try {
-  TINH_CACH = String(require('./_lib/tinh-cach.js') || '');
+  TINH_CACH = String(require('./_lib/tinhcach.js') || '');
 } catch (e) {
   /* Thiếu file thì vẫn chạy, chỉ là nhân vật nhạt đi — không sập cả hàm */
   console.log('[CHAT] chưa nạp được tính cách:', e && e.message);
 }
 
-const MODEL_MAC_DINH = 'gemini-2.0-flash';
+/* Tên model đọc từ biến môi trường GEMINI_MODEL, có sẵn mặc định ở đây để
+   chưa khai biến thì vẫn chạy. Google ra đời Flash mới thì KHÔNG cần sửa code:
+   lên Vercel → Project Settings → Environment Variables, đổi giá trị của
+   GEMINI_MODEL rồi Redeploy là xong. Đặt alias `gemini-flash-latest` thì luôn
+   trỏ bản mới nhất, khỏi phải nhớ đổi. */
+const MODEL_MAC_DINH = 'gemini-3.7-flash';
 
 /* Trần dùng chung cho cả instance: 50 câu / 10 phút. Hạn mức mỗi ngày của
    từng người chơi nằm ở phía trang (localStorage) — chỗ này chỉ để một người
