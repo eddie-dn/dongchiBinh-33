@@ -107,6 +107,19 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   box-shadow:0 8px 18px rgba(242,180,65,.28)}
 /* width:100% — <button> mặc định co theo nội dung dù đã display:block, nên nếu
    thiếu dòng này nút sẽ nằm lệch về góc trái thay vì căn giữa như thẻ <a>. */
+/* ═══ BẪY ĐÃ VẤP · `hidden` KHÔNG ĂN ═══════════════════════════════════════
+   `display:block` ở đây là luật của TRANG, mà `[hidden]{display:none}` chỉ là
+   luật MẶC ĐỊNH của trình duyệt — luật của trang luôn thắng. Hậu quả: mọi chỗ
+   trong JS viết `el.play.hidden = false` / `el.skip.hidden = false` đều VÔ
+   TÁC DỤNG, ba cái nút này lúc nào cũng hiện.
+   Nó phá hỏng đúng hai cửa khoá:
+     · nút "Bắt đầu giải mã" hiện sẵn ngay cả khi chưa tới ngày 01-09 → bấm là
+       vào game, đồng hồ đếm ngược thành ra chỉ để trang trí;
+     · nút "Bỏ qua" của cửa hậu hiện sẵn cho MỌI người → khỏi cần gõ 10 nhịp,
+       ai vào cũng thấy đường đi thẳng tới màn cuối.
+   Một dòng dưới đây trả `hidden` về đúng nghĩa. Đặt NGAY TRÊN `.ma-go` để đọc
+   tới đâu hiểu tới đó. */
+.gate-look [hidden]{display:none!important}
 .gate-look .ma-go{display:block;width:100%;margin:14px 0 0;padding:12px 8px;border-radius:999px;
   font-family:"Oswald";font-size:10px;font-weight:600;letter-spacing:.12em;
   white-space:nowrap;text-transform:uppercase;text-align:center;text-decoration:none;
@@ -959,6 +972,65 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 
 <script src="config.js"></script>
 <script>
+/* ═══ CHỐT AN TOÀN CHO config.js ══════════════════════════════════════════
+   BẪY ĐÃ VẤP — mất cả buổi mới tìm ra, ghi lại cho khỏi vấp lần hai:
+   `letter_content` và mấy đoạn văn dài trong config.js nằm trong dấu BACKTICK
+   (`...`). Chỉ cần gõ nhầm MỘT dấu backtick hay một chữ ${ vào giữa đoạn văn
+   là cả file config.js thành sai cú pháp → trình duyệt bỏ nguyên file → biến
+   GATE_CONFIG không tồn tại → mọi đoạn mã bên dưới chết theo.
+
+   Lúc đó trang KHÔNG báo gì cả. Nó vẫn vẽ ra màn cổng vì chữ mặc định nằm sẵn
+   trong HTML, nhưng: không có dòng version, không có đồng hồ đếm ngược, và
+   bấm nút nào cũng không nhảy đi đâu — nhìn y như trang bị "kẹt cứng", chẳng
+   ai đoán được là do sửa nội dung bức thư.
+
+   Nay hỏng thì NÓI THẲNG RA MÀN HÌNH, kèm câu lỗi của trình duyệt, để biết
+   ngay là phải đi sửa config.js chứ không phải lỗi máy hay lỗi mạng. */
+(function(){
+  var thieu = [];
+  if(typeof GATE_CONFIG === 'undefined') thieu.push('GATE_CONFIG');
+  if(typeof GAME_CONFIG === 'undefined') thieu.push('GAME_CONFIG');
+  if(!thieu.length) return;
+
+  /* Chạy lại file để LẤY ĐÚNG CÂU LỖI và số dòng — chỉ để hiện cho người sửa,
+     không cố chạy tiếp. Lấy được thì tốt, không lấy được cũng không sao. */
+  function hien(chiTiet){
+    var box = document.createElement('div');
+    box.setAttribute('style',
+      'position:fixed;inset:0;z-index:9999;overflow:auto;padding:24px 18px;'+
+      'background:#0d1117;color:#e6edf3;font:13px/1.65 ui-monospace,Menlo,Consolas,monospace');
+    box.innerHTML =
+      '<p style="margin:0 0 10px;color:#ff6b6b;font-weight:700;font-size:15px">'+
+      'config.js bị lỗi cú pháp — trang không chạy được</p>'+
+      '<p style="margin:0 0 14px;color:#9fb0c3">Thiếu biến: <b>'+thieu.join(', ')+'</b></p>'+
+      '<pre style="margin:0 0 16px;padding:12px;border-radius:8px;background:#161b22;'+
+      'color:#ffa657;white-space:pre-wrap;word-break:break-word">'+
+      String(chiTiet||'(không lấy được câu lỗi — mở Console của trình duyệt để xem)')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'+
+      '<p style="margin:0 0 8px;color:#9fb0c3">Hay gặp nhất: khi sửa nội dung '+
+      '<b>letter_content</b> (bức thư) đã gõ nhầm một dấu <b>`</b> (backtick) '+
+      'hoặc một chữ <b>${</b> vào giữa đoạn văn. Hai ký tự đó là ký tự đặc biệt '+
+      'của JavaScript, không được xuất hiện trong lời văn.</p>'+
+      '<p style="margin:0;color:#9fb0c3">Mở <b>dad/950901-b/config.js</b>, tìm '+
+      'đúng dòng bên trên, xoá ký tự đó đi rồi deploy lại.</p>';
+    document.body.appendChild(box);
+  }
+
+  var xong = false;
+  try{
+    fetch('config.js?soi=' + Date.now())
+      .then(function(r){ return r.text(); })
+      .then(function(src){
+        if(xong) return; xong = true;
+        try{ new Function(src); hien('(file nạp được nhưng biến vẫn thiếu — kiểm tra tên biến trong config.js)'); }
+        catch(e){ hien(e && (e.name + ': ' + e.message)); }
+      })
+      .catch(function(){ if(!xong){ xong = true; hien('Không tải được config.js — kiểm tra file có nằm cùng thư mục không.'); } });
+  }catch(e){ hien(null); }
+  setTimeout(function(){ if(!xong){ xong = true; hien(null); } }, 4000);
+})();
+</script>
+<script>
 /* ════════════════════════════════════════════════════════════════════════════
    BỘ MÁY — chữ nghĩa nằm hết ở config.js
    ════════════════════════════════════════════════════════════════════════════ */
@@ -1117,8 +1189,11 @@ const Gate = (function(){
     }
     if(tapN >= 10){ tapN = 0; moSkip(); }
   });
-  /* Đã dùng cửa hậu một lần rồi thì lần sau vào là có sẵn nút, khỏi gõ lại */
-  if(Store.get().g2Skip) moSkip();
+  /* CỐ Ý KHÔNG NHỚ: mỗi lần vào là phải gõ lại đủ 10 nhịp. Bản trước có nhớ
+     (`if(Store.get().g2Skip) moSkip()`), thành ra lần sau mở trang là nút
+     "Bỏ qua" bày sẵn ngay dưới nút chính — mất hết cảm giác cửa giấu, mà người
+     chơi bình thường cũng nhìn thấy luôn đường đi tắt. Cửa hậu thì phải mò ra
+     lại từ đầu mới đúng là cửa hậu. */
 
   el.skip.addEventListener('click', ()=>{
     /* Ghi ĐỦ BỘ CỜ, y như đi hết game thật: `g2Game` cho trang này nhớ là đã
