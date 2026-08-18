@@ -382,20 +382,30 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   0%{opacity:0;filter:brightness(1)}
   35%{opacity:1;filter:brightness(2.9) saturate(1.55)
       drop-shadow(0 0 3px var(--slab-c)) drop-shadow(0 0 8px var(--slab-c)) drop-shadow(0 0 16px var(--slab-c))}
-  100%{opacity:1;filter:brightness(2.2) saturate(1.45)
-      drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 6px var(--slab-c)) drop-shadow(0 0 11px var(--slab-c))}
+  100%{opacity:1;filter:brightness(2.75) saturate(1.6)
+      drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 15px var(--slab-c))}
 }
 
 /* ── Mắt rồng: nhập sai thì nháy đỏ rồi trả về bình thường ───────────────── */
+/* Con ngươi rồng vốn là màu CYAN rất sáng. Trước đây lớp này để
+   `mix-blend-mode:screen` — screen(cyan sáng, đỏ) ra gần như trắng, nên nhập
+   sai mà mắt chẳng đỏ lên tí nào. Bỏ blend, phủ đỏ đặc lên hẳn, thêm quầng
+   drop-shadow cho đọc được ở cỡ 15px. */
 #scene-game .eye{
   position:absolute;display:none;opacity:0;pointer-events:none;z-index:3;
-  border-radius:50%;mix-blend-mode:screen;
-  background:radial-gradient(ellipse at center,rgba(255,70,70,.95) 0%,
-             rgba(255,0,20,.55) 45%,transparent 72%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(255,60,55,.99) 0%,
+             rgba(240,0,15,.92) 40%,rgba(170,0,0,.5) 66%,transparent 80%);
+  filter:drop-shadow(0 0 4px rgba(255,40,30,.95)) drop-shadow(0 0 11px rgba(255,0,0,.7));
 }
 #scene-game .eye.on{display:block}
-#scene-game .eye.flash{animation:eyeFlash .4s steps(1) 4}
-@keyframes eyeFlash{0%,49%{opacity:1}50%,100%{opacity:0}}
+#scene-game .eye.flash{animation:eyeFlash .8s ease-in-out 2}
+@keyframes eyeFlash{
+  0%,100%{opacity:0}
+  18%{opacity:1}
+  50%{opacity:.3}
+  82%{opacity:1}
+}
 
 /* ── Cuộn thư: không khung, chỉ phóng to thu nhỏ chính vùng ảnh đó ───────── */
 #scene-game .hotspot{
@@ -419,16 +429,51 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    như cuộn thư bị nhân đôi, thô hẳn. Thay vào đó chồng mẩu ảnh ĐÚNG KHÍT lên
    chính nó rồi cho nhoà sáng dần theo nhịp thở: không lệch một pixel nào, chỉ
    thấy cuộn thư tự bừng lên rồi dịu xuống. */
+/* Cuộn thư nằm CHÉO: dò pixel ra đúng 15.3 độ, đầu trái cao (y≈500), đầu phải
+   thấp (y≈578). Elip bó sát giữa chỉ thắp được khúc giữa, hai đầu go rơi ra
+   vùng mờ — đúng cái "nửa phải đẹp, nửa trái mờ". Mà nới elip cho rộng thì lộ
+   nguyên khung chữ nhật, lại cháy trắng cái mõm rồng phía sau. Nên mặt nạ là
+   một DẢI CHÉO 15.3 độ (linear-gradient chạy vuông góc với trục dải) giao với
+   elip cắt hai đầu: sáng đúng thân cuộn, không đụng mõm rồng. */
 #scene-game .hotspot .zoom{
   position:absolute;background-repeat:no-repeat;mix-blend-mode:screen;
-  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 0%,#000 54%,transparent 100%);
-  mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 0%,#000 54%,transparent 100%);
+  -webkit-mask-image:linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
+                     radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  mask-image:linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
+             radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-composite:source-in;mask-composite:intersect;
   animation:zoomPulse 2.6s cubic-bezier(.45,0,.55,1) infinite;
 }
+/* Lớp thứ hai: cũng mẩu ảnh đó, nhưng tự lấy ĐỘ SÁNG của mình làm mặt nạ (chồng
+   hai lớp cho ăn chắc) rồi hắt drop-shadow vàng. Nhờ vậy cái phát sáng là ĐÚNG
+   ĐƯỜNG VIỀN cuộn thư — cả hai đầu go — chứ không phải một mảng elip mờ. */
+#scene-game .hotspot .rim{
+  position:absolute;background-repeat:no-repeat;pointer-events:none;
+  mix-blend-mode:screen;
+  -webkit-mask-image:var(--cut),var(--cut),linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
+                     radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  mask-image:var(--cut),var(--cut),linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
+             radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  -webkit-mask-size:var(--cut-s),var(--cut-s),100% 100%,100% 100%;
+  mask-size:var(--cut-s),var(--cut-s),100% 100%,100% 100%;
+  -webkit-mask-position:var(--cut-p),var(--cut-p),0 0,0 0;
+  mask-position:var(--cut-p),var(--cut-p),0 0,0 0;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  mask-mode:luminance,luminance,alpha,alpha;
+  -webkit-mask-composite:source-in,source-in,source-in;
+  mask-composite:intersect,intersect,intersect;
+  animation:rimPulse 2.6s cubic-bezier(.45,0,.55,1) infinite;
+}
 @keyframes zoomPulse{
-  0%,100%{opacity:.34;filter:brightness(1.15) saturate(1.1)}
-  50%{opacity:1;filter:brightness(1.9) saturate(1.35)}
+  0%,100%{opacity:.38;filter:brightness(1.2) saturate(1.12)}
+  50%{opacity:1;filter:brightness(2) saturate(1.4)}
+}
+@keyframes rimPulse{
+  0%,100%{opacity:.4;filter:saturate(1.35) drop-shadow(0 0 2px rgba(255,196,90,.7))}
+  50%{opacity:1;filter:saturate(1.65) brightness(1.3)
+      drop-shadow(0 0 2px rgba(255,214,120,.95)) drop-shadow(0 0 6px rgba(255,170,40,.8))
+      drop-shadow(0 0 13px rgba(255,150,20,.5))}
 }
 #scene-game .hotspot .tap{
   position:absolute;top:50%;left:50%;transform:translateX(-50%);
@@ -753,6 +798,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
               <button class="hotspot" id="hotspot" type="button" aria-label="Đọc lá thư">
                 <span class="halo"></span>
                 <span class="zoom" id="hotZoom"></span>
+                <span class="rim" id="hotRim"></span>
                 <span class="tap" id="tapLabel">[ TAP HERE ]</span>
               </button>
 
@@ -1052,7 +1098,7 @@ const el = {
   show:$('#show'), dots:$('#dots'),
   prev:$('#prev'), next:$('#next'), letterBox:$('#letterBox'), finish:$('#finish'),
   fx:$('#fx'), back:$('#back'),
-  hotZoom:$('#hotZoom'), eyes:[...document.querySelectorAll('#scene-game .eye')],
+  hotZoom:$('#hotZoom'), hotRim:$('#hotRim'), eyes:[...document.querySelectorAll('#scene-game .eye')],
   lockbar:$('#lockbar'), lockTime:$('#lockTime'), lockNote:$('#lockNote'),
   gbar:$('#gbar'), gR1:$('#gR1'), gR2:$('#gR2'), gOw:$('#gOw'), gExit:$('#gExit'),
   owbar:$('#owbar'), owQuota:$('#owQuota'), owLayer:$('#owLayer')
@@ -1138,14 +1184,17 @@ function fitSlabs(){
       veil.style.top  = (-ey).toFixed(2)+'px';
       cutOut(veil, W, H, L - ex, T2 - ey, SW + 2*ex, SH + 2*ey);
     }
-    const cw = SW / n, lat = slab.classList.contains('flip');
+    /* Ranh giới từng ô: ưu tiên dãy `cell_edges` đo bằng dò pixel. Chia đều
+       chỉ đúng khi các ký tự cách nhau bằng nhau — chuỗi có DẤU CÁCH thì không,
+       chia đều là cắt mất nét của ký tự ngay sau khoảng trắng. */
+    const eds = (cfg.cell_edges && cfg.cell_edges.length === n + 1)
+      ? cfg.cell_edges : [...Array(n+1)].map((_,k)=> k/n);
     [...row.children].forEach((c,i)=>{
+      const x0 = SW*eds[i], cw = SW*(eds[i+1] - eds[i]);
       c.style.width = cw.toFixed(2) + 'px';
-      cutOut(c.querySelector('.gl'), W, H, L + i*cw, T2, cw, SH);
-      /* Bảng đã xếp lại thì quãng trượt phải tính lại theo bề rộng ô mới,
-         nếu không xoay máy một cái là chữ văng lung tung. */
-      if(lat) c.style.setProperty('--fx', ((n - 1 - 2*i) * cw).toFixed(2) + 'px');
+      cutOut(c.querySelector('.gl'), W, H, L + x0, T2, cw, SH);
     });
+    if(slab.classList.contains('flip')) datFx(row);   /* đo lại quãng trượt */
   });
   (C.round2.eyes || []).forEach((e,i)=>{
     const n = el.eyes[i]; if(!n) return;
@@ -1167,6 +1216,7 @@ function fitHotspot(){
   el.hotspot.style.width  = bw.toFixed(2)+'px';
   el.hotspot.style.height = bh.toFixed(2)+'px';
   cutOut(el.hotZoom, W, H, L, T2, zw, zh);
+  cutOut(el.hotRim,  W, H, L, T2, zw, zh);
   el.tapLabel.style.marginTop = (zh/2 + 4).toFixed(1)+'px';   /* sát ngay dưới cuộn thư */
 }
 function sizeFx(){
@@ -1387,6 +1437,18 @@ function revealSolved(slab, row){
    nó: ô thứ i trượt sang chỗ ô n-1-i. Trượt bằng transform nên vẫn là NÉT KHẮC
    THẬT chứ không phải chữ vẽ lại, và giữ nguyên như thế về sau.
    `tuc_thi` = dựng lại cảnh đã giải (chế độ xem lại) thì khỏi chạy hoạt hình. */
+/* Quãng trượt của từng ô = KHOẢNG CÁCH THẬT tới chỗ ô đối xứng, đo bằng
+   getBoundingClientRect. Nhân theo bề rộng ô chỉ đúng khi mọi ô rộng bằng nhau;
+   các ô rộng khác nhau (xem cell_edges) mà nhân đều là chữ chen chúc lên nhau. */
+function datFx(row){
+  const cells = [...row.children], n = cells.length;
+  const xs = cells.map(c=>{
+    const t = c.style.transform; c.style.transform = 'none';
+    const x = c.getBoundingClientRect().left;
+    c.style.transform = t; return x;
+  });
+  cells.forEach((c,i)=> c.style.setProperty('--fx', (xs[n-1-i] - xs[i]).toFixed(2) + 'px'));
+}
 function flipSolved(slab, row, tuc_thi){
   const cells = [...row.children], n = cells.length;
   if(!n || slab.classList.contains('flip')) return 0;
@@ -1395,12 +1457,9 @@ function flipSolved(slab, row, tuc_thi){
      cạnh — thành ra đọc chồng hai lớp. */
   const veil = slab.querySelector('.veil');
   if(veil){ veil.style.transition = 'opacity .45s ease'; veil.style.opacity = '1'; }
-  const cw = cells[0].getBoundingClientRect().width;
   slab.style.setProperty('--flip', (tuc_thi ? 0 : T.flip_ms) + 'ms');
-  cells.forEach((c,i)=>{
-    c.style.setProperty('--fx', ((n - 1 - 2*i) * cw).toFixed(2) + 'px');
-    c.style.setProperty('--fd', (tuc_thi ? 0 : i * 40) + 'ms');
-  });
+  cells.forEach((c,i)=> c.style.setProperty('--fd', (tuc_thi ? 0 : i * 40) + 'ms'));
+  datFx(row);
   slab.classList.add('flip');
   return tuc_thi ? 0 : T.flip_ms + (n - 1) * 40;
 }
@@ -1429,7 +1488,7 @@ async function grantHint(round){
     .replace('{TEXT}', list[st.n - 1]), 'warn');
   /* Vòng 2 chỉ lộ chữ qua đường GỢI Ý. Đoán trật thì mất lượt chứ không được
      lộ không, nếu không cứ gõ bừa là có đáp án. */
-  if(round === 2 && uncoverNext()) resetOnhap();
+  if(round === 2 && uncoverNext()) resetOnhap(!S.inputLocked);
 }
 
 let lockTimer = 0;
@@ -1451,9 +1510,9 @@ async function endLock(round){
   el.lockbar.hidden = true;
   HINTS[round].lock = 0; saveHints();
   await grantHint(round);
-  resetOnhap();
   showCtrl(true);
   setInput(true, (round === 1 ? C.round1 : C.round2).placeholder);
+  resetOnhap(true);
   S.busy = false;
   await say(C.dialogues.hint_unlock, 'sys');
 }
@@ -1474,10 +1533,12 @@ async function serveHint(round){
   const need = T.hint_first_wrong + st.n * T.hint_every_wrongs;
   if(st.w < need) return false;
   if(st.n >= list.length){ await say(C.dialogues.hint_done, 'sys'); return false; }
-  const con = st.at ? T.hint_cooldown_ms - (Date.now() - st.at) : 0;
-  if(con > 0){
-    await say(C.dialogues.hint_lock.replace('{M}', Math.ceil(con / 60000)), 'err');
-    startLock(Date.now() + con, round);
+  /* Khoá ĐỦ trọn `hint_cooldown_ms` kể từ lúc khoá, không trừ đi quãng đã trôi
+     từ gợi ý trước — trừ đi thì bảng báo "13 phút" trong khi luật ghi 15. */
+  if(st.at && Date.now() - st.at < T.hint_cooldown_ms){
+    const den = Date.now() + T.hint_cooldown_ms;
+    await say(C.dialogues.hint_lock.replace('{M}', Math.round(T.hint_cooldown_ms / 60000)), 'err');
+    startLock(den, round);
     return true;
   }
   await grantHint(round);
@@ -1609,10 +1670,17 @@ function submit(){
   else fail();
 }
 
-/* Trả ô nhập về đúng phần chữ đã lộ (vòng 2), hoặc dọn sạch (vòng 1) */
-function resetOnhap(){
+/* Trả ô nhập về đúng phần chữ đã lộ (vòng 2), hoặc dọn sạch (vòng 1).
+   `trao_phim` = trao luôn con trỏ cho người chơi: đặt ở CUỐI chuỗi (không nhảy
+   về đầu, dễ gõ chèn nhầm vào giữa) và focus sẵn để gõ được ngay, khỏi phải
+   chạm vào ô một cái nữa. */
+function resetOnhap(trao_phim){
   el.input.value = S.mode === 'progressive' ? chuoiDaLo() : '';
   S.lastLen = S.lastNoSp = el.input.value.length;
+  if(!trao_phim) return;
+  const n = el.input.value.length;
+  try{ el.input.focus({ preventScroll:true }); }catch(_){ el.input.focus(); }
+  try{ el.input.setSelectionRange(n, n); }catch(_){}
 }
 /* `le` = vừa đoán trật MỘT ký tự (vòng 2), nhẹ hơn nhập sai cả cụm */
 async function fail(le){
@@ -1635,8 +1703,8 @@ async function fail(le){
   if(locked) return;                    /* đang đếm ngược — không mở lại ô nhập */
 
   await wait(T.lock_after_bad);
-  resetOnhap();
   setInput(true);
+  resetOnhap(true);            /* focus phải đặt SAU khi bỏ disabled */
   S.busy = false;
   await say(C.dialogues.unlocked_input, 'sys');
 }
@@ -1687,7 +1755,17 @@ async function win1(){
   await load(A('anim_unlock'));
   say(C.dialogues.round1_boom, 'warn');
 
-  el.slab1.classList.remove('vis');
+  /* Đáp án RAZER KHÔNG tắt ngay. Nó nằm nguyên trên bệ đá trong lúc clip nổ
+     sập lab chạy, tới đúng lúc quả trứng vỡ (mốc slab1_out_at) mới mờ đi —
+     người chơi vẫn ngắm được thành quả suốt đoạn chuyển cảnh. */
+  el.slab1.style.transition = 'opacity .5s ease';
+  setTimeout(()=>{
+    el.slab1.style.opacity = '0';
+    setTimeout(()=>{
+      el.slab1.classList.remove('vis');
+      el.slab1.style.opacity = ''; el.slab1.style.transition = '';
+    }, 520);
+  }, T.anim_unlock * (T.slab1_out_at || 0.42));
 
   /* ═══ CHẶN LỘ ĐÁP ÁN TRONG CLIP ═══════════════════════════════════════════
      Clip nổ sập lab tự nó VẼ SẴN bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ
@@ -1715,7 +1793,7 @@ function prepRound2(){
   el.bg.style.opacity = '1';
   el.bg.style.backgroundImage = url2;
   el.dragon.style.backgroundImage = url2;
-  el.hotZoom.style.backgroundImage = url2;
+  el.hotZoom.style.backgroundImage = url2; el.hotRim.style.backgroundImage = url2;
   el.slab2.style.setProperty('--veil-f', C.round2.veil_filter);
   S.revMap2 = buildSlab(el.row2, C.round2.scrambled);
   el.slab2.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url2);
@@ -1971,7 +2049,7 @@ function galleryPaint(r){
 
   if(r === 2){
     el.dragon.style.backgroundImage = url;
-    el.hotZoom.style.backgroundImage = url;
+    el.hotZoom.style.backgroundImage = url; el.hotRim.style.backgroundImage = url;
   }
   el.dragon.className = 'dragon-layer' + (r === 2 ? ' on empowered' : '');
   el.aura.className   = 'aura'         + (r === 2 ? ' on empowered' : '');
@@ -2080,20 +2158,58 @@ function owTru(){
   owHienLuot();
 }
 function owConLai(){ return Math.max(0, (OW.moi_ngay || 10) - owLuot()); }
+/* Khoá nào khai bằng MẢNG thì mỗi lần bốc ngẫu nhiên một câu */
+function owCau(v){
+  return Array.isArray(v) ? (v[(Math.random() * v.length) | 0] || '') : (v || '');
+}
+/* {N} = số câu còn lại · {T} = tổng số câu mỗi ngày */
+function owDem(mau){
+  return owCau(mau).replace('{N}', owConLai()).replace('{T}', OW.moi_ngay || 10);
+}
 function owHienLuot(){
   const n = owConLai();
   el.owQuota.textContent = n + '/' + (OW.moi_ngay || 10);
   [...el.owbar.querySelectorAll('.chip')].forEach(c=> c.disabled = n <= 0 || owBan);
   if(n <= 0) setInput(false);
 }
-function owChips(){
-  [...el.owbar.querySelectorAll('.chip')].forEach(c=> c.remove());
-  (OW.goi_y || []).forEach(t=>{
-    const b = document.createElement('button');
-    b.className = 'chip'; b.type = 'button'; b.textContent = t;
-    b.addEventListener('click', ()=>{ el.input.value = t; owGui(); });
+/* ═══ KHO CÂU GỢI Ý ════════════════════════════════════════════════════════
+   Mỗi lúc chỉ bày ĐÚNG MỘT gợi ý — ba câu một lúc thì mắt phải đọc hết rồi mới
+   chọn, mà chọn xong vẫn thấy hai câu thừa nằm đó.
+     • `ref`     — câu mẫu ưu tiên, dùng trước và đúng thứ tự.
+     • `ref_kho` — hết câu ưu tiên thì bốc ngẫu nhiên, KHÔNG lặp lại cho tới khi
+                   vét hết kho (nhớ trong `owDaDung`).
+   Đổi câu khi: vừa bấm dùng câu đó, hoặc đã hỏi thêm `ref_doi_sau` câu. */
+let owRefI = 0, owDaDung = [], owHoiTuKhiDoi = 0;
+
+function owBocRef(){
+  const uu = OW.ref || [], kho = OW.ref_kho || [];
+  if(owRefI < uu.length) return uu[owRefI++];
+  let con = kho.filter(t=> !owDaDung.includes(t));
+  if(!con.length){ owDaDung = []; con = kho.slice(); }
+  if(!con.length) return uu[uu.length - 1] || '';
+  const t = con[(Math.random() * con.length) | 0];
+  owDaDung.push(t);
+  return t;
+}
+function owChips(doi){
+  let b = el.owbar.querySelector('.chip');
+  if(!b){
+    b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button';
+    b.addEventListener('click', ()=>{
+      if(b.disabled) return;
+      el.input.value = b.textContent;
+      owChips(true);                    /* dùng rồi thì thay câu khác ngay */
+      owGui();
+    });
     el.owbar.appendChild(b);
-  });
+    doi = true;
+  }
+  if(doi){
+    owHoiTuKhiDoi = 0;
+    b.style.opacity = '0';
+    setTimeout(()=>{ b.textContent = owBocRef(); b.style.opacity = ''; }, 160);
+  }
 }
 async function owBat(){
   if(owOn) return;
@@ -2115,7 +2231,7 @@ async function owBat(){
   owMat('chao', OW.mat_chao_ms || 3000);
   clearNarr();
   el.owbar.hidden = false;
-  owChips(); owHienLuot();
+  owChips(); owHienLuot();  /* owChips tự bốc câu đầu */
   showCtrl(true);
   setInput(owConLai() > 0, OW.placeholder || '...');
   el.unlock.textContent = OW.nut_gui || 'GUI';
@@ -2128,12 +2244,13 @@ async function owBat(){
   const doi = narrEra;
   await sayAll((OW.chao || []).map(t=> t.replace('{N}', OW.moi_ngay || 10)), 'cy');
   if(narrEra !== doi) return;            /* đã bấm sang mục khác giữa chừng */
-  if(owConLai() <= 0) say(OW.het_luot || '', 'warn');
-  else say((OW.con_lai || '> {N}').replace('{N}', owConLai()), 'sys');
+  if(owConLai() <= 0) say(owCau(OW.het_luot), 'warn');
+  else say(owDem(OW.con_lai), 'sys');
 }
 function owTat(){
   if(!owOn) return;
   owOn = false;
+  owRefI = 0; owHoiTuKhiDoi = 0;      /* lần sau lại bắt đầu từ câu mẫu */
   owMatTat();
   CAM.enabled = true;
   el.hint.style.visibility = '';
@@ -2151,7 +2268,7 @@ async function owGui(){
   if(!owOn || owBan) return;
   const q = el.input.value.trim();
   if(!q) return;
-  if(owConLai() <= 0){ say(OW.het_luot || '', 'warn'); return; }
+  if(owConLai() <= 0){ say(owCau(OW.het_luot), 'warn'); return; }
   owBan = true;
   const doi = narrEra;
   el.input.value = '';
@@ -2170,12 +2287,13 @@ async function owGui(){
   try{
     const r = await fetch(OW.endpoint || '/api/chat', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ hoi:q, su:owSu.slice(-6), tinh_cach: OW.tinh_cach || '' })
+      /* Không gửi tính cách lên nữa — giọng nhân vật nằm ở api/_lib/tinh-cach.js */
+      body: JSON.stringify({ hoi:q, su:owSu.slice(-6) })
     });
     const j = await r.json().catch(()=> ({}));
     if(r.ok && j.dap) dap = String(j.dap).trim();
-    else loi = j.loi === 'chua_co_khoa' ? (OW.chua_noi || '') : (OW.loi_mang || '');
-  }catch(e){ loi = OW.loi_mang || ''; }
+    else loi = j.loi === 'chua_co_khoa' ? owCau(OW.chua_noi) : owCau(OW.loi_mang);
+  }catch(e){ loi = owCau(OW.loi_mang); }
   /* Máy trả lời nhanh quá thì nét "đăm chiêu" chỉ loé một cái rồi mất, nhìn
      như robot không kịp nghĩ. Giữ lại đủ một nhịp cho ra dáng. */
   await wait(Math.max(0, (OW.mat_nghi_min_ms || 800) - (Date.now() - nghiTu)));
@@ -2187,8 +2305,10 @@ async function owGui(){
     owTru();
     owMat('gat', OW.mat_gat_ms || 1800);   /* gật một cái rồi cúi xuống nghỉ */
     await say('> ' + dap, 'npc');
-    if(owConLai() > 0) say((OW.con_lai || '> {N}').replace('{N}', owConLai()), 'sys');
-    else say(OW.het_luot || '', 'warn');
+    /* Hỏi đủ `ref_doi_sau` câu mà vẫn còn ngồi đây thì thay gợi ý mới */
+    if(++owHoiTuKhiDoi >= (OW.ref_doi_sau || 2)) owChips(true);
+    if(owConLai() > 0) say(owDem(OW.con_lai), 'sys');
+    else say(owCau(OW.het_luot), 'warn');
   }else{
     owMat('nhin');                    /* hỏng thì thôi, về nét nghỉ */
     await say(loi, 'err');            /* hỏng đường truyền thì KHÔNG trừ lượt */

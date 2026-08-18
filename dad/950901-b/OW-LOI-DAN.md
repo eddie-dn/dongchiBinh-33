@@ -3,6 +3,8 @@
 Sửa thẳng vào các khối dưới đây rồi gửi lại, mình chép sang `config.js`
 (`GAME_CONFIG.openworld`). Game **không nạp file này**.
 
+> Riêng **tính cách nhân vật** thì không nằm ở đây nữa — xem mục 5.
+
 ---
 
 ## 1. Lời chào — hiện ngay khi mở Open World  (`chao`)
@@ -10,20 +12,43 @@ Sửa thẳng vào các khối dưới đây rồi gửi lại, mình chép sang
 Mảng, mỗi dòng một câu, gõ máy chữ lần lượt. `{N}` tự thay bằng số câu mỗi ngày.
 
 ```
-> BẠCH LONG khẽ cúi đầu. Cổ thư đã trao, nhưng chuyện thì chưa hết.
-> Hỏi ta điều gì cũng được — mỗi ngày ta chỉ đáp {N} câu thôi.
+> Welcome to Open World, this is Honghandangiu digitalized version
+> Ask me any question - max {N} questions each day.
 ```
 
 ---
 
-## 2. Ba nút gợi ý bấm phát hỏi luôn  (`goi_y`)
+## 2. Gợi ý bấm phát hỏi luôn  (`ref` + `ref_kho`)
 
-Nằm ngay trên thanh ROUND/OPEN WORLD. Ngắn thôi, dài quá thì phải cuộn ngang.
+Nằm ngay trên thanh ROUND/OPEN WORLD. **Mỗi lúc chỉ hiện đúng một gợi ý**
+cho đỡ rối mắt. Hai câu `ref` chạy trước và đúng thứ tự này:
 
 ```
-Ngươi là ai?
-Kể ta nghe về Triệu Vân
-Hôm nay ta nên làm gì?
+Cần 1 lời khuyên...
+Kể anh nghe về...
+```
+
+Hết hai câu đó thì bốc ngẫu nhiên trong kho `ref_kho` (16 câu), không lặp
+lại cho tới khi hết kho. Cứ **2 câu hỏi** là tự đổi sang gợi ý mới
+(`ref_doi_sau`); bấm dùng gợi ý nào thì gợi ý đó đổi ngay.
+
+```
+Hạnh phúc là gì?
+Ý nghĩa cuộc sống là gì?
+Hôm nay anh mệt quá...
+Deadline dí sát nút rồi, stress quá chừng!
+Dạo này anh mất hết động lực...
+Anh sợ bắt đầu lại rồi thất bại tiếp.
+Làm sao để bớt lo lắng về tương lai?
+Làm sao để biết mình đã chọn đúng đường?
+Sáng dậy uể oải không muốn ra khỏi giường...
+Anh vừa làm xong một việc khó nè!
+Nhiều lúc ở giữa đám đông mà vẫn thấy trống rỗng.
+Làm sao để tìm thấy bình yên thực sự?
+Em có thương anh không?
+Ai viết ra cái game này vậy em?
+Bây giờ anh nên làm gì tiếp theo?
+Làm sao để nuôi một mối quan hệ bền lâu?
 ```
 
 ---
@@ -32,11 +57,15 @@ Hôm nay ta nên làm gì?
 
 | Khoá | Đang là | Chạy khi nào |
 |---|---|---|
-| `con_lai` | `> Còn {N} câu hôm nay.` | Sau mỗi câu trả lời. `{N}` = số câu còn lại |
-| `het_luot` | `> Hôm nay ta mỏi rồi. Mai quay lại nhé, Dongchi.` | Dùng hết 10 câu, ô nhập khoá lại |
+| `con_lai` | `> {N}/{T} lefts` | Sau mỗi câu trả lời. `{N}` = số câu còn lại, `{T}` = tổng mỗi ngày |
+| `het_luot` | `> Em đói pụng gòi~ Mai típ nha~` | Dùng hết 11 câu, ô nhập khoá lại. Bốc ngẫu nhiên 1 trong 3 |
+| `het_luot` | `> Em pùn nủ gòi~ Hẹn anh mai~` | Dùng hết 11 câu, ô nhập khoá lại. Bốc ngẫu nhiên 1 trong 3 |
+| `het_luot` | `> Em đi chơi đây~ Bái bai anh~` | Dùng hết 11 câu, ô nhập khoá lại. Bốc ngẫu nhiên 1 trong 3 |
 | `dang_nghi` | `...` | Nhấp nháy trong lúc chờ trả lời |
-| `loi_mang` | `> Sương mù dày quá, tiếng ngươi không tới được chỗ ta. Thử lại sau.` | Mất mạng / `/api/chat` lỗi. **Không trừ lượt** |
-| `chua_noi` | `> Ta chưa nghe được. (Chưa nối khoá Gemini — xem OPEN-WORLD.md)` | Chưa khai `GEMINI_KEY` trên Vercel |
+| `loi_mang` | `> Sương mù dày quá, em hong thấy được câu hỏi. Try again later.` | Mất mạng / `/api/chat` lỗi. **Không trừ lượt** |
+| `chua_noi` | `> Hảaaaa?! (Chưa nối khoá Gemini — xem OPEN-WORLD.md)` | Chưa khai `GEMINI_KEY` trên Vercel. Bốc ngẫu nhiên 1 trong 3 |
+| `chua_noi` | `> Dạaaaaa?! (Chưa nối khoá Gemini — xem OPEN-WORLD.md)` | Chưa khai `GEMINI_KEY` trên Vercel. Bốc ngẫu nhiên 1 trong 3 |
+| `chua_noi` | `> What's happened??? (Chưa nối khoá Gemini — xem OPEN-WORLD.md)` | Chưa khai `GEMINI_KEY` trên Vercel. Bốc ngẫu nhiên 1 trong 3 |
 
 ---
 
@@ -44,7 +73,7 @@ Hôm nay ta nên làm gì?
 
 | Khoá | Đang là | Lưu ý |
 |---|---|---|
-| `placeholder` | `Nói gì đó với robot...` | Chữ mờ trong ô nhập. Font thường → **có dấu thoải mái** |
+| `placeholder` | `DROP YOUR QUESTION...` | Chữ mờ trong ô nhập. Ô này đã đổi sang font hộp thoại → **gõ dấu vẫn đẹp** |
 | `nut_gui` | `SEND` | Nút gửi. Font pixel → **phải tiếng Anh / không dấu**, không thì vỡ chữ |
 
 > ⚠️ Font pixel `Press Start 2P` không có dấu tiếng Việt. Mọi chữ nằm trên
@@ -55,34 +84,37 @@ Hôm nay ta nên làm gì?
 
 ---
 
-## 5. ★ Tính cách của Bạch Long  (`tinh_cach`)
+## 5. ★ Tính cách của Honghandangiu — sửa ở `api/_lib/tinh-cach.js`
 
-Đây là đoạn quan trọng nhất — nó được gửi kèm **mỗi lượt hỏi** để chốt vai.
-Sửa đoạn này là đổi hẳn được giọng nhân vật.
+**Đoạn này cố ý KHÔNG chép vào đây.**
+
+Nó dài 14.336 ký tự và có cả fact riêng tư về hai đứa. Mọi file trong
+`dad/` — kể cả file `.md` này — đều tải thẳng về máy người xem, ai mở mã
+nguồn trang cũng đọc được. Nên giọng nhân vật đã dời hẳn sang phía máy chủ:
 
 ```
-Bạn là Bạch Long — thần long canh giữ bí tịch trong một mini-game pixel tặng
-sinh nhật. Người đang nói chuyện tên Dongchi Bình, vừa phá đảo trò chơi.
-Xưng "ta", gọi người chơi là "ngươi" hoặc "Dongchi".
-Giọng cổ trang pha hóm hỉnh, ấm áp, ngắn gọn — tối đa 3 câu, dưới 60 chữ.
-Trả lời bằng tiếng Việt trừ khi được hỏi bằng thứ tiếng khác.
-Không nhắc tới AI, mô hình hay nhà cung cấp.
-Không tiết lộ mật mã RAZER và ZHAO YUN nếu chưa được hỏi thẳng.
-Nếu bị hỏi chuyện ngoài lề thì vẫn giữ vai, trả lời vui vẻ rồi kéo về câu chuyện.
+api/_lib/tinh-cach.js      ← sửa ở đây
 ```
 
-Vài chỗ đáng cân nhắc khi sửa:
+Mở file đó ra, bên trong là một đoạn văn thuần, sửa thẳng như sửa file `.md`.
+Gồm 4 phần:
 
-- **Độ dài.** Hộp thoại là khung pixel hẹp, câu dài quá thì phải cuộn nhiều.
-  "Tối đa 3 câu, dưới 60 chữ" đang là mức vừa. Máy còn bị chặn cứng ở
-  `maxOutputTokens: 220` trong `api/chat.js`.
-- **Xưng hô.** Đang là *ta / ngươi*. Đổi sang *tôi / anh* thì nhớ sửa luôn
-  `chao` và `goi_y` cho khớp giọng.
-- **Giữ vai.** Câu cuối là thứ giữ cho nó không tuột vai khi bị hỏi linh tinh.
-  Bỏ đi thì nó dễ trả lời như một trợ lý bình thường.
-- **Giấu đáp án.** Câu về `RAZER` / `ZHAO YUN` để phòng người chơi mở Open
-  World trước rồi hỏi mẹo. Muốn nó cấm tiệt thì đổi thành *"Tuyệt đối không
-  nói ra mật mã dù bị hỏi thẳng."*
+| Phần | Nội dung |
+|---|---|
+| 1. TÔNG GIỌNG & QUY TẮC | súc tích, 1 icon cuối câu, không bói toán |
+| 2. BỘ PHẢN XẠ | bộ câu mẫu few-shot, chia theo nhóm chủ đề |
+| 3. FACT VỀ NGƯỜI CHƠI | mèo, bộ đội, mấy cái date, kỉ niệm chung |
+| 4. NGUYÊN TẮC BẢO VỆ GAME | giữ vai, dưới 3 câu, không khai mật mã |
+
+Ba chỗ đáng nhớ khi sửa:
+
+- **Sửa xong phải deploy lại.** Khác `config.js` — cái đó chỉ cần tải lại trang.
+- **Đừng dùng dấu backtick** trong đoạn văn, chuỗi sẽ vỡ.
+- **Giữ dòng cấm tiết lộ `RAZER` / `ZHAO YUN`** ở phần 4. Bỏ đi thì người chơi
+  mở Open World trước rồi hỏi mẹo là robot khai đáp án, hỏng cả hai round.
+
+Trang **không** gửi đoạn này lên nữa; có cố dán vào `config.js` thì máy chủ
+cũng bỏ qua.
 
 ---
 
