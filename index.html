@@ -568,32 +568,67 @@ a.file:active{background:rgba(242,180,65,.07)}
 /* ── Khung Tổ kỹ thuật: chân dung có hào quang ── */
 /* Quầng sáng ::before nở ra 26% ngoài khung ảnh, nên margin phải cộng thêm phần
    đó thì mắt mới thấy CÂN. Lấy 112px × 26% ≈ 29px làm mốc, trên dưới bằng nhau. */
-.cred-hero{position:relative;width:112px;height:112px;margin:44px auto 42px;flex:none}
-/* hai lớp ánh sáng: quầng ngoài thở chậm + vòng gradient xoay — lấy ý từ splash art,
-   nhưng giữ tông amber/xanh của khung cho khỏi lạc bộ */
-.cred-hero::before{content:"";position:absolute;inset:-26%;border-radius:50%;
-  background:radial-gradient(circle at 50% 45%, rgba(242,180,65,.5) 0%,
-    rgba(242,180,65,.18) 38%, rgba(56,189,248,.12) 62%, rgba(56,189,248,0) 78%);
-  filter:blur(3px);animation:heroBreath 4.6s ease-in-out infinite}
-.cred-hero::after{content:"";position:absolute;inset:-10%;border-radius:50%;
-  background:conic-gradient(from 0deg, rgba(242,180,65,0) 0deg, rgba(242,180,65,.62) 60deg,
-    rgba(255,255,255,.9) 96deg, rgba(56,189,248,.5) 150deg, rgba(242,180,65,0) 230deg,
-    rgba(242,180,65,0) 360deg);
-  -webkit-mask:radial-gradient(circle, transparent 63%, #000 65%, #000 72%, transparent 74%);
-  mask:radial-gradient(circle, transparent 63%, #000 65%, #000 72%, transparent 74%);
-  animation:heroSpin 9s linear infinite}
-@keyframes heroBreath{0%,100%{opacity:.62;transform:scale(.97)}50%{opacity:1;transform:scale(1.04)}}
-@keyframes heroSpin{to{transform:rotate(360deg)}}
-.cred-hero .cut{position:absolute;inset:0;border-radius:50%;overflow:hidden;
-  border:1.5px solid rgba(242,180,65,.55);
-  box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 22px rgba(56,189,248,.22)}
+
+/* ═══════════ HỘP CHÀO (greeting) — một khuôn dùng cho MỌI trạng thái ═══════════
+   Chữ nhật 16:9 y như khung ảnh trong Collected, cùng góc bo, cùng quầng sáng —
+   để người chơi thấy hai chỗ là một họ. Trạng thái khác nhau chỉ đổi ẢNH, MỘT
+   dòng chữ, và tông viền; KHÔNG đổi bố cục, để mắt không phải học lại.
+   Theme: `.hh.zoey` chuyển sang bảng màu pastel của Map 3. */
+.hhw{position:fixed;inset:0;z-index:120;display:none;align-items:flex-end;
+  justify-content:center;padding:0 14px 22px;background:rgba(4,11,24,.5);
+  backdrop-filter:blur(3px);opacity:0;transition:opacity .32s}
+.hhw.on{display:flex}
+.hhw.show{opacity:1}
+.hh{position:relative;width:100%;max-width:340px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(168deg,#102A4C 0%,#0B1B3A 100%);
+  border:1px solid rgba(242,180,65,.4);box-shadow:0 22px 54px rgba(0,0,0,.55);
+  transform:translateY(14px);transition:transform .32s}
+.hhw.show .hh{transform:none}
+.hh-pic{position:relative;width:100%;aspect-ratio:800/446;background:#0B1B3A;
+  overflow:hidden;display:block}
+.hh-pic img{width:100%;height:100%;object-fit:cover;display:block;
+  animation:heroZoom 14s ease-in-out infinite}
+.hh-body{padding:13px 15px 15px}
+.hh-lab{margin:0;font-family:"Oswald";font-size:8.5px;font-weight:600;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--amber)}
+.hh-txt{margin:7px 0 0;font-size:13.5px;line-height:1.6;color:rgba(234,240,247,.9)}
+.hh-x{position:absolute;top:8px;right:9px;z-index:2;width:28px;height:28px;
+  border:none;border-radius:50%;cursor:pointer;font-family:"Oswald";font-size:14px;
+  color:#fff;background:rgba(6,16,31,.62);backdrop-filter:blur(4px)}
+/* Theme Zoey — dùng khi trạng thái thuộc về Map 3 */
+.hh.zoey{background:linear-gradient(168deg,#F7EEFB 0%,#F2E2EE 100%);
+  border-color:rgba(200,168,233,.75)}
+.hh.zoey .hh-lab{color:#B07FD0}
+.hh.zoey .hh-txt{color:#3E2F56}
+.hh.zoey .hh-x{color:#3E2F56;background:rgba(255,255,255,.72)}
+@media (prefers-reduced-motion:reduce){ .hh-pic img{animation:none} }
+/* KHUNG ẢNH — chữ nhật 16:9, đúng tỉ lệ file webp (800×446).
+   Trước là khung TRÒN 112px: ảnh động vẽ cả người lẫn khung cảnh, cắt tròn 112px
+   thì còn mỗi cái mặt bé xíu, không đọc ra gì. Chữ nhật thì thấy trọn khung hình. */
+.cred-hero{position:relative;width:min(300px,86%);aspect-ratio:800/446;
+  margin:26px auto 24px;flex:none}
+/* Quầng sáng giữ nguyên tinh thần cũ nhưng bo theo hình chữ nhật */
+.cred-hero::before{content:"";position:absolute;inset:-14%;border-radius:22px;
+  background:radial-gradient(60% 70% at 50% 45%, rgba(242,180,65,.42) 0%,
+    rgba(242,180,65,.14) 42%, rgba(56,189,248,.1) 66%, rgba(56,189,248,0) 80%);
+  filter:blur(4px);animation:heroBreath 4.6s ease-in-out infinite}
+@keyframes heroBreath{0%,100%{opacity:.6;transform:scale(.98)}50%{opacity:1;transform:scale(1.03)}}
+.cred-hero .cut{position:absolute;inset:0;border-radius:14px;overflow:hidden;
+  border:1.5px solid rgba(242,180,65,.5);
+  box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 22px rgba(56,189,248,.18)}
+/* Zoom NHẸ và chậm cho ảnh có hơi thở, không phải hiệu ứng để người ta chú ý */
 .cred-hero img{width:100%;height:100%;object-fit:cover;display:block;
-  filter:saturate(1.06) contrast(1.04)}
-/* chưa có ảnh thì vẫn ra một quầng sáng tử tế, không vỡ bố cục */
+  filter:saturate(1.06) contrast(1.04);
+  animation:heroZoom 14s ease-in-out infinite}
+@keyframes heroZoom{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){
+  .cred-hero img{animation:none}
+  .cred-hero::before{animation:none}
+}
 .cred-hero .cut::after{content:"";position:absolute;inset:0;
   background:linear-gradient(158deg, rgba(242,180,65,.34), rgba(56,189,248,.26) 58%, rgba(11,27,58,.6));
   mix-blend-mode:screen;pointer-events:none}
-.cred-hero .fall{position:absolute;inset:0;border-radius:50%;
+.cred-hero .fall{position:absolute;inset:0;border-radius:14px;
   background:radial-gradient(circle at 40% 34%, #F2B441, #1E4E79 70%);opacity:.9}
 .cred-hi{margin:0;display:flex;align-items:center;justify-content:center;gap:7px;
   font-family:"Oswald";font-size:9px;
@@ -912,7 +947,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 17-Aug-2026 · V17.05">Last updated 17-Aug-2026 · V17.05</span>
+        <span class="stamp" id="stamp" data-base="Last updated 18-Aug-2026 · V17.04">Last updated 18-Aug-2026 · V17.04</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1051,6 +1086,18 @@ a.file:active{background:rgba(242,180,65,.07)}
     </div>
   </div>
 
+
+  <div class="hhw" id="hhw" aria-hidden="true">
+    <div class="hh" id="hhBox" role="dialog" aria-modal="true" aria-labelledby="hhTxt">
+      <button class="hh-x" id="hhX" aria-label="Đóng">&#10005;</button>
+      <span class="hh-pic" id="hhCut"><img id="hhPic" alt="" decoding="async"></span>
+      <div class="hh-body">
+        <p class="hh-lab" id="hhLab"></p>
+        <p class="hh-txt" id="hhTxt"></p>
+      </div>
+    </div>
+  </div>
+
   <div class="cxw" id="credw" aria-hidden="true">
     <div class="cxp" role="dialog" aria-modal="true" aria-labelledby="credTitle">
       <button class="cx-close" id="credClose" aria-label="Đóng">&#10005;</button>
@@ -1064,7 +1111,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <div class="cred-hero">
         <span class="cut">
           <span class="fall"></span>
-          <img id="credPic" src="/han/honghan.jpg" alt=""
+          <img id="credPic" alt="" loading="lazy" decoding="async"
                onerror="this.style.display='none'">
         </span>
       </div>
@@ -1433,6 +1480,23 @@ let visits = 0, seasonMark = null, eggDone = false, winCheer = false, winParty =
    màn chúc mừng sinh nhật. Ghé TRƯỚC 01-09 thì không đụng tới: đồng hồ đếm
    ngược vẫn chạy như thường và ngày 01-09 vẫn là cò. */
 let eggG1 = false;
+/* Hộp chào: `hhNgay` ngày đã chào gần nhất · `hhG2`/`hhHan` đã chào mừng hai
+   mốc đó chưa · `g2Done` đã xem xong màn cuối Gate 2 · `g2Open` đã vào được
+   Open World bên trong Gate 2 (vào rồi thì thôi nhắc chế độ xem lại). */
+let hhNgay = null, hhG2 = '', hhHan = '', g2Done = false, g2Open = false;
+/* Khai Ở ĐÂY chứ không để cạnh hàm dùng nó: `openCredFx` nạp ảnh qua hhSrc(),
+   mà openCredFx đứng trước khối hộp chào — const khai sau là dính temporal dead
+   zone y như bẫy ở mục 20 của README. */
+const HH_DIR = '/assets/';
+const HH = {
+  welcome: 'HH_1_welcome.webp',
+  back:    'HH_2_welcome_back.webp',
+  happy:   'HH_2_happy.webp',
+  excited: 'HH_3_excited.webp',
+  hello:   'HH_4_hello trong easter egg.webp',   /* tên file có DẤU CÁCH */
+  idle:    'HH_5_idle_afk.webp'
+};
+function hhSrc(k){ return HH_DIR + encodeURIComponent(HH[k]); }
 let pinFiles = {};
 /* Khai báo ở đây, TRƯỚC boot(). Đặt sau boot() sẽ vướng "temporal dead zone"
    của `let` và ném ReferenceError ngay khi nạp trang. */
@@ -1790,6 +1854,8 @@ const store = {
   eggAn = s.eggAn || 0;
   g2Hack = !!s.g2Hack;
   eggG1 = !!s.eggG1;
+  hhNgay = s.hhNgay || null; hhG2 = s.hhG2 || ''; hhHan = s.hhHan || '';
+  g2Done = !!s.g2Done; g2Open = !!s.g2Open;
   eggWin = !!s.eggWin;
   pinFail = s.pinFail || 0;
   pinFailDay = s.pinFailDay || null;
@@ -1823,7 +1889,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3313,6 +3379,7 @@ $('stampZone').addEventListener('click', ()=>{
    Lần sau: chỉ nhấp nháy màu, muốn xem lại thì bấm nút cuộn phim. */
 const FW_HREF = '/phao-hoa';
 function openCredFx(){
+  if(!$('credPic').getAttribute('src')) $('credPic').src = hhSrc('hello');
   $('credRp').classList.toggle('on', eggParty);
   /* BẪY ĐÃ VẤP — "mở được rồi mà chẳng thấy pháo hoa đâu".
      Bản đầu buộc màn ăn mừng vào cờ `eggParty`, tức ĐÚNG MỘT LẦN TRONG ĐỜI bản
@@ -3372,6 +3439,133 @@ function closeCred(){
 }
 $('credClose').addEventListener('click', closeCred);
 credw.addEventListener('click', e=>{ if(e.target === credw) closeCred(); });
+
+
+/* ═══════════════════════════════════════════════════════════════
+   HỘP CHÀO — sáu trạng thái, một khuôn
+   ═══════════════════════════════════════════════════════════════
+   BẢNG TRẠNG THÁI (ưu tiên từ trên xuống, mỗi lần mở trang chỉ hiện MỘT hộp —
+   dồn ba bốn lời chào vào một lượt là phiền, không phải là chăm sóc):
+
+   | Trạng thái | Ảnh              | Khi nào                                   |
+   |------------|------------------|-------------------------------------------|
+   | gate2      | HH_3_excited     | Lần đầu quay ra bản đồ sau khi xong Gate 2 |
+   | hanwin     | HH_2_happy       | Lần đầu quay ra sau khi giải hết Zoey's Castle |
+   | daily      | HH_1 / HH_2_back | Phiên đầu tiên trong ngày                 |
+   | idle       | HH_5_idle_afk    | Rời máy ≥ IDLE_PHUT phút rồi quay lại     |
+
+   ẢNH RẤT NẶNG (mỗi file ~15 MB, webp động 121 khung) nên KHÔNG preload, KHÔNG
+   gắn sẵn `src` vào thẻ img trong HTML. Chỉ nạp đúng file của trạng thái đang
+   hiện, ngay lúc hiện. */
+const IDLE_PHUT = 12;            /* rời máy bao lâu thì coi là đã đi vắng */
+const hhw = $('hhw');
+let hhT = null;
+
+function hhHien(anh, nhan, chu, zoey){
+  /* Thiếu ảnh thì GIẤU khung ảnh chứ đừng bỏ luôn lời chào: người chơi vẫn nhận
+     được câu nói, chỉ mất phần hình. Ảnh nằm ở thư mục /assets — nhánh nào chưa
+     có bộ HH thì rơi đúng vào nhánh này. */
+  const cut = $('hhCut'); cut.style.display = '';
+  const im = $('hhPic');
+  im.onerror = ()=>{ cut.style.display = 'none'; };
+  im.src = hhSrc(anh);
+  $('hhLab').textContent = nhan;
+  $('hhTxt').innerHTML = chu;
+  $('hhBox').classList.toggle('zoey', !!zoey);
+  hhw.classList.add('on'); hhw.setAttribute('aria-hidden','false');
+  requestAnimationFrame(()=> hhw.classList.add('show'));
+  ping('hop_chao', nhan);
+  clearTimeout(hhT);
+  hhT = setTimeout(hhDong, 12000);      /* tự rút, khỏi bắt người ta bấm */
+}
+function hhDong(){
+  clearTimeout(hhT);
+  hhw.classList.remove('show');
+  setTimeout(()=>{
+    hhw.classList.remove('on'); hhw.setAttribute('aria-hidden','true');
+    $('hhPic').removeAttribute('src');   /* thả ảnh nặng ra khỏi bộ nhớ */
+  }, 340);
+}
+$('hhX').addEventListener('click', hhDong);
+hhw.addEventListener('click', e=>{ if(e.target === hhw) hhDong(); });
+
+/* Câu chào của phiên đầu trong ngày. Thử xin một câu từ /api/quote (server tự
+   gọi Gemini bằng khoá giấu trong biến môi trường — KHÔNG bao giờ để khoá trong
+   trang tĩnh). Xin không được thì dùng bộ câu tại chỗ, xoay theo ngày. */
+const HH_HOI = [
+  'Chào đồng chí ✦ Mỗi ngày là một ngày mới',
+  'Đồng chí ăn gì chưa?',
+  'Hôm nay có gì vui kể em nghe với?',
+  'Hôm nay đồng chí thấy trong người thế nào?',
+  'Có điều gì đang làm đồng chí bận lòng không?'
+];
+function hhCauNgay(){
+  const d = new Date();
+  return HH_HOI[(d.getFullYear()*372 + d.getMonth()*31 + d.getDate()) % HH_HOI.length];
+}
+function hhXinCau(xong){
+  let roi = false;
+  const chot = t => { if(roi) return; roi = true; xong(t); };
+  setTimeout(()=> chot(hhCauNgay()), 2500);      /* chậm quá thì thôi, đừng bắt chờ */
+  try{
+    fetch('/api/quote', { headers:{ 'accept':'application/json' } })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => chot((j && j.q) ? j.q : hhCauNgay()))
+      .catch(()=> chot(hhCauNgay()));
+  }catch(e){ chot(hhCauNgay()); }
+}
+
+/* Đã xong Gate 2 chưa — cờ do chính trang /dad/950901-b ghi khi màn cuối hiện ra */
+function xongGate2(){ return !!g2Done; }
+/* Đã giải hết bộ câu hỏi Zoey's Castle chưa — đọc khoá riêng của Map 3 */
+function xongHan(){
+  try{ return !!(JSON.parse(localStorage.getItem('hanv1') || '{}') || {}).done; }
+  catch(e){ return false; }
+}
+
+/* Nhắc về chế độ xem lại: mỗi ngày MỘT lần, và chỉ tới khi người chơi thật sự
+   vào được Open World bên trong Gate 2 (`g2Open`). Vào rồi thì im hẳn. */
+function hhNhac(){
+  if(g2Open || !xongGate2()) return '';
+  return ' <b>Xem lại được đó</b> — bấm nút cuộn phim trong khung Collected ✦';
+}
+
+function hhChon(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const hnay = ngay();
+  /* 1 · vừa xong Gate 2 */
+  if(xongGate2() && hhG2 !== '1'){
+    hhG2 = '1'; save();
+    hhHien('excited', 'Easter Egg · Gate 2', 'Phá đảo rồi đó đồng chí ✦ Zoey’s Castle đang đợi ở toạ độ Hà Nội.', true);
+    return;
+  }
+  /* 2 · vừa giải hết Zoey's Castle */
+  if(xongHan() && hhHan !== '1'){
+    hhHan = '1'; save();
+    hhHien('happy', 'Zoey’s Castle', 'Giải hết rồi! Em phục anh đó ✦', true);
+    return;
+  }
+  /* 3 · phiên đầu trong ngày */
+  if(hhNgay !== hnay){
+    const dau = !hhNgay;                 /* chưa từng chào lần nào = người mới */
+    hhNgay = hnay; save();
+    hhXinCau(cau => hhHien(dau ? 'welcome' : 'back',
+      dau ? 'Xin chào' : 'Welcome back', cau + hhNhac()));
+    return;
+  }
+  /* 4 · đi vắng rồi quay lại */
+  const rangoai = +(sessionStorage.getItem('hhAfk') || 0);
+  if(rangoai && Date.now() - rangoai > IDLE_PHUT*60000){
+    sessionStorage.removeItem('hhAfk');
+    hhHien('idle', 'Đồng chí đã về', 'Nãy giờ đồng chí đi đâu đó ✦');
+  }
+}
+/* Ghi mốc lúc rời màn hình để lần quay lại còn biết đã vắng bao lâu */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden){ try{ sessionStorage.setItem('hhAfk', Date.now()); }catch(e){} }
+  else hhChon();
+});
+setTimeout(hhChon, 2200);
 
 /* ═══════════ MÀN "COLLECTED: EASTER EGG" ═══════════
    Pháo hoa KHÔNG còn chạy đè lên khung này nữa — nó có hẳn trang riêng

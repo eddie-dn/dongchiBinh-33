@@ -222,6 +222,16 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .qnav-a:active{transform:scale(.9)}
 .qnav-n{font-family:"Oswald";font-size:9px;font-weight:600;letter-spacing:.22em;
   color:rgba(122,103,149,.55)}
+/* Khung ảnh chào mừng — cùng khuôn chữ nhật 16:9 với hộp chào ngoài bản đồ,
+   chỉ đổi sang tông pastel của Map 3. Ảnh nặng nên chỉ có mặt ở màn hoàn thành,
+   không nạp sẵn ở đâu khác. */
+.hh-pic{position:relative;width:100%;aspect-ratio:800/446;margin:2px 0 14px;
+  border-radius:13px;overflow:hidden;border:1px solid rgba(200,168,233,.75);
+  background:var(--lav);box-shadow:0 10px 26px rgba(120,95,160,.18)}
+.hh-pic img{width:100%;height:100%;object-fit:cover;display:block;
+  animation:hhZoom 14s ease-in-out infinite}
+@keyframes hhZoom{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){ .hh-pic img{animation:none} }
 .sign{margin-top:14px;text-align:right;font-style:italic;font-size:12px;color:rgba(122,103,149,.8)}
 
 /* ── chân trang: nút lùi · hoa cửa hậu · tem phiên bản ── */
@@ -296,7 +306,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V2.05<br>Last updated 16-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V2.06<br>Last updated 18-Aug-2026"></span>
     </span>
   </div>
 
@@ -1124,6 +1134,7 @@ function xong(vuaXong){
     '<div class="card">'
     + '<p class="q-lab pha" style="justify-content:center"><span>Phá Đảo Lòng EM</span>'
     + '<span class="tim"><i>♥</i><i>♥</i><i>♥</i></span></p>'
+    + '<div class="hh-pic"><img src="/assets/HH_2_happy.webp" alt="" decoding="async"></div>'
     + '<div class="done-tit">HongHan’s Secret</div>'
     + '<div class="done-txt">Thương gửi anh PIN</div>'
     + '<div class="pin-show">' + pin + '</div>'

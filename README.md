@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V17.03** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+**Phiên bản hiện tại: V17.04** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
 Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
@@ -381,7 +381,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 16-Aug-2026 · V17.03** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 18-Aug-2026 · V17.04** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -1268,6 +1268,69 @@ vẫn tính đủ. Chuỗi này **không bao giờ chỉ ra cách làm**: chỉ 
 
 Ngưng tay quá 900 ms là bộ đếm về 0 và lời nhắc tự rút — **bỏ cuộc thì im lại như cũ**,
 không có gì lải nhải. Tìm ra rồi (`credFound`) thì cả hệ này tắt hẳn.
+
+---
+
+## 21j. HỘP CHÀO — sáu trạng thái, một khuôn
+
+Bộ ảnh động ở `assets/HH_*.webp` (800×446, tỉ lệ 16:9). Một khuôn hộp duy nhất, mỗi
+trạng thái chỉ đổi **ảnh · một dòng chữ · tông viền** — không đổi bố cục, để mắt không
+phải học lại. `.hh.zoey` chuyển sang bảng pastel của Map 3.
+
+| Ưu tiên | Trạng thái | Ảnh | Khi nào | Cờ |
+|---|---|---|---|---|
+| 1 | `gate2` | `HH_3_excited` | Lần đầu quay ra bản đồ sau khi xong Gate 2 | `hhG2` |
+| 2 | `hanwin` | `HH_2_happy` | Lần đầu quay ra sau khi giải hết Zoey's Castle | `hhHan` |
+| 3 | `daily` | `HH_1_welcome` (lần đầu đời) / `HH_2_welcome_back` | Phiên đầu trong ngày, kèm một câu hỏi han | `hhNgay` |
+| 4 | `idle` | `HH_5_idle_afk` | Rời máy ≥ `IDLE_PHUT` (12 phút) rồi quay lại | `sessionStorage.hhAfk` |
+
+**Mỗi lần mở trang chỉ hiện MỘT hộp** — dồn ba bốn lời chào vào một lượt là phiền, không
+phải chăm sóc. Hộp tự rút sau 12 giây.
+
+`HH_4_hello trong easter egg.webp` dùng riêng cho **khung ảnh trong Collected: Easter Egg**
+— khung đó đổi từ **tròn 112 px sang chữ nhật 16:9** kèm zoom rất chậm: ảnh vẽ cả người
+lẫn khung cảnh, cắt tròn 112 px thì còn mỗi cái mặt bé xíu, không đọc ra gì.
+
+### Nhắc "xem lại" — mỗi ngày một lần, cho tới khi vào Open World
+
+Xong Gate 2 mà chưa vào được **Open World** bên trong thì lời chào đầu ngày nối thêm một
+câu nhắc về **chế độ xem lại** (nút cuộn phim trong khung Collected). Cờ dừng là
+`mtv1.g2Open`.
+
+> **CÒN THIẾU — hợp đồng cho trang Open World đang dựng:** trang đó phải ghi
+> `mtv1.g2Open = true` ngay khi vào. Chưa có dòng đó thì lời nhắc lặp lại mỗi ngày mãi.
+> Tương tự, trang Gate 2 ghi `mtv1.g2Done = true` đúng lúc **màn cuối hiện ra** (không
+> phải lúc mở trang) — bản đồ đọc cờ này để biết có nên chào không.
+
+### ẢNH RẤT NẶNG — đọc trước khi thêm chỗ dùng
+
+| | |
+|---|---|
+| Mỗi file | **~15 MB**, webp **động 121 khung** |
+| Cả bộ 6 file | **~90 MB** |
+| Mạng 4G ~5 Mbps | **~24 giây** cho một file |
+
+Vì vậy: **không preload, không gắn sẵn `src` trong HTML**. Chỉ nạp đúng file của trạng
+thái đang hiện, ngay lúc hiện; đóng hộp thì `removeAttribute('src')` để thả bộ nhớ.
+Ảnh hỏng/thiếu thì **giấu khung ảnh, vẫn giữ lời chào**.
+
+> **Nên nén lại.** Ở 800×446 mà 15 MB là quá nặng cho một trang tĩnh. Hạ chất lượng
+> (`-q 55`), giảm số khung, hoặc cắt còn ~3 giây là xuống được cỡ 1–2 MB mỗi file — nhanh
+> hơn **mười lần** mà mắt gần như không thấy khác.
+
+> **Tên file có DẤU CÁCH** (`HH_4_hello trong easter egg.webp`) nên mọi chỗ dùng đều phải
+> `encodeURIComponent`. Đổi tên thành `HH_4_hello.webp` thì gọn hơn — sửa hằng `HH` trong
+> `index.html` là xong.
+
+### `/api/quote` — câu chào đầu ngày
+
+Endpoint gọi **Gemini phía máy chủ**, khoá lấy từ biến môi trường `GEMINI_KEY`
+(hoặc `GOOGLE_API_KEY`), model đổi được bằng `GEMINI_MODEL`. **Không bao giờ để khoá
+xuống trình duyệt** — trang là HTML tĩnh, nhét khoá vào đó là công khai cho cả thế giới.
+
+Chưa khai khoá, gọi lỗi, hay chậm quá 2,5 giây thì rơi về **bộ câu có sẵn** xoay theo
+ngày (*"Đồng chí ăn gì chưa?"*, *"Hôm nay có gì vui kể em nghe với?"*…) — người chơi
+không bao giờ thấy lỗi cấu hình.
 
 ---
 
