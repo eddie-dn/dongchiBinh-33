@@ -84,7 +84,7 @@ Làm sao để nuôi một mối quan hệ bền lâu?
 
 ---
 
-## 5. ★ Tính cách của Honghandangiu — sửa ở `api/_lib/tinh-cach.js`
+## 5. ★ Tính cách của Honghandangiu — sửa ở `api/_lib/tinhcach.md`
 
 **Đoạn này cố ý KHÔNG chép vào đây.**
 
@@ -93,7 +93,8 @@ Nó dài 14.336 ký tự và có cả fact riêng tư về hai đứa. Mọi fil
 nguồn trang cũng đọc được. Nên giọng nhân vật đã dời hẳn sang phía máy chủ:
 
 ```
-api/_lib/tinh-cach.js      ← sửa ở đây
+api/_lib/tinhcach.md      ← SỬA Ở ĐÂY (markdown thuần, gõ như văn bản)
+api/_lib/tinhcach.js      ← chỉ là bộ nạp, không cần đụng
 ```
 
 Mở file đó ra, bên trong là một đoạn văn thuần, sửa thẳng như sửa file `.md`.

@@ -95,7 +95,7 @@ bao giờ hiện, cảnh cũ giữ nguyên, phần trò chuyện vẫn chạy đ
 ```
 Trang  →  POST /api/chat  {hoi, su}
               │  (hàm serverless — giữ GEMINI_KEY *và* giọng nhân vật)
-              │  + api/_lib/tinh-cach.js
+              │  + api/_lib/tinhcach.md
               ↓
         Google Gemini  →  { dap }  →  hộp thoại pixel
 ```
@@ -118,7 +118,7 @@ nhân vật. `api/chat.js` mới là chỗ cầm cả hai.
 | `goi_y` | 2 câu | ba nút gợi ý bấm phát hỏi luôn |
 | `het_luot` / `con_lai` | | báo hết lượt / còn mấy câu (`{N}`) |
 | `loi_mang` / `chua_noi` | | mất mạng / chưa khai khoá |
-| ~~`tinh_cach`~~ | | **Đã dời sang `api/_lib/tinh-cach.js`** phía máy chủ — xem mục dưới |
+| ~~`tinh_cach`~~ | | **Đã dời sang `api/_lib/tinhcach.md`** phía máy chủ — xem mục dưới |
 
 ### Giọng nhân vật nằm ở đâu
 
@@ -127,7 +127,7 @@ tư về hai đứa, mà mọi thứ trong `dad/` thì tải thẳng về máy n
 mã nguồn trang cũng đọc được. Nên nó đã dời hẳn sang phía máy chủ:
 
 ```
-api/_lib/tinh-cach.js
+api/_lib/tinhcach.md
 ```
 
 Thư mục `_lib` có gạch dưới ở đầu nên Vercel không biến nó thành endpoint;

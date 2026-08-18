@@ -157,13 +157,32 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 .gate-look .dem{margin:14px 0 0;font-family:"Oswald";font-size:11px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;color:rgba(219,230,243,.55)}
 .gate-look .dem b{font-size:19px;font-weight:600;color:var(--neon);letter-spacing:.04em}
-/* Góc `.corner.br` cao 22px tính từ đáy 14px → chiếm dải 14..36px. Tem để
-   bottom:14px là chồng đúng lên nét góc, nhìn như bị xén mất chữ. Đẩy tem lên
-   trên hẳn dải đó. */
-.gate-look .vstamp{position:absolute;right:14px;bottom:46px;pointer-events:none;
+/* Tem phiên bản: CĂN GIỮA dưới chân màn hình, không nhét vào góc phải nữa.
+   Góc phải thì nó chen với hai dấu ngoặc `.corner` ở hai bên và lệch hẳn khỏi
+   trục giữa mà cả trang đang dựa vào (mắt khoá · tiêu đề · đồng hồ · nút đều
+   nằm trên trục đó) — nhìn ra ngay là thừa một mẩu chữ ở rìa.
+   `left:0;right:0` + `text-align:center` để căn theo CẢ KHUNG, không phụ thuộc
+   bề rộng chữ. Hai dấu ngoặc dưới chiếm dải 14..36px tính từ đáy nhưng nằm sát
+   HAI MÉP, còn tem ở giữa nên không đụng nhau nữa — đặt bottom:14px cho tem
+   ngồi đúng giữa hai dấu ngoặc, thành một chân trang cân đối.
+   `padding` hai bên để trên máy hẹp chữ không bao giờ chạm được vào nét góc. */
+/* `pointer-events` để AUTO ở màn cổng vì tem chính là cửa hậu 10 nhịp (xem
+   khối "CỬA HẬU" trong JS). `user-select:none` cho gõ nhanh mười cái không bị
+   bôi đen chữ. Màn phát mã thì không có cửa hậu nào nên vẫn để none. */
+.gate-look .vstamp{position:absolute;left:0;right:0;bottom:14px;padding:0 44px;pointer-events:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
-  letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
+  letter-spacing:.22em;text-transform:uppercase;text-align:center;line-height:1.6;
   color:rgba(234,240,247,.32)}
+#scene-gate .vstamp{pointer-events:auto;cursor:default;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+/* Nút bỏ qua — chỉ hiện sau khi gõ đủ 10 nhịp vào tem. Để tông XÁM VIỀN chứ
+   không phải vàng như nút chính: đây là cửa phụ, không được tranh chỗ với
+   "Bắt đầu giải mã". */
+.gate-look .ma-go.skip{margin-top:10px;background:none;color:rgba(140,225,180,.9);
+  border:1px dashed rgba(140,225,180,.5);box-shadow:none;font-size:9px}
+.gate-look .ma-go.skip:active{transform:translateY(1px)}
+/* Tem nháy nhẹ vài nhịp khi cửa hậu vừa mở, cho biết là "ăn rồi" */
+#scene-gate .vstamp.hit{color:rgba(140,225,180,.85);transition:color .18s}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ② MÀN MINI-GAME PIXEL
@@ -326,9 +345,12 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Giải xong: từng ô TRƯỢT về đúng chỗ của nó khi đọc xuôi. Chữ khắc là chuỗi
    đảo (REZAR / NUY OAHZ) nên chỉ cần lật gương — ô thứ i đổi chỗ cho ô n-1-i.
    Đáp án đọc được nằm đè hẳn lên bảng cũ và ở lại luôn. */
+/* Đường cong ease dịu, KHÔNG vọt quá đích rồi dội lại (cubic-bezier cũ có
+   điểm điều khiển .9 nên chữ nảy một cái ở cuối). Cả cụm đi cùng lúc, tới nơi
+   là dừng hẳn. */
 #scene-game .slab.flip .cell{
   transform:translateX(var(--fx,0px));
-  transition:transform var(--flip,780ms) cubic-bezier(.22,.9,.24,1) var(--fd,0ms);
+  transition:transform var(--flip,780ms) cubic-bezier(.33,0,.2,1) var(--fd,0ms);
 }
 /* Mảng đất phủ riêng từng ký tự — chỉ hiện đúng lúc bới ra rồi rơi xuống. */
 #scene-game .slab .cell .dirt{
@@ -376,35 +398,68 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Idle hint: cả cụm hiện mờ một nhịp */
 #scene-game .slab.breathe .cell{animation:cellBreath 1.25s ease-in-out 1}
 @keyframes cellBreath{0%,100%{opacity:0}50%{opacity:.42;filter:brightness(1.2)}}
-/* Giải đúng → nháy sáng từng ký tự, PHẢI sang TRÁI (đúng chiều đọc ngược) */
-#scene-game .slab.solved .cell{animation:cellPop .55s ease-out both}
-@keyframes cellPop{
-  0%{opacity:0;filter:brightness(1)}
-  35%{opacity:1;filter:brightness(2.9) saturate(1.55)
-      drop-shadow(0 0 3px var(--slab-c)) drop-shadow(0 0 8px var(--slab-c)) drop-shadow(0 0 16px var(--slab-c))}
-  100%{opacity:1;filter:brightness(2.75) saturate(1.6)
-      drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 15px var(--slab-c))}
+/* Giải đúng → cả cụm sáng đều lên MỘT LẦN rồi nằm im. Không nháy lệch nhịp,
+   không nảy, không đổi cỡ: đây là ĐÁP ÁN chứ không phải màn ăn mừng. Chỉ đẩy
+   độ sáng lên một nấc so với `.shown` cho tách khỏi nền đá. */
+#scene-game .slab.solved .cell{
+  animation:none;
+  opacity:1;
+  filter:brightness(2.6) saturate(1.5)
+    drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 14px var(--slab-c));
+  transition:filter .42s ease-out,opacity .42s ease-out;
 }
+#scene-game .slab.solved .cell.blank{opacity:0!important}
 
-/* ── Mắt rồng: nhập sai thì nháy đỏ rồi trả về bình thường ───────────────── */
-/* Con ngươi rồng vốn là màu CYAN rất sáng. Trước đây lớp này để
-   `mix-blend-mode:screen` — screen(cyan sáng, đỏ) ra gần như trắng, nên nhập
-   sai mà mắt chẳng đỏ lên tí nào. Bỏ blend, phủ đỏ đặc lên hẳn, thêm quầng
-   drop-shadow cho đọc được ở cỡ 15px. */
+/* ── Mắt rồng: nhập sai thì mắt CHUYỂN ĐỎ rồi trả về bình thường ─────────── */
+/* Ba đời đã thử ở chỗ này, ghi lại cho khỏi đi vòng:
+   1. `mix-blend-mode:screen` — screen(cyan sáng, đỏ) ra gần như trắng, mắt
+      chẳng đỏ lên tí nào.
+   2. Bỏ blend, dán một đĩa đỏ đặc đè lên — đỏ thì có đỏ, nhưng thành một cục
+      sơn tròn nằm trên mặt rồng: thô, và to hơn hẳn con ngươi.
+   3. (nay) `mix-blend-mode:color` — lấy SẮC của lớp này, giữ nguyên ĐỘ SÁNG và
+      nét vẽ của con ngươi bên dưới. Kết quả là chính con mắt đổi màu, còn
+      highlight, viền mí, vảy quanh mắt vẫn nguyên vẹn. Cộng thêm khung đã dò
+      lại cho khít con ngươi (xem round2.eyes trong config), nhìn tinh hơn hẳn.
+   Quầng sáng tách hẳn ra ::after và để rất nhẹ — mắt có thần chứ không loé. */
 #scene-game .eye{
   position:absolute;display:none;opacity:0;pointer-events:none;z-index:3;
   border-radius:50%;
-  background:radial-gradient(ellipse at center,rgba(255,60,55,.99) 0%,
-             rgba(240,0,15,.92) 40%,rgba(170,0,0,.5) 66%,transparent 80%);
-  filter:drop-shadow(0 0 4px rgba(255,40,30,.95)) drop-shadow(0 0 11px rgba(255,0,0,.7));
+  background:radial-gradient(ellipse at 50% 50%,
+             rgba(255,32,28,1) 0%,rgba(255,26,22,.96) 52%,
+             rgba(230,20,16,.6) 78%,transparent 100%);
+  mix-blend-mode:color;
+}
+/* Quầng quanh con ngươi. Dùng `multiply` chứ KHÔNG dùng `screen`: screen làm
+   sáng, mà nền là con mắt cyan vốn đã rất sáng nên đỏ bị rửa thành hồng nhạt,
+   nhìn như mắt bị mờ chứ không ra giận dữ. `multiply` hạ tông xuống nên đỏ ăn
+   sâu, mắt đỏ thẫm mà vẫn giữ nguyên highlight. Inset để nhỏ (-18%) cho quầng
+   nằm gọn trong hốc mắt, không loang ra vảy quanh mặt. */
+#scene-game .eye::after{
+  content:'';position:absolute;inset:-18%;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,100,92,.66) 0%,
+             rgba(255,150,140,.3) 58%,transparent 80%);
+  mix-blend-mode:multiply;
 }
 #scene-game .eye.on{display:block}
 #scene-game .eye.flash{animation:eyeFlash .8s ease-in-out 2}
+/* Lên/xuống mượt, đỉnh KHÔNG chạm 1 — mắt hơi rực lên rồi dịu, không giật cục */
 @keyframes eyeFlash{
   0%,100%{opacity:0}
-  18%{opacity:1}
-  50%{opacity:.3}
-  82%{opacity:1}
+  30%{opacity:.9}
+  50%{opacity:.55}
+  72%{opacity:.9}
+}
+/* Máy nào không hiểu mix-blend-mode:color thì lớp này sẽ phủ đỏ đặc lên mắt.
+   Vẫn chơi được, chỉ kém khéo — hạ opacity cho đỡ thô ở trường hợp đó. */
+@supports not (mix-blend-mode:color){
+  #scene-game .eye{opacity:0;filter:none}
+  #scene-game .eye.flash{animation:eyeFlashFallback .8s ease-in-out 2}
+  @keyframes eyeFlashFallback{
+    0%,100%{opacity:0}
+    30%{opacity:.62}
+    50%{opacity:.36}
+    72%{opacity:.62}
+  }
 }
 
 /* ── Cuộn thư: không khung, chỉ phóng to thu nhỏ chính vùng ảnh đó ───────── */
@@ -762,6 +817,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
       <button class="ma-go game" id="gPlay" type="button" hidden>▶ Bắt đầu giải mã</button>
       <!-- Chưa tới ngày thì không có gì để làm ở đây — mời quay về bản đồ. -->
       <a class="ma-go ghost" id="gVeBanDo" href="/">← Về bản đồ</a>
+      <!-- Cửa hậu: gõ 10 nhịp vào tem Last updated ở chân màn hình mới hiện -->
+      <button class="ma-go skip" id="gSkip" type="button" hidden>⏭ Bỏ qua · vào thẳng màn cuối</button>
     </div>
     <span class="vstamp" id="gStamp"></span>
   </div>
@@ -977,7 +1034,7 @@ const Gate = (function(){
   const G = GATE_CONFIG, T = G.text;
   const el = { vai:$('#gVai'), tit:$('#gTit'), loi:$('#gLoi'), dem:$('#gDem'),
                play:$('#gPlay'), stamp:$('#gStamp'), back:$('#gBack'),
-               veBanDo:$('#gVeBanDo') };
+               veBanDo:$('#gVeBanDo'), skip:$('#gSkip') };
 
   const ISO = G.moc_iso.replace('{YEAR}', new Date().getFullYear());
   const MOC = new Date(ISO).getTime();
@@ -1035,11 +1092,56 @@ const Gate = (function(){
 
   el.play.addEventListener('click', ()=>{ show('game'); Game.start(); });
 
+  /* ═══ CỬA HẬU · GÕ 10 NHỊP VÀO TEM "LAST UPDATED" ════════════════════════
+     Giống hệt cửa hậu trên bản đồ (10 nhịp vào dòng Last updated ở chân
+     trang), để hai nơi cùng một luật chơi — mò ra được ở đây thì ở kia cũng
+     biết đường. Gõ đủ 10 cái hiện nút "Bỏ qua": nút đó ghi cờ phá đảo rồi vào
+     thẳng màn phát mã TYRION, từ đó bấm nút xem lại là vào được Open World.
+     Ngưng gõ 0,9 giây là đếm lại từ đầu — y như bên bản đồ.
+     Cố ý KHÔNG đếm hộ còn mấy nhịp: biết trước thì hết thú mò ra. Chỉ nháy màu
+     tem cho biết đang gõ đúng chỗ. */
+  let tapN = 0, tapT = null;
+  function moSkip(){
+    if(!el.skip.hidden) return;
+    el.skip.hidden = false;
+    el.skip.textContent = T.nut_bo_qua || '⏭ Bỏ qua · vào thẳng màn cuối';
+    fitTitle(SCENES.gate);
+  }
+  el.stamp.addEventListener('click', ()=>{
+    clearTimeout(tapT);
+    tapN++;
+    tapT = setTimeout(()=>{ tapN = 0; }, 900);
+    if(tapN >= 4){                       /* gõ đúng chỗ rồi thì nháy nhẹ cho biết */
+      el.stamp.classList.add('hit');
+      setTimeout(()=> el.stamp.classList.remove('hit'), 260);
+    }
+    if(tapN >= 10){ tapN = 0; moSkip(); }
+  });
+  /* Đã dùng cửa hậu một lần rồi thì lần sau vào là có sẵn nút, khỏi gõ lại */
+  if(Store.get().g2Skip) moSkip();
+
+  el.skip.addEventListener('click', ()=>{
+    /* Ghi ĐỦ BỘ CỜ, y như đi hết game thật: `g2Game` cho trang này nhớ là đã
+       phá đảo (lần sau vào là thẳng màn phát mã), `g2Done` cho BẢN ĐỒ bật hộp
+       chào Gate 2, `g2Xong` cho cảnh vòng 2 dựng lại ở trạng thái đã giải khi
+       bấm xem lại. Thiếu bộ cờ này thì bỏ qua xong quay ra bản đồ vẫn im ru. */
+    Store.patch({ g2Skip:true, g2Game:true, g2Done:true, g2Xong:true, eggWin:true });
+    Code.open();
+  });
+
   fitTitle(SCENES.gate);
   /* Hoãn nhịp ĐẦU sang vòng sau: khi đã qua mốc (hoặc bật cờ g2Hack), tick()
      gọi thẳng Code.open() / Game.prefetch() — hai khối đó khai báo bên dưới,
      gọi ngay tại đây là vấp TDZ và cả trang chết. */
-  setTimeout(()=>{ tick(); timer = setInterval(tick, 1000); }, 0);
+  setTimeout(()=>{
+    /* ĐÃ PHÁ ĐẢO (chơi thật hoặc đi cửa hậu) thì vào thẳng màn phát mã, KHÔNG
+       bắt xem lại đồng hồ đếm ngược. Trước đây chỉ `moCong()` mới kiểm tra cờ
+       này, mà moCong() lại chỉ chạy khi đồng hồ về 0 — nên ai bỏ qua bằng cửa
+       hậu trước ngày 01-09 thì lần sau vào vẫn thấy đồng hồ, như chưa từng
+       thắng. Kiểm ở đây là mọi đường vào đều nhất quán. */
+    if(Store.get().g2Game){ Code.open(); return; }
+    tick(); timer = setInterval(tick, 1000);
+  }, 0);
   return {};
 })();
 
@@ -1154,6 +1256,8 @@ function fitBezel(){
 const pc = v => parseFloat(v) / 100;
 /* Lớp che nới ra bao nhiêu so với ô chữ (khớp với dải nhoè trong CSS) */
 const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
+/* Bán kính nhoè = bấy nhiêu lần CHIỀU CAO bảng đá (xem ghi chú ở fitSlabs) */
+const VEIL_BLUR_K = 0.27;
 function cutOut(node, W, H, L, T2, w, h){
   node.style.width  = w.toFixed(2) + 'px';
   node.style.height = h.toFixed(2) + 'px';
@@ -1183,6 +1287,12 @@ function fitSlabs(){
       veil.style.left = (-ex).toFixed(2)+'px';
       veil.style.top  = (-ey).toFixed(2)+'px';
       cutOut(veil, W, H, L - ex, T2 - ey, SW + 2*ex, SH + 2*ey);
+      /* Bán kính nhoè phải theo CỠ Ô CHỮ, không được để số px cố định. Bảng đá
+         cao ~11px trên điện thoại nhưng ~20px trên màn hình rộng, mà blur(3.4px)
+         thì ở đâu cũng 3.4px — nên máy càng to chữ càng đọc được, đúng kiểu
+         "nhìn mắt thường vẫn thấy". Buộc nó vào chiều cao bảng đá thì che kín
+         như nhau ở mọi cỡ màn hình. */
+      slab.style.setProperty('--veil-blur', (SH * VEIL_BLUR_K).toFixed(2) + 'px');
     }
     /* Ranh giới từng ô: ưu tiên dãy `cell_edges` đo bằng dò pixel. Chia đều
        chỉ đúng khi các ký tự cách nhau bằng nhau — chuỗi có DẤU CÁCH thì không,
@@ -1418,19 +1528,23 @@ function missBlink(){
   el.input.classList.add('miss');
   setTimeout(()=> el.input.classList.remove('miss'), 520);
 }
-/* Giải đúng: nháy sáng lần lượt từ PHẢI sang TRÁI — đúng chiều đọc ngược. */
+/* Giải đúng: cả cụm sáng lên MỘT LẦN rồi đứng yên.
+   Bản trước chạy `cellPop` lệch nhịp từng ký tự (phải→trái) rồi mới trượt chỗ
+   — nhìn ra hiệu ứng ăn mừng, không ra ĐÁP ÁN. Đáp án thì phải nằm im mà đọc.
+   Nay bỏ hẳn màn nháy: bật `shown` cho nét khắc sáng đều, đợi đúng một nhịp
+   ngắn cho mắt kịp bắt, rồi sang phần xếp lại chữ. */
 function revealSolved(slab, row){
-  const cells = [...row.children], n = cells.length;
-  cells.forEach((c,i)=>{
+  const cells = [...row.children];
+  cells.forEach(c=>{
     clearTimeout(c._t);                       /* huỷ luôn nhịp bới đất đang dở */
     c.classList.remove('hit','digging');
+    c.style.animationDelay = '';
     if(!c.classList.contains('blank')) c.classList.add('shown');
-    c.style.animationDelay = ((n - 1 - i) * T.reveal_step) + 'ms';
   });
   const veil = slab.querySelector('.veil');
   if(veil) veil.style.opacity = '.45';
   slab.classList.add('solved');
-  return (n - 1) * T.reveal_step + 600;      /* tổng thời lượng màn nháy */
+  return T.solved_hold || 420;
 }
 /* Xếp lại chữ về ĐÚNG CHIỀU ĐỌC, đè hẳn lên bảng cũ.
    Chữ khắc là chuỗi đảo (REZAR / NUY OAHZ) nên đáp án chính là ảnh gương của
@@ -1457,11 +1571,14 @@ function flipSolved(slab, row, tuc_thi){
      cạnh — thành ra đọc chồng hai lớp. */
   const veil = slab.querySelector('.veil');
   if(veil){ veil.style.transition = 'opacity .45s ease'; veil.style.opacity = '1'; }
+  /* Mọi ô đi CÙNG LÚC và cùng một quãng thời gian ngắn. Trước đây mỗi ô lệch
+     nhau 40ms nên chữ trông như giãn ra rồi bay tán loạn; giờ cả cụm dịch một
+     nhịp gọn về đúng chỗ và nằm im — đọc ra là "đây là đáp án". */
   slab.style.setProperty('--flip', (tuc_thi ? 0 : T.flip_ms) + 'ms');
-  cells.forEach((c,i)=> c.style.setProperty('--fd', (tuc_thi ? 0 : i * 40) + 'ms'));
+  cells.forEach(c=> c.style.setProperty('--fd', '0ms'));
   datFx(row);
   slab.classList.add('flip');
-  return tuc_thi ? 0 : T.flip_ms + (n - 1) * 40;
+  return tuc_thi ? 0 : T.flip_ms;
 }
 
 /* ═══ GỢI Ý THEO BẬC + KHOÁ ĐẾM NGƯỢC ═════════════════════════════════════
@@ -1777,12 +1894,42 @@ async function win1(){
   prepRound2();
   const veil2 = el.slab2.querySelector('.veil');
   veil2.style.transition = 'none'; veil2.style.opacity = '0';
-  setTimeout(()=>{
-    veil2.style.transition = 'opacity ' + T.veil_in_ms + 'ms ease';
+
+  /* ── VÌ SAO PHẢI TÍNH NGƯỢC TỪ MỐC LỘ CHỮ ────────────────────────────────
+     Bản trước hẹn giờ THẢ lớp che ở 40% clip rồi cho nó mờ dần trong 700ms,
+     nên tới 48.75% mới đục hẳn — mà chữ trong clip đã hiện từ 44%. Nghĩa là
+     kể cả máy chạy mượt vẫn có một quãng lớp che còn trong suốt đè lên chữ:
+     đúng đoạn thấy loáng thoáng "NUY OAHZ". Máy lag thì hẹn giờ còn trễ hơn.
+     Nay tính NGƯỢC: chốt mốc phải-đục-xong = mốc lộ chữ, rồi lùi lại đúng
+     `veil_in_ms` để lấy điểm bắt đầu. Che xong TRƯỚC khi chữ kịp hiện. */
+  const CHU_LO_AT = T.chu_lo_at || 0.44;         /* clip tự vẽ chữ từ mốc này */
+  const kin_luc   = T.anim_unlock * CHU_LO_AT;   /* phải đục hẳn trước lúc này */
+  const bat_dau   = Math.max(0, kin_luc - T.veil_in_ms);
+
+  /* Bám ĐỒNG HỒ THẬT bằng rAF thay vì một setTimeout duy nhất: main thread bận
+     thì timer bắn trễ, còn clip webp vẫn chạy theo giờ của nó — lệch nhau là
+     lộ chữ. Vòng rAF đo lại mỗi khung nên trễ bao nhiêu cũng tự bắt kịp, và
+     nếu đã lỡ quá mốc lộ chữ thì ĐÓNG SẬP tức thì, không mờ dần nữa. */
+  const t0 = performance.now();
+  let daTha = false;
+  const thaVeil = tuc_thi =>{
+    if(daTha) return;
+    daTha = true;
+    veil2.style.transition = tuc_thi ? 'none' : ('opacity ' + T.veil_in_ms + 'ms ease');
     veil2.style.opacity = '1';
-  }, T.anim_unlock * T.veil_in_at);
+  };
+  (function canhVeil(){
+    if(daTha) return;
+    const qua = performance.now() - t0;
+    if(qua >= kin_luc){ thaVeil(true);  return; }   /* trễ mất rồi → che ngay */
+    if(qua >= bat_dau){ thaVeil(false); return; }
+    requestAnimationFrame(canhVeil);
+  })();
 
   await playClip(A('anim_unlock'), T.anim_unlock);
+  /* Chốt chặn cuối: clip tắt là cắt thẳng sang cảnh tĩnh, lớp che phải đục
+     100% ngay khoảnh khắc đó dù mọi tính toán bên trên có trượt. */
+  thaVeil(true);
   await startRound2();
 }
 
@@ -1971,7 +2118,10 @@ el.finish.addEventListener('click', async ()=>{
   closeModal();
   if(galleryOn) return;                     /* xem lại → về thẳng cảnh */
   S.done = true;
-  Store.patch({g2Game:true});          /* nhớ là đã phá đảo mini-game */
+  /* Ghi CẢ HAI tên: `g2Game` là tên riêng của trang này, `g2Done` là tên mà
+     BẢN ĐỒ đọc để biết đã xong Gate 2 (hộp chào Honghandangiu bật lên từ đây).
+     Thiếu `g2Done` thì phá đảo xong quay ra bản đồ vẫn im ru như chưa có gì. */
+  Store.patch({g2Game:true, g2Done:true});
   confetti();
   await sayAll(C.dialogues.finale, 'cy');
   await wait(1400);
@@ -2214,6 +2364,9 @@ function owChips(doi){
 async function owBat(){
   if(owOn) return;
   owOn = true;
+  /* Bản đồ đọc `g2Open` để biết người chơi đã vào tới khu trò chuyện — vào rồi
+     thì hộp chào thôi nhắc câu "xem lại được đó". */
+  if(!Store.get().g2Open) Store.patch({g2Open:true});
   owNapMat();
   el.gR1.classList.remove('on'); el.gR2.classList.remove('on');
   el.gOw.classList.add('on');
@@ -2287,7 +2440,7 @@ async function owGui(){
   try{
     const r = await fetch(OW.endpoint || '/api/chat', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      /* Không gửi tính cách lên nữa — giọng nhân vật nằm ở api/_lib/tinh-cach.js */
+      /* Không gửi tính cách lên nữa — giọng nhân vật nằm ở api/_lib/tinhcach.md */
       body: JSON.stringify({ hoi:q, su:owSu.slice(-6) })
     });
     const j = await r.json().catch(()=> ({}));
