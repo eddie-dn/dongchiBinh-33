@@ -37,13 +37,13 @@ const GATE_CONFIG = {
     moi_vao_game  : 'Cổng đã thông. Dongchi Bình đang tiến vào phòng lab.',
     da_pha_dao    : 'Phi ngựa tới Zoey’s Castle 🦄',
     nut_vao_game  : '▶ Bắt đầu giải mã',
-    nut_choi_lai_game : '↻ Chơi lại Easter Egg: Gate 2',
+    nut_choi_lai_game : 'Chơi lại',
     nut_ve_ban_do : '← Về bản đồ',
-    nut_xem_lai   : '👁 Xem lại bối cảnh',
+    nut_xem_lai   : 'Xem lại bối cảnh',
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V2.11<br>Last updated 17-Aug-2026'
+    version       : 'V03.03<br>Last updated 17-Aug-2026'
   }
 };
 
@@ -178,11 +178,12 @@ const GAME_CONFIG = {
     round1_boom       : '> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!',
 
     round2_intro: '> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.',
-    round2_hint : '> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.',
+    round2_hint : [
+      '> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.',
+      '> Bệ đá bị đất phủ kín. Mỗi ô chỉ cho thử MỘT ký tự — gõ trật là mất lượt.'
+    ],
     round2_wrong      : '> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.',
     round2_correct    : '> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...',
-    round2_uncover    : '> MỘT MẢNG ĐẤT VỪA RƠI KHỎI BỆ ĐÁ... MỘT KÝ TỰ HIỆN RA.',
-    round2_uncover_all: '> CẢ BỆ ĐÁ ĐÃ LỘ HẾT. ĐỌC KỸ ĐI DONGCHI.',
 
     locked          : '> HỆ THỐNG TẠM KHÓA... VUI LÒNG CHỜ.',
     unlocked_input  : '> ĐÃ MỞ LẠI Ô NHẬP. DONGCHI VUI LÒNG THỬ LẠI.',
@@ -230,15 +231,19 @@ const GAME_CONFIG = {
   letter_content:
 `Gửi Dongchi Bình,
 
-Em không biết anh có tới được đây không hoặc lúc này tụi mình đã nói chuyện lại với nhau chưa. Hôm anh bảo thích trang website, em đã nghĩ tới concept làm series mini-games cho anh chơi thay vì đi mua quà như dự tính. Em hy vọng anh thích.
+Tuổi mới mong anh nhiều niềm vui, sức khoẻ, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành trong mọi sự (thành công ròi sẽ tới, với anh em tin là vậy).
 
-Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp vào rất nhiều năm tới đây. Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước; đừng quá lo lắng anh nhé, just do it). 
 
-Chúc mừng sinh nhật anh. Mong năm nay anh khỏe, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành.
+Mong anh có được sự bình yên, tròn đầy mà anh hằng khao khát. Và, true happiness comes from within nên em nghĩ biết đâu dành 1 chút thời gian thăm nom lại anh-Bình-thuở-nhỏ và tìm hiểu bản thân lại là một ý hay cho anh tuổi mới này ^^. 
 
-Hết màn rồi đó. Về nhà thôi.
+Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có như thế nào, thì em có buồn nhưng cũng không ghét hay giận anh. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng và chăm sóc em.
+
+Em tin anh đã luôn làm tốt nhất trong khả năng của bản thân rồi, hãy động viên chính mình nhiều hơn anh nhé (don't talk bad about yourself, event it's joke, your brain will think it's true).
+
+Game over, farewell.
 
 — Em. Hồng Hân kí tên.
 
-p.s: Cũng có lúc em nản lòng, nhưng em nghĩ thôi vậy, design game cũng là một trong những niềm vui của em. Quá trình làm tặng anh em cũng đã thấy vui. Dù người nhận thì đáng ghét (nvm) và em cũng không chắc mình sẽ tặng anh không. You get what you deserve.`
+p.s: Building this series of mini-games for you as b-day gift brought me so much genuine joy. I'm not sure if or when I'll eventually push this live for the world, but if that day comes, it's simply because you deserve it. I poured a lot of heart into this 'brainchild' - I just hope playing it brings you as much joy as making it brought me. Enjoy!`
 };

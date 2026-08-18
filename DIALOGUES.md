@@ -45,8 +45,11 @@ hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
 **Chế độ xem lại (gallery).** Phá đảo rồi vẫn ngắm lại được hai bối cảnh mà
 không phải giải lại. Màn ② dựng lại đúng cảnh của vòng được chọn ở trạng thái
 **đã giải**: chữ sáng hết, rồng đã được tiếp sức, cuộn thư chạm được để đọc lại
-thư. Ô nhập tắt hẳn; dưới hộp thoại là thanh `VÒNG 01 · VÒNG 02 · THOÁT`. Đọc
-lại thư xong thì về thẳng cảnh, **không** bắn pháo hoa lại.
+thư. Ô nhập tắt hẳn; dưới hộp thoại là thanh `VÒNG 01 · VÒNG 02 · THOÁT`, và
+hộp thoại kể lại đúng đoạn dẫn truyện của vòng đang xem. Khung thư lúc này có
+thêm **nút `X` ở góc** để đóng nhanh — lượt chơi thật thì không có, phải bấm
+`[ HOÀN THÀNH HÀNH TRÌNH ]` cho chạy nốt màn kết. Đọc lại thư xong thì về thẳng
+cảnh, **không** bắn pháo hoa lại.
 
 > Chỗ này để dành cho ý sau: khi người chơi quay lại khung đối thoại có thể chào
 > mời gọi Gemini cho chat vài câu vu vơ mỗi ngày. Hiện **chưa** làm.
@@ -140,7 +143,8 @@ nó** làm mặt nạ theo **độ sáng** (`mask-mode: luminance`): nét khắc
 mặt đá tối xung quanh → trong suốt. Chồng **hai lớp mặt nạ giống hệt nhau** rồi
 giao nhau (`mask-composite: intersect`) = nhân hai lần alpha, mặt đá chìm hẳn,
 chỉ còn nét chữ nổi lên kèm quầng sáng. Không còn mảng chữ nhật sáng như bản
-trước. Trình duyệt quá cũ không hiểu `mask-mode` thì mất mặt nạ, ô sáng cả mảng
+trước. **Tuyệt đối không chồng thêm lớp nhoè mép trái/phải** — ô chữ chỉ rộng
+khoảng 8px, nhoè 11% là ăn đứt nét dọc của `R` và `O` nằm sát mép ô. Trình duyệt quá cũ không hiểu `mask-mode` thì mất mặt nạ, ô sáng cả mảng
 — vẫn chơi được, chỉ kém khéo hơn.
 
 > **Clip "nhập sai" cũng chiếu nguyên chữ khắc đang sáng.** Nên `.anim-layer`
@@ -168,18 +172,34 @@ chữ nào**. Chữ lộ dần và **lộ tới đâu giữ sáng tới đó**:
 |---|---|
 | Nhập sai lần đầu | Rớt đất, lộ **chữ `Z` ngoài cùng bên phải** |
 | Mỗi lần nhập sai tiếp theo | Lộ thêm một ký tự, **tiếp tục sang trái** |
-| Gõ trúng ký tự kế tiếp chưa lộ | Rớt đất, lộ luôn ký tự đó — mò ra trước gợi ý thì được thưởng |
-| Gõ trúng ký tự đã lộ / gõ trượt | Không lộ thêm gì |
+| Gõ **trúng** ký tự kế tiếp, **ngay lần thử đầu** | Rớt đất, lộ luôn — mò ra trước gợi ý thì được thưởng |
+| Gõ **trật** ký tự kế tiếp | **Cháy lượt ô đó**: ô nhập nháy đỏ, từ đây gõ gì cũng không lộ |
+| Gõ trúng ký tự đã lộ | Không có gì (nó sáng sẵn rồi) |
+
+**★ LUẬT MỘT LƯỢT.** Mỗi ô chỉ cho thử **đúng một ký tự**. Không có luật này thì
+người chơi cứ gõ lần lượt A→Z cho từng ô là ra nguyên đáp án — chẳng phải đoán,
+cũng chẳng cần bấm `UNLOCK` lần nào, phần đố coi như bỏ. Ô đã cháy lượt chỉ lộ
+ra bằng đường **nhập sai cả cụm**; lộ xong thì ô kế tiếp **được nạp lại một
+lượt**. Luật này nói thẳng cho người chơi biết trong `round2_hint`, không giấu.
 
 Cứ thế người chơi tự nhận ra **thứ tự đi từ phải sang trái**. Ô ứng với **dấu
 cách** không bao giờ thắp, nếu không sẽ thành vệt sáng vô nghĩa giữa hai chữ.
 Vòng 2 cũng **tắt hẳn nhịp "thở"** của cả cụm — chôn kín mà cho thở là lộ hết
 bài.
 
+> Đất rơi **không kèm thoại**. Nhìn thấy là biết; viết ra thành chữ chỉ tổ ồn
+> hộp thoại.
+
+> **Chuyển vòng 1 → 2 phải đúng thứ tự.** Ảnh nền vòng 2 có sẵn chữ khắc hiện
+> rõ, lớp che mới là thứ giấu nó đi. Nên `startRound2` giữ nền **tắt**, dựng và
+> đo xong lớp che, đợi trình duyệt vẽ một khung rồi **mới** bật nền lên — bật
+> trước là có đúng một nhịp lộ nguyên đáp án.
+
 | Trạng thái | Hiện tượng |
 |---|---|
 | Vòng 1 · không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
 | Vòng 1 · gõ trúng một ký tự | Ô đó rớt đất, sáng ~0.9s rồi tối lại |
+| Vòng 2 · gõ trật ký tự kế tiếp | Ô nhập nháy đỏ — cháy lượt ô đó |
 | Vòng 2 · chưa lộ | Không thấy gì cả |
 | Vòng 2 · đã lộ | Giữ sáng vĩnh viễn cho tới hết vòng |
 | Xoá phím | Không sáng gì |
@@ -282,15 +302,9 @@ tay thì trôi mượt về giữa.
 | Khoá | Nội dung | Màu |
 |---|---|---|
 | `round2_intro` | `> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.` | cyan |
-| `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.` | xanh lá |
+| `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.`<br>`> Bệ đá bị đất phủ kín. Mỗi ô chỉ cho thử MỘT ký tự — gõ trật là mất lượt.` | xanh lá |
 | `round2_wrong` | `> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.` | đỏ |
 | `round2_correct` | `> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...` | cyan |
-| `round2_uncover` | `> MỘT MẢNG ĐẤT VỪA RƠI KHỎI BỆ ĐÁ... MỘT KÝ TỰ HIỆN RA.` | cam |
-| `round2_uncover_all` | `> CẢ BỆ ĐÁ ĐÃ LỘ HẾT. ĐỌC KỸ ĐI DONGCHI.` | cam |
-
-Hai câu `uncover` chỉ chạy khi **nhập sai** làm lộ thêm chữ. Người chơi tự mò
-đúng ký tự kế tiếp thì **không có thoại** — hiệu ứng rớt đất là phần thưởng đủ
-rồi, thêm chữ vào chỉ làm hộp thoại ồn.
 
 ### Dùng chung & kết
 
@@ -360,7 +374,13 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 **Chế độ xem lại:** `gallery_r1` `VÒNG 01` · `gallery_r2` `VÒNG 02` ·
 `gallery_exit` `THOÁT` · `gallery_note`
 `> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.` ·
-`GATE_CONFIG.text.nut_xem_lai` `👁 Xem lại bối cảnh` (nút trên màn mã)
+`GATE_CONFIG.text.nut_xem_lai` `Xem lại bối cảnh` ·
+`GATE_CONFIG.text.nut_choi_lai_game` `Chơi lại`
+
+Hai việc phụ này là **hai nút icon tròn 38px** đặt giữa, dưới nút chính *Zoey's
+Castle* (`.ma-pair .ico-btn`). Chữ **không nằm trong nút** — nó vào `data-tip`,
+`title` và `aria-label`, nổi lên thành **tooltip phía dưới** khi rê chuột / giữ
+ngón. Nhờ vậy cuối màn chỉ còn một nút to duy nhất.
 
 > ⚠️ **Font `Press Start 2P` không có dấu tiếng Việt.** Chỗ dùng font pixel
 > (nút `UNLOCK`, HUD, `[ TAP HERE ]`, `PRESS START`, đồng hồ khoá) phải giữ
@@ -373,10 +393,24 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 
 ## 7. Nội dung bức thư (`letter_content`)
 
-Thứ tự: lời mở → hai đoạn chính → lời chúc → câu kết → **chữ ký** → **p.s. cuối
-cùng**.
+Sửa ở file riêng **`THU-VA-ANH.md`** (cùng thư mục) rồi chép sang `config.js`.
 
 ```
+Gửi Dongchi Bình,
+
+Tuổi mới mong anh nhiều niềm vui, sức khoẻ, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành trong mọi sự (thành công ròi sẽ tới, với anh em tin là vậy).
+
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước...?). Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
+
+Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có như thế nào, thì em có buồn nhưng cũng không ghét hay giận anh. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng và chăm sóc em.
+
+Em tin anh đã luôn làm tốt nhất trong khả năng của bản thân rồi, hãy động viên chính mình nhiều hơn anh nhé (don't talk bad about yourself, event it's joke, your brain will think it's true).
+
+Game over, farewell.
+
+— Em. Hồng Hân kí tên.
+
+p.s: Building this series of mini-games for you as b-day gift brought me so much genuine joy. I'm not sure if or when I'll eventually push this live for the world, but if that day comes, it's simply because you deserve it. I poured a lot of heart into this 'brainchild' - I just hope playing it brings you as much joy as making it brought me. Enjoy!```
 Gửi Dongchi Bình,
 
 Em không biết anh có tới được đây không hoặc lúc này tụi mình đã nói chuyện lại
@@ -428,8 +462,13 @@ giữa `'flash'` và `'progressive'`, không phải sửa gì trong `index.html`
 
 **Đất rơi nhanh/chậm** — `timing.dirt_fall` (mặc định 640ms).
 
-**Đổi chữ nút xem lại** — `GATE_CONFIG.text.nut_xem_lai`; chữ trong thanh gallery
-ở `GAME_CONFIG.ui.gallery_*`.
+**Đổi chữ nút xem lại** — `GATE_CONFIG.text.nut_xem_lai` (chỉ hiện trong tooltip);
+chữ trong thanh gallery ở `GAME_CONFIG.ui.gallery_*`.
+
+**Vòng 2 dễ/khó hơn** — bỏ luật một lượt thì xoá nhánh `S.burn` trong
+`flashLetter()`; muốn chặt hơn nữa thì đừng nạp lại lượt trong `uncoverNext()`.
+
+**Thư và tên ảnh kỷ niệm** — xem file riêng `THU-VA-ANH.md` cùng thư mục.
 
 ---
 
@@ -459,7 +498,12 @@ Luật đã chốt:
 - **Rồng chỉ có MỘT mắt** trong khung hình (nhìn nghiêng 3/4).
 - **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
   với easing đối xứng nên không còn cảm giác giật.
-- **Tem phiên bản**: game `V2.11`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
+- **Tem phiên bản**: game `V03.03`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
+  Quy ước ở README: `Vx.yy`, `yy` chỉ chạy `00→09`, hết `09` thì `x` tăng 1 và
+  `yy` về `00` — **không bao giờ có đuôi `.10`**. (Hai bản `V2.10`/`V2.11` trước
+  đó là sai quy ước, đã nắn về `V03.02`.)
+- **Tem không bị góc xén**: `.corner.br` cao 22px tính từ đáy 14px nên chiếm dải
+  14..36px; tem phải để `bottom:46px` mới thoát hẳn.
 - **Chiều gõ ngược** dạy người chơi cơ chế: phím đầu tiên làm sáng ô bên phải.
 - **Biến CSS không nội suy**: đo hiệu ứng camera phải đọc `transform` thật, đọc
   `--pan` chỉ ra giá trị đích nên tưởng nhầm là hiệu ứng không chạy.
