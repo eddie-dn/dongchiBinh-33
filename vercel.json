@@ -1,5 +1,12 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/dad/950901-b",
+      "destination": "/dad/950901-b/",
+      "permanent": false
+    }
+  ],
   "functions": {
     "api/**/*.js": {
       "includeFiles": "api/_lib/**"
