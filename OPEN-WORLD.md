@@ -2,7 +2,7 @@
 
 Trong **Chế độ xem lại** (nút 👁 ở màn phát mã) có bốn mục:
 `VÒNG 01 · VÒNG 02 · OPEN WORLD · THOÁT`. Mục **Open World** là khu trò chuyện:
-người chơi hỏi, **Bạch Long** đáp, **mỗi ngày 10 câu**.
+người chơi hỏi, **Honghandangiu** đáp, **mỗi ngày 11 câu**.
 
 Phần giao diện + đếm lượt đã chạy sẵn. Chưa khai khoá thì khu này **vẫn mở**,
 chỉ trả câu dự phòng — trang không vỡ, không báo lỗi đỏ.
@@ -93,13 +93,15 @@ bao giờ hiện, cảnh cũ giữ nguyên, phần trò chuyện vẫn chạy đ
 ## Đường đi của một câu hỏi
 
 ```
-Trang  →  POST /api/chat  {hoi, su, tinh_cach}
-              │  (hàm serverless, giữ GEMINI_KEY)
+Trang  →  POST /api/chat  {hoi, su}
+              │  (hàm serverless — giữ GEMINI_KEY *và* giọng nhân vật)
+              │  + api/_lib/tinh-cach.js
               ↓
         Google Gemini  →  { dap }  →  hộp thoại pixel
 ```
 
-Trang **không bao giờ** cầm khoá. File `api/chat.js` mới là chỗ cầm.
+Trang **không bao giờ** cầm khoá, và từ bản này cũng không cầm luôn cả giọng
+nhân vật. `api/chat.js` mới là chỗ cầm cả hai.
 
 ---
 
@@ -108,20 +110,33 @@ Trang **không bao giờ** cầm khoá. File `api/chat.js` mới là chỗ cầm
 | Khoá | Đang là | Ý nghĩa |
 |---|---|---|
 | `endpoint` | `/api/chat` | đổi nếu đặt hàm ở đường khác |
-| `moi_ngay` | `10` | số câu mỗi ngày |
+| `moi_ngay` | `11` | số câu mỗi ngày |
 | `max_ky_tu` | `300` | độ dài tối đa một câu hỏi |
-| `placeholder` | `NOI GI DO...` | chữ mờ trong ô nhập (font pixel → **không dấu**) |
-| `nut_gui` | `GUI` | nhãn nút gửi (font pixel → **không dấu**) |
+| `placeholder` | `DROP YOUR QUESTION...` | chữ mờ trong ô nhập (font pixel → **không dấu**) |
+| `nut_gui` | `SEND` | nhãn nút gửi (font pixel → **không dấu**) |
 | `chao` | 2 dòng | lời chào khi mở khu này, `{N}` = số câu mỗi ngày |
-| `goi_y` | 3 câu | ba nút gợi ý bấm phát hỏi luôn |
+| `goi_y` | 2 câu | ba nút gợi ý bấm phát hỏi luôn |
 | `het_luot` / `con_lai` | | báo hết lượt / còn mấy câu (`{N}`) |
 | `loi_mang` / `chua_noi` | | mất mạng / chưa khai khoá |
-| **`tinh_cach`** | | **giọng của Bạch Long — chỗ đáng sửa nhất, xem `OW-LOI-DAN.md`** |
+| ~~`tinh_cach`~~ | | **Đã dời sang `api/_lib/tinh-cach.js`** phía máy chủ — xem mục dưới |
 
-`tinh_cach` là đoạn mô tả vai gửi kèm mỗi lượt hỏi. Đang chốt: xưng *ta*, gọi
-người chơi là *ngươi / Dongchi*, giọng cổ trang pha hóm hỉnh, **tối đa 3 câu
-dưới 60 chữ**, không nhắc tới AI, không tự khai mật mã. Sửa đoạn này là đổi
-được hẳn tính cách.
+### Giọng nhân vật nằm ở đâu
+
+Đoạn mô tả vai (`tinh_cach`) **không còn trong `config.js`**. Nó có fact riêng
+tư về hai đứa, mà mọi thứ trong `dad/` thì tải thẳng về máy người xem — ai mở
+mã nguồn trang cũng đọc được. Nên nó đã dời hẳn sang phía máy chủ:
+
+```
+api/_lib/tinh-cach.js
+```
+
+Thư mục `_lib` có gạch dưới ở đầu nên Vercel không biến nó thành endpoint;
+trình duyệt không có đường nào chạm tới. Sửa xong **phải deploy lại** mới ăn
+(khác `config.js` — cái đó chỉ cần tải lại trang).
+
+Đang chốt: xưng *em*, gọi người chơi là *anh / Đồng chí*, giọng hóm hỉnh pha
+dịu dàng, **dưới 3 câu**, đúng 1 icon cuối câu, không nhắc tới AI, không khai
+mật mã. Chi tiết từng phần xem `OW-LOI-DAN.md` mục 5.
 
 ---
 
@@ -135,7 +150,7 @@ dưới 60 chữ**, không nhắc tới AI, không tự khai mật mã. Sửa đ
   xoá hẳn `mtv1`.
 
 > Đây là hạn mức **phía trình duyệt** — cốt để giữ nhịp chơi, không phải hàng
-> rào bảo mật. Phía `api/chat.js` còn một trần chung 40 câu / 10 phút cho cả
+> rào bảo mật. Phía `api/chat.js` còn một trần chung 50 câu / 10 phút cho cả
 > instance, đủ để một người nghịch ngợm không đốt sạch quota.
 
 ---
@@ -147,4 +162,4 @@ dưới 60 chữ**, không nhắc tới AI, không tự khai mật mã. Sửa đ
 | *"Ta chưa nghe được. (Chưa nối khoá Gemini…)"* | chưa khai `GEMINI_KEY`, hoặc khai xong chưa redeploy |
 | *"Sương mù dày quá…"* | mất mạng, hoặc `/api/chat` trả lỗi — xem tab **Logs** của Vercel, tìm dòng `[CHAT]` |
 | Chạy máy mình bằng `file://` | luôn ra *"Sương mù dày quá"* — `fetch` không đi được qua `file://`. Phải chạy qua `vercel dev` hoặc một web server |
-| Đáp cụt lủn | `maxOutputTokens: 220` trong `api/chat.js`, nới ra nếu muốn |
+| Đáp cụt lủn | `maxOutputTokens: 400` trong `api/chat.js`, nới ra nếu muốn |

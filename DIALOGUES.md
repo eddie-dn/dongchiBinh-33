@@ -63,8 +63,9 @@ thêm **nút `X` ở góc** để đóng nhanh — lượt chơi thật thì kh�
 `[ HOÀN THÀNH HÀNH TRÌNH ]` cho chạy nốt màn kết. Đọc lại thư xong thì về thẳng
 cảnh, **không** bắn pháo hoa lại.
 
-**OPEN WORLD** là khu trò chuyện: người chơi hỏi, **Bạch Long** đáp, mỗi ngày
-**10 câu**. Giao diện và phần đếm lượt đã chạy sẵn; muốn nó trả lời thật thì
+**OPEN WORLD** là khu trò chuyện: người chơi hỏi, **Honghandangiu** đáp, mỗi ngày
+**11 câu**. Gợi ý bày **mỗi lúc một câu**: ưu tiên câu mẫu, hết thì bốc ngẫu
+nhiên trong kho, cứ 2 câu hỏi lại tự đổi. Giao diện và phần đếm lượt đã chạy sẵn; muốn nó trả lời thật thì
 khai một biến môi trường trên Vercel — **xem `OPEN-WORLD.md`**. Chưa khai thì
 khu này vẫn mở, chỉ trả câu dự phòng.
 
@@ -269,7 +270,7 @@ chiều**. Nhờ vậy cách chữa gọn:
 |---|---|
 | Vòng 1 · không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
 | Vòng 1 · gõ trúng một ký tự | Ô đó rớt đất, sáng ~0.9s rồi tối lại |
-| Vòng 2 · đoán trật ký tự | Ô nhập nháy đỏ, tính một lần sai |
+| Vòng 2 · đoán trật ký tự | Ô nhập nháy đỏ + **mắt rồng loé đỏ**, tính một lần sai |
 | Vòng 2 · chưa lộ | Không thấy gì cả |
 | Vòng 2 · đã lộ | Giữ sáng vĩnh viễn cho tới hết vòng |
 | Xoá phím | Không sáng gì |
@@ -298,12 +299,25 @@ Bảng ánh xạ bỏ qua ô trống, nên gõ `ZHAOYUN` liền hay `ZHAO YUN` c
 | Lớp | left | top | w | h |
 |---|---|---|---|---|
 | Bệ đá Vòng 1 (`REZAR`) | 47.098% | 91.788% | 6.505% | 3.198% |
-| Bệ đá Vòng 2 (`NUY OAHZ`) | 46.971% | 84.811% | 6.154% | 2.180% |
-| Cuộn thư (`hotspot`) | 41.14% | 34.52% | 10.52% | 9.08% |
-| Mắt rồng (`eyes[0]`) | 46.70% | 28.69% | 2.4% | 4.4% |
+| Bệ đá Vòng 2 (`NUY OAHZ`) | 46.875% | 84.811% | 6.314% | 2.180% |
+| Cuộn thư (`hotspot`) | 41.008% | 34.45% | 10.491% | 8.00% |
+| Mắt rồng (`eyes[0]`) | 47.00% | 29.29% | 1.8% | 3.2% |
 
 > Rồng nhìn **nghiêng 3/4 nên chỉ thấy MỘT mắt**. Bản trước dò pixel bắt nhầm
 > cả vệt lửa cyan nên ra hai khung, cao gấp ba và một khung rơi vào chỗ trống.
+
+> **Chia đều ô chữ là SAI ở vòng 2.** Khoảng trắng giữa `NUY` và `OAHZ` hẹp hơn
+> một ô, chia đều thì mốc cắt lệch và ô dấu cách nuốt mất nét trái của chữ `O`.
+> Ranh giới thật nằm ở `round2.cell_edges`, đo bằng dò pixel, cắt vào đúng giữa
+> khe hở hai chữ. Cũng nhờ đó lúc **xếp lại đáp án** các ô về đúng chỗ, không
+> chen chúc — quãng trượt lấy bằng khoảng cách THẬT giữa hai ô đối xứng
+> (`datFx`), không nhân theo bề rộng ô.
+
+> **Cuộn thư nằm chéo 15.3 độ** (đầu trái cao, đầu phải thấp). Mặt nạ elip bó
+> sát giữa chỉ thắp được khúc giữa nên nửa trái trông mờ; nới elip cho rộng thì
+> lộ khung chữ nhật và cháy trắng mõm rồng. Nay mặt nạ là một **dải chéo 15.3
+> độ** giao với elip cắt hai đầu, cộng thêm lớp `.rim` tự lấy độ sáng làm mặt
+> nạ để hắt quầng vàng **đúng đường viền cuộn thư**.
 
 `hotspot.min_px: 52` — vùng chạm được nới ra cho vừa ngón tay (thực tế
 **65 × 52 px**), còn mẩu ảnh cuộn thư giữ đúng cỡ thật (65 × 25 px).
@@ -588,7 +602,7 @@ Luật đã chốt:
 - **Rồng chỉ có MỘT mắt** trong khung hình (nhìn nghiêng 3/4).
 - **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
   với easing đối xứng nên không còn cảm giác giật.
-- **Tem phiên bản**: game `V03.06`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
+- **Tem phiên bản**: game `V03.07` · 18-Aug-2026, bản đồ gốc `V17.05` · 17-Aug-2026.
   Quy ước ở README: `Vx.yy`, `yy` chỉ chạy `00→09`, hết `09` thì `x` tăng 1 và
   `yy` về `00` — **không bao giờ có đuôi `.10`**. (Hai bản `V2.10`/`V2.11` trước
   đó là sai quy ước, đã nắn về `V03.02`.)

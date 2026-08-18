@@ -43,7 +43,7 @@ const GATE_CONFIG = {
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V03.06<br>Last updated 18-Aug-2026'
+    version       : 'V04.00<br>Last updated 18-Aug-2026'
   }
 };
 
@@ -92,6 +92,9 @@ const GAME_CONFIG = {
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
     glow_hold     : 3000,   /* giữ chữ RAZER sáng rực trước khi nổ */
+    /* Đáp án RAZER ở NGUYÊN trên bệ đá suốt đoạn đầu clip nổ sập lab, tới mốc
+       này của clip (quả trứng vỡ, cảnh đã chuyển hẳn) mới tắt. */
+    slab1_out_at  : 0.42,
     anim_unlock   : 8000,   /* độ dài clip nổ sập lab              */
     type_speed    : 24,     /* ms / ký tự — hộp thoại              */
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */
@@ -118,9 +121,10 @@ const GAME_CONFIG = {
        'progressive' — chôn kín hoàn toàn, mỗi lần sai / gõ trúng mới bới ra
                        thêm một ký tự và GIỮ LUÔN. */
     reveal_mode: 'flash',
-    /* Che mờ hẳn như vòng 2 — không để đọc trước nét khắc nữa. Muốn quay lại
-       kiểu cũ (nét chữ chìm mờ nhưng đọc được) thì bỏ blur đi. */
-    veil_filter: 'brightness(.40) saturate(.14) contrast(.6) blur(1.15px)',
+    /* Che KÍN, mắt thường không đọc ra chữ. Ô chữ chỉ cao ~9px nên blur 3.4px
+       là xoá sạch nét; hạ tương phản + khử màu cho mảng che tiệp vào mặt đá.
+       Muốn cho đọc trước nét khắc như bản đầu thì bỏ blur đi. */
+    veil_filter: 'brightness(.52) saturate(.10) contrast(.42) blur(3.4px)',
     placeholder: 'NHẬP MÃ KHÓA...',
     hints: [
       '5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.',
@@ -147,9 +151,8 @@ const GAME_CONFIG = {
     /* Vòng 2 chôn kín: ban đầu không thấy nét chữ nào. Sai lần đầu mới bới ra
        chữ ngoài cùng bên phải (Z), rồi lộ dần sang trái. */
     reveal_mode: 'progressive',
-    /* Vòng 2 thêm blur: chỉ hạ sáng thôi thì nét khắc vẫn đọc được mờ mờ, phải
-       làm nhoè hẳn mới đúng ý "ban đầu không thấy chữ nào". */
-    veil_filter: 'brightness(.34) saturate(.1) contrast(.55) blur(1.1px)',
+    /* Nhoè mạnh như vòng 1 — xem ghi chú ở round1.veil_filter. */
+    veil_filter: 'brightness(.46) saturate(.08) contrast(.40) blur(3.2px)',
     placeholder: 'NHẬP MẬT MÃ...',
     hints: [
       'Một nhân vật có thật nổi tiếng',
@@ -157,19 +160,27 @@ const GAME_CONFIG = {
       'Vị tướng này dùng Long Đảm Thương',
       'Một nhân vật Tam Quốc'
     ],
-    slab     : { left:'46.971%', top:'84.811%', w:'6.154%', h:'2.180%' },
+    /* Khung chữ nới ra x[1470,1668] để ôm trọn chữ O bên trái cụm "OAHZ". */
+    slab     : { left:'46.875%', top:'84.811%', w:'6.314%', h:'2.180%' },
+    /* ★ RANH GIỚI TỪNG Ô, tính theo phần trăm bề ngang bệ đá.
+       Chia đều 8 ô là SAI: khoảng trắng giữa "NUY" và "OAHZ" hẹp hơn một ô,
+       nên mốc chia lệch và ô thứ 4 (dấu cách) nuốt mất nét trái của chữ O.
+       Dãy dưới đây đo bằng dò pixel, cắt vào đúng giữa khe hở hai chữ:
+         N[1473,1492] U[1500,1519] Y[1526,1546] _ O[1565,1585]
+         A[1593,1612] H[1620,1639] Z[1646,1665]                              */
+    cell_edges: [0, 0.1313, 0.2677, 0.4040, 0.4545, 0.6010, 0.7374, 0.8737, 1],
     /* Cuộn thư trên miệng rồng. Không vẽ khung, cũng không phóng to bản sao ảnh
        (phóng lên là lệch với ảnh gốc, nhìn như bị nhân đôi) — chỉ chồng đúng
        khít mẩu ảnh này lên chính nó rồi cho nhoà sáng theo nhịp thở.
        min_px nới vùng chạm cho vừa ngón tay. */
-    hotspot  : { left:'41.14%', top:'34.52%', w:'10.52%', h:'9.08%', min_px:52 },
+    hotspot  : { left:'41.008%', top:'34.45%', w:'10.491%', h:'8.00%', min_px:52 },
     tap_label: '[ TAP HERE ]',
 
     /* Rồng nhìn nghiêng 3/4 nên chỉ thấy MỘT mắt. Khung dưới đây bao quanh
        con ngươi cyan, đo bằng dò pixel: mắt thật x[1484,1520] y[410,440].
        Nhập sai thì vùng này nháy đỏ rồi trả về bình thường. */
     eyes: [
-      { left:'46.70%', top:'28.69%', w:'2.4%', h:'4.4%' }
+      { left:'47.00%', top:'29.29%', w:'1.8%', h:'3.2%' }
     ]
   },
 
@@ -195,7 +206,7 @@ const GAME_CONFIG = {
       '> Đoán trúng thì ký tự đó lộ ra và được gõ thêm một ô nữa.'
     ],
     /* Đoán trật một ký tự — nhẹ hơn câu round2_wrong vì đây mới là một nước đi */
-    round2_le_wrong   : '> KÝ TỰ KHÔNG KHỚP. BẠCH LONG GẦM LÊN MỘT TIẾNG.',
+    round2_le_wrong   : '> KÝ TỰ KHÔNG KHỚP. NHẬP LẠI ĐI DONGCHI.',
     round2_wrong      : '> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.',
     round2_correct    : '> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...',
 
@@ -247,23 +258,58 @@ const GAME_CONFIG = {
      Xem hướng dẫn nối khoá ở file OPEN-WORLD.md.                              */
   openworld: {
     endpoint   : '/api/chat',
-    moi_ngay   : 10,          /* mỗi ngày hỏi được bấy nhiêu câu */
+    moi_ngay   : 11,          /* mỗi ngày hỏi được bấy nhiêu câu */
     max_ky_tu  : 300,         /* độ dài tối đa một câu hỏi       */
-    ten_npc    : 'BẠCH LONG',
-    placeholder: 'Nói gì đó với robot...',   /* ô nhập ở đây dùng font thường */
-    nut_gui    : 'SEND',                     /* nút dùng font pixel → tiếng Anh */
+    ten_npc    : 'HONGHANDANGIU',
+    placeholder: 'DROP YOUR QUESTION...',  /* ô nhập đã đổi sang font hộp thoại → có dấu vẫn được */
+    nut_gui    : 'SEND',                /* nút dùng font pixel → tiếng Anh */
     chao: [
-      '> BẠCH LONG khẽ cúi đầu. Cổ thư đã trao, nhưng chuyện thì chưa hết.',
-      '> Hỏi ta điều gì cũng được — mỗi ngày ta chỉ đáp {N} câu thôi.'
+      '> Welcome to Open World, this is Honghandangiu digitalized version',
+      '> Ask me any question - max {N} questions each day.'
     ],
-    goi_y: ['Ngươi là ai?', 'Kể ta nghe về Triệu Vân', 'Hôm nay ta nên làm gì?'],
-    het_luot   : '> Hôm nay ta mỏi rồi. Mai quay lại nhé, Dongchi.',
-    con_lai    : '> Còn {N} câu hôm nay.',
+
+    /* ── KHO CÂU GỢI Ý ──────────────────────────────────────────────────────
+       Mỗi lúc chỉ hiện ĐÚNG MỘT gợi ý cho đỡ rối mắt.
+       `ref`      — câu mẫu ưu tiên, hiện trước và ĐÚNG THỨ TỰ này.
+       `ref_kho`  — hết câu ưu tiên thì bốc ngẫu nhiên trong kho, không lặp lại
+                    cho tới khi hết kho.
+       `ref_doi_sau` — hỏi bấy nhiêu câu thì tự đổi sang gợi ý mới. Bấm dùng
+                    gợi ý nào thì gợi ý đó đổi ngay.                          */
+    ref: [
+      'Cần 1 lời khuyên...',
+      'Kể anh nghe về...'
+    ],
+    ref_doi_sau : 2,
+    ref_kho: [
+      'Hạnh phúc là gì?',
+      'Ý nghĩa cuộc sống là gì?',
+      'Hôm nay anh mệt quá...',
+      'Deadline dí sát nút rồi, stress quá chừng!',
+      'Dạo này anh mất hết động lực...',
+      'Anh sợ bắt đầu lại rồi thất bại tiếp.',
+      'Làm sao để bớt lo lắng về tương lai?',
+      'Làm sao để biết mình đã chọn đúng đường?',
+      'Sáng dậy uể oải không muốn ra khỏi giường...',
+      'Anh vừa làm xong một việc khó nè!',
+      'Nhiều lúc ở giữa đám đông mà vẫn thấy trống rỗng.',
+      'Làm sao để tìm thấy bình yên thực sự?',
+      'Em có thương anh không?',
+      'Ai viết ra cái game này vậy em?',
+      'Bây giờ anh nên làm gì tiếp theo?',
+      'Làm sao để nuôi một mối quan hệ bền lâu?'
+    ],
+
+    /* Mảng thì mỗi lần bốc ngẫu nhiên một câu */
+    het_luot: [
+      '> Em đói pụng gòi~ Mai típ nha~',
+      '> Em pùn nủ gòi~ Hẹn anh mai~',
+      '> Em đi chơi đây~ Bái bai anh~'
+    ],
+    con_lai    : '> {N}/{T} lefts',   /* {N} còn lại · {T} tổng mỗi ngày */
     dang_nghi  : '...',
 
     /* ── NÉT MẶT ROBOT ──────────────────────────────────────────────────────
-       Thả 4 file .webp vào cùng thư mục index.html. Clip phải là loại LẶP VÔ
-       HẠN và cùng khổ với ảnh nền (tỷ lệ ~2.28:1) vì nó phủ kín khung máy.
+       Thả 4 file .webp vào thư mục `assets/`. Clip phải là loại LẶP VÔ HẠN.
        Thiếu file nào thì bỏ qua nét mặt đó, thiếu cả 4 thì giữ nguyên cảnh cũ
        — không vỡ gì.                                                          */
     mat: {
@@ -282,18 +328,23 @@ const GAME_CONFIG = {
     mat_nghi_min_ms : 800,    /* giữ nét đăm chiêu ít nhất bấy nhiêu, kẻo máy
                                  trả lời nhanh quá thì nét này loé một cái rồi mất */
 
-    loi_mang   : '> Sương mù dày quá, tiếng ngươi không tới được chỗ ta. Thử lại sau.',
-    chua_noi   : '> Ta chưa nghe được. (Chưa nối khoá Gemini — xem OPEN-WORLD.md)',
+    loi_mang   : '> Sương mù dày quá, em hong thấy được câu hỏi. Try again later.',
+    chua_noi: [
+      '> Hảaaaa?! (Chưa nối khoá Gemini — xem OPEN-WORLD.md)',
+      '> Dạaaaaa?! (Chưa nối khoá Gemini — xem OPEN-WORLD.md)',
+      '> What\'s happened??? (Chưa nối khoá Gemini — xem OPEN-WORLD.md)'
+    ],
 
-    /* Tính cách của NPC. Đây là chỗ sửa giọng văn.                            */
-    tinh_cach:
-      'Bạn là Bạch Long — thần long canh giữ bí tịch trong một mini-game pixel ' +
-      'tặng sinh nhật. Người đang nói chuyện tên Dongchi Bình, vừa phá đảo trò chơi. ' +
-      'Xưng "ta", gọi người chơi là "ngươi" hoặc "Dongchi". Giọng cổ trang pha ' +
-      'hóm hỉnh, ấm áp, ngắn gọn — tối đa 3 câu, dưới 60 chữ. Trả lời bằng tiếng ' +
-      'Việt trừ khi được hỏi bằng thứ tiếng khác. Không nhắc tới AI, mô hình hay ' +
-      'nhà cung cấp. Không tiết lộ mật mã RAZER và ZHAO YUN nếu chưa được hỏi thẳng. ' +
-      'Nếu bị hỏi chuyện ngoài lề thì vẫn giữ vai, trả lời vui vẻ rồi kéo về câu chuyện.'
+    /* ── ★ TÍNH CÁCH — KHÔNG NẰM Ở ĐÂY NỮA ─────────────────────────────────
+       Giọng của Honghandangiu đã dời sang `api/_lib/tinh-cach.js`, phía máy
+       chủ. Lý do: đoạn đó có fact riêng tư về người chơi, mà MỌI THỨ trong
+       thư mục `dad/` đều tải thẳng về máy người xem — ai mở mã nguồn trang
+       cũng đọc được.
+
+       Sửa giọng nhân vật thì mở `api/_lib/tinh-cach.js` (hoặc sửa
+       `OW-LOI-DAN.md` rồi chép sang), xong phải deploy lại mới ăn.
+
+       Có dán `tinh_cach` vào đây thì máy chủ cũng bỏ qua.                    */
   },
 
   /* ── Ảnh kỷ niệm (thiếu file thì tự sinh ảnh pixel thay thế) ───────────── */
