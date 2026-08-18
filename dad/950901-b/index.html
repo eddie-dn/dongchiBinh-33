@@ -1829,25 +1829,41 @@ async function urlDaSach(vong){
   if(!daSach[key]) console.log('[GATE2] chưa có ảnh đá sạch ' + ten + ' — dùng cách nhoè cũ');
   return daSach[key] || null;
 }
-/* Gắn lớp che cho một bệ đá. Có đá sạch thì dán mẩu đá thật (filter:none);
-   không có thì giữ nguyên mẩu ảnh có chữ + bộ lọc nhoè trong config. */
-async function ganLopChe(slab, vong, urlCoChu){
-  const veil = slab.querySelector('.veil');
-  if(!veil) return;
-  /* Đặt tạm bản nhoè NGAY để không có khung hình nào hở chữ trong lúc còn đang
-     dò xem có ảnh đá sạch hay không. */
-  veil.style.backgroundImage = urlCoChu;
-  slab.style.setProperty('--veil-f', (vong === 2 ? C.round2 : C.round1).veil_filter);
+/* ═══ DÙNG ĐÁ SẠCH LÀM NỀN LUÔN, KHÔNG PHẢI DÁN MIẾNG VÁ ══════════════════
+   Bản đầu chỉ thay mỗi LỚP CHE bằng mẩu đá sạch, tức vẫn là dán một miếng vá
+   lên trên ảnh CÓ chữ. Miếng vá thì kiểu gì cũng có mép, và mép đó lại tán
+   mờ nên rìa vẫn hé ra ảnh có chữ nằm dưới — đúng cái "đè manual nhìn xấu".
 
+   Nay làm thẳng: có ảnh sạch thì lấy CHÍNH ẢNH SẠCH LÀM NỀN. Dưới lớp nền
+   không còn chữ nào để mà giấu, nên chẳng cần vá, chẳng cần nhoè, mép có tán
+   mờ cũng vô hại — vì trên dưới là cùng một mặt đá.
+   Chữ vẫn hiện được bình thường: từng ô `.gl` cắt từ ảnh CÓ chữ, giải đúng thì
+   ô đó sáng lên đè lên nền sạch. Lớp che vẫn giữ (cũng cắt từ ảnh sạch) vì
+   clip nổ có vẽ sẵn NUY OAHZ trong đó — cần một mảng đá sạch phủ lên clip.
+
+   `nen`  = danh sách lớp ảnh nền cần đổi (nền chính, lớp rồng, cuộn thư...).
+   Thiếu file sạch thì mọi thứ chạy y như cũ. */
+async function apDungAnh(slab, vong, urlCoChu, nen){
+  const veil = slab && slab.querySelector('.veil');
+  /* Đặt bản CÓ CHỮ + bộ lọc nhoè NGAY, để trong lúc còn đang dò file sạch
+     không có khung hình nào hở chữ ra. */
+  if(veil){
+    veil.style.backgroundImage = urlCoChu;
+    slab.style.setProperty('--veil-f', (vong === 2 ? C.round2 : C.round1).veil_filter);
+  }
   const sach = await urlDaSach(vong);
   if(!sach) return;                       /* không có → giữ nguyên cách nhoè */
-  veil.style.backgroundImage = 'url("' + sach + '")';
-  slab.style.setProperty('--veil-f', 'none');
-  /* `.sach` để fitSlabs() nới rộng vùng che ra. Dán đá thật thì che rộng bao
-     nhiêu cũng vô hại (vẫn là mặt đá y hệt), nên nới hẳn cho chắc — vừa xử
-     luôn chuyện "ZHAO YUN che chưa hết chiều cao, vẫn hơi lộ". Còn khi đang
-     nhoè thì KHÔNG nới, vì nới là vệt mờ to ra, nhìn còn tệ hơn. */
-  slab.classList.add('sach');
+
+  const urlSach = 'url("' + sach + '")';
+  (nen || []).forEach(n=>{ if(n) n.style.backgroundImage = urlSach; });
+  if(veil){
+    veil.style.backgroundImage = urlSach;
+    slab.style.setProperty('--veil-f', 'none');
+    /* `.sach` để fitSlabs() nới rộng vùng che. Dán đá thật thì rộng bao nhiêu
+       cũng vô hại, nên nới hẳn cho phủ trọn cả nét khắc tràn ngoài khung đo —
+       xử luôn chuyện "ZHAO YUN che chưa hết chiều cao". */
+    slab.classList.add('sach');
+  }
   layout();                               /* đo lại vùng che theo cỡ mới */
 }
 /* Clip webp lặp vô hạn → mỗi lần phát tạo <img> MỚI (cùng URL nên lấy từ cache
@@ -1997,10 +2013,10 @@ async function startRound1(){
   S.mode = C.round1.reveal_mode; S.dug = 0; S.burn = false;
   el.ctrl.classList.remove('nobtn');
   S.revMap = buildSlab(el.row1, C.round1.scrambled);
-  /* Ô CHỮ luôn lấy ảnh CÓ chữ (đó là thứ sẽ sáng lên khi giải đúng); riêng lớp
-     che thì ưu tiên tấm đá sạch — xem ganLopChe(). */
+  /* Ô CHỮ luôn lấy ảnh CÓ chữ (đó là thứ sẽ sáng lên khi giải đúng); còn NỀN
+     và lớp che thì ưu tiên tấm đá sạch — xem apDungAnh(). */
   el.slab1.querySelectorAll('.gl').forEach(c=> c.style.backgroundImage = url1);
-  ganLopChe(el.slab1, 1, url1);
+  apDungAnh(el.slab1, 1, url1, [el.bg]);
   el.slab1.classList.add('vis');
   layout();
   camIntro();
@@ -2102,7 +2118,7 @@ function prepRound2(){
   el.slab2.style.setProperty('--veil-f', C.round2.veil_filter);
   S.revMap2 = buildSlab(el.row2, C.round2.scrambled);
   el.slab2.querySelectorAll('.gl').forEach(c=> c.style.backgroundImage = url2);
-  ganLopChe(el.slab2, 2, url2);
+  apDungAnh(el.slab2, 2, url2, [el.bg, el.dragon, el.hotZoom, el.hotRim]);
   el.slab2.classList.add('vis');
   el.eyes.forEach(e=> e.classList.add('on'));
   el.dragon.classList.add('on');
@@ -2354,13 +2370,16 @@ function galleryPaint(r){
   S.revMap = buildSlab(row, cfg.scrambled);
   S.mode = cfg.reveal_mode; S.dug = S.revMap.length; S.burn = false;
   slab.querySelectorAll('.gl').forEach(c=> c.style.backgroundImage = url);
-  ganLopChe(slab, r, url);
   slab.classList.add('vis');
 
   if(r === 2){
     el.dragon.style.backgroundImage = url;
     el.hotZoom.style.backgroundImage = url; el.hotRim.style.backgroundImage = url;
   }
+  /* Đổi nền sang đá sạch SAU khi đã đặt xong các lớp trên, nếu không mấy dòng
+     `= url` ngay bên trên sẽ ghi đè lại thành ảnh có chữ. */
+  apDungAnh(slab, r, url,
+    r === 2 ? [el.bg, el.dragon, el.hotZoom, el.hotRim] : [el.bg]);
   el.dragon.className = 'dragon-layer' + (r === 2 ? ' on empowered' : '');
   el.aura.className   = 'aura'         + (r === 2 ? ' on empowered' : '');
   el.eyes.forEach(e=> e.classList.toggle('on', r === 2));
@@ -2706,7 +2725,9 @@ placeSlabs();
 
 return {
   layout,
-  prefetch(){ load(A('bg_r1')); },
+  /* Nạp ngầm luôn cả hai tấm đá sạch: dò xong sớm thì lúc dựng cảnh đã biết
+     dùng ảnh nào, khỏi có nhịp đổi ảnh giữa chừng. */
+  prefetch(){ load(A('bg_r1')); urlDaSach(1); urlDaSach(2); },
   start(again){ if(again) reset(); layout(); bootUp(); },
   review(r){ load(A('bg_r2')); enterGallery(r || 1); }
 };
