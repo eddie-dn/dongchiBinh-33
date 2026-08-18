@@ -39,6 +39,8 @@ const GATE_CONFIG = {
     nut_vao_game  : '▶ Bắt đầu giải mã',
     nut_choi_lai_game : 'Chơi lại',
     nut_ve_ban_do : '← Về bản đồ',
+    /* Nhãn nút cửa hậu — chỉ hiện sau khi gõ 10 nhịp vào tem Last updated */
+    nut_bo_qua    : '⏭ Bỏ qua · vào thẳng màn cuối',
     nut_xem_lai   : 'Xem lại bối cảnh',
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
@@ -80,14 +82,24 @@ const GAME_CONFIG = {
   timing: {
     intro_pan     : 2600,   /* lia một vòng từ TRÁI sang PHẢI       */
     intro_back    : 1300,   /* rồi thu về neo giữa                  */
-    reveal_step   : 130,    /* giải đúng: nháy từng ký tự phải→trái */
+    /* (không dùng nữa) Trước đây là độ trễ giữa các ký tự khi nháy sáng lúc
+       giải đúng. Nay giải đúng thì cả cụm sáng đều một lần rồi đứng yên, không
+       nháy lệch nhịp nữa — giữ lại dòng này cho ai đọc lịch sử khỏi tưởng mất. */
     eye_flash     : 1600,   /* mắt rồng nháy đỏ khi nhập sai        */
     dirt_fall     : 640,    /* mảng đất rơi khỏi ký tự vừa lộ       */
-    flip_ms       : 780,    /* xếp lại chữ về đúng chiều đọc        */
-    /* Clip nổ sập lab CÓ SẴN bảng đá vòng 2 hiện rõ từ khoảng 44% về sau.
-       Nên tới mốc này là thả lớp che lên trên clip, khỏi lộ đáp án. */
-    veil_in_at    : 0.40,   /* thả lớp che ở mốc này của clip       */
-    veil_in_ms    : 700,    /* lớp che hiện dần trong bấy nhiêu     */
+    /* Xếp lại chữ: một nhịp NGẮN và ĐỀU cho cả cụm. Để dài (780ms cũ) thì
+       thành màn trình diễn, mà chỗ này chỉ cần chốt đáp án rồi đứng yên. */
+    flip_ms       : 420,    /* xếp lại chữ về đúng chiều đọc        */
+    solved_hold   : 420,    /* giữ đáp án sáng đều trước khi xếp lại */
+    /* Clip nổ sập lab CÓ SẴN bảng đá vòng 2 hiện rõ từ mốc `chu_lo_at` về sau.
+       Mã trong win1() tính NGƯỢC từ mốc đó: lùi lại đúng `veil_in_ms` để lấy
+       điểm bắt đầu thả lớp che, nên lớp che luôn đục xong TRƯỚC khi chữ kịp
+       hiện. `veil_in_at` chỉ còn là ghi chú lịch sử — mã không đọc nữa.
+       Fade để 380ms (không phải 700ms) cho lớp che vẫn xuất hiện muộn gần
+       bằng bản cũ (~39% thay vì 40%) mà vẫn kịp kín trước 44%. */
+    chu_lo_at     : 0.44,   /* clip tự vẽ NUY OAHZ từ mốc này       */
+    veil_in_at    : 0.40,   /* (không dùng nữa — xem chu_lo_at)     */
+    veil_in_ms    : 380,    /* lớp che hiện dần trong bấy nhiêu     */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
@@ -121,10 +133,27 @@ const GAME_CONFIG = {
        'progressive' — chôn kín hoàn toàn, mỗi lần sai / gõ trúng mới bới ra
                        thêm một ký tự và GIỮ LUÔN. */
     reveal_mode: 'flash',
-    /* Che KÍN, mắt thường không đọc ra chữ. Ô chữ chỉ cao ~9px nên blur 3.4px
-       là xoá sạch nét; hạ tương phản + khử màu cho mảng che tiệp vào mặt đá.
+    /* ── CÔNG THỨC CHE DÙNG CHUNG CHO CẢ HAI VÒNG ──────────────────────────
+       THỨ TỰ BỘ LỌC LÀ THỨ QUAN TRỌNG NHẤT Ở ĐÂY, và đó chính là chỗ bản
+       trước sai. Bộ lọc chạy TỪ TRÁI SANG PHẢI. `contrast()` nhỏ hơn 1 kéo mọi
+       sắc độ về phía xám giữa (~127), tức là nó LÀM SÁNG chỗ tối lên. Bản
+       trước viết brightness trước rồi contrast sau, nên mảng che bị kéo ngược
+       lên xám: đo được độ sáng trung bình 84 trong khi mặt đá quanh nó chỉ 53
+       — sáng hơn hẳn 31 nấc, thành ra một khung chữ nhật nhìn phát hiện ra
+       ngay, đúng như đã báo.
+       Nay ĐẢO LẠI: contrast trước (dập nét khắc xuống xám), brightness sau
+       (hạ cả mảng về đúng độ sáng mặt đá). Đo lại: mảng che 53.3 / mặt đá 53.4
+       — coi như trùng khít, không còn thấy khung nữa.
+         contrast   .55  — dập nét khắc, chạy TRƯỚC
+         brightness .46  — hạ về đúng độ sáng mặt đá, chạy SAU
+         saturate   .05  — rút sạch ám vàng hổ phách của nét khắc
+         blur       theo CHIỀU CAO bảng đá (--veil-blur, đặt trong fitSlabs),
+                    KHÔNG phải số px cố định — cố định thì màn hình càng to chữ
+                    càng đọc được.
+       ĐỪNG tăng blur để giấu kỹ hơn: đã thử, phản tác dụng. Nhoè mạnh làm
+       chính lớp che loãng alpha ra, nét khắc THẬT nằm dưới lại lộ qua rõ hơn.
        Muốn cho đọc trước nét khắc như bản đầu thì bỏ blur đi. */
-    veil_filter: 'brightness(.52) saturate(.10) contrast(.42) blur(3.4px)',
+    veil_filter: 'contrast(.55) brightness(.46) saturate(.05) blur(var(--veil-blur,3.4px))',
     placeholder: 'NHẬP MÃ KHÓA...',
     hints: [
       '5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.',
@@ -151,8 +180,9 @@ const GAME_CONFIG = {
     /* Vòng 2 chôn kín: ban đầu không thấy nét chữ nào. Sai lần đầu mới bới ra
        chữ ngoài cùng bên phải (Z), rồi lộ dần sang trái. */
     reveal_mode: 'progressive',
-    /* Nhoè mạnh như vòng 1 — xem ghi chú ở round1.veil_filter. */
-    veil_filter: 'brightness(.46) saturate(.08) contrast(.40) blur(3.2px)',
+    /* Y HỆT vòng 1 — xem ghi chú đầy đủ ở round1.veil_filter. Hai bên phải
+       cùng một công thức, nếu không người chơi nhìn ra ngay bên nào dễ hơn. */
+    veil_filter: 'contrast(.55) brightness(.46) saturate(.05) blur(var(--veil-blur,3.2px))',
     placeholder: 'NHẬP MẬT MÃ...',
     hints: [
       'Một nhân vật có thật nổi tiếng',
@@ -176,11 +206,15 @@ const GAME_CONFIG = {
     hotspot  : { left:'41.008%', top:'34.45%', w:'10.491%', h:'8.00%', min_px:52 },
     tap_label: '[ TAP HERE ]',
 
-    /* Rồng nhìn nghiêng 3/4 nên chỉ thấy MỘT mắt. Khung dưới đây bao quanh
-       con ngươi cyan, đo bằng dò pixel: mắt thật x[1484,1520] y[410,440].
-       Nhập sai thì vùng này nháy đỏ rồi trả về bình thường. */
+    /* Rồng nhìn nghiêng 3/4 nên chỉ thấy MỘT mắt. Khung dưới đây bao ĐÚNG
+       con ngươi cyan. Dò lại bằng cách quét pixel trên chính bg_r2.png (lọc
+       các điểm cyan mạnh): mắt thật nằm x[1480,1516] y[409,442] trong ảnh
+       3136x1376 — tức 1.180% x 2.471%.
+       Khung CŨ để 1.8% x 3.2% và lệch lên trái 6px, tức RỘNG HƠN con ngươi
+       gần rưỡi: nháy lên là một đĩa đỏ tràn ra cả mặt rồng, nhìn rất thô.
+       Nhập sai thì vùng này chuyển đỏ rồi trả về bình thường. */
     eyes: [
-      { left:'47.00%', top:'29.29%', w:'1.8%', h:'3.2%' }
+      { left:'47.194%', top:'29.724%', w:'1.180%', h:'2.471%' }
     ]
   },
 
@@ -336,12 +370,12 @@ const GAME_CONFIG = {
     ],
 
     /* ── ★ TÍNH CÁCH — KHÔNG NẰM Ở ĐÂY NỮA ─────────────────────────────────
-       Giọng của Honghandangiu đã dời sang `api/_lib/tinh-cach.js`, phía máy
+       Giọng của Honghandangiu đã dời sang `api/_lib/tinhcach.md`, phía máy
        chủ. Lý do: đoạn đó có fact riêng tư về người chơi, mà MỌI THỨ trong
        thư mục `dad/` đều tải thẳng về máy người xem — ai mở mã nguồn trang
        cũng đọc được.
 
-       Sửa giọng nhân vật thì mở `api/_lib/tinh-cach.js` (hoặc sửa
+       Sửa giọng nhân vật thì mở `api/_lib/tinhcach.md` (hoặc sửa
        `OW-LOI-DAN.md` rồi chép sang), xong phải deploy lại mới ăn.
 
        Có dán `tinh_cach` vào đây thì máy chủ cũng bỏ qua.                    */
