@@ -357,9 +357,11 @@ const GAME_CONFIG = {
 
 Tuổi mới mong anh nhiều niềm vui, sức khoẻ, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành trong mọi sự (thành công ròi sẽ tới, với anh em tin là vậy).
 
-Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước...?). Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước; đừng quá lo lắng anh nhé, just do it). 
 
-Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có như thế nào, thì em có buồn nhưng cũng không ghét hay giận anh. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng và chăm sóc em.
+Mong anh có được sự bình yên, tròn đầy mà anh hằng khao khát. Và, true happiness comes from within nên em nghĩ biết đâu dành 1 chút thời gian thăm nom lại anh-Bình-thuở-nhỏ và tìm hiểu bản thân lại là một ý hay cho anh tuổi mới này ^^. 
+
+Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có đang như thế nào, thì em cũng không ghét hay giận anh. Em đã nghĩ chúng ta còn rất nhiều điều có thể làm cùng nhau. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng, chu đáo và chăm sóc em.
 
 Em tin anh đã luôn làm tốt nhất trong khả năng của bản thân rồi, hãy động viên chính mình nhiều hơn anh nhé (don't talk bad about yourself, event it's joke, your brain will think it's true).
 
