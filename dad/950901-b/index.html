@@ -358,12 +358,12 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Giải xong: từng ô TRƯỢT về đúng chỗ của nó khi đọc xuôi. Chữ khắc là chuỗi
    đảo (REZAR / NUY OAHZ) nên chỉ cần lật gương — ô thứ i đổi chỗ cho ô n-1-i.
    Đáp án đọc được nằm đè hẳn lên bảng cũ và ở lại luôn. */
-/* Đường cong ease dịu, KHÔNG vọt quá đích rồi dội lại (cubic-bezier cũ có
-   điểm điều khiển .9 nên chữ nảy một cái ở cuối). Cả cụm đi cùng lúc, tới nơi
-   là dừng hẳn. */
+/* Đường cong bung nhanh rồi hạ cánh êm — ký tự lao đi dứt khoát rồi từ từ
+   khớp vào chỗ, đúng cảm giác "đang tự xếp lại". Kết hợp với độ lệch nhịp
+   `--fd` từng ô (xem flipSolved) thì cả cụm chạy như một chuỗi domino gọn. */
 #scene-game .slab.flip .cell{
   transform:translateX(var(--fx,0px));
-  transition:transform var(--flip,780ms) cubic-bezier(.33,0,.2,1) var(--fd,0ms);
+  transition:transform var(--flip,700ms) cubic-bezier(.22,.9,.24,1) var(--fd,0ms);
 }
 /* Mảng đất phủ riêng từng ký tự — chỉ hiện đúng lúc bới ra rồi rơi xuống. */
 #scene-game .slab .cell .dirt{
@@ -970,7 +970,14 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   </div>
 </main>
 
-<script src="config.js"></script>
+<!-- ĐƯỜNG DẪN ĐẦY ĐỦ TỪ GỐC, KHÔNG ĐƯỢC viết "config.js" trống trơn.
+     Viết tương đối thì trình duyệt ghép vào URL đang mở: vào đúng
+     .../dad/950901-b/ thì ra .../dad/950901-b/config.js (đúng), nhưng vào
+     .../dad/950901-b (thiếu dấu / cuối) thì nó coi "950901-b" là tên file và
+     đi tìm .../dad/config.js → 404 → GATE_CONFIG không tồn tại → cả trang chết,
+     chỉ còn khung tĩnh, bấm nút nào cũng trơ. Đã dính đúng lỗi này trên bản
+     chạy thật. Viết đủ từ gốc thì vào kiểu URL nào cũng nạp đúng file. -->
+<script src="/dad/950901-b/config.js"></script>
 <script>
 /* ═══ CHỐT AN TOÀN CHO config.js ══════════════════════════════════════════
    BẪY ĐÃ VẤP — mất cả buổi mới tìm ra, ghi lại cho khỏi vấp lần hai:
@@ -1320,17 +1327,32 @@ function fitBezel(){
   const appH = el.root.clientHeight;
   if(!appH) return;
   const kb   = document.body.classList.contains('kb-open');
-  const maxH = appH * (kb ? C.frame.max_h_kb : C.frame.max_h);
-  const w    = Math.min(el.slot.clientWidth, Math.max(60, maxH) * C.frame.ratio);
-  el.bezel.style.width = w.toFixed(1) + 'px';
+  const maxH = Math.max(60, appH * (kb ? C.frame.max_h_kb : C.frame.max_h));
+  /* ═══ KHUNG MÁY LUÔN RỘNG BẰNG HỘP THOẠI BÊN DƯỚI ════════════════════════
+     Bản trước bó BỀ NGANG theo trần chiều cao: w = maxH × 4/3. Trên màn cao
+     (máy tính bảng, cửa sổ desktop hẹp mà dài) thì trần đó cắt bề ngang xuống
+     nhỏ hơn hẳn hộp thoại terminal — nhìn ra ngay là ảnh bị thụt vào hai bên,
+     lệch hẳn với cả cột nội dung.
+     Nay làm ngược lại: BỀ NGANG luôn ăn trọn bề ngang khung (đúng bằng hộp
+     thoại), còn cao quá trần thì XÉN BỚT CHIỀU CAO. Ảnh nền vốn rất rộng
+     (2.28:1) nên xén chiều cao chỉ là thấy ít cảnh theo chiều dọc hơn, không
+     méo, không mất chi tiết ngang. Đặt cả width lẫn height nên `aspect-ratio`
+     trong CSS tự nhường — không cần bỏ dòng đó. */
+  const w = el.slot.clientWidth;
+  const h = Math.min(w / C.frame.ratio, maxH);
+  el.bezel.style.width  = w.toFixed(1) + 'px';
+  el.bezel.style.height = h.toFixed(1) + 'px';
 }
 /* ═══ CẮT ẢNH THEO Ô ══════════════════════════════════════════════════════
    Mỗi ô là một "cửa sổ" nhìn vào đúng một mẩu ảnh nền: đặt background-size
    bằng cả khổ ảnh rồi dời background-position tới đúng toạ độ mẩu đó. Nhờ vậy
    ký tự sáng lên là NÉT CHỮ KHẮC THẬT trong tranh, không phải chữ do font vẽ. */
 const pc = v => parseFloat(v) / 100;
-/* Lớp che nới ra bao nhiêu so với ô chữ (khớp với dải nhoè trong CSS) */
+/* Lớp che nới ra bao nhiêu so với ô chữ (khớp với dải nhoè trong CSS).
+   Bản `_SACH` dùng khi dán đá thật — nới rộng gấp đôi cho phủ trọn nét khắc,
+   xem ghi chú ở fitSlabs(). */
 const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
+const VEIL_PAD_X_SACH = 0.30, VEIL_PAD_Y_SACH = 0.85;
 /* Bán kính nhoè = bấy nhiêu lần CHIỀU CAO bảng đá (xem ghi chú ở fitSlabs) */
 const VEIL_BLUR_K = 0.27;
 function cutOut(node, W, H, L, T2, w, h){
@@ -1358,7 +1380,14 @@ function fitSlabs(){
     /* Lớp che lấy mẩu ảnh RỘNG HƠN ô chữ, để mép nhoè rơi trên nền đá trống */
     const veil = slab.querySelector('.veil');
     if(veil){
-      const ex = SW * VEIL_PAD_X, ey = SH * VEIL_PAD_Y;
+      /* Dán đá thật (`.sach`) thì nới rộng hẳn vùng che: vẫn là mặt đá y hệt
+         nên rộng bao nhiêu cũng không lộ, mà lại phủ trọn cả phần nét khắc
+         tràn ra ngoài khung đo (chính là chỗ ZHAO YUN còn hở). Đang nhoè thì
+         giữ vùng hẹp — nới ra là vệt mờ to thêm, nhìn tệ hơn. */
+      const sach = slab.classList.contains('sach');
+      const padX = sach ? VEIL_PAD_X_SACH : VEIL_PAD_X;
+      const padY = sach ? VEIL_PAD_Y_SACH : VEIL_PAD_Y;
+      const ex = SW * padX, ey = SH * padY;
       veil.style.left = (-ex).toFixed(2)+'px';
       veil.style.top  = (-ey).toFixed(2)+'px';
       cutOut(veil, W, H, L - ex, T2 - ey, SW + 2*ex, SH + 2*ey);
@@ -1607,7 +1636,17 @@ function missBlink(){
    Bản trước chạy `cellPop` lệch nhịp từng ký tự (phải→trái) rồi mới trượt chỗ
    — nhìn ra hiệu ứng ăn mừng, không ra ĐÁP ÁN. Đáp án thì phải nằm im mà đọc.
    Nay bỏ hẳn màn nháy: bật `shown` cho nét khắc sáng đều, đợi đúng một nhịp
-   ngắn cho mắt kịp bắt, rồi sang phần xếp lại chữ. */
+   ngắn cho mắt kịp bắt, rồi sang phần xếp lại chữ.
+
+   ═══ BẪY ĐÃ VẤP · "TỰ DƯNG THẤY LẠI REZAR" ═══════════════════════════════
+   Bản trước hạ lớp che xuống .45 ngay lúc giải đúng, ý là để khoe nét khắc.
+   Nhưng lớp che chính là thứ đang giấu CHỮ GỐC (REZAR / NUY OAHZ) khắc sẵn
+   trong ảnh nền. Hạ nó xuống là chữ gốc hiện lên mờ mờ ngay bên dưới đáp án
+   — đúng cái "tự dưng có một đoạn nhìn thấy REZAR như cũ" đã báo, và nó kéo
+   dài suốt từ lúc giải xong tới khi flipSolved() kéo lớp che về đục lại.
+   Nay KHÔNG đụng vào lớp che nữa: giữ đục suốt. Ô chữ nằm sau `.veil` trong
+   DOM nên vẫn sáng đè lên trên bình thường — chỉ có chữ gốc là không bao giờ
+   ló ra. */
 function revealSolved(slab, row){
   const cells = [...row.children];
   cells.forEach(c=>{
@@ -1616,8 +1655,6 @@ function revealSolved(slab, row){
     c.style.animationDelay = '';
     if(!c.classList.contains('blank')) c.classList.add('shown');
   });
-  const veil = slab.querySelector('.veil');
-  if(veil) veil.style.opacity = '.45';
   slab.classList.add('solved');
   return T.solved_hold || 420;
 }
@@ -1641,19 +1678,23 @@ function datFx(row){
 function flipSolved(slab, row, tuc_thi){
   const cells = [...row.children], n = cells.length;
   if(!n || slab.classList.contains('flip')) return 0;
-  /* Kéo lớp che về đục hẳn TRƯỚC khi xếp. Lúc mới giải xong nó đang mờ (.45) để
-     khoe nét khắc, nhưng ký tự vừa dời chỗ thì chữ gốc nằm dưới lòi ra ngay bên
-     cạnh — thành ra đọc chồng hai lớp. */
+  /* Chốt lớp che đục hẳn cho chắc. revealSolved() không còn hạ nó xuống nữa
+     nên đây thường là lệnh thừa — giữ lại để ai gọi flipSolved() từ chỗ khác
+     (chế độ xem lại) cũng chắc chắn không lộ chữ gốc. Đặt tức thì, không fade:
+     fade là hở một quãng cho chữ gốc ló ra. */
   const veil = slab.querySelector('.veil');
-  if(veil){ veil.style.transition = 'opacity .45s ease'; veil.style.opacity = '1'; }
-  /* Mọi ô đi CÙNG LÚC và cùng một quãng thời gian ngắn. Trước đây mỗi ô lệch
-     nhau 40ms nên chữ trông như giãn ra rồi bay tán loạn; giờ cả cụm dịch một
-     nhịp gọn về đúng chỗ và nằm im — đọc ra là "đây là đáp án". */
+  if(veil){ veil.style.transition = 'none'; veil.style.opacity = '1'; }
+  /* ═══ NHỊP LỆCH TỪNG Ô — CÓ CHUYỂN ĐỘNG MỚI ĐẸP ═══════════════════════════
+     Đã thử cho cả cụm đi cùng lúc: gọn nhưng ĐƠN ĐIỆU, nhìn như ảnh bị nhảy
+     một cái chứ không ra "chữ đang tự xếp lại". Trả lại độ lệch giữa các ô
+     như bản đầu — mắt bắt được từng ký tự trượt về chỗ của nó, đọc ra là đang
+     GIẢI MÃ. Lệch `flip_step` ms một ô, tổng thời lượng cộng thêm phần lệch. */
+  const buoc = tuc_thi ? 0 : (T.flip_step != null ? T.flip_step : 45);
   slab.style.setProperty('--flip', (tuc_thi ? 0 : T.flip_ms) + 'ms');
-  cells.forEach(c=> c.style.setProperty('--fd', '0ms'));
+  cells.forEach((c,i)=> c.style.setProperty('--fd', (i * buoc) + 'ms'));
   datFx(row);
   slab.classList.add('flip');
-  return tuc_thi ? 0 : T.flip_ms;
+  return tuc_thi ? 0 : T.flip_ms + (n - 1) * buoc;
 }
 
 /* ═══ GỢI Ý THEO BẬC + KHOÁ ĐẾM NGƯỢC ═════════════════════════════════════
@@ -1769,6 +1810,45 @@ function load(src){
     im.src = src;
   });
   return cache[src];
+}
+/* ═══ TẤM "ĐÁ SẠCH" CHO LỚP CHE ═══════════════════════════════════════════
+   Xem ghi chú dài ở `assets.bg_r1_clean` trong config.js. Tóm tắt: nếu có bản
+   ảnh đã xoá sẵn chữ khắc thì lớp che lấy thẳng mẩu đá THẬT ở đó dán lên —
+   khít từng pixel, khỏi nhoè, khỏi lệch tông, clip nổ chạy cũng không lộ.
+   Không có file thì trả về null và mọi thứ chạy y như cũ (nhoè + hạ sáng).
+
+   Dò MỘT LẦN rồi nhớ kết quả: `null` = chưa dò, `false` = dò rồi, không có. */
+const daSach = { r1:null, r2:null };
+async function urlDaSach(vong){
+  const key = vong === 2 ? 'r2' : 'r1';
+  if(daSach[key] !== null) return daSach[key] || null;
+  const ten = C.assets[vong === 2 ? 'bg_r2_clean' : 'bg_r1_clean'];
+  if(!ten){ daSach[key] = false; return null; }
+  const src = C.assets_base + ten;
+  daSach[key] = (await load(src)) ? src : false;
+  if(!daSach[key]) console.log('[GATE2] chưa có ảnh đá sạch ' + ten + ' — dùng cách nhoè cũ');
+  return daSach[key] || null;
+}
+/* Gắn lớp che cho một bệ đá. Có đá sạch thì dán mẩu đá thật (filter:none);
+   không có thì giữ nguyên mẩu ảnh có chữ + bộ lọc nhoè trong config. */
+async function ganLopChe(slab, vong, urlCoChu){
+  const veil = slab.querySelector('.veil');
+  if(!veil) return;
+  /* Đặt tạm bản nhoè NGAY để không có khung hình nào hở chữ trong lúc còn đang
+     dò xem có ảnh đá sạch hay không. */
+  veil.style.backgroundImage = urlCoChu;
+  slab.style.setProperty('--veil-f', (vong === 2 ? C.round2 : C.round1).veil_filter);
+
+  const sach = await urlDaSach(vong);
+  if(!sach) return;                       /* không có → giữ nguyên cách nhoè */
+  veil.style.backgroundImage = 'url("' + sach + '")';
+  slab.style.setProperty('--veil-f', 'none');
+  /* `.sach` để fitSlabs() nới rộng vùng che ra. Dán đá thật thì che rộng bao
+     nhiêu cũng vô hại (vẫn là mặt đá y hệt), nên nới hẳn cho chắc — vừa xử
+     luôn chuyện "ZHAO YUN che chưa hết chiều cao, vẫn hơi lộ". Còn khi đang
+     nhoè thì KHÔNG nới, vì nới là vệt mờ to ra, nhìn còn tệ hơn. */
+  slab.classList.add('sach');
+  layout();                               /* đo lại vùng che theo cỡ mới */
 }
 /* Clip webp lặp vô hạn → mỗi lần phát tạo <img> MỚI (cùng URL nên lấy từ cache
    trình duyệt, không tải lại) để animation chạy lại từ đầu, xong thì gỡ ra. */
@@ -1917,7 +1997,10 @@ async function startRound1(){
   S.mode = C.round1.reveal_mode; S.dug = 0; S.burn = false;
   el.ctrl.classList.remove('nobtn');
   S.revMap = buildSlab(el.row1, C.round1.scrambled);
-  el.slab1.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url1);
+  /* Ô CHỮ luôn lấy ảnh CÓ chữ (đó là thứ sẽ sáng lên khi giải đúng); riêng lớp
+     che thì ưu tiên tấm đá sạch — xem ganLopChe(). */
+  el.slab1.querySelectorAll('.gl').forEach(c=> c.style.backgroundImage = url1);
+  ganLopChe(el.slab1, 1, url1);
   el.slab1.classList.add('vis');
   layout();
   camIntro();
@@ -2018,7 +2101,8 @@ function prepRound2(){
   el.hotZoom.style.backgroundImage = url2; el.hotRim.style.backgroundImage = url2;
   el.slab2.style.setProperty('--veil-f', C.round2.veil_filter);
   S.revMap2 = buildSlab(el.row2, C.round2.scrambled);
-  el.slab2.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url2);
+  el.slab2.querySelectorAll('.gl').forEach(c=> c.style.backgroundImage = url2);
+  ganLopChe(el.slab2, 2, url2);
   el.slab2.classList.add('vis');
   el.eyes.forEach(e=> e.classList.add('on'));
   el.dragon.classList.add('on');
@@ -2269,7 +2353,8 @@ function galleryPaint(r){
   S.slabWord = cfg.scrambled; S.slabRow = row; S.slabEl = slab;
   S.revMap = buildSlab(row, cfg.scrambled);
   S.mode = cfg.reveal_mode; S.dug = S.revMap.length; S.burn = false;
-  slab.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url);
+  slab.querySelectorAll('.gl').forEach(c=> c.style.backgroundImage = url);
+  ganLopChe(slab, r, url);
   slab.classList.add('vis');
 
   if(r === 2){

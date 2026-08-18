@@ -55,15 +55,51 @@ const GATE_CONFIG = {
 const GAME_CONFIG = {
 
   /* Toàn bộ ảnh và clip nằm trong thư mục con `assets/` cho gọn thư mục chính.
-     Đổi chỗ để tài nguyên thì sửa hai dòng này, không phải sửa từng tên file. */
-  assets_base : 'assets/',
-  photos_base : 'assets/',
+     Đổi chỗ để tài nguyên thì sửa hai dòng này, không phải sửa từng tên file.
+
+     ── VÌ SAO PHẢI VIẾT ĐƯỜNG DẪN ĐẦY ĐỦ TỪ GỐC (bắt đầu bằng dấu /) ────────
+     Viết 'assets/' là đường dẫn TƯƠNG ĐỐI — trình duyệt ghép nó vào URL đang
+     mở. Mở đúng .../dad/950901-b/ thì ra .../dad/950901-b/assets/..., ĐÚNG.
+     Nhưng mở .../dad/950901-b (THIẾU DẤU / CUỐI) thì trình duyệt coi
+     "950901-b" là tên file chứ không phải thư mục, nên ghép thành
+     .../dad/assets/... → sai chỗ, 404, ảnh không hiện.
+     Đó chính là lỗi khu Open World không thấy ảnh nhân vật (OW_2_*.webp):
+     ảnh trong slideshow bức thư còn có ảnh pixel vẽ tạm che đi nên tưởng là
+     chạy được, còn ảnh nhân vật thì không có đồ thay nên mất hẳn.
+     Viết đủ từ gốc thì mở kiểu URL nào cũng trỏ đúng một chỗ.
+     ĐỔI CHỖ THƯ MỤC thì phải sửa cả tiền tố /dad/950901-b/ ở hai dòng này. */
+  assets_base : '/dad/950901-b/assets/',
+  photos_base : '/dad/950901-b/assets/',
 
   assets: {
     bg_r1       : 'bg_r1.png',        /* Vòng 1 — phòng lab ngầm, bệ đá "REZAR"      */
     bg_r2       : 'bg_r2.png',        /* Vòng 2 — rừng tàn tích, Bạch Long ngậm thư  */
     anim_wrong  : 'anim_wrong.webp',  /* ổ khóa rung đỏ (~2s)                        */
-    anim_unlock : 'anim_unlock.webp'  /* nổ sập lab + thức tỉnh Bạch Long (~8s)      */
+    anim_unlock : 'anim_unlock.webp', /* nổ sập lab + thức tỉnh Bạch Long (~8s)      */
+
+    /* ── ★ HAI TẤM "ĐÁ SẠCH" — CÁCH CHE ĐẸP NHẤT, KHÔNG CẦN BLUR ────────────
+       Đây là bản y hệt bg_r1 / bg_r2 nhưng CHỖ KHẮC CHỮ ĐƯỢC VẼ ĐÈ THÀNH MẶT
+       ĐÁ TRƠN (xoá hẳn REZAR và NUY OAHZ đi).
+
+       VÌ SAO CẦN: cách cũ là lấy chính mẩu ảnh CÓ CHỮ rồi làm nhoè + hạ sáng
+       để giấu. Nhoè thì xoá luôn cả vân đá và hạt nhiễu, trong khi vùng xung
+       quanh vẫn còn — nên mảng che lúc nào cũng "mịn" hơn mặt đá thật, nhìn ra
+       ngay là một miếng dán. Lúc clip nổ chạy thì miếng dán đứng yên trên nền
+       đang động, càng lộ. Không có cách chỉnh thông số nào cứu được, vì gốc rễ
+       là đang cố giấu chữ bằng cách bôi mờ chính nó.
+       Có tấm đá sạch thì lớp che = đúng mẩu đá thật, dán khít lên chỗ cũ:
+       không nhoè, không lệch tông, soi kính lúp cũng không thấy ranh giới.
+
+       CÁCH LÀM: mở bg_r1.png trong bất cứ app sửa ảnh nào (kể cả Photoshop,
+       Photopea miễn phí, hay bảo AI xoá chữ), tẩy phần chữ khắc trên bệ đá rồi
+       lấp bằng mặt đá xung quanh. GIỮ NGUYÊN KÍCH THƯỚC 3136x1376 và mọi thứ
+       khác — chỉ chỗ chữ là khác. Lưu thành bg_r1_clean.png, làm tương tự cho
+       bg_r2_clean.png (xoá NUY OAHZ).
+
+       CHƯA CÓ FILE CŨNG KHÔNG SAO: thiếu thì game tự quay về cách nhoè cũ,
+       không vỡ gì. Thả file vào assets/ là tự động đẹp lên.                  */
+    bg_r1_clean : 'bg_r1_clean.png',
+    bg_r2_clean : 'bg_r2_clean.png'
   },
 
   /* ── Khung máy ─────────────────────────────────────────────────────────────
@@ -87,9 +123,12 @@ const GAME_CONFIG = {
        nháy lệch nhịp nữa — giữ lại dòng này cho ai đọc lịch sử khỏi tưởng mất. */
     eye_flash     : 1600,   /* mắt rồng nháy đỏ khi nhập sai        */
     dirt_fall     : 640,    /* mảng đất rơi khỏi ký tự vừa lộ       */
-    /* Xếp lại chữ: một nhịp NGẮN và ĐỀU cho cả cụm. Để dài (780ms cũ) thì
-       thành màn trình diễn, mà chỗ này chỉ cần chốt đáp án rồi đứng yên. */
-    flip_ms       : 420,    /* xếp lại chữ về đúng chiều đọc        */
+    /* Xếp lại chữ. Đã thử rút xuống 420ms và cho cả cụm đi CÙNG LÚC: gọn thì
+       gọn nhưng đơn điệu, nhìn như ảnh nhảy một cái. Trả lại nhịp lệch từng ô
+       như bản đầu — mắt bắt được từng ký tự trượt về chỗ, ra đúng cảm giác
+       đang giải mã. `flip_step` = mỗi ô chờ thêm bấy nhiêu ms rồi mới đi. */
+    flip_ms       : 700,    /* xếp lại chữ về đúng chiều đọc        */
+    flip_step     : 45,     /* độ lệch nhịp giữa hai ô liền nhau    */
     solved_hold   : 420,    /* giữ đáp án sáng đều trước khi xếp lại */
     /* Clip nổ sập lab CÓ SẴN bảng đá vòng 2 hiện rõ từ mốc `chu_lo_at` về sau.
        Mã trong win1() tính NGƯỢC từ mốc đó: lùi lại đúng `veil_in_ms` để lấy
