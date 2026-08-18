@@ -43,7 +43,7 @@ const GATE_CONFIG = {
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V03.03<br>Last updated 17-Aug-2026'
+    version       : 'V03.04<br>Last updated 17-Aug-2026'
   }
 };
 
@@ -82,6 +82,11 @@ const GAME_CONFIG = {
     reveal_step   : 130,    /* giải đúng: nháy từng ký tự phải→trái */
     eye_flash     : 1600,   /* mắt rồng nháy đỏ khi nhập sai        */
     dirt_fall     : 640,    /* mảng đất rơi khỏi ký tự vừa lộ       */
+    flip_ms       : 780,    /* xếp lại chữ về đúng chiều đọc        */
+    /* Clip nổ sập lab CÓ SẴN bảng đá vòng 2 hiện rõ từ khoảng 44% về sau.
+       Nên tới mốc này là thả lớp che lên trên clip, khỏi lộ đáp án. */
+    veil_in_at    : 0.40,   /* thả lớp che ở mốc này của clip       */
+    veil_in_ms    : 700,    /* lớp che hiện dần trong bấy nhiêu     */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
@@ -112,7 +117,9 @@ const GAME_CONFIG = {
        'progressive' — chôn kín hoàn toàn, mỗi lần sai / gõ trúng mới bới ra
                        thêm một ký tự và GIỮ LUÔN. */
     reveal_mode: 'flash',
-    veil_filter: 'brightness(.44) saturate(.18) contrast(.82)',
+    /* Che mờ hẳn như vòng 2 — không để đọc trước nét khắc nữa. Muốn quay lại
+       kiểu cũ (nét chữ chìm mờ nhưng đọc được) thì bỏ blur đi. */
+    veil_filter: 'brightness(.40) saturate(.14) contrast(.6) blur(1.15px)',
     placeholder: 'NHẬP MÃ KHÓA...',
     hints: [
       '5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.',
@@ -123,7 +130,10 @@ const GAME_CONFIG = {
     /* KHUNG CHỮ KHẮC trong bg_r1.png, đo bằng cách dò pixel — tính theo % ẢNH
        NỀN. Game KHÔNG vẽ chữ đè lên: nó phủ một lớp tối lên đúng ô này, rồi
        cắt chính ảnh gốc thành từng ký tự; gõ trúng thì ký tự đó sáng lên. */
-    slab     : { left:'47.194%', top:'91.788%', w:'6.378%', h:'3.198%' }
+    /* Đo lại bằng dò pixel: nét khắc chạy x[1478,1679] trong ảnh 3136px, khung
+       cũ bắt đầu ở 1480 nên xén mất 2px — đúng cái nét dọc của chữ R ngoài
+       cùng bên trái. Khung mới nới ra x[1477,1681]. */
+    slab     : { left:'47.098%', top:'91.788%', w:'6.505%', h:'3.198%' }
   },
 
   /* ── VÒNG 2 · THẦN LONG TRIỆU VÂN ──────────────────────────────────────── */
@@ -180,8 +190,11 @@ const GAME_CONFIG = {
     round2_intro: '> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.',
     round2_hint : [
       '> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.',
-      '> Bệ đá bị đất phủ kín. Mỗi ô chỉ cho thử MỘT ký tự — gõ trật là mất lượt.'
+      '> Bệ đá bị đất phủ kín. Mỗi lần chỉ đoán được MỘT ký tự, gõ xong là nộp luôn.',
+      '> Đoán trúng thì ký tự đó lộ ra và được gõ thêm một ô nữa.'
     ],
+    /* Đoán trật một ký tự — nhẹ hơn câu round2_wrong vì đây mới là một nước đi */
+    round2_le_wrong   : '> KÝ TỰ KHÔNG KHỚP. BẠCH LONG GẦM LÊN MỘT TIẾNG.',
     round2_wrong      : '> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.',
     round2_correct    : '> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...',
 
@@ -219,8 +232,43 @@ const GAME_CONFIG = {
     lock_note    : 'Vuốt quanh phòng tìm manh mối trong lúc chờ…',
     gallery_r1   : 'VÒNG 01',
     gallery_r2   : 'VÒNG 02',
+    gallery_ow   : 'OPEN WORLD',
     gallery_exit : 'THOÁT',
     gallery_note : '> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.'
+  },
+
+  /* ── OPEN WORLD · khu trò chuyện tự động ───────────────────────────────────
+     Trang KHÔNG giữ khoá API. Nó gọi về hàm serverless `/api/chat` của chính
+     website; khoá Gemini nằm trong biến môi trường GEMINI_KEY trên Vercel.
+     Chưa khai khoá thì khu này vẫn mở, chỉ trả lời bằng câu dự phòng bên dưới.
+     Xem hướng dẫn nối khoá ở file OPEN-WORLD.md.                              */
+  openworld: {
+    endpoint   : '/api/chat',
+    moi_ngay   : 10,          /* mỗi ngày hỏi được bấy nhiêu câu */
+    max_ky_tu  : 300,         /* độ dài tối đa một câu hỏi       */
+    ten_npc    : 'BẠCH LONG',
+    placeholder: 'NOI GI DO...',
+    nut_gui    : 'GUI',
+    chao: [
+      '> BẠCH LONG khẽ cúi đầu. Cổ thư đã trao, nhưng chuyện thì chưa hết.',
+      '> Hỏi ta điều gì cũng được — mỗi ngày ta chỉ đáp {N} câu thôi.'
+    ],
+    goi_y: ['Ngươi là ai?', 'Kể ta nghe về Triệu Vân', 'Hôm nay ta nên làm gì?'],
+    het_luot   : '> Hôm nay ta mỏi rồi. Mai quay lại nhé, Dongchi.',
+    con_lai    : '> Còn {N} câu hôm nay.',
+    dang_nghi  : '...',
+    loi_mang   : '> Sương mù dày quá, tiếng ngươi không tới được chỗ ta. Thử lại sau.',
+    chua_noi   : '> Ta chưa nghe được. (Chưa nối khoá Gemini — xem OPEN-WORLD.md)',
+
+    /* Tính cách của NPC. Đây là chỗ sửa giọng văn.                            */
+    tinh_cach:
+      'Bạn là Bạch Long — thần long canh giữ bí tịch trong một mini-game pixel ' +
+      'tặng sinh nhật. Người đang nói chuyện tên Dongchi Bình, vừa phá đảo trò chơi. ' +
+      'Xưng "ta", gọi người chơi là "ngươi" hoặc "Dongchi". Giọng cổ trang pha ' +
+      'hóm hỉnh, ấm áp, ngắn gọn — tối đa 3 câu, dưới 60 chữ. Trả lời bằng tiếng ' +
+      'Việt trừ khi được hỏi bằng thứ tiếng khác. Không nhắc tới AI, mô hình hay ' +
+      'nhà cung cấp. Không tiết lộ mật mã RAZER và ZHAO YUN nếu chưa được hỏi thẳng. ' +
+      'Nếu bị hỏi chuyện ngoài lề thì vẫn giữ vai, trả lời vui vẻ rồi kéo về câu chuyện.'
   },
 
   /* ── Ảnh kỷ niệm (thiếu file thì tự sinh ảnh pixel thay thế) ───────────── */
@@ -233,11 +281,9 @@ const GAME_CONFIG = {
 
 Tuổi mới mong anh nhiều niềm vui, sức khoẻ, bớt lo nghĩ xa xôi, luôn dũng cảm và chân thành trong mọi sự (thành công ròi sẽ tới, với anh em tin là vậy).
 
-Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước; đừng quá lo lắng anh nhé, just do it). 
+Mong anh giữ được ước mơ mà anh hằng ấp ủ và thực sự biến nó thành sự thật. Mong những nuối tiếc về quá khứ của anh sớm được bù đắp (anh sẽ làm tốt và vẫn còn rất nhiều năm phía trước...?). Mong anh tìm thấy sự bình yên, tròn đầy mà anh hằng khao khát.
 
-Mong anh có được sự bình yên, tròn đầy mà anh hằng khao khát. Và, true happiness comes from within nên em nghĩ biết đâu dành 1 chút thời gian thăm nom lại anh-Bình-thuở-nhỏ và tìm hiểu bản thân lại là một ý hay cho anh tuổi mới này ^^. 
-
-Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có như thế nào, thì em có buồn nhưng cũng không ghét hay giận anh. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng và chăm sóc em.
+Riêng chuyện anh và em, dù lúc anh đọc thư chúng mình có đang như thế nào, thì em cũng không ghét hay giận anh. Em đã nghĩ chúng ta còn rất nhiều điều có thể làm cùng nhau. Em biết ơn nhân duyên đã đưa anh và em gặp gỡ nhau. Em biết ơn những khoảng thời gian hai ta đã cạnh nhau thủ thỉ mọi điều trong cuộc sống. Cảm ơn anh đã luôn cố gắng, chu đáo và chăm sóc em.
 
 Em tin anh đã luôn làm tốt nhất trong khả năng của bản thân rồi, hãy động viên chính mình nhiều hơn anh nhé (don't talk bad about yourself, event it's joke, your brain will think it's true).
 

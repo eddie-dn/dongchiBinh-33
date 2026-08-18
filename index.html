@@ -323,6 +323,13 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Ô ứng với DẤU CÁCH: không bao giờ thắp, nếu không sẽ thành vệt sáng vô nghĩa
    giữa hai chữ. */
 #scene-game .slab .cell.blank{opacity:0!important;animation:none!important}
+/* Giải xong: từng ô TRƯỢT về đúng chỗ của nó khi đọc xuôi. Chữ khắc là chuỗi
+   đảo (REZAR / NUY OAHZ) nên chỉ cần lật gương — ô thứ i đổi chỗ cho ô n-1-i.
+   Đáp án đọc được nằm đè hẳn lên bảng cũ và ở lại luôn. */
+#scene-game .slab.flip .cell{
+  transform:translateX(var(--fx,0px));
+  transition:transform var(--flip,780ms) cubic-bezier(.22,.9,.24,1) var(--fd,0ms);
+}
 /* Mảng đất phủ riêng từng ký tự — chỉ hiện đúng lúc bới ra rồi rơi xuống. */
 #scene-game .slab .cell .dirt{
   position:absolute;inset:-8% -4%;opacity:0;pointer-events:none;z-index:2;
@@ -400,13 +407,13 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    chỉ cần nhúc nhích rất nhẹ, không còn cảm giác phóng to thô. */
 #scene-game .hotspot .halo{
   position:absolute;inset:-26% -14%;pointer-events:none;mix-blend-mode:screen;
-  background:radial-gradient(ellipse at center,rgba(255,214,130,.30) 0%,
-             rgba(255,176,60,.12) 46%,transparent 74%);
+  background:radial-gradient(ellipse at center,rgba(255,226,150,.52) 0%,
+             rgba(255,180,60,.22) 46%,transparent 74%);
   animation:haloBreath 2.6s cubic-bezier(.45,0,.55,1) infinite;
 }
 @keyframes haloBreath{
-  0%,100%{opacity:.32;transform:scale(.96)}
-  50%{opacity:.85;transform:scale(1.05)}
+  0%,100%{opacity:.45;transform:scale(.96)}
+  50%{opacity:1;transform:scale(1.08)}
 }
 /* KHÔNG phóng to bản sao ảnh nữa — phóng lên là lệch với ảnh gốc nằm dưới, nhìn
    như cuộn thư bị nhân đôi, thô hẳn. Thay vào đó chồng mẩu ảnh ĐÚNG KHÍT lên
@@ -420,8 +427,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   animation:zoomPulse 2.6s cubic-bezier(.45,0,.55,1) infinite;
 }
 @keyframes zoomPulse{
-  0%,100%{opacity:.16;filter:brightness(.95)}
-  50%{opacity:.6;filter:brightness(1.45) saturate(1.2)}
+  0%,100%{opacity:.34;filter:brightness(1.15) saturate(1.1)}
+  50%{opacity:1;filter:brightness(1.9) saturate(1.35)}
 }
 #scene-game .hotspot .tap{
   position:absolute;top:50%;left:50%;transform:translateX(-50%);
@@ -503,8 +510,33 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game .gbar button.on{color:#04140a;background:linear-gradient(180deg,#7df9ff,#00c2d6);
   border-color:transparent}
 #scene-game .gbar button.exit{color:var(--muted);border-color:rgba(31,41,61,.9);background:#06111d}
+#scene-game .gbar button.ow{color:#ffcf6a;border-color:rgba(255,190,80,.45)}
+#scene-game .gbar button.ow.on{color:#241701;background:linear-gradient(180deg,#ffd77e,#f2a83a);
+  border-color:transparent}
+
+/* ── OPEN WORLD · khu trò chuyện ─────────────────────────────────────────── */
+#scene-game .owbar{flex:0 0 auto;display:flex;gap:6px;align-items:center;
+  overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+#scene-game .owbar::-webkit-scrollbar{display:none}
+#scene-game .owbar>*{flex:0 0 auto}
+#scene-game .owbar[hidden]{display:none}
+#scene-game .owbar .quota{
+  font-family:var(--f-pixel);font-size:7px;letter-spacing:.04em;
+  color:#ffcf6a;border:1px solid rgba(255,190,80,.4);padding:6px 7px;white-space:nowrap}
+#scene-game .owbar .chip{
+  font-family:var(--f-term);font-size:11px;line-height:1.2;cursor:pointer;
+  color:rgba(190,238,255,.8);background:#06131d;border:1px solid rgba(0,242,255,.28);
+  padding:6px 9px;border-radius:3px;-webkit-tap-highlight-color:transparent}
+#scene-game .owbar .chip:active{background:#0d2130}
+#scene-game .owbar .chip[disabled]{opacity:.35;cursor:default}
+/* Câu của người chơi trong hộp thoại — thụt vào, tông khác lời dẫn truyện */
+#scene-game .narr .line.me{color:#ffd98a;padding-left:14px}
+#scene-game .narr .line.npc{color:#bfeeff}
+#scene-game .narr .line.wait{color:rgba(190,238,255,.45)}
 #scene-game .ctrl{flex:0 0 auto;display:flex;gap:8px;align-items:stretch}
 #scene-game .ctrl[hidden]{display:none}
+/* Vòng 2 gõ ký tự nào là chấm ký tự đó — không còn gì để "nộp" nữa */
+#scene-game .ctrl.nobtn #unlock{display:none}
 #scene-game #answer{
   flex:1 1 auto;min-width:0;font-family:var(--f-pixel);font-size:12px;
   letter-spacing:.06em;text-transform:uppercase;background:#06111d;color:var(--amber);
@@ -613,6 +645,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   border:2px solid rgba(0,242,255,.3);background:rgba(0,20,28,.5);padding:11px 12px 46px;
   font-size:12.5px;line-height:1.72;color:#bfeeff;white-space:pre-wrap;
 }
+#scene-game .letterbox i{font-style:italic;color:#9ddcef}
 #scene-game #finish{
   flex:0 0 auto;font-family:var(--f-term);font-weight:700;font-size:12px;
   letter-spacing:.04em;padding:14px 10px;border:0;cursor:pointer;color:#04140a;
@@ -707,9 +740,13 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
     <div class="lockbar" id="lockbar" hidden>
       <b id="lockTime">--:--</b><span id="lockNote"></span>
     </div>
+    <div class="owbar" id="owbar" hidden>
+      <span class="quota" id="owQuota"></span>
+    </div>
     <div class="gbar" id="gbar" hidden>
       <button id="gR1" type="button"></button>
       <button id="gR2" type="button"></button>
+      <button id="gOw" class="ow" type="button"></button>
       <button id="gExit" class="exit" type="button"></button>
     </div>
     <div class="ctrl" id="ctrl" hidden>
@@ -982,7 +1019,8 @@ const el = {
   fx:$('#fx'), back:$('#back'),
   hotZoom:$('#hotZoom'), eyes:[...document.querySelectorAll('#scene-game .eye')],
   lockbar:$('#lockbar'), lockTime:$('#lockTime'), lockNote:$('#lockNote'),
-  gbar:$('#gbar'), gR1:$('#gR1'), gR2:$('#gR2'), gExit:$('#gExit')
+  gbar:$('#gbar'), gR1:$('#gR1'), gR2:$('#gR2'), gOw:$('#gOw'), gExit:$('#gExit'),
+  owbar:$('#owbar'), owQuota:$('#owQuota')
 };
 const fxCtx = el.fx.getContext('2d');
 
@@ -1009,6 +1047,7 @@ el.lockNote.textContent = C.ui.lock_note;
 el.back.textContent     = C.ui.back_label;
 el.gR1.textContent      = C.ui.gallery_r1;
 el.gR2.textContent      = C.ui.gallery_r2;
+el.gOw.textContent      = C.ui.gallery_ow;
 el.gExit.textContent    = C.ui.gallery_exit;
 el.root.style.setProperty('--frame-ratio', C.frame.ratio);
 el.root.style.setProperty('--world-ratio', C.frame.world_ratio);
@@ -1064,10 +1103,13 @@ function fitSlabs(){
       veil.style.top  = (-ey).toFixed(2)+'px';
       cutOut(veil, W, H, L - ex, T2 - ey, SW + 2*ex, SH + 2*ey);
     }
-    const cw = SW / n;
+    const cw = SW / n, lat = slab.classList.contains('flip');
     [...row.children].forEach((c,i)=>{
       c.style.width = cw.toFixed(2) + 'px';
       cutOut(c.querySelector('.gl'), W, H, L + i*cw, T2, cw, SH);
+      /* Bảng đã xếp lại thì quãng trượt phải tính lại theo bề rộng ô mới,
+         nếu không xoay máy một cái là chữ văng lung tung. */
+      if(lat) c.style.setProperty('--fx', ((n - 1 - 2*i) * cw).toFixed(2) + 'px');
     });
   });
   (C.round2.eyes || []).forEach((e,i)=>{
@@ -1155,17 +1197,32 @@ function endDrag(){
 
 /* ═══ HỘP THOẠI TYPEWRITER ════════════════════════════════════════════════ */
 const Q = []; let typing = false, skip = false;
+/* "Đời" của hộp thoại. Dọn hộp thoại là tăng số này lên, mọi câu đã hẹn từ đời
+   trước tự huỷ. Không có nó thì `sayAll` — vốn nối bằng .then() — vẫn thả nốt
+   những câu còn lại vào hộp thoại đã dọn, kiểu như mở Open World mà vẫn thấy
+   lời dẫn của vòng 1 chen vào. */
+let narrEra = 0;
+function clearNarr(){
+  narrEra++; Q.length = 0; typing = false; skip = false;
+  el.narr.innerHTML = '';
+}
 function say(text, cls){
-  return new Promise(res=>{ Q.push({text,cls,res}); pump(); });
+  const era = narrEra;
+  return new Promise(res=>{ Q.push({text,cls,res,era}); pump(); });
 }
 function sayAll(v, cls){
-  if(Array.isArray(v)) return v.reduce((p,t)=> p.then(()=> say(t,cls)), Promise.resolve());
+  if(Array.isArray(v)){
+    const era = narrEra;
+    return v.reduce((p,t)=> p.then(()=> narrEra === era ? say(t,cls) : null), Promise.resolve());
+  }
   return say(v, cls);
 }
 function pump(){
   if(typing || !Q.length) return;
+  let job = Q.shift();
+  while(job && job.era !== narrEra){ job.res(); job = Q.shift(); }
+  if(!job) return;
   typing = true; skip = false;
-  const job = Q.shift();
   const p = document.createElement('p');
   p.className = 'line ' + (job.cls || '');
   const span = document.createElement('span');
@@ -1177,6 +1234,7 @@ function pump(){
 
   let i = 0; const txt = job.text;
   const step = ()=>{
+    if(job.era !== narrEra){ typing = false; job.res(); return; }   /* đã dọn hộp thoại */
     if(skip){ span.textContent = txt; return fin(); }
     span.textContent = txt.slice(0, ++i);
     el.narr.scrollTop = el.narr.scrollHeight;
@@ -1253,28 +1311,17 @@ function uncoverNext(){
   S.dug++; S.burn = false;             /* ô kế tiếp được nạp lại một lượt thử */
   return S.dug >= S.revMap.length ? 'all' : 'one';
 }
-/* Gõ trúng ký tự → bới đúng ô đó ra. Gõ trượt thì không lộ gì, xoá phím cũng
-   không.
-
-   VÒNG 2 — LUẬT MỘT LƯỢT. Chỉ ô KẾ TIẾP chưa bới mới ăn thưởng, và ô đó chỉ
-   cho thử ĐÚNG MỘT ký tự: trúng thì rớt đất lộ luôn, trật thì "cháy lượt" —
-   ô nín thinh cho tới khi có lần nhập sai làm nó lộ ra. Không có luật này thì
-   người chơi cứ gõ hết bảng chữ cái cho từng ô là ra đáp án, chẳng cần đoán,
-   cũng chẳng cần bấm UNLOCK lần nào. */
+/* Gõ trúng ký tự → bới đúng ô đó ra (vòng 1: sáng một nhịp rồi tắt). */
 function flashLetter(ch, pos){
   if(!S.slabRow || !ch || !S.revMap || pos >= S.revMap.length) return;
   const idx = S.revMap[pos];
   const cell = S.slabRow.children[idx];
-  if(!cell) return;
-  const trung = S.slabWord[idx] === ch.toUpperCase();
-
-  if(S.mode === 'progressive'){
-    if(pos !== S.dug || S.burn) return;         /* chưa tới lượt, hoặc đã cháy lượt */
-    if(trung){ digReveal(cell, true); S.dug++; S.burn = false; }
-    else{ S.burn = true; missBlink(); }
-    return;
-  }
-  if(trung) digReveal(cell, false);
+  if(cell && S.slabWord[idx] === ch.toUpperCase()) digReveal(cell, false);
+}
+/* Chuỗi ký tự ĐÃ LỘ, viết theo chiều gõ (phải→trái trên bảng đá) */
+function chuoiDaLo(){
+  if(!S.revMap) return '';
+  return S.revMap.slice(0, S.dug).map(i=> S.slabWord[i]).join('');
 }
 function missBlink(){
   el.input.classList.remove('miss'); void el.input.offsetWidth;
@@ -1285,14 +1332,37 @@ function missBlink(){
 function revealSolved(slab, row){
   const cells = [...row.children], n = cells.length;
   cells.forEach((c,i)=>{
-    clearTimeout(c._t);
+    clearTimeout(c._t);                       /* huỷ luôn nhịp bới đất đang dở */
     c.classList.remove('hit','digging');
+    if(!c.classList.contains('blank')) c.classList.add('shown');
     c.style.animationDelay = ((n - 1 - i) * T.reveal_step) + 'ms';
   });
   const veil = slab.querySelector('.veil');
   if(veil) veil.style.opacity = '.45';
   slab.classList.add('solved');
   return (n - 1) * T.reveal_step + 600;      /* tổng thời lượng màn nháy */
+}
+/* Xếp lại chữ về ĐÚNG CHIỀU ĐỌC, đè hẳn lên bảng cũ.
+   Chữ khắc là chuỗi đảo (REZAR / NUY OAHZ) nên đáp án chính là ảnh gương của
+   nó: ô thứ i trượt sang chỗ ô n-1-i. Trượt bằng transform nên vẫn là NÉT KHẮC
+   THẬT chứ không phải chữ vẽ lại, và giữ nguyên như thế về sau.
+   `tuc_thi` = dựng lại cảnh đã giải (chế độ xem lại) thì khỏi chạy hoạt hình. */
+function flipSolved(slab, row, tuc_thi){
+  const cells = [...row.children], n = cells.length;
+  if(!n || slab.classList.contains('flip')) return 0;
+  /* Kéo lớp che về đục hẳn TRƯỚC khi xếp. Lúc mới giải xong nó đang mờ (.45) để
+     khoe nét khắc, nhưng ký tự vừa dời chỗ thì chữ gốc nằm dưới lòi ra ngay bên
+     cạnh — thành ra đọc chồng hai lớp. */
+  const veil = slab.querySelector('.veil');
+  if(veil){ veil.style.transition = 'opacity .45s ease'; veil.style.opacity = '1'; }
+  const cw = cells[0].getBoundingClientRect().width;
+  slab.style.setProperty('--flip', (tuc_thi ? 0 : T.flip_ms) + 'ms');
+  cells.forEach((c,i)=>{
+    c.style.setProperty('--fx', ((n - 1 - 2*i) * cw).toFixed(2) + 'px');
+    c.style.setProperty('--fd', (tuc_thi ? 0 : i * 40) + 'ms');
+  });
+  slab.classList.add('flip');
+  return tuc_thi ? 0 : T.flip_ms + (n - 1) * 40;
 }
 
 /* ═══ GỢI Ý THEO BẬC + KHOÁ ĐẾM NGƯỢC ═════════════════════════════════════
@@ -1317,6 +1387,9 @@ async function grantHint(round){
   await say(C.dialogues.hint_show
     .replace('{N}', st.n)
     .replace('{TEXT}', list[st.n - 1]), 'warn');
+  /* Vòng 2 chỉ lộ chữ qua đường GỢI Ý. Đoán trật thì mất lượt chứ không được
+     lộ không, nếu không cứ gõ bừa là có đáp án. */
+  if(round === 2 && uncoverNext()) resetOnhap();
 }
 
 let lockTimer = 0;
@@ -1338,6 +1411,7 @@ async function endLock(round){
   el.lockbar.hidden = true;
   HINTS[round].lock = 0; saveHints();
   await grantHint(round);
+  resetOnhap();
   showCtrl(true);
   setInput(true, (round === 1 ? C.round1 : C.round2).placeholder);
   S.busy = false;
@@ -1427,18 +1501,56 @@ function setInput(on, placeholder){
 function showCtrl(on){ el.ctrl.hidden = !on; }
 
 el.input.addEventListener('input', ()=>{
+  if(owOn) return;                               /* Open World: chữ thường, có dấu */
   const up = el.input.value.toUpperCase();
   if(up !== el.input.value){
     const p = el.input.selectionStart;
     el.input.value = up;
     try{ el.input.setSelectionRange(p,p); }catch(_){}
   }
+
+  /* ═══ VÒNG 2 · ĐOÁN TỪNG KÝ TỰ MỘT ═══════════════════════════════════════
+     Phần đã lộ bị KHOÁ CỨNG ở đầu ô nhập, người chơi chỉ được thêm đúng MỘT
+     ký tự nữa. Gõ xong ký tự đó là nộp luôn, không sửa lại được:
+       trúng → rớt đất, ký tự sáng vĩnh viễn, ô nhập nới thêm một chỗ
+       trật → tính là một lần đoán sai
+     Nhờ vậy không còn đường gõ A→Z cho từng ô để dò ra đáp án. */
+  if(S.mode === 'progressive'){
+    const pre = chuoiDaLo();
+    let v = el.input.value.replace(/\s+/g,'');
+    if(!v.startsWith(pre)) v = pre;              /* đụng vào phần đã lộ → trả lại */
+    if(v.length > pre.length + 1) v = v.slice(0, pre.length + 1);
+    if(v !== el.input.value) el.input.value = v;
+    S.lastNoSp = v.length; S.lastLen = v.length;
+    armIdle();
+    if(v.length === pre.length + 1) doanKyTu(v[v.length - 1]);
+    return;
+  }
+
   const t = el.input.value.replace(/\s+/g,'');
   if(t.length > S.lastNoSp) flashLetter(t[t.length-1], t.length-1);  /* CHỈ khi thêm ký tự */
   S.lastNoSp = t.length;
   S.lastLen = el.input.value.length;
   armIdle();
 });
+
+/* Chấm một ký tự vừa gõ ở vòng 2 */
+async function doanKyTu(ch){
+  if(S.busy || S.inputLocked) return;
+  const idx = S.revMap[S.dug];
+  if(S.slabWord[idx] === ch){
+    digReveal(S.slabRow.children[idx], true);
+    S.dug++;
+    el.input.value = chuoiDaLo();
+    S.lastNoSp = S.lastLen = el.input.value.length;
+    if(S.dug >= S.revMap.length) win2();         /* lộ đủ chữ = giải xong */
+    return;
+  }
+  missBlink();
+  el.input.value = chuoiDaLo();                  /* trả về đúng phần đã lộ */
+  S.lastNoSp = S.lastLen = el.input.value.length;
+  await fail(true);
+}
 el.input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); submit(); }});
 el.unlock.addEventListener('click', submit);
 el.input.addEventListener('focus', ()=>{
@@ -1447,7 +1559,9 @@ el.input.addEventListener('focus', ()=>{
 
 const norm = s => (s||'').toUpperCase().replace(/\s+/g,'').trim();
 function submit(){
+  if(owOn) return owGui();          /* xét TRƯỚC: xem lại luôn để S.busy = true */
   if(S.busy || S.inputLocked) return;
+  if(S.mode === 'progressive') return;   /* vòng 2 chấm ngay theo từng phím */
   const v = el.input.value.trim();
   if(!v) return;
   const cfg = S.round === 1 ? C.round1 : C.round2;
@@ -1455,11 +1569,17 @@ function submit(){
   else fail();
 }
 
-async function fail(){
+/* Trả ô nhập về đúng phần chữ đã lộ (vòng 2), hoặc dọn sạch (vòng 1) */
+function resetOnhap(){
+  el.input.value = S.mode === 'progressive' ? chuoiDaLo() : '';
+  S.lastLen = S.lastNoSp = el.input.value.length;
+}
+/* `le` = vừa đoán trật MỘT ký tự (vòng 2), nhẹ hơn nhập sai cả cụm */
+async function fail(le){
   S.busy = true;
   setInput(false);
   S.wrongs[S.round]++;
-  el.input.value = ''; S.lastLen = 0;
+  resetOnhap();
 
   if(S.round === 1){
     playClip(A('anim_wrong'), T.anim_wrong);      /* chạy song song với log */
@@ -1468,17 +1588,14 @@ async function fail(){
     el.narr.classList.remove('shake'); void el.narr.offsetWidth;
     el.narr.classList.add('shake');
     flashEyes();
-    await say(C.dialogues.round2_wrong, 'err');
-    /* Sai một lần thì đất rơi khỏi thêm một ký tự — bắt đầu từ ô ngoài cùng
-       BÊN PHẢI, để tự hiểu ra rằng phải đọc ngược. KHÔNG kèm thoại: nhìn thấy
-       đất rơi là biết, viết ra thành chữ chỉ tổ ồn. */
-    uncoverNext();
+    await say(le ? C.dialogues.round2_le_wrong : C.dialogues.round2_wrong, 'err');
   }
   const locked = await serveHint(S.round);
   if(S.wrongs[S.round] >= T.idle_wrongs) breatheSlab();
   if(locked) return;                    /* đang đếm ngược — không mở lại ô nhập */
 
   await wait(T.lock_after_bad);
+  resetOnhap();
   setInput(true);
   S.busy = false;
   await say(C.dialogues.unlocked_input, 'sys');
@@ -1498,6 +1615,7 @@ async function startRound1(){
   el.bg.style.backgroundImage = url1;
   el.slab1.style.setProperty('--veil-f', C.round1.veil_filter);
   S.mode = C.round1.reveal_mode; S.dug = 0; S.burn = false;
+  el.ctrl.classList.remove('nobtn');
   S.revMap = buildSlab(el.row1, C.round1.scrambled);
   el.slab1.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url1);
   el.slab1.classList.add('vis');
@@ -1524,13 +1642,49 @@ async function win1(){
 
   el.slab1.classList.remove('breathe');
   await wait(revealSolved(el.slab1, el.row1));
+  await wait(flipSolved(el.slab1, el.row1));     /* xếp REZAR → RAZER tại chỗ */
   await wait(T.glow_hold);
   await load(A('anim_unlock'));
   say(C.dialogues.round1_boom, 'warn');
 
   el.slab1.classList.remove('vis');
+
+  /* ═══ CHẶN LỘ ĐÁP ÁN TRONG CLIP ═══════════════════════════════════════════
+     Clip nổ sập lab tự nó VẼ SẴN bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ
+     khoảng 44% về sau — không phải lỗi thứ tự dựng cảnh, mà là ảnh gốc.
+     Đã đo: khung hình cuối của clip trùng KHÍT bg_r2 (lệch 0px cả hai chiều),
+     nên cứ dựng sẵn cảnh vòng 2 sau lưng clip rồi thả lớp che xuống đúng chỗ
+     bảng đá — lớp che nằm z-6, clip nằm z-5, che vừa vặn. Nền cũng đổi sẵn
+     luôn nên lúc clip tắt là cắt thẳng sang cảnh tĩnh, không chớp nhịp nào. */
+  prepRound2();
+  const veil2 = el.slab2.querySelector('.veil');
+  veil2.style.transition = 'none'; veil2.style.opacity = '0';
+  setTimeout(()=>{
+    veil2.style.transition = 'opacity ' + T.veil_in_ms + 'ms ease';
+    veil2.style.opacity = '1';
+  }, T.anim_unlock * T.veil_in_at);
+
   await playClip(A('anim_unlock'), T.anim_unlock);
   await startRound2();
+}
+
+/* Dựng toàn bộ phần NHÌN THẤY của vòng 2 (nền, rồng, bảng đá, cuộn thư) mà
+   chưa đụng gì tới trạng thái chơi. Gọi được từ trong lúc clip đang chạy. */
+function prepRound2(){
+  const url2 = 'url("'+A('bg_r2')+'")';
+  el.bg.style.opacity = '1';
+  el.bg.style.backgroundImage = url2;
+  el.dragon.style.backgroundImage = url2;
+  el.hotZoom.style.backgroundImage = url2;
+  el.slab2.style.setProperty('--veil-f', C.round2.veil_filter);
+  S.revMap2 = buildSlab(el.row2, C.round2.scrambled);
+  el.slab2.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url2);
+  el.slab2.classList.add('vis');
+  el.eyes.forEach(e=> e.classList.add('on'));
+  el.dragon.classList.add('on');
+  el.aura.classList.add('on');
+  el.root.classList.add('r2');
+  layout();
 }
 
 /* ═══ VÒNG 2 ══════════════════════════════════════════════════════════════ */
@@ -1545,29 +1699,13 @@ async function startRound2(){
   el.hud.classList.remove('ok');
   el.hudText.textContent = C.ui.hud_locked;
 
-  /* THỨ TỰ QUAN TRỌNG: ảnh nền vòng 2 có sẵn chữ khắc "NUY OAHZ" hiện rõ, lớp
-     che mới là thứ giấu nó đi. Nếu cho nền hiện lên TRƯỚC rồi mới dựng lớp che
-     thì có đúng một nhịp lộ nguyên đáp án. Vì vậy: giữ nền tắt → dựng và đo
-     xong lớp che → đợi trình duyệt vẽ một khung → mới bật nền lên. */
+  /* Cảnh đã được prepRound2() dựng sẵn sau lưng clip (xem win1). Vào thẳng từ
+     chỗ khác — chơi lại, hoặc còn hạn khoá — thì dựng ở đây. */
   await load(A('bg_r2'));
-  el.bg.style.opacity = '0';
-  await wait(80);
-
-  const url2 = 'url("'+A('bg_r2')+'")';
-  el.bg.style.backgroundImage = url2;
-  el.dragon.style.backgroundImage = url2;
-  el.slab2.style.setProperty('--veil-f', C.round2.veil_filter);
+  if(!el.slab2.classList.contains('vis')) prepRound2();
   S.mode = C.round2.reveal_mode; S.dug = 0; S.burn = false;
-  S.revMap = buildSlab(el.row2, C.round2.scrambled);
-  el.slab2.querySelectorAll('.gl, .veil').forEach(c=> c.style.backgroundImage = url2);
-  el.hotZoom.style.backgroundImage = url2;
-  el.slab2.classList.add('vis');
-  el.eyes.forEach(e=> e.classList.add('on'));
-  layout();
-  el.dragon.classList.add('on');
-  el.aura.classList.add('on');
-  await new Promise(r=> requestAnimationFrame(()=> requestAnimationFrame(r)));
-  el.bg.style.opacity = '1';
+  S.revMap = S.revMap2 || buildSlab(el.row2, C.round2.scrambled);
+  el.ctrl.classList.toggle('nobtn', S.mode === 'progressive');
 
   CAM.enabled = true;
   camIntro();
@@ -1592,7 +1730,10 @@ async function win2(){
   el.dragon.classList.add('empowered');
   el.aura.classList.add('empowered');
 
-  await wait(dur + 300);
+  await wait(dur + 200);
+  await wait(flipSolved(el.slab2, el.row2));     /* xếp NUY OAHZ → ZHAO YUN */
+  Store.patch({ g2Xong:true });                  /* nhớ là đã ra đáp án */
+  await wait(200);
   el.hotspot.classList.add('on');
   await say(C.dialogues.round2_correct, 'cy');
   S.busy = false;
@@ -1660,23 +1801,37 @@ function autoSlide(){
 el.prev.addEventListener('click', ()=>{ goSlide(slideIdx-1); autoSlide(); });
 el.next.addEventListener('click', ()=>{ goSlide(slideIdx+1); autoSlide(); });
 
+/* Tách thư làm hai phần: thân thư và đoạn `p.s.` — đoạn p.s. in nghiêng. */
+function xeThu(){
+  const txt = C.letter_content;
+  const k = txt.search(/\n[ \t]*p\.?\s?s[.:]/i);
+  return k < 0 ? [txt, ''] : [txt.slice(0, k), txt.slice(k)];
+}
 function typeLetter(){
-  const my = ++letterToken, txt = C.letter_content;
-  el.letterBox.textContent = '';
+  const my = ++letterToken;
+  const [than, ps] = xeThu();
+  el.letterBox.innerHTML = '';
+  const a = document.createElement('span'), b = document.createElement('i');
+  el.letterBox.append(a, b);
   el.finish.disabled = true;
-  let i = 0;
+  let i = 0, j = 0;
   (function step(){
     if(my !== letterToken) return;
-    el.letterBox.textContent = txt.slice(0, i += 1);
+    if(i < than.length)      a.textContent = than.slice(0, ++i);
+    else if(j < ps.length)   b.textContent = ps.slice(0, ++j);
+    else { el.finish.disabled = false; return; }
     el.letterBox.scrollTop = el.letterBox.scrollHeight;
-    if(i < txt.length) setTimeout(step, T.letter_speed);
-    else el.finish.disabled = false;
+    setTimeout(step, T.letter_speed);
   })();
 }
 el.letterBox.addEventListener('click', ()=>{
   if(el.finish.disabled){
     letterToken++;
-    el.letterBox.textContent = C.letter_content;
+    const [than, ps] = xeThu();
+    el.letterBox.innerHTML = '';
+    const a = document.createElement('span'), b = document.createElement('i');
+    a.textContent = than; b.textContent = ps;
+    el.letterBox.append(a, b);
     el.finish.disabled = false;
   }
 });
@@ -1785,21 +1940,21 @@ function galleryPaint(r){
 
   layout();
   revealSolved(slab, row);           /* cảnh đã giải → nét khắc sáng hết */
+  flipSolved(slab, row, true);       /* và giữ nguyên đáp án đã xếp lại */
   el.gR1.classList.toggle('on', r === 1);
   el.gR2.classList.toggle('on', r === 2);
   CAM.enabled = true;
   camIntro();
 
   /* Kể lại đúng đoạn dẫn truyện của vòng đó cho hộp thoại khỏi trống trơn */
-  Q.length = 0; typing = false;
-  el.narr.innerHTML = '';
+  clearNarr();
   say(C.ui.gallery_note, 'cy');
   if(r === 1) sayAll(C.dialogues.round1_intro);
   else{ say(C.dialogues.round2_intro, 'cy'); sayAll(C.dialogues.round2_hint); }
 }
 function enterGallery(r){
   reset();
-  galleryOn = true;
+  galleryOn = true; owOn = false;
   S.done = true; S.busy = true;                 /* khoá hẳn đường gõ mật mã */
   el.boot.classList.add('gone');
   el.boot.style.display = 'none';
@@ -1810,12 +1965,129 @@ function enterGallery(r){
   galleryPaint(r);                              /* tự dựng lại thoại của vòng đó */
 }
 function leaveGallery(){
-  galleryOn = false;
-  el.gbar.hidden = true;
+  galleryOn = false; owOn = false;
+  el.gbar.hidden = true; el.owbar.hidden = true;
+  el.unlock.textContent = C.ui.unlock_btn;
+  el.input.maxLength = 16; el.input.style.textTransform = '';
+  showCtrl(false); setInput(false);
 }
-el.gR1.addEventListener('click', ()=> galleryPaint(1));
-el.gR2.addEventListener('click', ()=> galleryPaint(2));
+el.gR1.addEventListener('click', ()=>{ owTat(); galleryPaint(1); });
+el.gR2.addEventListener('click', ()=>{ owTat(); galleryPaint(2); });
+el.gOw.addEventListener('click', ()=> owBat());
 el.gExit.addEventListener('click', ()=>{ leaveGallery(); Code.open(); });
+
+/* ═══ OPEN WORLD · KHU TRÒ CHUYỆN ══════════════════════════════════════════
+   Trang KHÔNG giữ khoá API. Nó POST câu hỏi về `/api/chat` — hàm serverless
+   của chính website — nơi giữ khoá Gemini trong biến môi trường. Chưa khai
+   khoá thì khu này vẫn mở, chỉ trả câu dự phòng. Xem OPEN-WORLD.md.
+   Hạn mức mỗi ngày nhớ trong localStorage theo NGÀY GIỜ VIỆT NAM.            */
+const OW = C.openworld || {};
+let owOn = false, owBan = false, owSu = [];
+
+function homNay(){
+  return new Date(Date.now() + 7*36e5).toISOString().slice(0,10);   /* +07:00 */
+}
+function owLuot(){
+  const st = Store.get().g2Ow || {};
+  return st.ngay === homNay() ? (st.dem || 0) : 0;
+}
+function owTru(){
+  Store.patch({ g2Ow:{ ngay:homNay(), dem: owLuot() + 1 } });
+  owHienLuot();
+}
+function owConLai(){ return Math.max(0, (OW.moi_ngay || 10) - owLuot()); }
+function owHienLuot(){
+  const n = owConLai();
+  el.owQuota.textContent = n + '/' + (OW.moi_ngay || 10);
+  [...el.owbar.querySelectorAll('.chip')].forEach(c=> c.disabled = n <= 0 || owBan);
+  if(n <= 0) setInput(false);
+}
+function owChips(){
+  [...el.owbar.querySelectorAll('.chip')].forEach(c=> c.remove());
+  (OW.goi_y || []).forEach(t=>{
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = t;
+    b.addEventListener('click', ()=>{ el.input.value = t; owGui(); });
+    el.owbar.appendChild(b);
+  });
+}
+async function owBat(){
+  if(owOn) return;
+  owOn = true;
+  el.gR1.classList.remove('on'); el.gR2.classList.remove('on');
+  el.gOw.classList.add('on');
+  el.hudRound.textContent = 'OPEN WORLD';
+  clearNarr();
+  el.owbar.hidden = false;
+  owChips(); owHienLuot();
+  showCtrl(true);
+  setInput(owConLai() > 0, OW.placeholder || '...');
+  el.unlock.textContent = OW.nut_gui || 'GUI';
+  el.ctrl.classList.remove('nobtn');
+  el.input.maxLength = OW.max_ky_tu || 300;
+  el.input.style.textTransform = 'none';
+  el.input.setAttribute('autocapitalize','sentences');
+  const doi = narrEra;
+  await sayAll((OW.chao || []).map(t=> t.replace('{N}', OW.moi_ngay || 10)), 'cy');
+  if(narrEra !== doi) return;            /* đã bấm sang mục khác giữa chừng */
+  if(owConLai() <= 0) say(OW.het_luot || '', 'warn');
+  else say((OW.con_lai || '> {N}').replace('{N}', owConLai()), 'sys');
+}
+function owTat(){
+  if(!owOn) return;
+  owOn = false;
+  el.gOw.classList.remove('on');
+  el.owbar.hidden = true;
+  el.unlock.textContent = C.ui.unlock_btn;
+  el.input.maxLength = 16;
+  el.input.style.textTransform = '';
+  el.input.setAttribute('autocapitalize','characters');
+  el.input.value = '';
+  showCtrl(false); setInput(false);
+}
+async function owGui(){
+  if(!owOn || owBan) return;
+  const q = el.input.value.trim();
+  if(!q) return;
+  if(owConLai() <= 0){ say(OW.het_luot || '', 'warn'); return; }
+  owBan = true;
+  const doi = narrEra;
+  el.input.value = '';
+  setInput(false);
+  owHienLuot();
+  await say('> ' + q, 'me');
+  if(narrEra !== doi){ owBan = false; return; }
+
+  const cho = document.createElement('p');
+  cho.className = 'line wait'; cho.textContent = OW.dang_nghi || '...';
+  el.narr.appendChild(cho); el.narr.scrollTop = el.narr.scrollHeight;
+
+  let dap = null, loi = null;
+  try{
+    const r = await fetch(OW.endpoint || '/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ hoi:q, su:owSu.slice(-6), tinh_cach: OW.tinh_cach || '' })
+    });
+    const j = await r.json().catch(()=> ({}));
+    if(r.ok && j.dap) dap = String(j.dap).trim();
+    else loi = j.loi === 'chua_co_khoa' ? (OW.chua_noi || '') : (OW.loi_mang || '');
+  }catch(e){ loi = OW.loi_mang || ''; }
+  cho.remove();
+  if(narrEra !== doi){ owBan = false; return; }   /* đã rời khu trò chuyện */
+
+  if(dap){
+    owSu.push({ vai:'user', text:q }, { vai:'npc', text:dap });
+    owTru();
+    await say('> ' + dap, 'npc');
+    if(owConLai() > 0) say((OW.con_lai || '> {N}').replace('{N}', owConLai()), 'sys');
+    else say(OW.het_luot || '', 'warn');
+  }else{
+    await say(loi, 'err');            /* hỏng đường truyền thì KHÔNG trừ lượt */
+  }
+  owBan = false;
+  owHienLuot();
+  if(owConLai() > 0) setInput(true, OW.placeholder || '...');
+}
 
 /* ═══ THOÁT / KHỞI ĐỘNG ═══════════════════════════════════════════════════ */
 el.back.addEventListener('click', ()=>{
@@ -1854,17 +2126,22 @@ function reset(){
   S.round = 0; S.busy = true; S.wrongs = {1:0,2:0}; S.done = false;
   S.lastLen = 0; S.lastNoSp = 0; S.revMap = null;
   S.mode = 'flash'; S.dug = 0; S.burn = false;
-  galleryOn = false;
+  galleryOn = false; owOn = false; owBan = false; owSu = [];
+  el.owbar.hidden = true;
+  el.unlock.textContent = C.ui.unlock_btn;
+  el.input.maxLength = 16; el.input.style.textTransform = '';
   clearTimeout(S.idleTimer); clearInterval(lockTimer);
   el.lockbar.hidden = true; el.gbar.hidden = true;
-  Q.length = 0; typing = false;
-  el.narr.innerHTML = '';
+  clearNarr();
   el.input.value = '';
   showCtrl(false); setInput(false);
   [el.slab1, el.slab2].forEach(sl=>{
     sl.className = 'slab';
-    const v = sl.querySelector('.veil'); if(v) v.style.opacity = '';
+    const v = sl.querySelector('.veil');
+    if(v){ v.style.opacity = ''; v.style.transition = ''; }
   });
+  S.revMap2 = null;
+  el.ctrl.classList.remove('nobtn');
   el.row1.innerHTML = ''; el.row2.innerHTML = '';
   el.eyes.forEach(e=> e.classList.remove('on','flash'));
   el.dragon.className = 'dragon-layer'; el.aura.className = 'aura';

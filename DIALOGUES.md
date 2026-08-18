@@ -15,11 +15,15 @@ dad/950901-b/
 ├── index.html        ← 3 màn trong 1 file (đếm ngược · game · mã TYRION)
 ├── config.js         ← ★ SỬA Ở ĐÂY: GATE_CONFIG + GAME_CONFIG
 ├── DIALOGUES.md      ← file này
+├── THU-VA-ANH.md     ← nội dung thư + quy ước đặt tên ảnh kỷ niệm
+├── OPEN-WORLD.md     ← cách nối Gemini cho khu trò chuyện
 ├── bg_r1.png         3136×1376 · phòng lab ngầm
 ├── bg_r2.png         3136×1376 · rừng tàn tích, Bạch Long ngậm cuộn thư
 ├── anim_wrong.webp   1280×561  · ổ khoá rung đỏ (~2s)
 ├── anim_unlock.webp  800×350   · nổ sập lab + thức tỉnh Bạch Long (~8s)
 └── photo_1..5.jpg    ⚠️ CHƯA CÓ — game tự vẽ ảnh pixel thay thế
+
+api/chat.js           ← ngoài thư mục này: hàm serverless gọi Gemini
 ```
 
 Thêm ảnh kỷ niệm thật: chép `photo_1.jpg` … `photo_5.jpg` vào đúng thư mục này.
@@ -45,14 +49,24 @@ hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
 **Chế độ xem lại (gallery).** Phá đảo rồi vẫn ngắm lại được hai bối cảnh mà
 không phải giải lại. Màn ② dựng lại đúng cảnh của vòng được chọn ở trạng thái
 **đã giải**: chữ sáng hết, rồng đã được tiếp sức, cuộn thư chạm được để đọc lại
-thư. Ô nhập tắt hẳn; dưới hộp thoại là thanh `VÒNG 01 · VÒNG 02 · THOÁT`, và
+thư. Ô nhập tắt hẳn; dưới hộp thoại là thanh
+`VÒNG 01 · VÒNG 02 · OPEN WORLD · THOÁT`, và
 hộp thoại kể lại đúng đoạn dẫn truyện của vòng đang xem. Khung thư lúc này có
 thêm **nút `X` ở góc** để đóng nhanh — lượt chơi thật thì không có, phải bấm
 `[ HOÀN THÀNH HÀNH TRÌNH ]` cho chạy nốt màn kết. Đọc lại thư xong thì về thẳng
 cảnh, **không** bắn pháo hoa lại.
 
-> Chỗ này để dành cho ý sau: khi người chơi quay lại khung đối thoại có thể chào
-> mời gọi Gemini cho chat vài câu vu vơ mỗi ngày. Hiện **chưa** làm.
+**OPEN WORLD** là khu trò chuyện: người chơi hỏi, **Bạch Long** đáp, mỗi ngày
+**10 câu**. Giao diện và phần đếm lượt đã chạy sẵn; muốn nó trả lời thật thì
+khai một biến môi trường trên Vercel — **xem `OPEN-WORLD.md`**. Chưa khai thì
+khu này vẫn mở, chỉ trả câu dự phòng.
+
+- Trang **không giữ khoá API**. Nó POST về `/api/chat` (hàm serverless của
+  chính website), khoá Gemini nằm ở biến môi trường `GEMINI_KEY`.
+- Hạn mức nhớ ở `mtv1.g2Ow = { ngay, dem }`, **ngày tính theo giờ Việt Nam**.
+- **Gọi hỏng thì không trừ lượt.**
+- Nội dung sửa ở `GAME_CONFIG.openworld` — đáng sửa nhất là `tinh_cach`, đoạn
+  mô tả giọng của Bạch Long.
 
 Mã `TYRION` là phần thưởng của việc **chơi xong mini-game**, không phải chỉ
 của việc tới đúng ngày.
@@ -151,6 +165,23 @@ khoảng 8px, nhoè 11% là ăn đứt nét dọc của `R` và `O` nằm sát m
 > được đặt **bên trong `.world` và nằm dưới lớp che** (z-index 5 < 6); nếu để
 > clip đè lên thì mỗi lần sai là lộ hết đáp án.
 
+### ★ XẾP LẠI CHỮ khi giải xong
+
+Giải đúng xong, từng ô **trượt về đúng chỗ của nó khi đọc xuôi**, đè hẳn lên
+bảng cũ: `REZAR → RAZER`, `NUY OAHZ → ZHAO YUN`. Chữ khắc vốn là chuỗi đảo nên
+đáp án chính là **ảnh gương** của nó — ô thứ `i` chỉ việc trượt sang chỗ ô
+`n-1-i`. Trượt bằng `transform` nên cái nằm đó vẫn là **nét khắc thật trong
+tranh**, không phải chữ vẽ lại.
+
+Lúc xếp, **lớp che kéo về đục hẳn** (`opacity 1`). Vừa giải xong nó đang mờ
+`.45` để khoe nét khắc, nhưng ký tự vừa dời chỗ thì **chữ gốc nằm dưới lòi ra
+ngay bên cạnh** — đọc thành hai lớp chồng nhau.
+
+Đáp án **ở lại vĩnh viễn**: giữ nguyên suốt màn thông báo, lúc chuyển cảnh, và
+cả khi quay lại **Chế độ xem lại** (`flipSolved(..., true)` dựng lại tức thì,
+không chạy hoạt hình). Xoay máy thì `fitSlabs()` tính lại quãng trượt theo bề
+rộng ô mới.
+
 ### ★ Hiệu ứng RỚT ĐẤT
 
 Ký tự không bật sáng khan. Mỗi ô có sẵn một **mảng đất** phủ lên; lúc lộ ra thì
@@ -161,26 +192,47 @@ tự thì vẫn toả ra bình thường.
 
 ### ★ Hai kiểu lộ chữ (`reveal_mode`)
 
-**Vòng 1 — `flash`.** Nét khắc chìm mờ sẵn (đọc được lờ mờ, vì cái phải giải là
-*đọc ngược*, không phải *tìm chữ*). Gõ trúng ký tự nào thì ô đó rớt đất, sáng
-một nhịp rồi **chìm lại**.
+**Vòng 1 — `flash`.** Lớp che cũng **có blur như vòng 2**, ban đầu không đọc
+được nét khắc. Gõ trúng ký tự nào thì ô đó rớt đất, sáng một nhịp rồi **chìm
+lại** — vẫn dạy được chiều đọc ngược mà không cho đọc trước đáp án. Muốn quay
+lại kiểu cũ (nét chữ chìm mờ nhưng đọc được) thì bỏ `blur` khỏi
+`round1.veil_filter`.
 
 **Vòng 2 — `progressive`.** Lớp che có thêm `blur` nên **ban đầu không thấy nét
 chữ nào**. Chữ lộ dần và **lộ tới đâu giữ sáng tới đó**:
 
+### ★★ LUẬT ĐOÁN TỪNG KÝ TỰ (vòng 2)
+
+Mỗi lượt chỉ đoán **một ký tự**, nhưng phải **gõ liền mạch cả cụm**. Phần đã lộ
+bị **khoá cứng ở đầu ô nhập**, người chơi chỉ được thêm đúng một ký tự nữa — và
+**gõ xong ký tự đó là nộp luôn**, không sửa lại được.
+
+```
+chưa lộ gì   → ô nhập cho gõ 1 ký tự    →  Z          (trúng → lộ chữ Z)
+đã lộ  Z     → cho gõ tối đa 2 ký tự    →  ZH         (trúng → lộ chữ H)
+đã lộ  ZH    → cho gõ tối đa 3 ký tự    →  ZHA
+đã lộ  ZHA   → cho gõ tối đa 4 ký tự    →  ZHAO   … cho tới hết
+```
+
 | Việc người chơi làm | Kết quả |
 |---|---|
-| Nhập sai lần đầu | Rớt đất, lộ **chữ `Z` ngoài cùng bên phải** |
-| Mỗi lần nhập sai tiếp theo | Lộ thêm một ký tự, **tiếp tục sang trái** |
-| Gõ **trúng** ký tự kế tiếp, **ngay lần thử đầu** | Rớt đất, lộ luôn — mò ra trước gợi ý thì được thưởng |
-| Gõ **trật** ký tự kế tiếp | **Cháy lượt ô đó**: ô nhập nháy đỏ, từ đây gõ gì cũng không lộ |
-| Gõ trúng ký tự đã lộ | Không có gì (nó sáng sẵn rồi) |
+| Đoán **trúng** ký tự kế tiếp | Rớt đất, ký tự sáng vĩnh viễn, ô nhập nới thêm một chỗ |
+| Đoán **trật** | Ô nhập nháy đỏ, tính **một lần sai**, chữ trả về đúng phần đã lộ |
+| Sửa/xoá phần đã lộ | Không được — trang tự trả lại |
+| Gõ quá số ô cho phép | Không được — trang tự cắt |
+| Lộ đủ ký tự cuối cùng | **Thắng luôn**, khỏi bấm nộp |
 
-**★ LUẬT MỘT LƯỢT.** Mỗi ô chỉ cho thử **đúng một ký tự**. Không có luật này thì
-người chơi cứ gõ lần lượt A→Z cho từng ô là ra nguyên đáp án — chẳng phải đoán,
-cũng chẳng cần bấm `UNLOCK` lần nào, phần đố coi như bỏ. Ô đã cháy lượt chỉ lộ
-ra bằng đường **nhập sai cả cụm**; lộ xong thì ô kế tiếp **được nạp lại một
-lượt**. Luật này nói thẳng cho người chơi biết trong `round2_hint`, không giấu.
+Vòng 2 **giấu hẳn nút `UNLOCK`** (`.ctrl.nobtn`) — gõ ký tự nào là chấm ký tự
+đó, chẳng còn gì để "nộp".
+
+**Chữ chỉ lộ thêm qua đường GỢI Ý.** Đoán trật thì mất lượt chứ không được lộ
+không — nếu cho lộ thì gõ bừa cũng ra đáp án. Mỗi lần `grantHint()` chạy là bới
+thêm một ký tự, nên vẫn luôn có đường về đích: sai lần đầu → gợi ý 1 + lộ chữ
+`Z`; từ đó cứ 3 lần sai nữa mở gợi ý tiếp, cách nhau 15 phút.
+
+Không có luật này thì người chơi cứ gõ lần lượt A→Z cho từng ô là ra nguyên đáp
+án — chẳng phải đoán, cũng chẳng cần bấm `UNLOCK` lần nào. Luật nói thẳng cho
+người chơi biết trong `round2_hint`, không giấu.
 
 Cứ thế người chơi tự nhận ra **thứ tự đi từ phải sang trái**. Ô ứng với **dấu
 cách** không bao giờ thắp, nếu không sẽ thành vệt sáng vô nghĩa giữa hai chữ.
@@ -190,16 +242,24 @@ bài.
 > Đất rơi **không kèm thoại**. Nhìn thấy là biết; viết ra thành chữ chỉ tổ ồn
 > hộp thoại.
 
-> **Chuyển vòng 1 → 2 phải đúng thứ tự.** Ảnh nền vòng 2 có sẵn chữ khắc hiện
-> rõ, lớp che mới là thứ giấu nó đi. Nên `startRound2` giữ nền **tắt**, dựng và
-> đo xong lớp che, đợi trình duyệt vẽ một khung rồi **mới** bật nền lên — bật
-> trước là có đúng một nhịp lộ nguyên đáp án.
+### ★ Clip nổ sập lab TỰ NÓ lộ đáp án
+
+`anim_unlock.webp` (241 khung) **vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ
+khoảng khung 105 (~44%) về sau** — nằm trong ảnh gốc, không phải lỗi thứ tự dựng
+cảnh. Đã đo: **khung hình cuối của clip trùng khít `bg_r2`, lệch 0px cả hai
+chiều**. Nhờ vậy cách chữa gọn:
+
+1. `win1()` gọi `prepRound2()` **trước khi phát clip** — dựng sẵn nền, rồng,
+   bảng đá, cuộn thư ở phía sau clip.
+2. Tới mốc `timing.veil_in_at` (0.40 của clip) thì **thả lớp che xuống**, hiện
+   dần trong `veil_in_ms`. Lớp che nằm `z-index 6`, clip nằm `5` → che vừa vặn.
+3. Clip tắt là **cắt thẳng** sang cảnh tĩnh đã dựng sẵn, không chớp nhịp nào.
 
 | Trạng thái | Hiện tượng |
 |---|---|
 | Vòng 1 · không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
 | Vòng 1 · gõ trúng một ký tự | Ô đó rớt đất, sáng ~0.9s rồi tối lại |
-| Vòng 2 · gõ trật ký tự kế tiếp | Ô nhập nháy đỏ — cháy lượt ô đó |
+| Vòng 2 · đoán trật ký tự | Ô nhập nháy đỏ, tính một lần sai |
 | Vòng 2 · chưa lộ | Không thấy gì cả |
 | Vòng 2 · đã lộ | Giữ sáng vĩnh viễn cho tới hết vòng |
 | Xoá phím | Không sáng gì |
@@ -221,9 +281,13 @@ Bảng ánh xạ bỏ qua ô trống, nên gõ `ZHAOYUN` liền hay `ZHAO YUN` c
 
 ### Toạ độ (tất cả tính theo % của **ảnh nền**, đo bằng dò pixel)
 
+> Khung vòng 1 từng bắt đầu ở `47.194%` = pixel 1480, trong khi nét khắc thật
+> chạy từ pixel **1478** — xén mất đúng nét dọc của chữ `R` ngoài cùng bên
+> trái. Đã nới về `x[1477, 1681]`.
+
 | Lớp | left | top | w | h |
 |---|---|---|---|---|
-| Bệ đá Vòng 1 (`REZAR`) | 47.194% | 91.788% | 6.378% | 3.198% |
+| Bệ đá Vòng 1 (`REZAR`) | 47.098% | 91.788% | 6.505% | 3.198% |
 | Bệ đá Vòng 2 (`NUY OAHZ`) | 46.971% | 84.811% | 6.154% | 2.180% |
 | Cuộn thư (`hotspot`) | 41.14% | 34.52% | 10.52% | 9.08% |
 | Mắt rồng (`eyes[0]`) | 46.70% | 28.69% | 2.4% | 4.4% |
@@ -302,8 +366,9 @@ tay thì trôi mượt về giữa.
 | Khoá | Nội dung | Màu |
 |---|---|---|
 | `round2_intro` | `> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.` | cyan |
-| `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.`<br>`> Bệ đá bị đất phủ kín. Mỗi ô chỉ cho thử MỘT ký tự — gõ trật là mất lượt.` | xanh lá |
+| `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.`<br>`> Bệ đá bị đất phủ kín. Mỗi lần chỉ đoán được MỘT ký tự, gõ xong là nộp luôn.`<br>`> Đoán trúng thì ký tự đó lộ ra và được gõ thêm một ô nữa.` | xanh lá |
 | `round2_wrong` | `> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.` | đỏ |
+| `round2_le_wrong` | `> KÝ TỰ KHÔNG KHỚP. BẠCH LONG GẦM LÊN MỘT TIẾNG.` | đỏ |
 | `round2_correct` | `> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...` | cyan |
 
 ### Dùng chung & kết
@@ -372,6 +437,7 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 `round2.tap_label` `[ TAP HERE ]`
 
 **Chế độ xem lại:** `gallery_r1` `VÒNG 01` · `gallery_r2` `VÒNG 02` ·
+`gallery_ow` `OPEN WORLD` ·
 `gallery_exit` `THOÁT` · `gallery_note`
 `> CHẾ ĐỘ XEM LẠI — vuốt để ngắm, chạm lá thư để đọc lại.` ·
 `GATE_CONFIG.text.nut_xem_lai` `Xem lại bối cảnh` ·
@@ -394,6 +460,9 @@ ngón. Nhờ vậy cuối màn chỉ còn một nút to duy nhất.
 ## 7. Nội dung bức thư (`letter_content`)
 
 Sửa ở file riêng **`THU-VA-ANH.md`** (cùng thư mục) rồi chép sang `config.js`.
+
+Đoạn bắt đầu bằng `p.s` được **tự tách ra và in nghiêng** — không phải đánh dấu
+gì thêm, cứ để nó nằm ở dòng riêng cuối thư là được.
 
 ```
 Gửi Dongchi Bình,
@@ -465,8 +534,13 @@ giữa `'flash'` và `'progressive'`, không phải sửa gì trong `index.html`
 **Đổi chữ nút xem lại** — `GATE_CONFIG.text.nut_xem_lai` (chỉ hiện trong tooltip);
 chữ trong thanh gallery ở `GAME_CONFIG.ui.gallery_*`.
 
-**Vòng 2 dễ/khó hơn** — bỏ luật một lượt thì xoá nhánh `S.burn` trong
-`flashLetter()`; muốn chặt hơn nữa thì đừng nạp lại lượt trong `uncoverNext()`.
+**Vòng 2 dễ/khó hơn** — luật đoán từng ký tự nằm ở nhánh `S.mode === 'progressive'`
+trong bộ nghe `input` và hàm `doanKyTu()`. Muốn dễ hơn thì cho `fail()` gọi thêm
+`uncoverNext()`; muốn khó hơn thì bỏ `uncoverNext()` khỏi `grantHint()`.
+
+**Vòng 1 cho đọc trước nét khắc như bản cũ** — bỏ `blur` khỏi `round1.veil_filter`.
+
+**Nối Gemini cho khu Open World** — xem `OPEN-WORLD.md`.
 
 **Thư và tên ảnh kỷ niệm** — xem file riêng `THU-VA-ANH.md` cùng thư mục.
 
@@ -498,10 +572,14 @@ Luật đã chốt:
 - **Rồng chỉ có MỘT mắt** trong khung hình (nhìn nghiêng 3/4).
 - **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
   với easing đối xứng nên không còn cảm giác giật.
-- **Tem phiên bản**: game `V03.03`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
+- **Tem phiên bản**: game `V03.04`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
   Quy ước ở README: `Vx.yy`, `yy` chỉ chạy `00→09`, hết `09` thì `x` tăng 1 và
   `yy` về `00` — **không bao giờ có đuôi `.10`**. (Hai bản `V2.10`/`V2.11` trước
   đó là sai quy ước, đã nắn về `V03.02`.)
+- **Hộp thoại có "đời" riêng** (`narrEra`): dọn hộp thoại là tăng số này, mọi câu
+  đã hẹn từ đời trước tự huỷ. Không có nó thì `sayAll` — vốn nối bằng `.then()` —
+  vẫn thả nốt những câu còn lại vào hộp thoại đã dọn, kiểu mở Open World mà vẫn
+  thấy lời dẫn vòng 1 chen vào.
 - **Tem không bị góc xén**: `.corner.br` cao 22px tính từ đáy 14px nên chiếm dải
   14..36px; tem phải để `bottom:46px` mới thoát hẳn.
 - **Chiều gõ ngược** dạy người chơi cơ chế: phím đầu tiên làm sáng ô bên phải.
