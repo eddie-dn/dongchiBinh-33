@@ -1287,7 +1287,7 @@ phải học lại. `.hh.zoey` chuyển sang bảng pastel của Map 3.
 **Mỗi lần mở trang chỉ hiện MỘT hộp** — dồn ba bốn lời chào vào một lượt là phiền, không
 phải chăm sóc. Hộp tự rút sau 12 giây.
 
-`HH_4_hello trong easter egg.webp` dùng riêng cho **khung ảnh trong Collected: Easter Egg**
+`HH_4_hello_easter.webp` dùng riêng cho **khung ảnh trong Collected: Easter Egg**
 — khung đó đổi từ **tròn 112 px sang chữ nhật 16:9** kèm zoom rất chậm: ảnh vẽ cả người
 lẫn khung cảnh, cắt tròn 112 px thì còn mỗi cái mặt bé xíu, không đọc ra gì.
 
@@ -1318,9 +1318,11 @@ thái đang hiện, ngay lúc hiện; đóng hộp thì `removeAttribute('src')`
 > (`-q 55`), giảm số khung, hoặc cắt còn ~3 giây là xuống được cỡ 1–2 MB mỗi file — nhanh
 > hơn **mười lần** mà mắt gần như không thấy khác.
 
-> **Tên file có DẤU CÁCH** (`HH_4_hello trong easter egg.webp`) nên mọi chỗ dùng đều phải
-> `encodeURIComponent`. Đổi tên thành `HH_4_hello.webp` thì gọn hơn — sửa hằng `HH` trong
-> `index.html` là xong.
+> **Đã đổi tên rồi.** File này trước đây tên là `HH_4_hello trong easter egg.webp` — có dấu
+> cách — nhưng bản tải lên sau đó đặt là `HH_4_hello_easter.webp`, trong khi hằng `HH` ở
+> `index.html` vẫn giữ tên cũ. Kết quả: khung ảnh trong hộp *Collected: Easter Egg* rỗng.
+> Nay hằng `HH` trỏ đúng `HH_4_hello_easter.webp`. Đổi tên file lần nữa thì phải sửa hằng
+> `HH` trong `index.html` cho khớp, nếu không lại rỗng y như vậy.
 
 ### `/api/quote` — câu chào đầu ngày
 

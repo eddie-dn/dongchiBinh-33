@@ -574,15 +574,23 @@ a.file:active{background:rgba(242,180,65,.07)}
    để người chơi thấy hai chỗ là một họ. Trạng thái khác nhau chỉ đổi ẢNH, MỘT
    dòng chữ, và tông viền; KHÔNG đổi bố cục, để mắt không phải học lại.
    Theme: `.hh.zoey` chuyển sang bảng màu pastel của Map 3. */
-.hhw{position:fixed;inset:0;z-index:120;display:none;align-items:flex-end;
-  justify-content:center;padding:0 14px 22px;background:rgba(4,11,24,.5);
-  backdrop-filter:blur(3px);opacity:0;transition:opacity .32s}
+/* Hộp chào neo GIỮA màn hình, không dán đáy nữa. Dán đáy thì trên máy cao nó
+   nằm tít dưới chân, xa hẳn chỗ mắt đang nhìn (bản đồ ở giữa), lại dễ đụng
+   thanh điều hướng của trình duyệt di động. Ra giữa thì đúng là một lời chào
+   chặn ngang, đọc xong bấm tiếp — và cân với nền mờ phủ toàn màn hình.
+   `align-items:center` + padding đều bốn phía; máy thấp mà hộp cao hơn màn thì
+   `overflow-y:auto` cho cuộn chứ không bị cắt mất nút đóng. */
+.hhw{position:fixed;inset:0;z-index:120;display:none;align-items:center;
+  justify-content:center;padding:22px 14px;background:rgba(4,11,24,.5);
+  backdrop-filter:blur(3px);opacity:0;transition:opacity .32s;overflow-y:auto}
 .hhw.on{display:flex}
 .hhw.show{opacity:1}
-.hh{position:relative;width:100%;max-width:340px;border-radius:16px;overflow:hidden;
+/* `margin:auto` để khi hộp cao hơn khung cuộn thì nó vẫn nằm giữa mà không bị
+   xén mất mép trên (bẫy kinh điển của flex-center + overflow). */
+.hh{position:relative;width:100%;max-width:340px;margin:auto;border-radius:16px;overflow:hidden;
   background:linear-gradient(168deg,#102A4C 0%,#0B1B3A 100%);
   border:1px solid rgba(242,180,65,.4);box-shadow:0 22px 54px rgba(0,0,0,.55);
-  transform:translateY(14px);transition:transform .32s}
+  transform:translateY(14px) scale(.985);transition:transform .32s}
 .hhw.show .hh{transform:none}
 .hh-pic{position:relative;width:100%;aspect-ratio:800/446;background:#0B1B3A;
   overflow:hidden;display:block}
@@ -1493,7 +1501,7 @@ const HH = {
   back:    'HH_2_welcome_back.webp',
   happy:   'HH_2_happy.webp',
   excited: 'HH_3_excited.webp',
-  hello:   'HH_4_hello trong easter egg.webp',   /* tên file có DẤU CÁCH */
+  hello:   'HH_4_hello_easter.webp',
   idle:    'HH_5_idle_afk.webp'
 };
 function hhSrc(k){ return HH_DIR + encodeURIComponent(HH[k]); }
@@ -1833,7 +1841,14 @@ let cxCode = null, solved = {}, pzOn = false;
 /* lưu tiến độ nếu trình duyệt cho phép; không thì chỉ giữ trong phiên */
 const store = {
   read(){ try{ return JSON.parse(localStorage.getItem('mtv1')||'{}'); }catch(e){ return {}; } },
-  write(v){ try{ localStorage.setItem('mtv1', JSON.stringify(v)); }catch(e){} }
+  /* GỘP chứ không ghi đè. Khoá `mtv1` không phải của riêng bản đồ: trang
+     /dad/950901-b cũng ghi tiến độ Gate 2 vào đây (g2Game · g2Vao · g2Xong ·
+     g2Ow · g2Hint). save() bên dưới dựng một object CHỈ gồm khoá của bản đồ,
+     nên ghi đè thẳng là xoá sạch tiến độ mini-game của người ta — phá đảo
+     xong quay ra bản đồ một cái là mất, lần sau vào phải giải lại từ đầu.
+     Muốn xoá thật thì đặt thẳng khoá về undefined (xem eggReplay) hoặc
+     removeItem cả khoá (xem hardWipe). */
+  write(v){ try{ localStorage.setItem('mtv1', JSON.stringify(Object.assign(store.read(), v))); }catch(e){} }
 };
 (function boot(){
   const s = store.read();
@@ -3163,6 +3178,12 @@ function eggReplay(){
   credFound = false; eggWin = false; eggDone = false; coachDone = false;
   eggAn = 0;                          /* trả lại quyền tự ăn mừng hai lần đầu */
   g2Hack = false;                     /* và trả Gate 2 về đúng lịch của nó */
+  /* Tiến độ bên trong Gate 2 do trang /dad/950901-b giữ, tên khoá riêng. Trước
+     đây nó bị save() ghi đè nên "tự" mất; giờ save() gộp thì phải nói rõ ra ở
+     đây — đúng lời hứa của nút này: trả Easter Egg về lúc chưa ai tìm ra. */
+  g2Done = false; g2Open = false; hhG2 = '';
+  store.write({ g2Game:undefined, g2Vao:undefined, g2Xong:undefined,
+                g2Ow:undefined, g2Hint:undefined });
   clearTimeout(partyT); clearTimeout(gridT); clearTimeout(flyT);
   frame.classList.remove('win','cheer','flying');
   winCheer = false; save();
@@ -3515,8 +3536,25 @@ function hhXinCau(xong){
   }catch(e){ chot(hhCauNgay()); }
 }
 
-/* Đã xong Gate 2 chưa — cờ do chính trang /dad/950901-b ghi khi màn cuối hiện ra */
-function xongGate2(){ return !!g2Done; }
+/* Đã xong Gate 2 chưa — cờ do chính trang /dad/950901-b ghi khi màn cuối hiện
+   ra. Trang đó ghi CẢ HAI tên: `g2Done` (tên bản đồ dùng) và `g2Game` (tên
+   riêng của nó, có từ trước). Đọc cả hai để ai đã phá đảo từ bản cũ — lúc mới
+   chỉ có `g2Game` — vẫn được tính, rồi nâng cấp cờ một lần cho lần sau khỏi
+   phải dò lại. */
+function xongGate2(){
+  if(g2Done) return true;
+  if(!store.read().g2Game) return false;
+  g2Done = true; save();
+  return true;
+}
+/* Đã vào tới khu Open World bên trong Gate 2 chưa — cũng đọc cả tên cũ */
+function daVaoOpenWorld(){
+  if(g2Open) return true;
+  const m = store.read();
+  if(!m.g2Open && !m.g2Ow) return false;
+  g2Open = true; save();
+  return true;
+}
 /* Đã giải hết bộ câu hỏi Zoey's Castle chưa — đọc khoá riêng của Map 3 */
 function xongHan(){
   try{ return !!(JSON.parse(localStorage.getItem('hanv1') || '{}') || {}).done; }
@@ -3526,14 +3564,23 @@ function xongHan(){
 /* Nhắc về chế độ xem lại: mỗi ngày MỘT lần, và chỉ tới khi người chơi thật sự
    vào được Open World bên trong Gate 2 (`g2Open`). Vào rồi thì im hẳn. */
 function hhNhac(){
-  if(g2Open || !xongGate2()) return '';
+  if(daVaoOpenWorld() || !xongGate2()) return '';
   return ' <b>Xem lại được đó</b> — bấm nút cuộn phim trong khung Collected ✦';
 }
 
 function hhChon(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* ═══ CỬA CHÍNH CỦA CẢ HỘP CHÀO ═══════════════════════════════════════════
+     Honghandangiu CHƯA xuất hiện chừng nào Easter Egg · Gate 2 chưa được giải.
+     Người mới đi từ /dad/950901-a vào bản đồ lần đầu phải được yên: chưa quen
+     nhau thì chưa có ai nhảy ra chào. Giải xong Gate 2 mới mở lời — và lời
+     chào ĐẦU TIÊN chính là nhánh 1 ngay dưới đây. Từ đó trở đi các nhánh còn
+     lại (theo ngày, đi vắng về, xong Zoey's Castle) mới chạy như thường.
+     Chặn ở ĐÂY, trước cả `hhNgay`, nên trong lúc còn khoá thì không nhánh nào
+     kịp ghi dấu — tới lúc mở, "Xin chào" vẫn đúng là lần chào đầu tiên. */
+  if(!xongGate2()) return;
   const hnay = ngay();
-  /* 1 · vừa xong Gate 2 */
+  /* 1 · vừa xong Gate 2 — lời chào đầu tiên của cả hành trình */
   if(xongGate2() && hhG2 !== '1'){
     hhG2 = '1'; save();
     hhHien('excited', 'Easter Egg · Gate 2', 'Phá đảo rồi đó đồng chí ✦ Zoey’s Castle đang đợi ở toạ độ Hà Nội.', true);
@@ -3645,7 +3692,11 @@ const EGG_HREF = (function(){
    bản đồ thì trạng thái GAME ON đã sẵn, đúng như đi cửa Hack Map · MAP-02. */
 $('credEgg').addEventListener('click', ()=>{
   ghiMoEgg();
-  eggHack = true; eggTitleDay = null; credFound = true; eggWin = true; save();
+  /* `g2Hack` PHẢI bật ở đây. Trang /dad/950901-b có đồng hồ đếm ngược riêng
+     tới 01-09; không có cờ này thì tới nơi chỉ thấy đồng hồ, nút vào game
+     không bao giờ hiện ra — đi đường pháo hoa hay đường Tổ kỹ thuật đều kẹt.
+     Vào được khung Collected là đã qua cửa rồi, không chặn thêm lần nữa. */
+  eggHack = true; g2Hack = true; eggTitleDay = null; credFound = true; eggWin = true; save();
   ping('vao_easter_egg', 'nút Tổ kỹ thuật → ' + EGG_HREF);
   closeCred();
   setTimeout(()=>{ location.href = EGG_HREF; }, 160);
@@ -3918,8 +3969,18 @@ $('fileList').addEventListener('click', e=>{
   e.preventDefault();
   const href = a.getAttribute('href');
   /* Vào được hồ sơ niêm phong = đã phá xong Easter Egg → mở phần HAN-961030 và
-     dời máy bay sang HAN. Ghi ở đây để đi đường nào cũng tính. */
-  if(/950901-b/i.test(href) && !eggWin){ eggWin = true; save(); }
+     dời máy bay sang HAN. Ghi ở đây để đi đường nào cũng tính.
+     `g2Hack` cũng bật luôn, cùng lý do với nút Enter Easter Egg trong khung
+     Collected: đã TÌM RA Easter Egg rồi thì mọi đường vào Gate 2 phải mở như
+     nhau. Không có dòng này thì đi cửa khung Collected là vào chơi được, còn
+     bấm thẳng vào hồ sơ trên bản đồ lại gặp đồng hồ đếm ngược — cùng một người
+     chơi, cùng một tiến độ, mà hai cửa trả lời khác nhau. */
+  if(/950901-b/i.test(href)){
+    let doi = false;
+    if(!eggWin){ eggWin = true; doi = true; }
+    if(credFound && !g2Hack){ g2Hack = true; doi = true; }
+    if(doi) save();
+  }
   const node = nodeOf(current);
   fly(href, node ? node.code+' · '+node.name : '');
 });
