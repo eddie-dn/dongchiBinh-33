@@ -1119,8 +1119,10 @@ a.file:active{background:rgba(242,180,65,.07)}
       <div class="cred-hero">
         <span class="cut">
           <span class="fall"></span>
-          <img id="credPic" alt="" loading="lazy" decoding="async"
-               onerror="this.style.display='none'">
+          <!-- `loading="eager"`, KHÔNG lazy: ảnh nằm trong hộp đang ẩn nên lazy
+               hay treo không chịu tải. Cũng KHÔNG gắn onerror ẩn thẳng ở đây —
+               hỏng một lần là ẩn vĩnh viễn, mở lại vẫn trắng (xem moAnhCred). -->
+          <img id="credPic" alt="" loading="eager" decoding="async">
         </span>
       </div>
       <p class="cred-hi">Say hi to me~ HongHandangiu
@@ -3399,8 +3401,29 @@ $('stampZone').addEventListener('click', ()=>{
    đóng lại luôn, không ai vừa xem pháo hoa vừa nhìn khung Tổ kỹ thuật.
    Lần sau: chỉ nhấp nháy màu, muốn xem lại thì bấm nút cuộn phim. */
 const FW_HREF = '/phao-hoa';
+/* ═══ ẢNH TRONG KHUNG COLLECTED — "LÚC ĐƯỢC LÚC KHÔNG" ════════════════════
+   Hai thứ cộng lại làm ảnh mất:
+   1. Thẻ img trước đây có onerror ẩn thẳng phần tử. Mạng chập một nhịp là ảnh
+      bị ẩn VĨNH VIỄN — mở lại lần sau vẫn trắng, vì đã ẩn rồi.
+   2. openCredFx() chỉ gán src KHI CHƯA CÓ src. Lần đầu hỏng thì src vẫn nằm
+      đó, nên những lần sau không ai gán lại → không bao giờ thử lại.
+   Nay: mỗi lần mở đều bỏ display:none đi, kiểm tra ảnh đã tải THẬT chưa
+   (`naturalWidth > 0`, vì `complete` vẫn true kể cả khi hỏng), hỏng thì tự thử
+   lại đúng một lần với tham số phá cache. Thua cả hai lần mới chịu ẩn. */
+function moAnhCred(){
+  const im = $('credPic'), src = hhSrc('hello');
+  im.style.display = '';
+  if(im.getAttribute('src') === src && im.complete && im.naturalWidth > 0) return;
+  im.onload  = ()=>{ im.style.display = ''; im.removeAttribute('data-thu'); };
+  im.onerror = ()=>{
+    if(im.getAttribute('data-thu')){ im.style.display = 'none'; return; }
+    im.setAttribute('data-thu', '1');
+    setTimeout(()=>{ im.src = src + '?r=' + Date.now(); }, 600);
+  };
+  im.src = src;
+}
 function openCredFx(){
-  if(!$('credPic').getAttribute('src')) $('credPic').src = hhSrc('hello');
+  moAnhCred();
   $('credRp').classList.toggle('on', eggParty);
   /* BẪY ĐÃ VẤP — "mở được rồi mà chẳng thấy pháo hoa đâu".
      Bản đầu buộc màn ăn mừng vào cờ `eggParty`, tức ĐÚNG MỘT LẦN TRONG ĐỜI bản
@@ -3479,10 +3502,38 @@ credw.addEventListener('click', e=>{ if(e.target === credw) closeCred(); });
    gắn sẵn `src` vào thẻ img trong HTML. Chỉ nạp đúng file của trạng thái đang
    hiện, ngay lúc hiện. */
 const IDLE_PHUT = 12;            /* rời máy bao lâu thì coi là đã đi vắng */
+/* Câu khen khi phá đảo Zoey's Castle — bốc ngẫu nhiên, đừng để một câu duy nhất */
+const HH_KHEN = [
+  'Đồng chí quá xịn xò! Bái phục bái phục!',
+  '100 điểm không có nhưng, đồng chí nào giỏi quá vậy!',
+  'Không kịp nghĩ content luôn anh oyy!',
+  'Phá đảo nhanh quá zị anh ơiii!'
+];
 const hhw = $('hhw');
 let hhT = null;
 
+/* ═══ LUẬT NHƯỜNG ĐƯỜNG · KHÔNG BAO GIỜ HAI HỘP CÙNG LÚC ══════════════════
+   Hộp chào là hộp ÍT QUAN TRỌNG NHẤT: nó chỉ chào, không mang nội dung game.
+   Trước đây nó cứ tới giờ là bật, kể cả lúc khung Collected / hộp pí mật / Box
+   Tổng tư lệnh đang mở — hai hộp cùng có ảnh nặng đè nhau, máy khựng hẳn một
+   nhịp (đúng cảnh "Collected mở lên trúng lúc quay ra chiến thắng").
+   Nay hộp chào luôn nhường: thấy có hộp nội dung nào đang mở thì lui lại, cứ
+   1,5 giây ngó lại một lần, tối đa 40 lần (1 phút) rồi thôi hẳn cho lượt đó. */
+const HOP_UU_TIEN = ['credw','cxw','wipew','ttw','pinw','askw','hanw','coach'];
+function dangCoHopKhac(){
+  return HOP_UU_TIEN.some(id=>{
+    const n = document.getElementById(id);
+    return n && n.classList.contains('on');
+  }) || (typeof fxLock !== 'undefined' && fxLock);   /* đang chạy hiệu ứng cũng nhường */
+}
+let hhCho = 0;
 function hhHien(anh, nhan, chu, zoey){
+  if(dangCoHopKhac()){
+    if(hhCho++ > 40) return;                 /* chờ mãi không tới lượt thì bỏ */
+    setTimeout(()=> hhHien(anh, nhan, chu, zoey), 1500);
+    return;
+  }
+  hhCho = 0;
   /* Thiếu ảnh thì GIẤU khung ảnh chứ đừng bỏ luôn lời chào: người chơi vẫn nhận
      được câu nói, chỉ mất phần hình. Ảnh nằm ở thư mục /assets — nhánh nào chưa
      có bộ HH thì rơi đúng vào nhánh này. */
@@ -3586,10 +3637,10 @@ function hhChon(){
     hhHien('excited', 'Easter Egg · Gate 2', 'Phá đảo rồi đó đồng chí ✦ Zoey’s Castle đang đợi ở toạ độ Hà Nội.', true);
     return;
   }
-  /* 2 · vừa giải hết Zoey's Castle */
+  /* 2 · vừa giải hết Zoey's Castle — bốc ngẫu nhiên một câu cho đỡ nhàm */
   if(xongHan() && hhHan !== '1'){
     hhHan = '1'; save();
-    hhHien('happy', 'Zoey’s Castle', 'Giải hết rồi! Em phục anh đó ✦', true);
+    hhHien('happy', 'Zoey’s Castle', HH_KHEN[(Math.random()*HH_KHEN.length)|0], true);
     return;
   }
   /* 3 · phiên đầu trong ngày */
