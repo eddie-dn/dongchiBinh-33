@@ -192,6 +192,24 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .done-tit{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-weight:600;
   font-style:italic;margin:0 0 8px;text-align:center;color:var(--ink)}
 .done-txt{font-size:13px;line-height:1.68;text-align:center;color:var(--ink2);text-wrap:balance}
+/* Dòng trao mã: chìa khoá đi CHUNG MỘT HÀNG với chữ, không cho rớt xuống dòng
+   riêng — chìa nằm lửng một mình trông như lỗi hiển thị chứ không như một nhãn. */
+.done-txt.sec{display:flex;align-items:center;justify-content:center;gap:8px;
+  flex-wrap:nowrap;white-space:nowrap}
+.done-txt.sec b{color:var(--ink);font-weight:600}
+@media(max-width:380px){.done-txt.sec{font-size:11.5px;gap:6px}}
+@media(max-width:330px){.done-txt.sec{font-size:10.5px}}
+/* ── MÀN HOÀN THÀNH · DỌN CHO GỌN ───────────────────────────────────────────
+   Xong hết câu rồi thì hàng thanh tiến độ hết việc (thanh nào cũng đầy như
+   nhau), dòng dẫn "Thu thập chìa khoá..." cũng hết việc, và tiêu đề
+   "Who's my kindred spirit?" thì càng — câu hỏi đã trả lời xong cả rồi.
+   Ba thứ đó chỉ còn làm mỗi một việc: đẩy tấm thẻ mã PIN — thứ DUY NHẤT người
+   chơi vào đây để xem — lệch hẳn xuống nửa dưới khung. Giấu cả cụm đi, thẻ nằm
+   đúng giữa. `safe center` để khi thẻ cao hơn khung (màn hẹp, bàn phím bật)
+   thì tự lùi về canh trên, không nuốt mất phần đầu thẻ; trình duyệt cũ không
+   hiểu thì bỏ nguyên dòng này và giữ y như cũ, cũng không vỡ gì. */
+.wrap.gon{justify-content:safe center}
+.wrap.gon .eyebrow,.wrap.gon h1.title,.wrap.gon .lead,.wrap.gon .steps{display:none}
 /* Màn hết lượt: một dòng số, không giảng giải */
 /* Câu chào + bộ icon đi CHUNG MỘT HÀNG, chữ ĐỨNG (không nghiêng) và nhỏ hơn
    tiêu đề thường. Cỡ chữ do khitChao() hạ dần cho vừa, nên không đặt cỡ cứng. */
@@ -607,15 +625,26 @@ function stampText(){
    dáng một chiếc chìa treo. Hai ngôi sao nhỏ nhấp nháy so le cho lấp lánh.
    Vẽ tay bằng SVG chứ không dùng emoji 🔑: emoji mỗi máy một cỡ, một màu, không
    xoay dọc được, và hay tự rớt xuống dòng riêng. */
+/* ── CHÌA KHOÁ ──────────────────────────────────────────────────────────────
+   MỖI LẦN GỌI PHẢI CÓ MỘT ID GRADIENT RIÊNG. Trang này vẽ chìa ở hai chỗ —
+   dòng dẫn trên đầu và dòng trao mã ở màn hoàn thành. Để chung id="kg" thì cả
+   hai cái `url(#kg)` đều trỏ vào ĐỊNH NGHĨA ĐẦU TIÊN trong trang; mà ở màn
+   hoàn thành, dòng dẫn đang bị `.wrap.gon` giấu bằng display:none, nên cái
+   định nghĩa đầu tiên nằm trong một khối không được vẽ → trình duyệt trả về
+   "không có màu", chìa mất sạch nét, chỉ còn hai chấm lấp lánh trơ ra.
+   Đánh số tăng dần là mỗi chìa tự mang màu của mình đi, giấu cái nào cũng
+   không ảnh hưởng cái còn lại.                                              */
+var khoaN = 0;
 function icoKhoa(){
+  var g = 'kg' + (++khoaN);
   return '<svg class="ico-key" viewBox="0 0 16 22" aria-hidden="true">'
-    + '<circle cx="8" cy="6" r="3.7" fill="none" stroke="url(#kg)" stroke-width="1.7"/>'
-    + '<path d="M8 9.7V19M8 16.4h3.1M8 13.4h2.2" fill="none" stroke="url(#kg)"'
+    + '<circle cx="8" cy="6" r="3.7" fill="none" stroke="url(#'+g+')" stroke-width="1.7"/>'
+    + '<path d="M8 9.7V19M8 16.4h3.1M8 13.4h2.2" fill="none" stroke="url(#'+g+')"'
     + ' stroke-width="1.7" stroke-linecap="round"/>'
     + '<path class="lap" d="M14.2 2.1l.5 1.35 1.35.5-1.35.5-.5 1.35-.5-1.35-1.35-.5'
     + ' 1.35-.5z"/><path class="lap l2" d="M1.9 15.2l.38 1 1 .38-1 .38-.38 1'
     + '-.38-1-1-.38 1-.38z"/>'
-    + '<defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1">'
+    + '<defs><linearGradient id="'+g+'" x1="0" y1="0" x2="1" y2="1">'
     + '<stop offset="0" stop-color="#F2A7D0"/><stop offset="1" stop-color="#D97BB6"/>'
     + '</linearGradient></defs></svg>';
 }
@@ -645,6 +674,12 @@ function khitHoi(){
     mot = parseFloat(getComputedStyle(e).lineHeight) || px*1.34;
     if(e.getBoundingClientRect().height <= mot*2 + 1) return;
   }
+}
+/* Bật chế độ gọn của màn hoàn thành (xem `.wrap.gon` bên CSS). Mọi màn khác
+   gọi lại với `false` để trả bố cục về như cũ. */
+function gonLai(bat){
+  var w = document.querySelector('.wrap');
+  if(w) w.classList.toggle('gon', !!bat);
 }
 function drawLead(){
   /* KHÔNG viết số câu vào đây. Bộ câu hỏi sẽ còn dài ra, mà dòng này lại là chỗ
@@ -772,7 +807,7 @@ function xepO(box, inp, code, gaps){
    riêng, nhìn cầu kỳ mà lại làm người chơi phải học thêm một bố cục nữa.
    `pos` bỏ trống = chơi câu tới lượt; có `pos` = mở đúng câu ở vị trí đó. */
 function drawQ(pos){
-  clearTick();
+  clearTick(); gonLai(false);
   var q;
   if(pos == null){
     if(soDung() >= TONG){ st.done = true; st.doneAt = st.doneAt || Date.now(); save(); xong(false); return; }
@@ -980,7 +1015,7 @@ function drawQ(pos){
    Không ép làm lại: chờ hết giờ là chơi tiếp đúng chỗ đang dở, các câu đã đúng
    vẫn giữ nguyên. Nút làm lại chỉ là lời MỜI cho ai muốn xáo bài chơi lại. */
 function drawLock(){
-  clearTick(); xepLai = null;
+  clearTick(); xepLai = null; gonLai(false);
   var moc = mocMoLai();
   $('stage').innerHTML =
     '<div class="card">'
@@ -1096,7 +1131,7 @@ function drawGateA(){
    mở sau khi giải mã xong Easter Egg. Nói thẳng một câu rồi chỉ đường về, hơn
    là để người xem đứng trước một cửa khoá mà không biết vì sao. */
 function drawChua(){
-  clearTick(); xepLai = null;
+  clearTick(); xepLai = null; gonLai(false);
   $('lead').innerHTML = 'Chưa có chìa khoá vào lâu đài ✦';
   $('steps').innerHTML = '';
   $('stage').innerHTML =
@@ -1126,7 +1161,7 @@ function drawChua(){
 
 /* ---- màn hoàn thành: cấp thẳng mã ---- */
 function xong(vuaXong){
-  clearTick(); xepLai = null;
+  clearTick(); xepLai = null; gonLai(true);
   drawLead(); drawSteps();
   var pin = '';
   for(var k = 0; k < PIN_B.length; k++) pin += '<i>' + PIN_B[k] + '</i>';
@@ -1136,7 +1171,8 @@ function xong(vuaXong){
     + '<span class="tim"><i>♥</i><i>♥</i><i>♥</i></span></p>'
     + '<div class="hh-pic"><img src="/assets/HH_2_happy.webp" alt="" decoding="async"></div>'
     + '<div class="done-tit">HongHan’s Secret</div>'
-    + '<div class="done-txt">Thương gửi anh PIN</div>'
+    + '<div class="done-txt sec">' + icoKhoa()
+    +   '<span>Thương gửi anh PIN <b>Secret\u2019s Chamber</b></span></div>'
     + '<div class="pin-show">' + pin + '</div>'
     + '<button class="btn" id="goB">Vào Secret Chamber ✦</button>'
     + '<button class="btn ghost" id="xemLai" type="button">↺ Xem lại các câu</button>'

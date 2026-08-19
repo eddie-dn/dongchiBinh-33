@@ -241,8 +241,18 @@ const GAME_CONFIG = {
     /* Cuộn thư trên miệng rồng. Không vẽ khung, cũng không phóng to bản sao ảnh
        (phóng lên là lệch với ảnh gốc, nhìn như bị nhân đôi) — chỉ chồng đúng
        khít mẩu ảnh này lên chính nó rồi cho nhoà sáng theo nhịp thở.
-       min_px nới vùng chạm cho vừa ngón tay. */
-    hotspot  : { left:'41.008%', top:'34.45%', w:'10.491%', h:'8.00%', min_px:52 },
+       min_px nới vùng chạm cho vừa ngón tay.
+
+       ── ĐO LẠI: VÌ SAO MÕM RỒNG BỊ CHÁY TRẮNG ───────────────────────────
+       Khung CŨ để h = 8.00%, tức x[1286,1615] y[474,584] trên ảnh 3136x1376.
+       Cuộn thư THẬT — dò pixel hai mặt bích đồng — nằm x[1287,1614]
+       y[473,608]: cao hơn khung cũ 25px và tâm thấp hơn 11px.
+       Dải sáng luôn chạy qua TÂM khung, nên tâm bị kéo lên 11px là cả dải
+       trượt lên theo, phủ đúng sống mũi con rồng (nó nằm ngay phía trên thân
+       cuộn) rồi thổi trắng chỗ đó, trong khi mặt bích phải phía dưới lại tối.
+       Đó chính là cảnh "lệch lên trên, miệng đến mũi sáng trưng".
+       Khung dưới đây là bao đúng cuộn thư, kể cả hai núm gỗ hai đầu.        */
+    hotspot  : { left:'41.040%', top:'34.375%', w:'10.428%', h:'9.811%', min_px:52 },
     tap_label: '[ TAP HERE ]',
 
     /* Rồng nhìn nghiêng 3/4 nên chỉ thấy MỘT mắt. Khung dưới đây bao ĐÚNG
@@ -251,7 +261,10 @@ const GAME_CONFIG = {
        3136x1376 — tức 1.180% x 2.471%.
        Khung CŨ để 1.8% x 3.2% và lệch lên trái 6px, tức RỘNG HƠN con ngươi
        gần rưỡi: nháy lên là một đĩa đỏ tràn ra cả mặt rồng, nhìn rất thô.
-       Nhập sai thì vùng này chuyển đỏ rồi trả về bình thường. */
+       Nhập sai thì vùng này chuyển đỏ, ĐỒNG THỜI một chùm tia đỏ loé ra từ
+       đúng tâm khung này — tia vẽ bằng CSS, không cần khai gì thêm ở đây, chỉ
+       cần khung bám khít con ngươi thì tia mới bắn ra đúng chỗ.
+       Xem `#scene-game .eye` trong index.html nếu muốn chỉnh độ dài tia. */
     eyes: [
       { left:'47.194%', top:'29.724%', w:'1.180%', h:'2.471%' }
     ]

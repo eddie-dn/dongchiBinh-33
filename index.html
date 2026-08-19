@@ -593,9 +593,14 @@ a.file:active{background:rgba(242,180,65,.07)}
   transform:translateY(14px) scale(.985);transition:transform .32s}
 .hhw.show .hh{transform:none}
 .hh-pic{position:relative;width:100%;aspect-ratio:800/446;background:#0B1B3A;
-  overflow:hidden;display:block}
+  overflow:hidden;display:block;background-size:cover;background-position:center}
+/* ẢNH MỒI (poster): xem ghi chú đầy đủ ở `.cred-hero .fall`. Cùng một tấm hình,
+   bản tĩnh 34 KB, nằm dưới clip nặng — khung không bao giờ còn trống. */
+.hh-pic.anh{background-image:var(--poster)}
 .hh-pic img{width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transition:opacity .45s ease;
   animation:heroZoom 14s ease-in-out infinite}
+.hh-pic img.sang{opacity:1}
 .hh-body{padding:13px 15px 15px}
 .hh-lab{margin:0;font-family:"Oswald";font-size:8.5px;font-weight:600;
   letter-spacing:.26em;text-transform:uppercase;color:var(--amber)}
@@ -627,7 +632,9 @@ a.file:active{background:rgba(242,180,65,.07)}
 /* Zoom NHẸ và chậm cho ảnh có hơi thở, không phải hiệu ứng để người ta chú ý */
 .cred-hero img{width:100%;height:100%;object-fit:cover;display:block;
   filter:saturate(1.06) contrast(1.04);
+  opacity:0;transition:opacity .45s ease;
   animation:heroZoom 14s ease-in-out infinite}
+.cred-hero img.sang{opacity:1}
 @keyframes heroZoom{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 @media (prefers-reduced-motion:reduce){
   .cred-hero img{animation:none}
@@ -636,8 +643,22 @@ a.file:active{background:rgba(242,180,65,.07)}
 .cred-hero .cut::after{content:"";position:absolute;inset:0;
   background:linear-gradient(158deg, rgba(242,180,65,.34), rgba(56,189,248,.26) 58%, rgba(11,27,58,.6));
   mix-blend-mode:screen;pointer-events:none}
+/* ═══ ẢNH MỒI (poster) — VÌ SAO KHUNG HAY TRỐNG ═══════════════════════════
+   Clip trong khung này là webp ĐỘNG 121 khung, nặng ~4,9 MB. Mạng 4G lúc khoẻ
+   thì hiện ngay, lúc yếu thì mất cả chục giây — mà khung lại mở ngay khi gõ
+   trúng 10 nhịp, nên người chơi nhìn thấy đúng cái nền cam-xanh này và tưởng
+   ảnh hỏng. Đó chính là cảnh "lúc được lúc không, lag không thấy hình".
+   Nay mỗi clip có một ẢNH MỒI: cùng tấm hình đó, khung đầu tiên, bản tĩnh
+   ~34 KB, để ở /assets/poster/ trùng tên với file gốc. Ảnh mồi về gần như tức
+   thì và nằm NGAY DƯỚI clip, nên khung có hình từ giây đầu; clip nặng tải xong
+   thì nhoà chồng lên (class `sang`), không ai thấy chỗ nối.
+   Nền cam-xanh cũ vẫn giữ làm lớp cuối: mất luôn cả ảnh mồi thì vẫn có màu,
+   không thủng một lỗ đen giữa khung. */
 .cred-hero .fall{position:absolute;inset:0;border-radius:14px;
-  background:radial-gradient(circle at 40% 34%, #F2B441, #1E4E79 70%);opacity:.9}
+  background-image:radial-gradient(circle at 40% 34%, #F2B441, #1E4E79 70%);
+  background-size:cover;background-position:center;opacity:.9}
+.cred-hero .fall.anh{
+  background-image:var(--poster),radial-gradient(circle at 40% 34%, #F2B441, #1E4E79 70%)}
 .cred-hi{margin:0;display:flex;align-items:center;justify-content:center;gap:7px;
   font-family:"Oswald";font-size:9px;
   font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:rgba(234,240,247,.45)}
@@ -1498,6 +1519,10 @@ let hhNgay = null, hhG2 = '', hhHan = '', g2Done = false, g2Open = false;
    mà openCredFx đứng trước khối hộp chào — const khai sau là dính temporal dead
    zone y như bẫy ở mục 20 của README. */
 const HH_DIR = '/assets/';
+/* Thư mục ẢNH MỒI: cùng tên file, cùng tấm hình, nhưng là bản TĨNH ~34 KB
+   (khung đầu tiên của clip). Ghi chú đầy đủ vì sao cần nằm ở `.cred-hero .fall`
+   trong phần CSS. Thiếu file ở đây cũng không vỡ gì — khung lại về nền màu. */
+const HH_MOI_DIR = '/assets/poster/';
 const HH = {
   welcome: 'HH_1_welcome.webp',
   back:    'HH_2_welcome_back.webp',
@@ -1507,6 +1532,14 @@ const HH = {
   idle:    'HH_5_idle_afk.webp'
 };
 function hhSrc(k){ return HH_DIR + encodeURIComponent(HH[k]); }
+function hhMoi(k){ return HH_MOI_DIR + encodeURIComponent(HH[k]); }
+/* Dán ảnh mồi làm NỀN của khung, rồi cho clip nặng nhoà chồng lên khi tải xong.
+   `o` = phần tử giữ nền · `im` = thẻ ảnh clip · `k` = khoá trong HH. */
+function moiVaoKhung(o, im, k){
+  if(o){ o.style.setProperty('--poster', 'url("' + hhMoi(k) + '")'); o.classList.add('anh'); }
+  if(im && im.complete && im.naturalWidth > 0) im.classList.add('sang');
+  else if(im) im.classList.remove('sang');
+}
 let pinFiles = {};
 /* Khai báo ở đây, TRƯỚC boot(). Đặt sau boot() sẽ vướng "temporal dead zone"
    của `let` và ném ReferenceError ngay khi nạp trang. */
@@ -3413,8 +3446,9 @@ const FW_HREF = '/phao-hoa';
 function moAnhCred(){
   const im = $('credPic'), src = hhSrc('hello');
   im.style.display = '';
+  moiVaoKhung(document.querySelector('.cred-hero .fall'), im, 'hello');
   if(im.getAttribute('src') === src && im.complete && im.naturalWidth > 0) return;
-  im.onload  = ()=>{ im.style.display = ''; im.removeAttribute('data-thu'); };
+  im.onload  = ()=>{ im.style.display = ''; im.classList.add('sang'); im.removeAttribute('data-thu'); };
   im.onerror = ()=>{
     if(im.getAttribute('data-thu')){ im.style.display = 'none'; return; }
     im.setAttribute('data-thu', '1');
@@ -3472,6 +3506,13 @@ function goFireworks(){
    nãy, lúc này đã có nút cuộn phim để xem lại. */
 if(/[?&]cred=1/.test(location.search)){
   credw.classList.add('on'); credw.setAttribute('aria-hidden','false');
+  /* ĐƯỜNG NÀY CŨNG PHẢI GỌI moAnhCred(). Đây là một TRANG MỚI vừa tải lại từ
+     đầu (vòng qua /phao-hoa rồi quay về), nên thẻ img sạch trơn — chưa ai gán
+     src cho nó. Trước đây chỉ openCredFx() mới gán, mà lối về này không đi qua
+     đó: khung mở ra đúng, chữ đúng, riêng ảnh thì trống không. Ai xem pháo hoa
+     xong bấm đóng là rơi trúng đường này — đó là một nửa của cái "lúc được lúc
+     không". */
+  moAnhCred();
   $('credRp').classList.toggle('on', eggParty);
   credTitleBlink();
   try{ history.replaceState(null, '', location.pathname + '?stay=1'); }catch(e){}
@@ -3539,6 +3580,8 @@ function hhHien(anh, nhan, chu, zoey){
      có bộ HH thì rơi đúng vào nhánh này. */
   const cut = $('hhCut'); cut.style.display = '';
   const im = $('hhPic');
+  moiVaoKhung(cut, im, anh);
+  im.onload  = ()=>{ im.classList.add('sang'); };
   im.onerror = ()=>{ cut.style.display = 'none'; };
   im.src = hhSrc(anh);
   $('hhLab').textContent = nhan;
@@ -3555,7 +3598,9 @@ function hhDong(){
   hhw.classList.remove('show');
   setTimeout(()=>{
     hhw.classList.remove('on'); hhw.setAttribute('aria-hidden','true');
-    $('hhPic').removeAttribute('src');   /* thả ảnh nặng ra khỏi bộ nhớ */
+    const im = $('hhPic');
+    im.classList.remove('sang');         /* mở lại thì ảnh mồi lên trước */
+    im.removeAttribute('src');           /* thả ảnh nặng ra khỏi bộ nhớ */
   }, 340);
 }
 $('hhX').addEventListener('click', hhDong);

@@ -1,0 +1,91 @@
+BẢN SỬA MỤC 8–13  ·  CHÉP ĐÈ LÀ XONG, KHÔNG CẦN LÀM GÌ THÊM
+===========================================================
+
+CÁCH DÙNG
+---------
+1. Giải nén file zip này.
+2. Chép TOÀN BỘ những thứ vừa giải nén vào THƯ MỤC GỐC của repo
+   (chỗ đang có sẵn index.html, thư mục dad/, han/, assets/).
+3. Máy hỏi "có ghi đè không?" → CHỌN CÓ / REPLACE cho tất cả.
+4. Xoá file DOC-CAI-NAY-TRUOC.txt này đi (nó chỉ là tờ hướng dẫn).
+5. Xong. Đẩy lên hosting / commit như bình thường.
+
+Cấu trúc bên trong đã khớp sẵn với repo, nên chép đè là mọi file
+tự vào đúng chỗ. Không cần cài gì, không cần chạy lệnh nào.
+
+
+15 FILE TRONG GÓI — file nào sửa mục nào
+----------------------------------------
+
+■ index.html                          (mục 11, 13)
+    Khung "Collected: Easter Egg" hết cảnh lúc có hình lúc không.
+
+■ assets/poster/  — 6 file webp        (mục 13)  ★ THƯ MỤC MỚI
+    Ảnh mồi tĩnh ~34 KB mỗi tấm. Đây là thư mục CHƯA TỪNG CÓ trong
+    repo, nên bước chép đè sẽ tạo mới. Thiếu nó thì khung vẫn chạy,
+    chỉ là quay về cảnh chờ ảnh nặng như cũ.
+
+■ dad/950901-b/index.html              (mục 8, 9)
+    Tia đỏ mắt rồng + vùng sáng cuộn thư.
+
+■ dad/950901-b/config.js               (mục 8, 9)
+    Toạ độ cuộn thư đo lại.
+
+■ dad/950901-b/assets/  — 5 file ow_2_*.webp   (mục 10)  ★ QUAN TRỌNG
+    Đây là 5 clip nét mặt nhân vật Open World. Bản đang nằm trên
+    repo là FILE RỖNG 2 BYTE — xem phần "VÌ SAO" bên dưới.
+    Mỗi file trong gói này nặng ~5 MB. Chép xong nhớ kiểm tra lại
+    dung lượng: nếu vẫn thấy 2 byte / 0 KB là chưa ghi đè được.
+
+■ han/961030-a/index.html              (mục 12)
+    Layout màn phát mã PIN.
+
+
+VÌ SAO OPEN WORLD KHÔNG HIỆN NHÂN VẬT (mục 10)
+-----------------------------------------------
+KHÔNG phải lỗi đường dẫn /assets. Đường dẫn trong config.js vốn đã đúng.
+
+Thủ phạm là mấy cú đổi tên làm trên giao diện web GitHub:
+"Rename OW_2_1.webp to ow_2_1.webp" (và 4 file còn lại). Cú rename
+đó đã ghi đè nội dung file thành 2 byte rỗng. Ảnh bức thư trong
+slideshow vẫn thấy được là vì chỗ đó có ảnh pixel vẽ tạm che đi,
+còn nhân vật thì không có đồ thay nên mất hẳn.
+
+Bản thật vẫn nằm nguyên trong lịch sử repo (commit 08ef1d3, dưới
+tên VIẾT HOA) — 5 file trong gói này lấy đúng từ đó ra, không phải
+đồ dựng lại.
+
+LƯU Ý VỀ SAU: đừng đổi tên file ảnh/clip bằng nút Rename trên web
+GitHub nữa. Đổi tên dưới máy rồi upload lại thì an toàn.
+
+
+ĐÃ SỬA GÌ — TÓM TẮT
+--------------------
+Mục 8  · Mắt rồng: bỏ quầng mờ nhấp nháy, thay bằng chùm tia đỏ —
+         vệt ngang dài, vệt dọc, hai tia chéo, lõi trắng nóng.
+         Vẽ bằng CSS, không thêm file ảnh nào.
+
+Mục 9  · Cuộn thư: khung sáng cũ thấp hơn cuộn thư thật 25px và tâm
+         cao hơn 11px, nên dải sáng trượt lên đúng sống mũi rồng rồi
+         thổi trắng chỗ đó. Đo lại bằng tâm hai mặt bích đồng: khung
+         mới ôm trọn cuộn thư, góc dải 15.3° → 12.2°, vệt sáng thắt
+         lại cho vừa đúng mặt bích.
+
+Mục 10 · 5 clip nét mặt Open World — xem phần trên.
+
+Mục 11 · Bốn câu khen phá đảo Zoey's Castle: đã đúng bộ mới từ trước,
+         không phải sửa gì.
+
+Mục 12 · Màn phát mã PIN: giấu thanh câu hỏi, dòng dẫn và tiêu đề
+         "Who's my kindred spirit?" — thẻ mã nằm giữa khung.
+         "Thương gửi anh PIN" → icon chìa khoá + "Thương gửi anh PIN
+         Secret's Chamber". Kèm một lỗi phát hiện lúc kiểm: hai chìa
+         khoá trên trang dùng chung một mã màu, chìa ở màn này bị mất
+         sạch nét — đã tách riêng.
+
+Mục 13 · Khung Collected, hai lỗi cộng lại:
+         (1) Clip nặng ~4,9 MB, mạng yếu là khung trống cả chục giây.
+             Nay có ảnh mồi tĩnh 34 KB nằm dưới, khung có hình ngay,
+             clip nặng tải xong thì nhoà chồng lên.
+         (2) Lối về từ trang pháo hoa mở khung mà quên nạp ảnh, nên
+             ảnh trống hẳn. Đã sửa.

@@ -423,38 +423,74 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 }
 #scene-game .slab.solved .cell.blank{opacity:0!important}
 
-/* ── Mắt rồng: nhập sai thì mắt CHUYỂN ĐỎ rồi trả về bình thường ─────────── */
-/* Ba đời đã thử ở chỗ này, ghi lại cho khỏi đi vòng:
+/* ── Mắt rồng: nhập sai thì mắt LOÉ ĐỎ THÀNH TIA ──────────────────────────
+   Bốn đời đã thử ở chỗ này, ghi lại cho khỏi đi vòng:
    1. `mix-blend-mode:screen` — screen(cyan sáng, đỏ) ra gần như trắng, mắt
       chẳng đỏ lên tí nào.
    2. Bỏ blend, dán một đĩa đỏ đặc đè lên — đỏ thì có đỏ, nhưng thành một cục
       sơn tròn nằm trên mặt rồng: thô, và to hơn hẳn con ngươi.
-   3. (nay) `mix-blend-mode:color` — lấy SẮC của lớp này, giữ nguyên ĐỘ SÁNG và
-      nét vẽ của con ngươi bên dưới. Kết quả là chính con mắt đổi màu, còn
-      highlight, viền mí, vảy quanh mắt vẫn nguyên vẹn. Cộng thêm khung đã dò
-      lại cho khít con ngươi (xem round2.eyes trong config), nhìn tinh hơn hẳn.
-   Quầng sáng tách hẳn ra ::after và để rất nhẹ — mắt có thần chứ không loé. */
-#scene-game .eye{
-  position:absolute;display:none;opacity:0;pointer-events:none;z-index:3;
-  border-radius:50%;
+   3. `mix-blend-mode:color` cho con ngươi, cộng một QUẦNG NHOÈ `multiply`
+      quanh hốc mắt. Con ngươi đổi màu thì đúng — phần đó giữ nguyên tới giờ.
+      Nhưng cái quầng thì vẫn chỉ là MỘT VÙNG MỜ nhấp nháy: không có hướng,
+      không có đầu nhọn, nên mắt người đọc ra "ảnh bị nhoè" chứ không đọc ra
+      "ánh sáng loé". Nhìn thô đúng như vậy.
+   4. (nay) Bỏ hẳn quầng nhoè, thay bằng một CHÙM TIA: vệt ngang dài, vệt dọc
+      ngắn hơn, hai tia chéo 45° mảnh, và một lõi trắng nóng đúng giữa con
+      ngươi. Tia có HƯỚNG và thuôn nhọn về hai đầu nên đọc ngay ra tia sáng.
+
+   VÌ SAO TIA KHÔNG DÙNG BLEND MODE: mặt rồng là mảng trắng-xám rất sáng.
+   `screen` trên nền gần trắng cho ra… trắng (đúng cái bẫy số 1), `color` thì
+   nền trắng độ sáng đã kịch nên cũng không đổi được gì. Nên tia vẽ chồng
+   thẳng bằng alpha thường: sáng thì thành vệt đỏ rõ, tối thì thành ánh đỏ.
+   Chỉ CON NGƯƠI mới cần `color` — chỗ đó phải giữ nguyên nét vẽ bên dưới.
+   Tất cả bằng gradient, không thêm file ảnh nào. */
+#scene-game .eye{position:absolute;display:none;pointer-events:none;z-index:3}
+#scene-game .eye.on{display:block}
+
+/* Con ngươi đổi màu. `color` lấy SẮC của lớp này, giữ nguyên ĐỘ SÁNG và nét vẽ
+   bên dưới — highlight, viền mí, vảy quanh mắt vẫn nguyên vẹn. Khung đã dò cho
+   khít con ngươi, xem round2.eyes trong config. */
+#scene-game .eye .iris{
+  position:absolute;inset:0;border-radius:50%;opacity:0;
   background:radial-gradient(ellipse at 50% 50%,
              rgba(255,32,28,1) 0%,rgba(255,26,22,.96) 52%,
              rgba(230,20,16,.6) 78%,transparent 100%);
   mix-blend-mode:color;
 }
-/* Quầng quanh con ngươi. Dùng `multiply` chứ KHÔNG dùng `screen`: screen làm
-   sáng, mà nền là con mắt cyan vốn đã rất sáng nên đỏ bị rửa thành hồng nhạt,
-   nhìn như mắt bị mờ chứ không ra giận dữ. `multiply` hạ tông xuống nên đỏ ăn
-   sâu, mắt đỏ thẫm mà vẫn giữ nguyên highlight. Inset để nhỏ (-18%) cho quầng
-   nằm gọn trong hốc mắt, không loang ra vảy quanh mặt. */
-#scene-game .eye::after{
-  content:'';position:absolute;inset:-18%;border-radius:50%;
-  background:radial-gradient(ellipse at 50% 50%,rgba(255,100,92,.66) 0%,
-             rgba(255,150,140,.3) 58%,transparent 80%);
-  mix-blend-mode:multiply;
+
+/* CHÙM TIA. Hộp rộng gấp ~11,5 lần con ngươi, tâm ghim đúng tâm mắt. Mỗi tia là
+   một elip DẸT KIỆT (2,2% bề dày) — elip dẹt cho ra đúng vệt thuôn hai đầu,
+   khỏi phải cắt mặt nạ. `.ray` giữ vệt ngang + vệt dọc, ::before hai tia chéo,
+   ::after cái lõi — tách ra ba lớp để lõi luôn nằm trên cùng. */
+#scene-game .eye .ray{
+  position:absolute;left:50%;top:50%;width:1150%;height:760%;opacity:0;
+  transform:translate(-50%,-50%);
+  background:
+    radial-gradient(ellipse 2.6% 48% at 50% 50%,rgba(255,240,232,.84) 0%,
+      rgba(255,74,48,.55) 24%,rgba(255,40,26,.2) 58%,rgba(255,40,26,0) 100%),
+    radial-gradient(ellipse 50% 2.2% at 50% 50%,rgba(255,240,232,.9) 0%,
+      rgba(255,74,48,.64) 24%,rgba(255,40,26,.25) 58%,rgba(255,40,26,0) 100%);
+  background-repeat:no-repeat;
 }
-#scene-game .eye.on{display:block}
-#scene-game .eye.flash{animation:eyeFlash .8s ease-in-out 2}
+#scene-game .eye .ray::before{
+  content:'';position:absolute;inset:0;transform:rotate(45deg);
+  background:
+    radial-gradient(ellipse 32% 1.4% at 50% 50%,rgba(255,222,210,.64) 0%,
+      rgba(255,70,44,.38) 28%,rgba(255,70,44,0) 100%),
+    radial-gradient(ellipse 1.6% 32% at 50% 50%,rgba(255,222,210,.55) 0%,
+      rgba(255,70,44,.31) 28%,rgba(255,70,44,0) 100%);
+  background-repeat:no-repeat;
+}
+/* Lõi để NHỎ và trắng ở tâm. To và đỏ đặc là quay về đúng cục sơn ở đời thứ 2 */
+#scene-game .eye .ray::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 3.6% 5.8% at 50% 50%,rgba(255,252,250,.98) 0%,
+             rgba(255,120,86,.69) 34%,rgba(255,92,60,0) 100%);
+  background-repeat:no-repeat;
+}
+
+#scene-game .eye.flash .iris{animation:eyeFlash .8s ease-in-out 2}
+#scene-game .eye.flash .ray{animation:eyeRay .8s cubic-bezier(.2,.7,.3,1) 2}
 /* Lên/xuống mượt, đỉnh KHÔNG chạm 1 — mắt hơi rực lên rồi dịu, không giật cục */
 @keyframes eyeFlash{
   0%,100%{opacity:0}
@@ -462,16 +498,35 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   50%{opacity:.55}
   72%{opacity:.9}
 }
-/* Máy nào không hiểu mix-blend-mode:color thì lớp này sẽ phủ đỏ đặc lên mắt.
-   Vẫn chơi được, chỉ kém khéo — hạ opacity cho đỡ thô ở trường hợp đó. */
+/* Tia thì ngược lại: bật RẤT NHANH rồi tắt dần. Loé phải đến trước khi mắt kịp
+   theo, còn tắt thì được phép chậm — đó là nhịp của một tia sáng thật. */
+@keyframes eyeRay{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.28)}
+  14%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+  46%{opacity:.6;transform:translate(-50%,-50%) scale(.97)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.9)}
+}
+/* Máy nào không hiểu mix-blend-mode:color thì lớp con ngươi sẽ phủ đỏ đặc lên
+   mắt. Vẫn chơi được, chỉ kém khéo — hạ opacity cho đỡ thô ở trường hợp đó.
+   Chùm tia không dính blend nên ở đâu cũng chạy y như nhau. */
 @supports not (mix-blend-mode:color){
-  #scene-game .eye{opacity:0;filter:none}
-  #scene-game .eye.flash{animation:eyeFlashFallback .8s ease-in-out 2}
+  #scene-game .eye.flash .iris{animation:eyeFlashFallback .8s ease-in-out 2}
   @keyframes eyeFlashFallback{
     0%,100%{opacity:0}
     30%{opacity:.62}
     50%{opacity:.36}
     72%{opacity:.62}
+  }
+}
+/* Rời tay khỏi hiệu ứng: giữ cái loé đỏ (đó là câu trả lời "sai rồi") nhưng bỏ
+   phần phóng to thu nhỏ của chùm tia. */
+@media (prefers-reduced-motion:reduce){
+  #scene-game .eye.flash .ray{animation:eyeRayFlat .8s ease-in-out 2}
+  @keyframes eyeRayFlat{
+    0%,100%{opacity:0}
+    30%{opacity:.85}
+    50%{opacity:.5}
+    72%{opacity:.85}
   }
 }
 
@@ -484,7 +539,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Quầng sáng nằm SAU cuộn thư — phần "thở" nặng do lớp này lo, nên mẩu ảnh
    chỉ cần nhúc nhích rất nhẹ, không còn cảm giác phóng to thô. */
 #scene-game .hotspot .halo{
-  position:absolute;inset:-26% -14%;pointer-events:none;mix-blend-mode:screen;
+  position:absolute;inset:-21% -14%;pointer-events:none;mix-blend-mode:screen;
   background:radial-gradient(ellipse at center,rgba(255,226,150,.52) 0%,
              rgba(255,180,60,.22) 46%,transparent 74%);
   animation:haloBreath 2.6s cubic-bezier(.45,0,.55,1) infinite;
@@ -497,18 +552,28 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    như cuộn thư bị nhân đôi, thô hẳn. Thay vào đó chồng mẩu ảnh ĐÚNG KHÍT lên
    chính nó rồi cho nhoà sáng dần theo nhịp thở: không lệch một pixel nào, chỉ
    thấy cuộn thư tự bừng lên rồi dịu xuống. */
-/* Cuộn thư nằm CHÉO: dò pixel ra đúng 15.3 độ, đầu trái cao (y≈500), đầu phải
-   thấp (y≈578). Elip bó sát giữa chỉ thắp được khúc giữa, hai đầu go rơi ra
-   vùng mờ — đúng cái "nửa phải đẹp, nửa trái mờ". Mà nới elip cho rộng thì lộ
-   nguyên khung chữ nhật, lại cháy trắng cái mõm rồng phía sau. Nên mặt nạ là
-   một DẢI CHÉO 15.3 độ (linear-gradient chạy vuông góc với trục dải) giao với
-   elip cắt hai đầu: sáng đúng thân cuộn, không đụng mõm rồng. */
+/* Cuộn thư nằm CHÉO nên mặt nạ là một DẢI CHÉO (linear-gradient chạy vuông góc
+   với trục dải) giao với một elip cắt bớt hai đầu: sáng đúng thân cuộn.
+
+   ── ĐO LẠI GÓC VÀ BỀ DÀY DẢI ─────────────────────────────────────────────
+   Góc CŨ để 15.3 độ, lấy từ hai vệt sáng trên mặt bích (y≈500 bên trái,
+   y≈578 bên phải) — mà vệt sáng thì nằm lệch trên tâm bích, nên góc đo ra dốc
+   hơn trục thật. Dò lại bằng TÂM hai mặt bích đồng — (1319,514) và (1566,567)
+   trên ảnh 3136x1376 — ra 12.2 độ. Dải dốc quá thì đầu trái vống lên đúng chỗ
+   sống mũi con rồng: cộng với khung lệch (xem round2.hotspot trong config) là
+   thành cái "miệng đến mũi sáng trưng".
+   Bề dày cũng thắt lại: 26/40/60/74 cho ra vệt sáng ~96px, rộng hơn cả đường
+   kính mặt bích (~80px) nên thừa ra 26px mỗi bên đè lên mõm rồng. Dãy mới
+   30/39/61/70 cho vệt ~80px — vừa đúng mặt bích, thân cuộn vẫn sáng đều mà
+   mõm rồng giữ nguyên nét vẽ.
+   Elip nới từ 58% lên 66% bề ngang: khung dài 327px, nửa dải là 163px, elip cũ
+   tắt mất hai cái núm gỗ ở hai đầu — đúng cái "không chuẩn vào chính giữa". */
 #scene-game .hotspot .zoom{
   position:absolute;background-repeat:no-repeat;mix-blend-mode:screen;
-  -webkit-mask-image:linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
-                     radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
-  mask-image:linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
-             radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  -webkit-mask-image:linear-gradient(12.2deg,transparent 30%,#000 39%,#000 61%,transparent 70%),
+                     radial-gradient(ellipse 66% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  mask-image:linear-gradient(12.2deg,transparent 30%,#000 39%,#000 61%,transparent 70%),
+             radial-gradient(ellipse 66% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-composite:source-in;mask-composite:intersect;
   animation:zoomPulse 2.6s cubic-bezier(.45,0,.55,1) infinite;
@@ -519,10 +584,10 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game .hotspot .rim{
   position:absolute;background-repeat:no-repeat;pointer-events:none;
   mix-blend-mode:screen;
-  -webkit-mask-image:var(--cut),var(--cut),linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
-                     radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
-  mask-image:var(--cut),var(--cut),linear-gradient(15.3deg,transparent 26%,#000 40%,#000 60%,transparent 74%),
-             radial-gradient(ellipse 58% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  -webkit-mask-image:var(--cut),var(--cut),linear-gradient(12.2deg,transparent 30%,#000 39%,#000 61%,transparent 70%),
+                     radial-gradient(ellipse 66% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
+  mask-image:var(--cut),var(--cut),linear-gradient(12.2deg,transparent 30%,#000 39%,#000 61%,transparent 70%),
+             radial-gradient(ellipse 66% 96% at 50% 50%,#000 0%,#000 62%,transparent 100%);
   -webkit-mask-size:var(--cut-s),var(--cut-s),100% 100%,100% 100%;
   mask-size:var(--cut-s),var(--cut-s),100% 100%,100% 100%;
   -webkit-mask-position:var(--cut-p),var(--cut-p),0 0,0 0;
@@ -863,7 +928,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
                 <div class="veil"></div><div class="cells" id="row2"></div>
               </div>
 
-              <span class="eye" id="eye0"></span>
+              <span class="eye" id="eye0"><i class="iris"></i><i class="ray"></i></span>
 
               <button class="hotspot" id="hotspot" type="button" aria-label="Đọc lá thư">
                 <span class="halo"></span>
@@ -1792,7 +1857,10 @@ function armIdle(){
   if(S.done || S.inputLocked) return;
   S.idleTimer = setTimeout(breatheSlab, T.idle_hint);
 }
-/* Nhập sai ở vòng 2: mắt rồng chuyển đỏ nháy mấy nhịp rồi trả về bình thường */
+/* Nhập sai ở vòng 2: con ngươi chuyển đỏ và bắn ra một chùm tia, hai nhịp rồi
+   trả về bình thường. Bỏ class ra rồi ép trình duyệt đọc lại kích thước
+   (`offsetWidth`) mới gắn vào — không thì sai liên tiếp hai lần, animation
+   đang chạy dở sẽ không khởi động lại từ đầu. */
 function flashEyes(){
   el.eyes.forEach(e=>{
     e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash');
