@@ -199,13 +199,14 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;text-align:center;line-height:1.6;
   color:rgba(234,240,247,.32)}
-/* Màn phát mã cũng phải bấm được: tem ở đó là cửa vào SỔ PHIÊN BẢN. */
-#scene-code .vstamp{pointer-events:auto;cursor:default}
 #scene-gate .vstamp{pointer-events:auto;cursor:default;
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 /* Nút bỏ qua — chỉ hiện sau khi gõ đủ 10 nhịp vào tem. Để tông XÁM VIỀN chứ
    không phải vàng như nút chính: đây là cửa phụ, không được tranh chỗ với
    "Bắt đầu giải mã". */
+/* Hàng cửa hậu: nút Bỏ qua ở giữa, nút sổ phiên bản nép bên phải. */
+.gate-look .skip-row{display:flex;align-items:center;justify-content:center;gap:10px}
+.gate-look .skip-row .ma-go.skip{margin-top:0}
 .gate-look .ma-go.skip{margin-top:10px;background:none;color:rgba(140,225,180,.9);
   border:1px dashed rgba(140,225,180,.5);box-shadow:none;font-size:9px}
 .gate-look .ma-go.skip:active{transform:translateY(1px)}
@@ -993,10 +994,16 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
            nút Bản đồ, và mọi màn khác trong bộ đều chỉ có đúng một đường lui ở
            góc đó. Bày thêm một nút nữa giữa màn hình vừa thừa, vừa làm màn này
            trông khác hẳn các màn còn lại. -->
-      <!-- Cửa hậu: gõ 10 nhịp vào tem Last updated ở chân màn hình mới hiện -->
-      <button class="ma-go skip" id="gSkip" type="button" hidden>⏭ Bỏ qua · vào thẳng màn cuối</button>
+      <!-- Cửa hậu: gõ 10 nhịp vào tem Last updated ở chân màn hình mới hiện.
+           Cùng lúc đó hiện luôn NÚT SỔ PHIÊN BẢN bên cạnh — trang này không có
+           bảng điều khiển riêng như bản đồ hay Zoey's Castle, nên hàng nút mà
+           cửa hậu mở ra chính là chỗ tương đương. -->
+      <div class="skip-row" id="gSkipRow" hidden>
+        <button class="ma-go skip" id="gSkip" type="button">⏭ Bỏ qua · vào thẳng màn cuối</button>
+        <span id="lsSlot"></span>
+      </div>
     </div>
-    <span class="vstamp" id="gStamp" data-ls-stamp></span>
+    <span class="vstamp" id="gStamp"></span>
   </div>
 </main>
 
@@ -1132,7 +1139,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
         </div>
       </div>
     </div>
-    <span class="vstamp" id="cStamp" data-ls-stamp></span>
+    <span class="vstamp" id="cStamp"></span>
   </div>
 </main>
 
@@ -1425,9 +1432,14 @@ const Gate = (function(){
      tem cho biết đang gõ đúng chỗ. */
   let tapN = 0, tapT = null;
   function moSkip(){
-    if(!el.skip.hidden) return;
-    el.skip.hidden = false;
+    const hang = $('#gSkipRow');
+    if(hang && !hang.hidden) return;
+    if(hang) hang.hidden = false;
     el.skip.textContent = T.nut_bo_qua || '⏭ Bỏ qua · vào thẳng màn cuối';
+    /* Nút sổ phiên bản dựng đúng lúc này, không dựng sẵn từ đầu: đây là cửa
+       hậu, bày sẵn trong DOM thì ai soi mã trang cũng thấy. */
+    const o = $('#lsSlot');
+    if(o && !o.innerHTML && window.LichSu) o.innerHTML = LichSu.nut('DAD-B');
     fitTitle(SCENES.gate);
   }
   el.stamp.addEventListener('click', ()=>{
@@ -3139,6 +3151,6 @@ gameReady = true;
 syncVH();
 })();
 </script>
-<script src="/assets/lichsu.js" defer></script>
+<script src="/assets/lichsu.js"></script>
 </body>
 </html>

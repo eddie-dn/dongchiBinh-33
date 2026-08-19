@@ -740,6 +740,14 @@ a.file:active{background:rgba(242,180,65,.07)}
   text-shadow:0 0 12px rgba(56,189,248,.35)}
 .cx-morse.locked{color:rgba(219,230,243,.5);font-family:"Be Vietnam Pro",system-ui;
   font-size:12.5px;letter-spacing:0;word-spacing:normal;text-shadow:none;line-height:1.5}
+/* Hàng nhãn của Box Tổng tư lệnh: chữ ở giữa, nút sổ phiên bản nép sang TRÁI.
+   `position:relative` + nút `absolute` để chữ vẫn nằm ĐÚNG GIỮA hộp — cho nút
+   chen vào dòng flex thì chữ bị đẩy lệch sang trái, nhìn ra ngay.
+   BÊN TRÁI chứ không phải bên phải: góc phải trên là chỗ của nút đóng ✕
+   (`.cx-close` ở top:9 right:11), để bên phải là hai nút chồng lên nhau. */
+.cx-eyebrow.hq-lab{position:relative;min-height:28px;display:flex;align-items:center;
+  justify-content:center}
+.cx-eyebrow.hq-lab #lsSlot{position:absolute;left:0;top:50%;transform:translateY(-50%)}
 .cx-form{display:flex;gap:8px;margin-top:14px}
 .cx-form input{flex:1;min-width:0;background:rgba(6,16,31,.75);color:var(--paper);
   border:1px solid var(--line);border-radius:5px;padding:10px 12px;font-size:14px;
@@ -996,7 +1004,7 @@ a.file:active{background:rgba(242,180,65,.07)}
         </g>
       </svg>
 
-      <button class="stampzone" id="stampZone" data-ls-stamp aria-label="Thông tin phiên bản">
+      <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
         <span class="stamp" id="stamp" data-base="Last updated 19-Aug-2026 · V17.07">Last updated 19-Aug-2026 · V17.07</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
@@ -1086,7 +1094,9 @@ a.file:active{background:rgba(242,180,65,.07)}
   <div class="cxw" id="wipew" aria-hidden="true">
     <div class="cxp" role="dialog" aria-modal="true" aria-label="Box Tổng tư lệnh">
       <button class="cx-close" id="wipeNo" aria-label="Đóng">&#10005;</button>
-      <p class="cx-eyebrow">Box Tổng tư lệnh</p>
+      <!-- Nhãn + nút sổ phiên bản đi CHUNG MỘT HÀNG. Nút để trống, /assets/lichsu.js
+           tự nhét vào lúc trang chạy — xem khối "SỔ PHIÊN BẢN" cuối file. -->
+      <p class="cx-eyebrow hq-lab">Box Tổng tư lệnh<span id="lsSlot"></span></p>
 
       <!-- Bước 1 — chọn chiến dịch -->
       <div id="hqStep1">
@@ -4324,6 +4334,12 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>{
 <script defer src="/_vercel/insights/script.js"></script>
 <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
-<script src="/assets/lichsu.js" defer></script>
+<script src="/assets/lichsu.js"></script>
+<script>
+/* SỔ PHIÊN BẢN — nút nằm trong Box Tổng tư lệnh, bấm 3 nhịp rồi gõ mã.
+   Cửa hậu vào Box (5 nhịp vào dòng bản quyền) GIỮ NGUYÊN, không đụng gì. */
+(function(){ var o=document.getElementById('lsSlot');
+  if(o && window.LichSu) o.innerHTML = LichSu.nut('MAP'); })();
+</script>
 </body>
 </html>

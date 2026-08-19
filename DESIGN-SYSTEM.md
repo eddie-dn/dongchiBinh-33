@@ -130,10 +130,8 @@ Last updated DD-Mon-YYYY · Vxx.yy
 
 - Dòng ký tên nằm **trên**, dòng phiên bản nằm **dưới**.
 - Phông `Oswald`, cỡ 8px, giãn chữ `.15em`–`.22em`, VIẾT HOA, màu mờ ~32%.
-- **Dòng `Last updated…` là một cửa hậu**: gõ 10 nhịp liên tiếp vào nó thì mở
-  bảng LỊCH SỬ PHIÊN BẢN (hỏi mã trước). Xem §5.
-- Vì là cửa hậu nên tem phải `pointer-events:auto` và `user-select:none` —
-  không thì gõ nhanh mười cái là dính một mảng bôi đen.
+- Tem **không phải** cửa vào sổ phiên bản. Sổ nằm trong **bảng điều khiển** của
+  từng trang — xem §5.
 
 ---
 
@@ -144,12 +142,48 @@ nhịp cách nhau dưới 0,9 giây**; quá giờ thì đếm lại từ đầu.
 
 | Chỗ | Nhịp | Mở ra |
 |---|---|---|
-| Lá cờ ngoài bản đồ · bông hoa Zoey's Castle | 5 | bảng điều phối |
-| Tem `Last updated…` (mọi trang) | 10 | **bảng lịch sử phiên bản** — hỏi mã `0981` |
+| Dòng bản quyền ngoài bản đồ | 5 | Box Tổng tư lệnh |
+| Bông hoa + tem `han/961030-a` · `-b` | 5 | Khối vận hành |
 | Tem màn cổng Gate 2 | 10 | nút bỏ qua vào thẳng màn cuối |
+| Một nấc trên dòng Mission `dad/950901-a` | 10 | cửa test mở khoá nấc đó |
 | Dòng câu hỏi `han/961030-a` | 5 | bỏ qua màn chờ |
 
-Bảng lịch sử phiên bản sai mã 3 lần thì được **một** gợi ý, và chỉ một.
+### 5.1 · SỔ PHIÊN BẢN — cửa hậu TẦNG HAI
+
+Sổ phiên bản **không có đường vào riêng**. Nó nằm sau cửa hậu đã có sẵn của
+từng trang, thêm một tầng nữa:
+
+```
+mở bảng điều khiển của trang (cửa hậu cũ, không đổi gì)
+  → trong bảng có MỘT NÚT ICON nhỏ
+  → bấm 3 nhịp vào nút đó
+  → gõ mã 0981
+  → hiện sổ CỦA RIÊNG TRANG ĐÓ
+```
+
+**"Của riêng trang đó" là luật cứng.** Đứng ở Zoey's Castle thì chỉ thấy lịch
+sử của Zoey's Castle. Sáu cuốn sổ nằm chung một file cho dễ sửa, nhưng không
+bao giờ hiện chung một bảng — mỗi trang một câu chuyện riêng.
+
+| Trang | Bảng điều khiển | Mã trang |
+|---|---|---|
+| Bản đồ mật thư | Box Tổng tư lệnh | `MAP` |
+| Easter Egg · Gate 1 | thẻ *Mission 3 · Phá đảo* | `DAD-A` |
+| Easter Egg · Gate 2 | hàng nút mà cửa hậu 10 nhịp mở ra | `DAD-B` |
+| Zoey's Castle | Khối vận hành | `HAN-A` |
+| HongHan's Secret Chamber | Khối vận hành | `HAN-B` |
+| Màn pháo hoa | *chưa có bảng nào* → chưa gắn | `FX` |
+
+Sai mã 3 lần thì được **một** gợi ý, và chỉ một.
+
+**Nút đặt bên TRÁI hàng nhãn**, không phải bên phải: góc phải trên của mọi
+bảng trong bộ này đều là chỗ của nút đóng `✕`, để bên phải là hai nút đè lên
+nhau. Đã vấp đúng lỗi này.
+
+**Luật viết cột "Sửa chính":** sổ này người chơi mở ra đọc được, nên chỉ ghi
+LOẠI VIỆC (*cập nhật API · chỉnh hiệu ứng · chỉnh luật chơi · đồng bộ hệ nút*),
+tuyệt đối không ghi mã, đáp án, tên biến môi trường hay tên endpoint. Không
+biết đời đó sửa gì thì ghi `no info` và **giữ nguyên số phiên bản**.
 
 ---
 

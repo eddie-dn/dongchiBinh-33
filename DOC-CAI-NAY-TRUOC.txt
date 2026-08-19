@@ -4,7 +4,7 @@
 
 16 file. Trong đó 5 file MỚI (chưa từng có trong repo):
 
-  MỚI  assets/lichsu.js            ← SỔ PHIÊN BẢN, cả sáu trang cùng nạp
+  MỚI  assets/lichsu.js            ← SỔ PHIÊN BẢN
   MỚI  DESIGN-SYSTEM.md            ← bộ nút + biểu tượng + quy ước tên gọi
   MỚI  docs/GOOGLE-SHEETS.md       ← dựng sổ lưu Sheets trong 10 phút
   MỚI  docs/apps-script/Code.gs    ← mã dán vào Apps Script
@@ -35,8 +35,7 @@ là tải về được cả README — trong đó có sẵn ĐÁP ÁN CỦA C�
 MÃ PIN.
 
 Bản này kèm file `.vercelignore` đúng tên. Sau khi chép đè, vào GitHub xoá file
-`vercelignore` cũ đi (không xoá thì hai file cùng tồn tại, cái đúng tên vẫn
-chạy, chỉ là thừa một file rác).
+`vercelignore` cũ đi.
 
 Kiểm tra sau deploy: mở /README.md → phải ra 404.
 
@@ -72,12 +71,10 @@ Ba điểm khiến nó không bao giờ lộ:
     tại một đường viền kín nào.
 
 Bật đúng lúc 26% của clip, là lúc cả chân khung còn chìm trong khói trắng
-(đo được độ lệch sáng chỉ còn 2-5 nấc — coi như một mảng trắng phẳng). Bật
-một hiệu ứng nhoè lên mảng trắng phẳng thì không ai thấy gì.
+(đo được độ lệch sáng chỉ còn 2-5 nấc — coi như một mảng trắng phẳng).
 
 Muốn chỉnh: hằng DOF_K trong dad/950901-b/index.html (đang 0.015 = 1,5% chiều
-cao khung). Bản đầu để 0.026 là QUÁ TAY — cả dải đáy thành vệt bôi phẳng lì,
-mất luôn hình khối mấy bệ đá.
+cao khung). Bản đầu để 0.026 là QUÁ TAY — cả dải đáy thành vệt bôi phẳng lì.
 
 
 ② GỢI Ý TỚI SỚM HƠN — cả RAZER lẫn ZHAO YUN
@@ -91,17 +88,14 @@ Bản cũ cộng dồn BA TẦNG nên gợi ý tới quá muộn, đúng như an
 Nhân ra: gợi ý 2 của vòng 1 nằm sau 12 ký tự trật CỘNG 15 phút ngồi nhìn đồng
 hồ. Chơi cho vui mà thành ra hình phạt.
 
-Nay: SAI PHÁT NÀO MỞ TIẾP PHÁT ĐÓ (hint_every_wrongs 3 → 1), hạn giữa hai gợi
-ý rút còn 2 PHÚT (hint_cooldown_ms 900000 → 120000). Vẫn đủ chặn kiểu cố tình
-gõ bừa để moi sạch gợi ý trong nửa phút, nhưng là một nhịp nghỉ chứ không còn
-là bức tường. Cả hai vòng đều vậy.
+Nay: SAI PHÁT NÀO MỞ TIẾP PHÁT ĐÓ, hạn giữa hai gợi ý rút còn 2 PHÚT. Cả hai
+vòng đều vậy. Đã chạy thử: trật 3 ký tự → "TRUY CẬP BỊ TỪ CHỐI" → GỢI Ý 1 hiện
+ngay.
 
-Đã chạy thử: trật 3 ký tự → "TRUY CẬP BỊ TỪ CHỐI" → GỢI Ý 1 hiện ngay.
-
-Câu báo trật cũng rút gọn đúng như anh viết:
+Câu báo trật rút gọn đúng như anh viết:
     KÝ TỰ KHÔNG KHỚP. CÒN 2 LẦN THỬ SAI.
 
-Và màn đầu + màn cuối Gate 2 nay không bôi đen chữ được nữa.
+Màn đầu + màn cuối Gate 2 nay không bôi đen chữ được nữa.
 
 
 ③ TÊN GỌI
@@ -117,17 +111,16 @@ có 's). Có tên người đứng trước mới là HongHan's Secret Chamber.
 ────────────────────────────────────────────────────────────────────────────
 Ba việc, ba hình, KHÔNG được dùng lẫn:
 
-    xem lại HIỆU ỨNG   (pháo hoa, cảnh nổ)      → CUỘN PHIM
+    xem lại HIỆU ỨNG   (pháo hoa, cảnh nổ)       → CUỘN PHIM
     xem lại NỘI DUNG   (câu trả lời, Open World) → CON MẮT
-    chơi lại / Reset                             → MŨI TÊN QUAY VÒNG
+    chơi lại / Reset                              → MŨI TÊN QUAY VÒNG
 
-Vì sao tách "hiệu ứng" khỏi "nội dung": hai việc nghe giống nhau nhưng bấm
-nhầm nút hiệu ứng thì phải ngồi xem lại 15 giây pháo hoa mới thoát ra được.
+Vì sao tách "hiệu ứng" khỏi "nội dung": bấm nhầm nút hiệu ứng thì phải ngồi
+xem lại 15 giây pháo hoa mới thoát ra được.
 
 Đã sửa: hai nút ở màn hoàn thành Zoey's Castle trước đây là hai ký tự ↺ ↻ gõ
 thẳng vào HTML — mỗi máy một phông nên nét lúc dày lúc mảnh, mà hai vòng tròn
-lại na ná nhau, chẳng nói lên nút nào làm gì. Nay là SVG (mắt + mũi tên quay
-vòng), có chú thích nổi khi trỏ vào.
+lại na ná nhau. Nay là SVG (mắt + mũi tên quay vòng), có chú thích nổi.
 
 Toàn bộ luật + mã SVG chuẩn để chép nằm trong DESIGN-SYSTEM.md.
 
@@ -135,13 +128,12 @@ Toàn bộ luật + mã SVG chuẩn để chép nằm trong DESIGN-SYSTEM.md.
 ⑤ SỔ LƯU GOOGLE SHEETS — 10 phút, làm một lần rồi quên
 ────────────────────────────────────────────────────────────────────────────
 Vercel gói Hobby chỉ giữ log khoảng MỘT TIẾNG. Sáng mai mở lên là không còn
-cách nào biết tối qua ai chơi tới đâu, hay Open World hỏng câu nào.
+cách nào biết tối qua ai chơi tới đâu.
 
 Đã dựng sẵn đường Google Apps Script → Google Sheets: KHÔNG cần Google Cloud,
-không cần thẻ, không tốn tiền, không có gì phải bảo trì. Apps Script chạy
-trong tài khoản Google bình thường, hạn mức miễn phí 20.000 lượt/ngày.
+không cần thẻ, không tốn tiền, không có gì phải bảo trì.
 
-Việc anh phải làm (6 bước, có ảnh chụp từng ô trong docs/GOOGLE-SHEETS.md):
+Việc anh phải làm (6 bước, chi tiết trong docs/GOOGLE-SHEETS.md):
    1. sheets.new → tạo một Sheet trống
    2. Tiện ích mở rộng → Apps Script
    3. dán docs/apps-script/Code.gs vào, đổi MỘT dòng mã bảo vệ
@@ -152,61 +144,89 @@ Việc anh phải làm (6 bước, có ảnh chụp từng ô trong docs/GOOGLE-
         CHAT_LOG_URL   → tab "Chat"     (mỗi lượt hỏi Open World)
       rồi Redeploy.
 
-Tab tự tạo, cột tự dựng, không phải chuẩn bị gì trước.
-
-Nội dung chat MẶC ĐỊNH KHÔNG GHI — hai cột hoi/dap để trống trừ khi anh tự
-bật thêm biến CHAT_LOG_NOI_DUNG=1. Cố ý bắt khai riêng một biến nữa để không
-ai bật nhầm.
+Tab tự tạo, cột tự dựng. Nội dung chat MẶC ĐỊNH KHÔNG GHI.
 
 
-⑥ SỔ PHIÊN BẢN — cửa hậu mới, có ở CẢ SÁU TRANG
+⑥ SỔ PHIÊN BẢN — đã sửa lại đúng ý anh
 ────────────────────────────────────────────────────────────────────────────
-Đường vào:
-   1. gõ 10 nhịp liên tiếp vào dòng "Last updated…" ở chân trang
-      → hiện một NÚT ICON nhỏ ngay phía trên tem
-   2. bấm nút đó → hỏi mã. Mã là 0981 (chính là 1890 đọc ngược)
-   3. sai 3 lần → hiện ĐÚNG MỘT câu gợi ý: "Năm sinh Bác Hồ — soi gương mà
-      đọc." Từ lần sai thứ tư vẫn đúng câu đó, không có gợi ý thứ hai.
-   4. vào rồi: một bảng cho từng trang —
-      Ngày (YYYY-MM-DD) · Bản · # (đời thứ mấy) · Sửa chính
-      Trên cùng có hình cô AI vắt ở mép hộp nhìn xuống.
+Bản trước em hiểu nhầm: gắn cửa vào thẳng dòng "Last updated", thành ra vừa
+đẻ ra một cửa hậu MỚI, vừa gộp lịch sử cả sáu trang vào CHUNG một bảng.
 
-Ba luật của bảng dữ liệu:
-   · KHÔNG BIẾT THÌ GHI "no info", không đoán. Kho mã mới bắt đầu được ghi từ
-     17-08-2026; mọi đời trước đó có thật (tem đã ở V17, V22, V2.05…) nhưng
-     không còn bản ghi nào để biết mỗi đời sửa gì.
-   · "no info" VẪN GIỮ NGUYÊN SỐ PHIÊN BẢN — đúng như anh dặn.
-   · mấy lượt push tên "Add files via upload" cũng là no info: tải thẳng qua
-     web GitHub thì không có lời ghi chú nào để mà đọc lại.
+NAY LÀM ĐÚNG NHƯ ANH DẶN:
 
-Nút nhớ trong PHIÊN (đóng trình duyệt là quên, lần sau vẫn phải tự mò lại).
-Bắt buộc phải nhớ chứ không phải cho tiện: ngoài BẢN ĐỒ, cú bấm thứ 10 vào tem
-CÒN mở khung Collected và lần đầu nó bay thẳng sang màn pháo hoa — nút vừa
-hiện ra là trang đã đi mất.
+  · MỌI CỬA HẬU CŨ GIỮ NGUYÊN 100%. Đã gỡ sạch phần đếm nhịp trên tem, trả
+    tem về đúng như trước. Cửa hậu hoa ở hai trang HAN lại nhận cả cụm hoa +
+    tem như cũ.
 
-Thêm một đời mới về sau: mở assets/lichsu.js, thêm một dòng vào hằng SO. Chỉ
-một chỗ, cả sáu trang thấy ngay.
+  · SỔ THÀNH CỬA HẬU TẦNG HAI:
+
+        mở bảng điều khiển như xưa nay vẫn mở
+          → trong bảng có MỘT NÚT ICON nhỏ
+          → bấm 3 NHỊP vào nút đó
+          → gõ mã 0981
+          → hiện sổ CỦA RIÊNG TRANG ĐÓ
+
+  · SỔ CHỈ CỦA TRANG ĐANG ĐỨNG, không đụng, không chung. Đứng ở Zoey's Castle
+    thì chỉ thấy lịch sử Zoey's Castle. Mã đã gõ cũng nhớ riêng từng trang.
+
+Nút nằm ở đâu:
+
+    Bản đồ mật thư          Box Tổng tư lệnh      (5 nhịp dòng bản quyền)
+    Easter Egg · Gate 1     thẻ Mission 3 Phá đảo (bấm nấc ✓M3)
+    Easter Egg · Gate 2     hàng nút cửa hậu      (10 nhịp vào tem)
+    Zoey's Castle           Khối vận hành         (5 nhịp cụm hoa + tem)
+    Secret Chamber          Khối vận hành         (5 nhịp cụm hoa + tem)
+    Màn pháo hoa            ── chưa gắn, xem dưới ──
+
+Nút đặt BÊN TRÁI hàng nhãn: góc phải trên bảng nào cũng là nút đóng ✕, để bên
+phải là hai nút đè lên nhau (đã vấp đúng lỗi này rồi).
+
+⚠ MÀN PHÁO HOA CHƯA CÓ CỬA. Đó là trang DUY NHẤT trong bộ không có bảng điều
+khiển nào — không cửa hậu, không hộp lệnh, chỉ có một nút đóng. Không có chỗ
+nào đặt nút mà không phải đẻ ra một cửa hậu mới, mà anh đã dặn là đừng đẻ
+thêm cửa. Số liệu của nó vẫn giữ sẵn trong file: hôm nào trang đó có bảng thì
+gắn một dòng là xong. Anh muốn em thêm cửa cho nó thì nói em một tiếng.
+
+Sai mã 3 lần → hiện ĐÚNG MỘT câu gợi ý: "Năm sinh Bác Hồ — soi gương mà đọc."
+Từ lần thứ tư vẫn đúng câu đó, không có gợi ý thứ hai.
 
 
-   RÀ LẠI SỐ PHIÊN BẢN — ba chỗ đã lệch
+   CỘT "SỬA CHÍNH" NAY GHI CHUNG CHUNG
    ─────────────────────────────────────────────────────────────────────────
-   Dò từng lượt push, đọc số tem của từng file. Ba chỗ không khớp tiến độ:
+   Sổ này người chơi mở ra đọc được, nên đã viết lại toàn bộ: KHÔNG còn mã,
+   đáp án, tên nhân vật phải đoán, tên biến môi trường, tên endpoint hay tên
+   nhà cung cấp nào. Chỉ ghi LOẠI VIỆC:
 
-   ❶ han/961030-b đi V1.09 → V1.10 → V1.11
-      SAI LUẬT: theo README, đuôi chỉ được chạy 00→09; tới V1.09 là phải sang
-      V2.00. ĐÃ NẮN: đợt này ghi thẳng V2.00, bỏ qua V1.12.
+       "cập nhật API" · "chỉnh hiệu ứng" · "chỉnh luật chơi"
+       "đồng bộ hệ nút" · "cập nhật giao diện" · "thêm đo đạc"
 
-   ❷ index.html đi V17.05 → V17.04 rồi lại V17.05
-      Số LÙI một nấc giữa hai lượt push ngày 18-08 — ghi tay nhầm. Đã tự vượt
-      qua từ V17.06, chỉ ghi lại cho có sổ.
+   Đủ để biết đời đó làm gì, không đủ để lấy làm gợi ý.
 
-   ❸ Đợt 1 ("Sửa mục 8-13") sửa 4 file mà KHÔNG bump tem nào — quên.
-      Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật.
 
-   Còn một chỗ CỐ Ý KHÔNG ĐỤNG: cách đệm số 0 không đồng nhất (V04.04, V22.02
-   có đệm — V2.09, V3.03 không). Mỗi trang tự nhất quán với lịch sử của chính
-   nó; nắn lại chỉ để cho đều mắt thì đổi số tem của bốn trang mà chẳng được
-   gì.
+   ĐÃ DÒ LẠI CÁC README TRONG KHO MÃ — CÓ, VÀ RA THÊM BA THỨ
+   ─────────────────────────────────────────────────────────────────────────
+   Anh hỏi có dò được version từ mấy file README không: có. Mấy file .md cùng
+   thời cũng chép lại số tem, dò qua từng lượt push thì moi thêm được:
+
+   ❶ Gate 2 TỪNG CÓ V2.10 trước V2.11. File thì không còn, chỉ còn thấy tên
+     trong tài liệu cùng thời. Đã thêm vào sổ, ghi rõ "no info".
+
+   ❷ GATE 2 ĐÃ TỪNG BỊ NẮN SỐ MỘT LẦN RỒI. Tài liệu ghi nguyên văn: "hai bản
+     V2.10/V2.11 trước đó là sai quy ước, đã nắn về V03.02". Nghĩa là việc nắn
+     han/961030-b từ V1.11 → V2.00 đợt này đi ĐÚNG TIỀN LỆ có sẵn, không phải
+     em tự nghĩ ra.
+
+   ❸ Chính README cũng lệch: dòng "Phiên bản hiện tại" chạy V17.03 → V17.04 →
+     V17.06 → V17.07, trong khi tem trên trang ngày 17-08 đã là V17.05. Tài
+     liệu chậm hơn trang 2 nấc.
+
+   Cộng với ba chỗ đã báo ở lần trước:
+     · han/961030-b đi V1.09 → V1.10 → V1.11 là SAI LUẬT (đuôi chỉ chạy
+       00→09). ĐÃ NẮN thành V2.00.
+     · index.html đi V17.05 → V17.04 rồi lại V17.05 — số lùi một nấc.
+     · Đợt 1 sửa 4 file mà không bump tem nào.
+
+   Tất cả đều đã nằm trong sổ, ghi đúng như vậy, không bịa thêm.
 
    Bảng phiên bản sau đợt này:
       /                    V17.07        /han/961030-a       V2.09
@@ -216,10 +236,9 @@ một chỗ, cả sáu trang thấy ngay.
 
 ⑦ ĐÃ SOÁT LẠI TÀI LIỆU
 ────────────────────────────────────────────────────────────────────────────
-README.md          cây thư mục dựng lại cho đúng thực tế (thiếu api/chat.js,
-                   api/quote.js, api/_lib/, assets/, config.js…), thêm mục
-                   11b (sổ phiên bản) + bảng phiên bản + phần rà soát,
-                   cửa hậu 3 → 4, phần máy chủ trỏ sang docs/GOOGLE-SHEETS.md
+README.md          cây thư mục dựng lại cho đúng thực tế, mục 11b viết lại
+                   theo cách vào mới, thêm bảng phiên bản + phần rà soát,
+                   phần máy chủ trỏ sang docs/GOOGLE-SHEETS.md
 DIALOGUES.md       phần chuyển cảnh viết lại cùng bảng đo từng khung clip;
                    bảng gợi ý và bảng thoại sửa cho khớp config
 CHU-MAP3.md        sửa dòng màn hoàn thành, thêm luật viết tên
@@ -232,11 +251,11 @@ DESIGN-SYSTEM.md   file mới, gom hệ nút + tên gọi + tem + cửa hậu
   · chơi hết vòng 1 Gate 2, soi từng khung clip: chữ NUY OAHZ không đọc ra ở
     bất cứ khung nào; bệ đá và đám nấm phía trước vẫn còn ra hình
   · gợi ý 1 bật ngay sau lần sai chính thức đầu tiên
-  · sổ phiên bản chạy trên cả sáu trang: 10 nhịp → nút → mã sai 3 lần → gợi ý
-    → mã đúng → bảng
-  · CỬA HẬU CŨ VẪN CHẠY: bản đồ mở khung Collected, Gate 2 hiện nút bỏ qua,
-    Zoey's Castle bấm 5 nhịp vào bông hoa mở bảng điều phối
-    (lưu ý: ở hai trang HAN, cửa hậu hoa nay CHỈ nhận cú bấm vào đúng bông
-     hoa — không tính dòng tem nữa, vì dòng tem đã dành cho sổ phiên bản)
+  · năm cửa sổ phiên bản đều chạy: mở bảng bằng cửa hậu CŨ → 3 nhịp vào nút →
+    sai mã 3 lần ra gợi ý → mã đúng ra sổ, và CHỈ ra sổ của đúng trang đó
+    (bản đồ 6 dòng · Gate 1 4 dòng · Gate 2 12 dòng · Zoey's 6 dòng ·
+     Secret Chamber 5 dòng)
+  · CỬA HẬU CŨ CHẠY Y NHƯ TRƯỚC: Box Tổng tư lệnh, Khối vận hành hai trang
+    HAN, nút Bỏ qua Gate 2, thẻ Phá đảo Gate 1
   · màn hoàn thành Zoey's Castle: hai nút mới + chú thích nổi, chữ đã đúng là
     "Thương gửi anh PIN Secret Chamber"

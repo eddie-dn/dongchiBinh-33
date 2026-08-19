@@ -621,12 +621,7 @@ render();
 <style>
 /* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
       bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
-/* pointer-events:auto vì tem là CỬA HẬU: gõ 10 nhịp vào đây mở SỔ PHIÊN BẢN
-   (xem file dùng chung /assets/lichsu.js). user-select:none để gõ nhanh mười
-   cái không dính một mảng bôi đen. */
-.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;
-  pointer-events:auto;cursor:default;
-  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;pointer-events:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
   color:rgba(234,240,247,.34)}
@@ -917,6 +912,9 @@ render();
   color:#ffb4a6;margin:15px 2px 0}
 .msn-msg:empty{margin-top:0;min-height:6px}
 .msn-msg.ok{color:#8be0ff}
+/* Hàng cuối thẻ Phá đảo: nút chữ ở giữa, nút sổ phiên bản nép bên phải. */
+.msn-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+.msn-row .msn-ghost{margin:0}
 .msn-ghost{display:block;margin:12px auto 0;border:none;background:none;cursor:pointer;
   color:rgba(234,240,247,.6);font-size:11.5px;line-height:1.5;letter-spacing:.06em;
   text-decoration:underline;text-underline-offset:4px;padding:8px}
@@ -1596,7 +1594,15 @@ render();
       + '<b>Map: Bản đồ tác chiến</b>.</div>'
       + '<div class="msn-sign">--Kí tên: Hội Đồng MeowMeow ฅ^>⩊&lt;^ ฅ</div>'
       + '<button class="navbtn wide" id="msnGo" style="margin-top:18px;justify-content:center">Mở khoá Bản đồ tác chiến ✈</button>'
-      + '<button class="msn-ghost" id="msnReset" type="button">↻ Chơi lại từ đầu</button>');
+      /* NÚT SỔ PHIÊN BẢN — bấm 3 nhịp rồi gõ mã là ra sổ của riêng trang này
+         (xem /assets/lichsu.js). Đặt ở thẻ Phá đảo vì đây là chỗ gần nhất với
+         một "bảng điều khiển" của trang: nó là thẻ duy nhất có nút reset, và
+         mở lại lúc nào cũng được bằng cách bấm vào nấc ✓M3 trên dòng Mission.
+         Đường vào thẻ này KHÔNG đổi gì. */
+      + '<div class="msn-row">'
+      +   '<button class="msn-ghost" id="msnReset" type="button">↻ Chơi lại từ đầu</button>'
+      +   (window.LichSu ? LichSu.nut('DAD-A') : '')
+      + '</div>');
     ov.querySelector('.msn-card').classList.add('done');
     byId('msnGo').addEventListener('click', function(){ goMap('hộp Mission 3'); });
     var rs = byId('msnReset'), armed = false;
@@ -2023,12 +2029,12 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp" data-ls-stamp>V22.02<br>Last updated 19-Aug-2026</span>
+<span class="vstamp" id="vstamp">V22.02<br>Last updated 19-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
 <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
-<script src="/assets/lichsu.js" defer></script>
+<script src="/assets/lichsu.js"></script>
 </body>
 </html>

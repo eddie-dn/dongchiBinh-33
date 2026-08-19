@@ -91,10 +91,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
 @media (prefers-reduced-motion:reduce){ .tit.blink{animation:none} }
 /* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
       bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
-/* pointer-events:auto vì tem là CỬA HẬU: gõ 10 nhịp mở SỔ PHIÊN BẢN. */
-.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;
-  pointer-events:auto;cursor:default;
-  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;pointer-events:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
   color:rgba(234,240,247,.3)}
@@ -115,7 +112,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
 
   <p class="eggcap" id="eggCap">Oh?</p>
-  <span class="vstamp" data-ls-stamp>V3.03<br>Last updated 19-Aug-2026</span>
+  <span class="vstamp">V3.03<br>Last updated 19-Aug-2026</span>
 
   <div class="top">
     <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
@@ -672,6 +669,5 @@ function veNo(g, cx, cy, R, u){
 ping('phao_hoa_mo', '');
 })();
 </script>
-<script src="/assets/lichsu.js" defer></script>
 </body>
 </html>

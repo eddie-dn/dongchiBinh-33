@@ -318,12 +318,12 @@ chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên l
 |---|---|---|
 | **Tổng tư lệnh** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Box Tổng tư lệnh** hai bước, xem dưới |
 | **Collected: Easter Egg** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung `#credw`, xem mục riêng ngay dưới |
-| **Sổ phiên bản** | Cũng **10 cú** đó — hiện thêm một **nút icon** cạnh tem | Hỏi mã `0981` → bảng lịch sử phiên bản. Có ở **cả sáu trang**, xem §11b |
+| **Sổ phiên bản** | Mở Box Tổng tư lệnh như trên, rồi bấm **3 nhịp** vào nút icon trong đó | Hỏi mã `0981` → sổ **của riêng trang này**. Xem §11b |
 | **Hack Map** | Trong Box Tổng tư lệnh, chọn chiến dịch rồi bấm **Hack Map** | Hộp PIN → nhập `1959`. Chữ `hackmap` gõ đúp đã bỏ, cơ chế PIN giữ nguyên |
 
-> Hai cửa "Collected" và "Sổ phiên bản" **dùng chung một thao tác** và cùng nổ ở nhịp thứ
-> 10 — cố ý vậy, người chơi chỉ phải nhớ một mẹo. Khung Collected mở đè lên màn hình,
-> nút sổ phiên bản thì nằm lại cạnh tem; đóng khung ra là thấy.
+> **Sổ phiên bản là cửa hậu TẦNG HAI** — nó không có đường vào riêng, mà nấp sau bảng
+> điều khiển đã có sẵn. Nhờ vậy mọi cửa hậu cũ giữ nguyên y như trước, không phải nhớ
+> thêm thao tác nào mới.
 
 Vùng bấm của cửa xoá sạch là **cả dòng bản quyền**, không chỉ lá cờ 15px — dễ trúng hơn
 nhiều trên điện thoại. Khi đang đếm, **chỉ lá cờ sáng và phóng to nhẹ**, phần chữ giữ
@@ -482,59 +482,90 @@ nhánh sau loại trừ nhau để không có hai lượt nháy chồng lên nha
 
 ---
 
-## 11b. SỔ PHIÊN BẢN — cửa hậu dùng chung cho cả sáu trang
+## 11b. SỔ PHIÊN BẢN — mỗi trang một cuốn riêng
 
-Một file duy nhất: **`assets/lichsu.js`**. Sáu trang cùng nạp nó, và **bảng dữ liệu nằm
+Một file duy nhất: **`assets/lichsu.js`**. Năm trang cùng nạp nó, và **bảng dữ liệu nằm
 luôn trong file đó** (hằng `SO`).
 
-### Đường vào
+### Đường vào — cửa hậu TẦNG HAI
 
-1. Gõ **10 nhịp liên tiếp** (mỗi nhịp cách nhau dưới 0,9 giây) vào dòng `Last updated…`
-   ở chân trang → hiện một **nút icon** nhỏ ngay phía trên tem.
-2. Bấm nút đó → hỏi mã. Mã là **`0981`** (chính là **1890** — năm sinh Bác Hồ — đọc ngược).
-3. Sai **3 lần** thì hiện **đúng một** câu gợi ý: *"Năm sinh Bác Hồ — soi gương mà đọc."*
-   Từ lần sai thứ tư trở đi vẫn đúng câu đó, **không có gợi ý thứ hai**.
-4. Vào rồi: một bảng cho từng trang, mỗi đời một dòng —
-   `Ngày (YYYY-MM-DD) · Bản · # (đời thứ mấy) · Sửa chính`. Trên cùng có hình cô AI
-   vắt ở mép hộp nhìn xuống.
+```
+mở bảng điều khiển của trang (cửa hậu cũ, KHÔNG đổi gì)
+  → trong bảng có MỘT NÚT ICON nhỏ
+  → bấm 3 nhịp vào nút đó
+  → gõ mã 0981  (chính là 1890 — năm sinh Bác Hồ — đọc ngược)
+  → hiện sổ CỦA RIÊNG TRANG ĐÓ
+```
+
+Sai **3 lần** thì hiện **đúng một** câu gợi ý: *"Năm sinh Bác Hồ — soi gương mà đọc."*
+Từ lần sai thứ tư trở đi vẫn đúng câu đó, **không có gợi ý thứ hai**.
+
+### Nút nằm ở đâu trên từng trang
+
+| Trang | Bảng điều khiển | Vào bảng bằng | Mã trang |
+|---|---|---|---|
+| Bản đồ mật thư | Box Tổng tư lệnh | 5 nhịp vào dòng bản quyền | `MAP` |
+| Easter Egg · Gate 1 | thẻ *Mission 3 · Phá đảo* | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
+| Easter Egg · Gate 2 | hàng nút cửa hậu | 10 nhịp vào tem màn cổng | `DAD-B` |
+| Zoey's Castle | Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-A` |
+| HongHan's Secret Chamber | Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-B` |
+| Màn pháo hoa | **chưa có bảng nào** | — | `FX` |
+
+> **Màn pháo hoa là trang duy nhất chưa gắn.** Nó không có cửa hậu, không có hộp lệnh,
+> chỉ có một nút đóng — không có chỗ nào đặt nút mà không phải đẻ ra một cửa hậu mới.
+> Dữ liệu vẫn giữ sẵn trong `SO.FX`: hôm nào trang đó có bảng điều khiển thì chỉ việc
+> nạp file và nhét `LichSu.nut('FX')` vào.
+
+### KHÔNG BAO GIỜ hiện chung
+
+Đứng ở Zoey's Castle thì chỉ thấy lịch sử của Zoey's Castle. Sáu cuốn sổ nằm chung một
+file cho dễ sửa, nhưng mỗi lần mở chỉ vẽ **đúng một cuốn**. Mã đã gõ đúng cũng nhớ riêng
+từng trang (`sessionStorage.ls_ok_<mã trang>`), mở sổ bên này không mở hộ sổ bên kia.
 
 ### Ba luật của bảng dữ liệu
 
+- **Cột "Sửa chính" chỉ ghi LOẠI VIỆC.** Sổ này người chơi mở ra đọc được, nên tuyệt đối
+  không ghi mã, mật khẩu, đáp án, tên nhân vật phải đoán, tên biến môi trường, tên khoá
+  lưu, tên endpoint hay tên nhà cung cấp. Chỉ ghi *"cập nhật API" · "chỉnh hiệu ứng" ·
+  "chỉnh luật chơi" · "đồng bộ hệ nút" · "cập nhật giao diện" · "thêm đo đạc"*. Đủ để
+  biết đời đó làm gì, không đủ để lấy làm gợi ý.
 - **Không biết thì ghi `no info`, đừng đoán.** Kho mã mới bắt đầu được ghi từ
   **17-08-2026**; mọi đời trước đó có thật (tem đã ở V17, V22, V2.05…) nhưng không còn
   bản ghi nào để biết mỗi đời sửa gì.
 - **`no info` vẫn GIỮ NGUYÊN số phiên bản.** Không biết sửa gì là một chuyện, số tem là
   chuyện khác — xoá số đi thì mất luôn cái mốc.
-- Mấy lượt push tên `Add files via upload` (tải thẳng qua web GitHub) cũng là `no info`:
-  không có lời ghi chú nào để mà đọc lại.
 
-### Nhớ trong PHIÊN, không nhớ vĩnh viễn
+### Dò từ tài liệu cũ — moi thêm được ba thứ
 
-Mò ra rồi thì đi sang trang khác nút vẫn còn (`sessionStorage.ls_key`). **Bắt buộc phải
-nhớ**, không phải cho tiện: ngoài bản đồ, cú bấm thứ 10 vào tem CÒN mở khung Collected và
-lần đầu nó bay thẳng sang màn pháo hoa — nút vừa hiện ra là trang đã đi mất.
+Ngoài số tem trong HTML, mấy file `.md` cùng thời cũng chép lại số phiên bản. Dò lại
+toàn bộ chúng qua từng lượt push thì ra thêm:
 
-Đóng trình duyệt là quên, lần sau vẫn phải tự mò lại. Nhớ vĩnh viễn thì hết còn là cửa
-hậu, mà lại thêm một cái nút lạ nằm mãi trên cả sáu trang.
+1. **Gate 2 từng có `V2.10`** trước `V2.11` — chỉ còn thấy tên trong tài liệu, file thì
+   không còn.
+2. **Gate 2 đã từng bị NẮN SỐ một lần rồi**: tài liệu ghi rõ *"hai bản V2.10/V2.11 trước
+   đó là sai quy ước, đã nắn về V03.02"*. Tức là việc nắn `V1.11 → V2.00` đợt này đi
+   đúng tiền lệ có sẵn.
+3. **README tự nó cũng lệch**: dòng *"Phiên bản hiện tại"* chạy `V17.03 → V17.04 →
+   V17.06 → V17.07`, trong khi tem trên trang ngày 17-08 đã là `V17.05`. Tài liệu chậm
+   hơn trang 2 nấc.
 
-Mã đã gõ đúng cũng chỉ nhớ trong phiên (`sessionStorage.ls_ok`).
-
-### Gắn vào một trang mới
+### Gắn vào một bảng điều khiển mới
 
 ```html
-<span class="stamp" data-ls-stamp>Last updated …</span>
-…
-<script src="/assets/lichsu.js" defer></script>
+<script src="/assets/lichsu.js"></script>
 ```
 
-Hết — không phải viết thêm CSS nào. Hai chỗ cần để ý:
+rồi nhét đúng một chuỗi vào chỗ muốn đặt nút:
 
-- Tem phải **bấm được**: mấy trang để `.vstamp{pointer-events:none}` thì phải mở ra
-  `auto`, kèm `user-select:none` cho gõ nhanh mười cái không dính mảng bôi đen.
-- Tổ tiên của tem đã có cửa hậu đếm nhịp riêng (Zoey's Castle và Secret Chamber: 5 nhịp
-  vào **cả cụm hoa + tem** mở bảng điều phối) thì thêm **`data-ls-rieng`** để tem nuốt cú
-  bấm. Không nuốt thì tới nhịp thứ 5 bảng kia bật ra, chẳng bao giờ đếm nổi tới 10.
-  Đổi lại, cửa hậu hoa ở hai trang đó nay **chỉ nhận cú bấm vào đúng bông hoa**.
+```js
+LichSu.nut('MAP')     // trả về chuỗi HTML của nút
+```
+
+Không phải gắn sự kiện gì cả — file tự nghe ở cấp tài liệu, nên nút dựng ra lúc nào cũng
+chạy, kể cả bảng được dựng lại bằng `innerHTML` sau đó.
+
+**Đặt nút bên TRÁI hàng nhãn.** Góc phải trên của mọi bảng trong bộ này đều là chỗ của
+nút đóng `✕`; để bên phải là hai nút đè lên nhau — đã vấp đúng lỗi này rồi.
 
 ---
 
@@ -1805,10 +1836,8 @@ Góc phải dưới mỗi trang HAN có tem giống bản đồ: chuỗi gốc �
 hàm `stampText()` ghép thêm `· R(n)` khi đã reset ít nhất một lần — nên số lần reset
 vẫn thấy được sau khi làm lại.
 
-Tem hai trang HAN mang thêm **`data-ls-rieng`**: gõ 10 nhịp vào tem mở **sổ phiên bản**
-(§11b), và thuộc tính đó bắt tem **nuốt cú bấm** để nó không chạy lên cửa hậu 5 nhịp của
-`#stampzone`. Đổi lại, **cửa hậu hoa nay chỉ nhận cú bấm vào đúng bông hoa**, không tính
-dòng tem nữa.
+Cửa hậu 5 nhịp vào **cả cụm hoa + tem** giữ nguyên như cũ. Sổ phiên bản nằm bên trong
+Khối vận hành mà cửa đó mở ra — xem §11b.
 
 ### Sửa nội dung
 
@@ -1919,10 +1948,11 @@ Bộ kiểm thử đầu-cuối chạy bằng Chromium headless, **không nằm 
 dựng trang, không phải nội dung trang). Lượt chạy gần nhất: **31 bộ · 0 FAIL · 0 crash**,
 cộng một lượt soát giao diện 8 trang × 6 cỡ màn (320 → 1280 px) báo *SẠCH*.
 
-Đợt 5 soát thêm bằng tay, cả sáu trang: **sổ phiên bản** (10 nhịp → nút icon → mã `0981`
-→ bảng), **cửa hậu cũ vẫn chạy** (bản đồ mở khung Collected, Gate 2 hiện nút bỏ qua,
-Zoey's Castle 5 nhịp vào hoa mở bảng điều phối), và **chuyển cảnh Gate 2** chơi hết vòng 1
-rồi soi từng khung clip: chữ `NUY OAHZ` không đọc ra ở bất cứ khung nào.
+Đợt 5 soát thêm bằng tay: **sổ phiên bản** trên cả năm trang có bảng điều khiển (mở bảng
+bằng cửa hậu cũ → 3 nhịp vào nút → sai mã 3 lần ra gợi ý → mã đúng ra sổ, và **chỉ ra sổ
+của đúng trang đó**), **cửa hậu cũ chạy y như trước** (Box Tổng tư lệnh, Khối vận hành hai
+trang HAN, nút Bỏ qua Gate 2, thẻ Phá đảo Gate 1), và **chuyển cảnh Gate 2** chơi hết vòng
+1 rồi soi từng khung clip: chữ `NUY OAHZ` không đọc ra ở bất cứ khung nào.
 
 Phủ các luồng: chơi từ đầu tới phá đảo · ba Mission M1→M2→M3 · cửa hậu 10 nhịp và màn
 Collected · pháo hoa + quả trứng · Gate 2 hai trạng thái · cửa mã `HO CHI MINH` · bộ câu hỏi
