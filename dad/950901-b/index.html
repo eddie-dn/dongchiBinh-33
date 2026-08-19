@@ -196,6 +196,12 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 .gate-look .ma-go.skip:active{transform:translateY(1px)}
 /* Tem nháy nhẹ vài nhịp khi cửa hậu vừa mở, cho biết là "ăn rồi" */
 #scene-gate .vstamp.hit{color:rgba(140,225,180,.85);transition:color .18s}
+/* Dòng ký tên. Nằm CHUNG khối tem nhưng nhạt hơn và giãn chữ rộng hơn một
+   nhịp — để mắt đọc nó như chữ ký chứ không như dòng thứ ba của số phiên bản.
+   `.hit` đổi màu cả khối, nên dòng này cũng sáng theo khi mò trúng cửa hậu. */
+.gate-look .vstamp .vby{display:block;margin-top:3px;font-size:7.5px;
+  letter-spacing:.28em;color:rgba(234,240,247,.22)}
+#scene-gate .vstamp.hit .vby{color:rgba(140,225,180,.5)}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ② MÀN MINI-GAME PIXEL
@@ -327,6 +333,61 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   -webkit-mask-composite:source-in;mask-composite:intersect;
   transition:opacity .5s ease;
 }
+/* ═══ KHÓI PHỦ — CHỈ SỐNG TRONG LÚC CLIP NỔ CHẠY ══════════════════════════
+   Mảng che là một mẩu đá TĨNH và SẮC NÉT. Đặt nó xuống giữa lúc khói trong
+   clip đang cuộn thì mắt bắt được ngay: xung quanh mờ và động, riêng chỗ đó
+   đứng im và rõ mồn một. Bản trước vấp đúng chỗ này.
+   Lớp này phủ trắng lên chính mảng che, chạy THEO ĐÚNG ĐƯỜNG CONG ĐỘ SÁNG đo
+   được trên 241 khung của clip (xem ghi chú `che_vao_at` trong config.js):
+   26% khói dày → mảng che trắng xoá, lẫn hẳn vào khói; 40% khói tan → lộ dần;
+   44% trở đi khói hết, mảng che là đá thật khớp khít nền phía sau.
+   Nằm trong `.veil` nên dùng chung mặt nạ tán mép — không thêm cạnh nào mới. */
+#scene-game .slab .veil::after{
+  content:'';position:absolute;inset:0;opacity:0;pointer-events:none;
+  background:radial-gradient(ellipse 78% 130% at 50% 42%,
+             rgba(232,240,244,.98) 0%,rgba(220,231,237,.94) 52%,
+             rgba(206,219,227,.82) 100%);
+}
+#scene-game .slab.khoi .veil::after{
+  animation:kheKhoi var(--kh,8000ms) linear both;
+}
+/* ═══ LỚP CHE PHẢI TRÔI THEO CẢNH ════════════════════════════════════════
+   ĐÂY MỚI LÀ CÁI LÀM MIẾNG CHE "KHÔNG KHỚP", và nó không nhìn ra được bằng
+   mắt — phải bung 241 khung clip ra rồi dò tương quan với bg_r2 mới thấy:
+
+     42-48% clip … bảng đá trong clip nằm THẤP HƠN bg_r2 13 pixel (cỡ 800x350)
+     55%  ……… 11px      70% ……… 7px      86% ……… 3px
+     62%  ……… 9px       78% ……… 5px      100% ……… 0px
+
+   Tức cảnh vẫn còn đang "hạ cánh" suốt nửa sau clip, tới khung cuối mới trùng
+   khít bg_r2. Mà lớp che thì đứng yên ở đúng toạ độ của bg_r2 — cao hơn chữ
+   thật gần HAI LẦN chiều cao chính nó. Kết quả: che trượt lên trên, chữ
+   NUY OAHZ thò ra ngay bên dưới. Nhìn ra thì tưởng "lớp che bị lệch", thật ra
+   là cảnh chưa đứng yên.
+   Nay lớp che trôi theo đúng đường cong đó rồi về 0 đúng lúc clip kết thúc —
+   nó bám lấy bảng đá suốt đoạn chuyển, không còn khoảnh khắc nào hở chữ.
+   `--troi` = 13px kia quy về cỡ khung thật, tính trong fitSlabs(). */
+#scene-game .slab.khoi .veil{
+  animation:veilTroi var(--kh,8000ms) linear both;
+}
+@keyframes veilTroi{
+  0%,48%{transform:translateY(var(--troi,0px))}
+  55%   {transform:translateY(calc(var(--troi,0px) * .85))}
+  62%   {transform:translateY(calc(var(--troi,0px) * .69))}
+  70%   {transform:translateY(calc(var(--troi,0px) * .58))}
+  78%   {transform:translateY(calc(var(--troi,0px) * .38))}
+  86%   {transform:translateY(calc(var(--troi,0px) * .27))}
+  92%   {transform:translateY(calc(var(--troi,0px) * .15))}
+  100%  {transform:translateY(0)}
+}
+@keyframes kheKhoi{
+  0%,25%  {opacity:0}
+  27%     {opacity:.94}
+  33%     {opacity:.80}
+  37%     {opacity:.58}
+  40%     {opacity:.20}
+  43%,100%{opacity:0}
+}
 #scene-game .slab .cells{position:absolute;inset:0;display:flex}
 /* overflow:hidden để đất và bụi rơi khuất trong lòng ô, không tràn ra ngoài
    tấm biển. Quầng sáng của ký tự do filter vẽ nên vẫn toả ra bình thường. */
@@ -414,10 +475,20 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Giải đúng → cả cụm sáng đều lên MỘT LẦN rồi nằm im. Không nháy lệch nhịp,
    không nảy, không đổi cỡ: đây là ĐÁP ÁN chứ không phải màn ăn mừng. Chỉ đẩy
    độ sáng lên một nấc so với `.shown` cho tách khỏi nền đá. */
+/* ── VÌ SAO PHẢI CHỈNH RIÊNG TỪNG VÒNG ──────────────────────────────────
+   Cùng một công thức nhưng RAZER bừng lên còn ZHAO YUN thì lờ đờ, vì tranh
+   gốc hai bên khác hẳn: bảng vòng 1 là nền nâu ẤM, chữ vàng rực, quầng sáng
+   vẽ sẵn ngay trong tranh; bảng vòng 2 là nền đá xám XANH, chữ be nhạt, không
+   có quầng nào. Mặt nạ cắt ký tự lại chạy theo ĐỘ SÁNG, nên nền càng tối thì
+   phần lọt qua càng mỏng — chữ vòng 2 vừa tối vừa mảnh.
+   Nay ba thông số đọc từ `round1.solved_glow` / `round2.solved_glow` trong
+   config: vòng 2 đẩy sáng và tương phản cao hơn cho nét dày và rõ ngang vòng 1.
+   `contrast` là thứ làm chữ NÉT chứ không chỉ sáng: nó kéo giãn khoảng cách
+   giữa nét khắc và mặt đá, mép chữ sắc lại thay vì nhoè ra. */
 #scene-game .slab.solved .cell{
   animation:none;
   opacity:1;
-  filter:brightness(2.6) saturate(1.5)
+  filter:brightness(var(--sol-b,2.6)) saturate(var(--sol-s,1.5)) contrast(var(--sol-c,1))
     drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 14px var(--slab-c));
   transition:filter .42s ease-out,opacity .42s ease-out;
 }
@@ -893,8 +964,10 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
       <p id="gLoi"></p>
       <div class="dem" id="gDem"></div>
       <button class="ma-go game" id="gPlay" type="button" hidden>▶ Bắt đầu giải mã</button>
-      <!-- Chưa tới ngày thì không có gì để làm ở đây — mời quay về bản đồ. -->
-      <a class="ma-go ghost" id="gVeBanDo" href="/">← Về bản đồ</a>
+      <!-- ĐÃ BỎ nút "← Về bản đồ" từng nằm ở đây. Góc trái trên đã có sẵn một
+           nút Bản đồ, và mọi màn khác trong bộ đều chỉ có đúng một đường lui ở
+           góc đó. Bày thêm một nút nữa giữa màn hình vừa thừa, vừa làm màn này
+           trông khác hẳn các màn còn lại. -->
       <!-- Cửa hậu: gõ 10 nhịp vào tem Last updated ở chân màn hình mới hiện -->
       <button class="ma-go skip" id="gSkip" type="button" hidden>⏭ Bỏ qua · vào thẳng màn cuối</button>
     </div>
@@ -1112,6 +1185,13 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 const $ = (s,r)=> (r||document).querySelector(s);
 const wait = ms => new Promise(r=>setTimeout(r,ms));
 
+/* Chữ trên tem chân màn hình: số phiên bản + dòng ký tên. Một chỗ dựng duy
+   nhất cho cả màn đếm ngược lẫn màn phát mã, khỏi sửa hai nơi rồi lệch nhau. */
+function temChu(){
+  const T = GATE_CONFIG.text;
+  return T.version + (T.designed_by ? '<span class="vby">' + T.designed_by + '</span>' : '');
+}
+
 /* ── Kho localStorage dùng chung, một chỗ đọc/ghi duy nhất ────────────────── */
 const Store = {
   get(){ try{ return JSON.parse(localStorage.getItem('mtv1') || '{}') || {}; }catch(e){ return {}; } },
@@ -1178,7 +1258,7 @@ const Gate = (function(){
   const G = GATE_CONFIG, T = G.text;
   const el = { vai:$('#gVai'), tit:$('#gTit'), loi:$('#gLoi'), dem:$('#gDem'),
                play:$('#gPlay'), stamp:$('#gStamp'), back:$('#gBack'),
-               veBanDo:$('#gVeBanDo'), skip:$('#gSkip') };
+               skip:$('#gSkip') };
 
   const ISO = G.moc_iso.replace('{YEAR}', new Date().getFullYear());
   const MOC = new Date(ISO).getTime();
@@ -1186,8 +1266,7 @@ const Gate = (function(){
 
   el.vai.textContent   = T.vai_truoc;
   el.play.textContent  = T.nut_vao_game;
-  el.veBanDo.textContent = T.nut_ve_ban_do;
-  el.stamp.innerHTML   = T.version;
+  el.stamp.innerHTML   = temChu();
   el.back.textContent  = T.ve_ban_do;
   el.tit.innerHTML = '<span class="d">'+T.tieu_de+'</span><span class="khoa">'+T.nhan_khoa+'</span>';
   el.loi.innerHTML = T.hen.replace('{DATE}', d[2]+'-'+d[1]);
@@ -1200,6 +1279,21 @@ const Gate = (function(){
 
   function p2(n){ return (n<10?'0':'') + n; }
 
+  /* ═══ DÒNG CHỜ MẤY GIÂY CUỐI ══════════════════════════════════════════════
+     `cua_dang_mo` khai bằng MẢNG: chia đều quãng chờ cho từng câu rồi đọc lần
+     lượt, KHÔNG bốc ngẫu nhiên. Ngẫu nhiên thì câu nhảy lung tung, có khi lùi
+     lại câu vừa đọc — nhìn ra ngay là chữ trang trí. Đi tuần tự thì nó thành
+     một tiến trình: tải assets → dựng bối cảnh → khởi động → kiểm tra, đúng
+     thứ tự máy đang làm thật (Game.prefetch chạy ngay sau đó).
+     Khai bằng chuỗi đơn thì vẫn chạy như cũ, đứng yên một câu. */
+  function cauCho(daQua){
+    const v = T.cua_dang_mo;
+    if(!Array.isArray(v)) return v || '';
+    if(!v.length) return '';
+    const i = Math.floor(daQua / (CHO / v.length));
+    return v[Math.max(0, Math.min(v.length - 1, i))];
+  }
+
   function moCong(){
     if(moKhoaRoi) return;
     moKhoaRoi = true;
@@ -1209,7 +1303,6 @@ const Gate = (function(){
     if(Store.get().g2Game){ Code.open(); return; }
     el.loi.textContent = T.moi_vao_game;
     el.play.hidden = false;
-    el.veBanDo.hidden = true;     /* cổng mở rồi thì đường đi là vào game */
     Game.prefetch();                 /* nạp ngầm ảnh nền cho đỡ chờ lúc bấm */
     fitTitle(SCENES.gate);
   }
@@ -1221,7 +1314,7 @@ const Gate = (function(){
          Tới nơi mà cửa bày sẵn ra thì mất hẳn cảm giác "vừa mở cho mình". */
       const lai = CHO - (Date.now() - moTu);
       if(lai > 0){
-        el.loi.textContent = T.cua_dang_mo;
+        el.loi.textContent = cauCho(CHO - lai);
         el.dem.innerHTML = '<b>' + Math.ceil(lai/1000) + '</b>S';
         return;
       }
@@ -1313,7 +1406,7 @@ const Code = (function(){
     });
     el.go.innerHTML      = T.nut_castle + ' <span class="ico2">🏰👸🏻</span>';
     el.go.href           = G.ma_link;
-    el.stamp.innerHTML   = T.version;
+    el.stamp.innerHTML   = temChu();
     el.back.textContent  = T.ve_ban_do;
     el.tit.innerHTML = '<span class="d">'+T.tieu_de_thang+'</span><span class="d">'+T.tieu_de+'</span>';
     el.maO.innerHTML = [...G.ma].map(c=>'<i>'+c+'</i>').join('');
@@ -1463,6 +1556,15 @@ function fitSlabs(){
          như nhau ở mọi cỡ màn hình. */
       slab.style.setProperty('--veil-blur', (SH * VEIL_BLUR_K).toFixed(2) + 'px');
     }
+    /* Quãng trôi của cảnh trong clip nổ, quy ra pixel màn hình — xem ghi chú
+       dài ở `@keyframes veilTroi` trong CSS. Chỉ vòng 2 dùng tới. */
+    slab.style.setProperty('--troi', (H * (T.troi_max || 0.0371)).toFixed(2) + 'px');
+    /* Độ sáng / độ tươi / độ tương phản của ĐÁP ÁN khi giải xong — mỗi vòng một
+       bộ, xem ghi chú ở `.slab.solved .cell` trong CSS. */
+    const sg = cfg.solved_glow || {};
+    slab.style.setProperty('--sol-b', sg.b != null ? sg.b : 2.6);
+    slab.style.setProperty('--sol-s', sg.s != null ? sg.s : 1.5);
+    slab.style.setProperty('--sol-c', sg.c != null ? sg.c : 1);
     /* Ranh giới từng ô: ưu tiên dãy `cell_edges` đo bằng dò pixel. Chia đều
        chỉ đúng khi các ký tự cách nhau bằng nhau — chuỗi có DẤU CÁCH thì không,
        chia đều là cắt mất nét của ký tự ngay sau khoảng trắng. */
@@ -1575,6 +1677,8 @@ function clearNarr(){
   narrEra++; Q.length = 0; typing = false; skip = false;
   el.narr.innerHTML = '';
 }
+/* Trần số nhịp gõ cho MỘT dòng — xem ghi chú trong pump() */
+const NHIP_TOI_DA = 340;
 function say(text, cls){
   const era = narrEra;
   return new Promise(res=>{ Q.push({text,cls,res,era}); pump(); });
@@ -1601,11 +1705,20 @@ function pump(){
   el.narr.appendChild(p);
   while(el.narr.children.length > 40) el.narr.removeChild(el.narr.firstChild);
 
+  /* ═══ GÕ NHANH DẦN THEO ĐỘ DÀI ═══════════════════════════════════════════
+     Mỗi nhịp một ký tự thì lời dẫn ngắn gõ rất có duyên, nhưng câu trả lời dài
+     của Open World (nay được phép dài tới 900 ký tự, xem api/chat.js) sẽ ngồi
+     gõ hơn 20 giây — người chơi đọc xong từ lâu vẫn phải chờ máy đánh nốt.
+     Nay chốt TỔNG SỐ NHỊP tối đa rồi chia đều: câu ngắn vẫn đúng một ký tự
+     một nhịp như cũ, câu dài thì mỗi nhịp nhả vài ký tự, và mọi câu đều gõ
+     xong trong khoảng NHIP_TOI_DA × type_speed ≈ 8 giây. */
   let i = 0; const txt = job.text;
+  const buoc = Math.max(1, Math.ceil(txt.length / NHIP_TOI_DA));
   const step = ()=>{
     if(job.era !== narrEra){ typing = false; job.res(); return; }   /* đã dọn hộp thoại */
     if(skip){ span.textContent = txt; return fin(); }
-    span.textContent = txt.slice(0, ++i);
+    i = Math.min(txt.length, i + buoc);
+    span.textContent = txt.slice(0, i);
     el.narr.scrollTop = el.narr.scrollHeight;
     if(i >= txt.length) fin(); else setTimeout(step, T.type_speed);
   };
@@ -1936,12 +2049,16 @@ async function apDungAnh(slab, vong, urlCoChu, nen){
 }
 /* Clip webp lặp vô hạn → mỗi lần phát tạo <img> MỚI (cùng URL nên lấy từ cache
    trình duyệt, không tải lại) để animation chạy lại từ đầu, xong thì gỡ ra. */
-async function playClip(src, ms){
+/* `khiChay` được gọi ĐÚNG lúc thẻ ảnh vừa vào DOM, tức lúc clip thật sự bắt
+   đầu chạy. Cần cái mốc đó vì mọi nhịp che đều tính theo % độ dài clip: đo từ
+   trước khi `load()` xong là lệch mất một quãng, mà quãng đó dài ngắn tuỳ máy. */
+async function playClip(src, ms, khiChay){
   await load(src);
   el.animLayer.innerHTML = '';
   const im = new Image(); im.src = src;
   el.animLayer.appendChild(im);
   el.animLayer.classList.add('on');
+  if(khiChay) khiChay();
   await wait(ms);
   el.animLayer.classList.remove('on');
   el.animLayer.innerHTML = '';
@@ -2137,41 +2254,51 @@ async function win1(){
   const veil2 = el.slab2.querySelector('.veil');
   veil2.style.transition = 'none'; veil2.style.opacity = '0';
 
-  /* ── VÌ SAO PHẢI TÍNH NGƯỢC TỪ MỐC LỘ CHỮ ────────────────────────────────
-     Bản trước hẹn giờ THẢ lớp che ở 40% clip rồi cho nó mờ dần trong 700ms,
-     nên tới 48.75% mới đục hẳn — mà chữ trong clip đã hiện từ 44%. Nghĩa là
-     kể cả máy chạy mượt vẫn có một quãng lớp che còn trong suốt đè lên chữ:
-     đúng đoạn thấy loáng thoáng "NUY OAHZ". Máy lag thì hẹn giờ còn trễ hơn.
-     Nay tính NGƯỢC: chốt mốc phải-đục-xong = mốc lộ chữ, rồi lùi lại đúng
-     `veil_in_ms` để lấy điểm bắt đầu. Che xong TRƯỚC khi chữ kịp hiện. */
-  const CHU_LO_AT = T.chu_lo_at || 0.44;         /* clip tự vẽ chữ từ mốc này */
-  const kin_luc   = T.anim_unlock * CHU_LO_AT;   /* phải đục hẳn trước lúc này */
-  const bat_dau   = Math.max(0, kin_luc - T.veil_in_ms);
+  /* ── THẢ LỚP CHE LÚC Ô ĐÓ CÒN CHÌM TRONG KHÓI ────────────────────────────
+     Hai bản trước đều thả quanh mốc 39-44%, tức đúng lúc khói đang tan: một
+     mảng đá tĩnh sắc nét hiện ra giữa làn khói đang cuộn, mắt bắt được ngay.
+     Bung 241 khung clip ra đo thì thấy từ 26% tới 37% ô bảng đá CHÌM HẲN
+     trong khói trắng — đặt mảng che vào đúng quãng đó thì không ai thấy nó
+     xuất hiện lúc nào. Lớp khói phủ (`.slab.khoi`) lo phần còn lại: giữ mảng
+     che trắng theo khói rồi nhả ra đúng nhịp khói tan.
+     `chu_lo_at` (đo được: 40.8%) từ nay chỉ còn là CHỐT CHẶN: lỡ máy lag quá
+     mà tới mốc đó vẫn chưa che xong thì đóng sập tức thì. */
+  const VAO_AT    = T.che_vao_at != null ? T.che_vao_at : 0.26;
+  const bat_dau   = T.anim_unlock * VAO_AT;
+  const kin_luc   = T.anim_unlock * (T.chu_lo_at || 0.40);  /* hạn chót */
 
   /* Bám ĐỒNG HỒ THẬT bằng rAF thay vì một setTimeout duy nhất: main thread bận
      thì timer bắn trễ, còn clip webp vẫn chạy theo giờ của nó — lệch nhau là
-     lộ chữ. Vòng rAF đo lại mỗi khung nên trễ bao nhiêu cũng tự bắt kịp, và
-     nếu đã lỡ quá mốc lộ chữ thì ĐÓNG SẬP tức thì, không mờ dần nữa. */
-  const t0 = performance.now();
-  let daTha = false;
+     lộ chữ. Vòng rAF đo lại mỗi khung nên trễ bao nhiêu cũng tự bắt kịp. */
+  let t0 = 0, daTha = false;
   const thaVeil = tuc_thi =>{
     if(daTha) return;
     daTha = true;
     veil2.style.transition = tuc_thi ? 'none' : ('opacity ' + T.veil_in_ms + 'ms ease');
     veil2.style.opacity = '1';
   };
-  (function canhVeil(){
+  const canhVeil = ()=>{
     if(daTha) return;
     const qua = performance.now() - t0;
     if(qua >= kin_luc){ thaVeil(true);  return; }   /* trễ mất rồi → che ngay */
     if(qua >= bat_dau){ thaVeil(false); return; }
     requestAnimationFrame(canhVeil);
-  })();
+  };
 
-  await playClip(A('anim_unlock'), T.anim_unlock);
+  await playClip(A('anim_unlock'), T.anim_unlock, ()=>{
+    /* Chạy ĐÚNG lúc clip bắt đầu, không phải lúc gọi hàm: mọi mốc dưới đây đều
+       là % độ dài clip nên lệch mốc gốc bao nhiêu là lệch hết bấy nhiêu. */
+    t0 = performance.now();
+    el.slab2.style.setProperty('--kh', T.anim_unlock + 'ms');
+    el.slab2.classList.remove('khoi'); void el.slab2.offsetWidth;
+    el.slab2.classList.add('khoi');
+    canhVeil();
+  });
   /* Chốt chặn cuối: clip tắt là cắt thẳng sang cảnh tĩnh, lớp che phải đục
-     100% ngay khoảnh khắc đó dù mọi tính toán bên trên có trượt. */
+     100% ngay khoảnh khắc đó dù mọi tính toán bên trên có trượt. Khói phủ cũng
+     gỡ luôn — từ đây trở đi mảng che là đá thật, khớp khít nền phía sau. */
   thaVeil(true);
+  el.slab2.classList.remove('khoi');
   await startRound2();
 }
 
@@ -2315,7 +2442,30 @@ function xeThu(){
   const k = txt.search(/\n[ \t]*p\.?\s?s[.:]/i);
   return k < 0 ? [txt, ''] : [txt.slice(0, k), txt.slice(k)];
 }
+/* ═══ THƯ CHỈ GÕ TỪNG CHỮ ĐÚNG LẦN ĐẦU ═══════════════════════════════════
+   Lần đầu mở thư, gõ từng chữ là đúng: nó kéo dài cái khoảnh khắc, và người
+   đọc chưa biết bên trong viết gì nên chờ cũng là một phần của việc đọc.
+   Từ lần thứ hai trở đi thì ngược hẳn: đã biết nội dung rồi, ngồi nhìn máy gõ
+   lại từ đầu chỉ là chờ suông — muốn đọc lại một đoạn ở giữa còn phải đợi máy
+   gõ tới chỗ đó. Nên lần sau bày sẵn cả bức, cuộn tới đâu đọc tới đó.
+   Nhớ bằng cờ `g2Thu` trong localStorage nên tải lại trang vẫn nhớ; vào từ chế
+   độ xem lại (`galleryOn`) thì khỏi hỏi, chắc chắn là đọc lại rồi. */
+function thuDaDoc(){ return !!Store.get().g2Thu; }
+function ghiThuDaDoc(){ if(!thuDaDoc()) Store.patch({ g2Thu:true }); }
+
+/* Bày trọn bức thư, không gõ. Dùng cho lần đọc lại và cho cú chạm bỏ qua. */
+function thuDayDu(){
+  letterToken++;
+  const [than, ps] = xeThu();
+  el.letterBox.innerHTML = '';
+  const a = document.createElement('span'), b = document.createElement('i');
+  a.textContent = than; b.textContent = ps;
+  el.letterBox.append(a, b);
+  el.letterBox.scrollTop = 0;      /* đọc lại thì bắt đầu từ ĐẦU thư */
+  el.finish.disabled = false;
+}
 function typeLetter(){
+  if(galleryOn || thuDaDoc()){ thuDayDu(); return; }
   const my = ++letterToken;
   const [than, ps] = xeThu();
   el.letterBox.innerHTML = '';
@@ -2327,21 +2477,15 @@ function typeLetter(){
     if(my !== letterToken) return;
     if(i < than.length)      a.textContent = than.slice(0, ++i);
     else if(j < ps.length)   b.textContent = ps.slice(0, ++j);
-    else { el.finish.disabled = false; return; }
+    else { el.finish.disabled = false; ghiThuDaDoc(); return; }
     el.letterBox.scrollTop = el.letterBox.scrollHeight;
     setTimeout(step, T.letter_speed);
   })();
 }
 el.letterBox.addEventListener('click', ()=>{
-  if(el.finish.disabled){
-    letterToken++;
-    const [than, ps] = xeThu();
-    el.letterBox.innerHTML = '';
-    const a = document.createElement('span'), b = document.createElement('i');
-    a.textContent = than; b.textContent = ps;
-    el.letterBox.append(a, b);
-    el.finish.disabled = false;
-  }
+  /* Chạm giữa chừng = "khỏi gõ nữa". Cũng tính là đã đọc: người ta chủ động
+     bỏ qua thì lần sau càng không muốn ngồi xem gõ lại. */
+  if(el.finish.disabled){ thuDayDu(); ghiThuDaDoc(); }
 });
 function openModal(){
   el.hotspot.classList.remove('on');

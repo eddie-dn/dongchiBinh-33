@@ -976,7 +976,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 18-Aug-2026 · V17.04">Last updated 18-Aug-2026 · V17.04</span>
+        <span class="stamp" id="stamp" data-base="Last updated 19-Aug-2026 · V17.05">Last updated 19-Aug-2026 · V17.05</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -3561,15 +3561,26 @@ let hhT = null;
    Nay hộp chào luôn nhường: thấy có hộp nội dung nào đang mở thì lui lại, cứ
    1,5 giây ngó lại một lần, tối đa 40 lần (1 phút) rồi thôi hẳn cho lượt đó. */
 const HOP_UU_TIEN = ['credw','cxw','wipew','ttw','pinw','askw','hanw','coach'];
+/* ═══ KHÔNG BAO GIỜ HAI HỘP LIỀN NHAU ══════════════════════════════════════
+   Luật cũ mới chỉ cấm hai hộp CÙNG LÚC. Nhưng "vừa đóng hộp chúc mừng thì hộp
+   chào nhảy ra ngay" cũng phiền y như đè lên nhau: người chơi vừa bấm tắt một
+   thứ, tay chưa kịp rời màn hình đã phải bấm tắt thứ nữa — thành ra cả hai đều
+   bị coi là phiền chứ không phải chăm sóc.
+   Nay mỗi lần có hộp nào ĐANG mở, hoặc hộp chào vừa đóng, đều đóng dấu thời
+   điểm. Hộp chào tiếp theo phải chờ đủ `HH_CACH_MS` kể từ dấu đó. */
+const HH_CACH_MS = 15000;
+let hopCuoiAt = 0;
 function dangCoHopKhac(){
-  return HOP_UU_TIEN.some(id=>{
+  const co = HOP_UU_TIEN.some(id=>{
     const n = document.getElementById(id);
     return n && n.classList.contains('on');
   }) || (typeof fxLock !== 'undefined' && fxLock);   /* đang chạy hiệu ứng cũng nhường */
+  if(co) hopCuoiAt = Date.now();       /* còn mở thì dấu cứ dời theo, đóng mới tính */
+  return co;
 }
 let hhCho = 0;
 function hhHien(anh, nhan, chu, zoey){
-  if(dangCoHopKhac()){
+  if(dangCoHopKhac() || Date.now() - hopCuoiAt < HH_CACH_MS){
     if(hhCho++ > 40) return;                 /* chờ mãi không tới lượt thì bỏ */
     setTimeout(()=> hhHien(anh, nhan, chu, zoey), 1500);
     return;
@@ -3595,6 +3606,7 @@ function hhHien(anh, nhan, chu, zoey){
 }
 function hhDong(){
   clearTimeout(hhT);
+  hopCuoiAt = Date.now();      /* vừa đóng — hộp sau phải chờ đủ HH_CACH_MS */
   hhw.classList.remove('show');
   setTimeout(()=>{
     hhw.classList.remove('on'); hhw.setAttribute('aria-hidden','true');
@@ -3606,26 +3618,76 @@ function hhDong(){
 $('hhX').addEventListener('click', hhDong);
 hhw.addEventListener('click', e=>{ if(e.target === hhw) hhDong(); });
 
-/* Câu chào của phiên đầu trong ngày. Thử xin một câu từ /api/quote (server tự
-   gọi Gemini bằng khoá giấu trong biến môi trường — KHÔNG bao giờ để khoá trong
-   trang tĩnh). Xin không được thì dùng bộ câu tại chỗ, xoay theo ngày. */
-const HH_HOI = [
-  'Chào đồng chí ✦ Mỗi ngày là một ngày mới',
-  'Đồng chí ăn gì chưa?',
-  'Hôm nay có gì vui kể em nghe với?',
-  'Hôm nay đồng chí thấy trong người thế nào?',
-  'Có điều gì đang làm đồng chí bận lòng không?'
-];
+/* ═══ CÂU CHÀO ĐẦU PHIÊN ═══════════════════════════════════════════════════
+   Hai tầng, tầng nào hỏng cũng còn tầng kia:
+
+   1. Xin một câu từ `/api/quote`. Máy chủ đọc lời dặn trong
+      `api/_lib/loichao.md` rồi nhờ Gemini viết — mỗi lần một câu khác hẳn,
+      đúng kiểu Journal trên máy Mac. Khoá Gemini nằm ở biến môi trường, KHÔNG
+      bao giờ xuống trình duyệt.
+      Trang gửi kèm `gio` = GIỜ MÁY NGƯỜI CHƠI. Bắt buộc phải vậy: hàm
+      serverless chạy ở máy chủ nào thì mang giờ máy đó, chào "buổi sáng" lúc
+      người ta sắp đi ngủ là hỏng cả ý.
+
+   2. Chậm quá / chưa khai khoá / mạng hỏng thì lấy bộ câu ngay tại đây.
+
+   BỘ CÂU TẠI CHỖ CŨNG ĐÃ ĐỔI. Bản cũ chỉ có 5 câu và bốc theo NGÀY, nghĩa là
+   suốt một ngày mở lại bao nhiêu lần cũng đúng một câu đó, mà 5 ngày là quay
+   lại từ đầu — chào mãi một câu thì thà đừng chào. Nay chia ba buổi cho câu
+   hợp giờ, và bốc KHÔNG LẶP: đã dùng câu nào thì ghi lại, vét hết kho mới
+   quay vòng. */
+const HH_BUOI = {
+  sang: [
+    'Chào đồng chí ✦ Mỗi ngày là một ngày mới',
+    'Đồng chí ăn sáng chưa đó?',
+    'Sáng nay đồng chí thấy trong người thế nào?',
+    'Hôm nay đồng chí định làm xong việc gì trước tiên?',
+    'Có điều gì đang chờ đồng chí sáng nay không?',
+    'Chúc đồng chí một buổi sáng nhẹ đầu'
+  ],
+  trua: [
+    'Đồng chí ăn trưa chưa đó?',
+    'Nửa ngày trôi qua rồi, mọi thứ ổn chứ đồng chí?',
+    'Nghỉ tay một chút đi đồng chí',
+    'Công việc hôm nay có gì khó không?',
+    'Uống miếng nước đi đồng chí, ngồi lâu rồi đó',
+    'Buổi chiều còn dài, đồng chí đừng vội'
+  ],
+  toi: [
+    'Hôm nay của đồng chí thế nào?',
+    'Có gì vui hôm nay kể em nghe với',
+    'Việc hôm nay để hôm nay thôi, đồng chí nhé',
+    'Khuya rồi đó đồng chí, nghỉ sớm nha',
+    'Hôm nay đồng chí đã cố gắng rồi',
+    'Đồng chí ơi, hôm nay có gì làm đồng chí bận lòng không?'
+  ]
+};
+/* Cùng một cách chia giờ với `api/_lib/loichao.js` — sửa một bên thì sửa cả
+   hai, kẻo câu tại chỗ và câu từ máy chủ nói hai buổi khác nhau. */
+function hhBuoi(){
+  const g = new Date().getHours();
+  if(g >= 4  && g < 11) return 'sang';
+  if(g >= 11 && g < 18) return 'trua';
+  return 'toi';
+}
+/* Nhớ những câu đã dùng để không lặp lại cho tới khi vét hết kho của buổi đó */
 function hhCauNgay(){
-  const d = new Date();
-  return HH_HOI[(d.getFullYear()*372 + d.getMonth()*31 + d.getDate()) % HH_HOI.length];
+  const b = hhBuoi(), kho = HH_BUOI[b] || HH_BUOI.sang;
+  let da = [];
+  try{ da = JSON.parse(sessionStorage.getItem('hhDaChao_' + b) || '[]') || []; }catch(e){}
+  let con = kho.filter(t => da.indexOf(t) < 0);
+  if(!con.length){ da = []; con = kho.slice(); }
+  const t = con[(Math.random() * con.length) | 0];
+  da.push(t);
+  try{ sessionStorage.setItem('hhDaChao_' + b, JSON.stringify(da)); }catch(e){}
+  return t;
 }
 function hhXinCau(xong){
   let roi = false;
   const chot = t => { if(roi) return; roi = true; xong(t); };
   setTimeout(()=> chot(hhCauNgay()), 2500);      /* chậm quá thì thôi, đừng bắt chờ */
   try{
-    fetch('/api/quote', { headers:{ 'accept':'application/json' } })
+    fetch('/api/quote?gio=' + new Date().getHours(), { headers:{ 'accept':'application/json' } })
       .then(r => r.ok ? r.json() : null)
       .then(j => chot((j && j.q) ? j.q : hhCauNgay()))
       .catch(()=> chot(hhCauNgay()));
@@ -3673,13 +3735,14 @@ function hhChon(){
      chào ĐẦU TIÊN chính là nhánh 1 ngay dưới đây. Từ đó trở đi các nhánh còn
      lại (theo ngày, đi vắng về, xong Zoey's Castle) mới chạy như thường.
      Chặn ở ĐÂY, trước cả `hhNgay`, nên trong lúc còn khoá thì không nhánh nào
-     kịp ghi dấu — tới lúc mở, "Xin chào" vẫn đúng là lần chào đầu tiên. */
+     kịp ghi dấu — tới lúc mở, "Greetings" vẫn đúng là lần chào đầu tiên. */
   if(!xongGate2()) return;
   const hnay = ngay();
   /* 1 · vừa xong Gate 2 — lời chào đầu tiên của cả hành trình */
   if(xongGate2() && hhG2 !== '1'){
     hhG2 = '1'; save();
-    hhHien('excited', 'Easter Egg · Gate 2', 'Phá đảo rồi đó đồng chí ✦ Zoey’s Castle đang đợi ở toạ độ Hà Nội.', true);
+    hhHien('excited', 'Easter Egg · Gate 2',
+      'Chúc mừng đồng chí phá đảo Easter Egg: Gate 2 ✦<br>Zoey’s Castle đã mở khoá tại Hà Nội ✦', true);
     return;
   }
   /* 2 · vừa giải hết Zoey's Castle — bốc ngẫu nhiên một câu cho đỡ nhàm */
@@ -3693,7 +3756,7 @@ function hhChon(){
     const dau = !hhNgay;                 /* chưa từng chào lần nào = người mới */
     hhNgay = hnay; save();
     hhXinCau(cau => hhHien(dau ? 'welcome' : 'back',
-      dau ? 'Xin chào' : 'Welcome back', cau + hhNhac()));
+      dau ? 'Greetings' : 'Welcome back', cau + hhNhac()));
     return;
   }
   /* 4 · đi vắng rồi quay lại */

@@ -49,6 +49,74 @@ function quaTay() {
   return false;
 }
 
+/* ═══ VÌ SAO CÂU TRẢ LỜI HAY BỊ CỤT — VÀ HAY BÁO LỖI ═════════════════════════
+   Bản trước đặt `maxOutputTokens: 400`. Hai chuyện xảy ra cùng lúc:
+
+   1. 400 token tiếng Việt chỉ được chừng 250-350 ký tự. Câu nào dài hơn là bị
+      cắt ngang giữa chừng — đúng cái "trả lời không hết ý".
+   2. NẶNG HƠN: các model Flash đời mới (2.5 trở đi) có bước "suy nghĩ" nội bộ,
+      và bước đó ĂN CHUNG hạn mức `maxOutputTokens`. Câu hỏi càng sâu thì nghĩ
+      càng lâu, có khi tiêu sạch 400 token trước khi kịp viết chữ nào. Lúc đó
+      Google trả về `finishReason: MAX_TOKENS` với phần chữ RỖNG, mã cũ thấy
+      rỗng thì báo lỗi. Đó chính là kiểu "hỏi 11 câu lỗi 6 câu": câu dễ thì
+      xong, câu khó thì trượt — càng hỏi sâu càng hay hỏng.
+
+   Nay: TẮT HẲN bước suy nghĩ (`thinkingBudget: 0`) và nới hạn mức lên 1600.
+   Tắt suy nghĩ vừa trả lại toàn bộ token cho phần chữ, vừa rút ngắn thời gian
+   chờ — hàm serverless có trần thời gian, nghĩ lâu quá là đứt kết nối, lại
+   thành một kiểu lỗi nữa.
+
+   TRẦN THỜI GIAN: 9 giây, đặt bằng AbortController. Chọn 9 vì gói Hobby của
+   Vercel cắt hàm ở 10 giây — phải tự dừng TRƯỚC mốc đó thì mới kịp trả về một
+   lỗi gọn gàng; để nền tảng cắt thì trang chỉ nhận được một cú fetch chết,
+   không hiện được câu gì tử tế. Tắt suy nghĩ rồi thì Flash trả lời trong
+   1-3 giây, 9 giây là rộng rãi. Nâng gói thì nới số này lên cũng được. */
+const MAX_TOKEN   = 1600;
+const HET_GIO_MS  = 9000;
+/* Trần ký tự trả về trang. Hộp thoại pixel gõ từng chữ nên dài quá thì người
+   chơi ngồi đợi; 900 là mức vừa đủ một đoạn trọn ý. Cắt Ở CUỐI CÂU chứ không
+   cắt giữa từ như bản trước. */
+const TRAN_KY_TU  = 900;
+
+function goiGemini(model, key, contents, tinhCach, tatSuyNghi) {
+  const generationConfig = { temperature: 0.9, maxOutputTokens: MAX_TOKEN };
+  if (tatSuyNghi) generationConfig.thinkingConfig = { thinkingBudget: 0 };
+
+  const stop = new AbortController();
+  const hen = setTimeout(() => stop.abort(), HET_GIO_MS);
+  return fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
+    {
+      method: 'POST',
+      signal: stop.signal,
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({
+        contents,
+        systemInstruction: tinhCach ? { parts: [{ text: tinhCach }] } : undefined,
+        generationConfig,
+        safetySettings: [
+          'HARM_CATEGORY_HARASSMENT', 'HARM_CATEGORY_HATE_SPEECH',
+          'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'HARM_CATEGORY_DANGEROUS_CONTENT'
+        ].map(category => ({ category, threshold: 'BLOCK_ONLY_HIGH' }))
+      })
+    }
+  ).finally(() => clearTimeout(hen));
+}
+
+/* Dọn chữ trước khi trả về trang.
+   KHÔNG dùng `replace(/\s+/g,' ')` như bản cũ: nó gộp luôn cả dấu xuống dòng,
+   đoạn nào ra đoạn nấy thành một khối chữ liền. Ở đây chỉ gộp khoảng trắng
+   TRONG một dòng, còn chỗ ngắt đoạn thì giữ.
+   Quá dài thì lùi về DẤU CHẤM CÂU gần nhất — cắt giữa từ đọc như bị rớt mạng. */
+function gonLai(t) {
+  let s = t.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+  if (s.length <= TRAN_KY_TU) return s;
+  const cat = s.slice(0, TRAN_KY_TU);
+  const het = Math.max(cat.lastIndexOf('. '), cat.lastIndexOf('! '),
+                       cat.lastIndexOf('? '), cat.lastIndexOf('\n'));
+  return (het > TRAN_KY_TU * 0.5 ? cat.slice(0, het + 1) : cat).trim();
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ loi: 'sai_phuong_thuc' });
 
@@ -79,22 +147,14 @@ module.exports = async (req, res) => {
   const model = process.env.GEMINI_MODEL || MODEL_MAC_DINH;
 
   try {
-    const r = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-        body: JSON.stringify({
-          contents,
-          systemInstruction: tinhCach ? { parts: [{ text: tinhCach }] } : undefined,
-          generationConfig: { temperature: 0.9, maxOutputTokens: 400 },
-          safetySettings: [
-            'HARM_CATEGORY_HARASSMENT', 'HARM_CATEGORY_HATE_SPEECH',
-            'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'HARM_CATEGORY_DANGEROUS_CONTENT'
-          ].map(category => ({ category, threshold: 'BLOCK_ONLY_HIGH' }))
-        })
-      }
-    );
+    let r = await goiGemini(model, key, contents, tinhCach, true);
+    /* Model đời cũ không biết `thinkingConfig` thì Google trả 400 chứ không bỏ
+       qua. Gặp đúng 400 thì gọi lại một lần, lần này bỏ khoá đó ra — nhờ vậy
+       đổi GEMINI_MODEL sang bản nào cũng chạy, không phải sửa mã. */
+    if (r && r.status === 400) {
+      console.log('[CHAT] model không nhận thinkingConfig — gọi lại kiểu cũ');
+      r = await goiGemini(model, key, contents, tinhCach, false);
+    }
 
     if (!r.ok) {
       console.log('[CHAT] gemini hỏng:', r.status, (await r.text()).slice(0, 300));
@@ -102,12 +162,19 @@ module.exports = async (req, res) => {
     }
 
     const j = await r.json();
-    const parts = ((j.candidates || [])[0] || {}).content || {};
-    const dap = ((parts.parts || []).map(p => p.text || '').join('')).trim();
-    if (!dap) return res.status(200).json({ loi: 'rong_dap' });
+    const cand = (j.candidates || [])[0] || {};
+    const dap = (((cand.content || {}).parts || []).map(p => p.text || '').join('')).trim();
 
-    /* Một câu trả lời quá dài sẽ tràn hộp thoại pixel — chốt lại cho gọn */
-    return res.status(200).json({ dap: dap.replace(/\s+/g, ' ').slice(0, 600) });
+    if (!dap) {
+      /* Ghi rõ VÌ SAO rỗng thì lần sau mở log là biết ngay: hết token, bị chặn
+         nội dung, hay model trả về đúng chuỗi rỗng. */
+      console.log('[CHAT] không có chữ nào · finishReason =', cand.finishReason,
+                  '· blockReason =', ((j.promptFeedback || {}).blockReason) || '-',
+                  '· usage =', JSON.stringify(j.usageMetadata || {}));
+      return res.status(200).json({ loi: 'rong_dap' });
+    }
+
+    return res.status(200).json({ dap: gonLai(dap) });
   } catch (e) {
     console.log('[CHAT] lỗi:', e && e.message);
     return res.status(200).json({ loi: 'mang_hong' });

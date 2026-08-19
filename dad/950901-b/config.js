@@ -33,19 +33,33 @@ const GATE_CONFIG = {
     nhan_khoa     : 'Locked',
     tieu_de_thang : 'Phá Đảo',
     hen           : 'Hẹn anh <b>00:00 ngày {DATE}</b>',
-    cua_dang_mo   : 'Cửa sẽ mở trong vài giây nữa…',
-    moi_vao_game  : 'Cổng đã thông. Dongchi Bình đang tiến vào phòng lab.',
+    /* Dòng chờ lúc đếm ngược mấy giây cuối. Khai bằng MẢNG thì mỗi giây đổi
+       một câu — trước đây chỉ có đúng một câu "Cửa sẽ mở trong vài giây nữa",
+       đứng im suốt 10 giây nên nhìn như trang bị treo chứ không như đang nạp.
+       Bốn câu này nói đúng việc máy đang làm thật (nạp ảnh nền, dựng cảnh). */
+    cua_dang_mo   : [
+      'Đang tải assets…',
+      'Đang thiết lập bối cảnh…',
+      'Đang khởi động hệ thống…',
+      'Đang kiểm tra…'
+    ],
+    moi_vao_game  : 'Người chơi đang tiến vào phòng lab',
     da_pha_dao    : 'Phi ngựa tới Zoey’s Castle 🦄',
     nut_vao_game  : '▶ Bắt đầu giải mã',
     nut_choi_lai_game : 'Chơi lại',
+    /* (không dùng nữa) Nút "Về bản đồ" giữa màn hình đã bỏ: góc trái đã có sẵn
+       một nút Bản đồ, hai nút cùng một việc trên một màn là thừa và lệch hẳn
+       với mọi màn khác trong bộ. Giữ dòng này cho ai đọc lịch sử khỏi tưởng mất. */
     nut_ve_ban_do : '← Về bản đồ',
     /* Nhãn nút cửa hậu — chỉ hiện sau khi gõ 10 nhịp vào tem Last updated */
     nut_bo_qua    : '⏭ Bỏ qua · vào thẳng màn cuối',
+    /* Dòng ký tên dưới tem phiên bản ở chân màn hình */
+    designed_by   : '@Designed by Honghandangiu',
     nut_xem_lai   : 'Xem lại bối cảnh',
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V04.00<br>Last updated 18-Aug-2026'
+    version       : 'V04.01<br>Last updated 19-Aug-2026'
   }
 };
 
@@ -130,14 +144,35 @@ const GAME_CONFIG = {
     flip_ms       : 700,    /* xếp lại chữ về đúng chiều đọc        */
     flip_step     : 45,     /* độ lệch nhịp giữa hai ô liền nhau    */
     solved_hold   : 420,    /* giữ đáp án sáng đều trước khi xếp lại */
-    /* Clip nổ sập lab CÓ SẴN bảng đá vòng 2 hiện rõ từ mốc `chu_lo_at` về sau.
-       Mã trong win1() tính NGƯỢC từ mốc đó: lùi lại đúng `veil_in_ms` để lấy
-       điểm bắt đầu thả lớp che, nên lớp che luôn đục xong TRƯỚC khi chữ kịp
-       hiện. `veil_in_at` chỉ còn là ghi chú lịch sử — mã không đọc nữa.
-       Fade để 380ms (không phải 700ms) cho lớp che vẫn xuất hiện muộn gần
-       bằng bản cũ (~39% thay vì 40%) mà vẫn kịp kín trước 44%. */
-    chu_lo_at     : 0.44,   /* clip tự vẽ NUY OAHZ từ mốc này       */
-    veil_in_at    : 0.40,   /* (không dùng nữa — xem chu_lo_at)     */
+    /* ═══ NHỊP THẢ LỚP CHE TRONG CLIP NỔ — ĐO THẲNG TRÊN 241 KHUNG CLIP ═════
+       Clip nổ sập lab tự nó vẽ sẵn bảng đá vòng 2 với "NUY OAHZ". Trước đây
+       hai mốc dưới đây là ước lượng; nay đo bằng cách bung từng khung của
+       anim_unlock.webp ra rồi nhìn đúng ô bảng đá:
+
+         26% → 37%  ô bảng đá CHÌM HẲN TRONG KHÓI TRẮNG (độ sáng 203→240→179,
+                    không thấy gì bên dưới)
+         ~40.8%     chữ NUY OAHZ đã đọc được lờ mờ qua khói
+         43% → 47%  khói tan, chữ hiện rõ
+         85% →      cảnh đứng hẳn, khung cuối khớp bg_r2
+
+       BẢN CŨ SAI Ở ĐÂU: thả lớp che quanh mốc 39-44%, tức đúng lúc khói đang
+       tan. Một mảng đá TĨNH, sắc nét, hiện ra giữa làn khói đang cuộn thì mắt
+       bắt được ngay — đó là cái "đè lên hiệu ứng trong video". Lại còn muộn:
+       chữ đọc được từ 40.8% rồi.
+
+       NAY: thả lớp che từ 26%, lúc ô đó còn CHÌM HẲN TRONG KHÓI — đặt vào giữa
+       màn khói trắng thì không ai thấy đặt lúc nào. Kèm một lớp "khói phủ"
+       chạy đúng đường cong độ sáng đo được ở trên (xem `.veil::after` trong
+       index.html), nên mảng che trắng theo khói rồi hiện dần ra đúng nhịp khói
+       tan — không có khoảnh khắc nào nó là một miếng dán. */
+    che_vao_at    : 0.26,   /* bắt đầu thả lớp che (ô còn kín khói) */
+    /* Quãng cảnh trong clip TRÔI XUỐNG so với bg_r2, tính theo tỉ lệ chiều cao
+       khung. Đo bằng dò tương quan từng khung: lệch 13px trên ảnh clip cao
+       350px → 13/350 = 0.0371. Lớp che trôi theo đúng quãng này rồi về 0 lúc
+       clip kết thúc — xem `@keyframes veilTroi` trong index.html. */
+    troi_max      : 0.0371,
+    chu_lo_at     : 0.40,   /* đo được: chữ bắt đầu đọc được ở đây  */
+    veil_in_at    : 0.40,   /* (không dùng nữa — xem che_vao_at)    */
     veil_in_ms    : 380,    /* lớp che hiện dần trong bấy nhiêu     */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
@@ -172,6 +207,8 @@ const GAME_CONFIG = {
        'progressive' — chôn kín hoàn toàn, mỗi lần sai / gõ trúng mới bới ra
                        thêm một ký tự và GIỮ LUÔN. */
     reveal_mode: 'flash',
+    /* Vòng 1 giữ đúng bộ số cũ — RAZER vốn đã đẹp, không đụng vào. */
+    solved_glow: { b: 2.6, s: 1.5, c: 1 },
     /* ── CÔNG THỨC CHE DÙNG CHUNG CHO CẢ HAI VÒNG ──────────────────────────
        THỨ TỰ BỘ LỌC LÀ THỨ QUAN TRỌNG NHẤT Ở ĐÂY, và đó chính là chỗ bản
        trước sai. Bộ lọc chạy TỪ TRÁI SANG PHẢI. `contrast()` nhỏ hơn 1 kéo mọi
@@ -219,6 +256,11 @@ const GAME_CONFIG = {
     /* Vòng 2 chôn kín: ban đầu không thấy nét chữ nào. Sai lần đầu mới bới ra
        chữ ngoài cùng bên phải (Z), rồi lộ dần sang trái. */
     reveal_mode: 'progressive',
+    /* ĐÁP ÁN ZHAO YUN sáng và nét ngang ngửa RAZER. Phải đẩy cao hơn vòng 1 vì
+       tranh gốc vòng 2 tối và nhạt hơn hẳn — xem ghi chú dài ở
+       `.slab.solved .cell` trong index.html. b = độ sáng · s = độ tươi ·
+       c = độ tương phản (chính c mới làm nét chữ sắc lại, không phải b). */
+    solved_glow: { b: 3.35, s: 1.9, c: 1.32 },
     /* Y HỆT vòng 1 — xem ghi chú đầy đủ ở round1.veil_filter. Hai bên phải
        cùng một công thức, nếu không người chơi nhìn ra ngay bên nào dễ hơn. */
     veil_filter: 'contrast(.55) brightness(.46) saturate(.05) blur(var(--veil-blur,3.2px))',
