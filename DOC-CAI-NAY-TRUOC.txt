@@ -1,261 +1,188 @@
 ════════════════════════════════════════════════════════════════════════════
-ĐỢT 5 — CÁCH CÀI: chép đè theo đúng cây thư mục, KHÔNG đổi tên file nào.
+ĐỢT 5 (bản gộp, đã sửa 8 mục mới) — chép đè theo đúng cây thư mục.
 ════════════════════════════════════════════════════════════════════════════
+16 file. 5 file MỚI: assets/lichsu.js · DESIGN-SYSTEM.md · docs/GOOGLE-SHEETS.md
+· docs/apps-script/Code.gs · .vercelignore
 
-16 file. Trong đó 5 file MỚI (chưa từng có trong repo):
+Số tem sau đợt này:
+    /                 V17.08        /han/961030-a     V3.00  ← xem mục ⑥
+    /dad/950901-a     V22.03        /han/961030-b     V2.01
+    /dad/950901-b     V04.05        /phao-hoa         V3.03
 
-  MỚI  assets/lichsu.js            ← SỔ PHIÊN BẢN
-  MỚI  DESIGN-SYSTEM.md            ← bộ nút + biểu tượng + quy ước tên gọi
-  MỚI  docs/GOOGLE-SHEETS.md       ← dựng sổ lưu Sheets trong 10 phút
-  MỚI  docs/apps-script/Code.gs    ← mã dán vào Apps Script
-  MỚI  .vercelignore               ← ĐỌC MỤC ⚠ BÊN DƯỚI, quan trọng
-
-  đè   index.html                        V17.06 → V17.07
-  đè   phao-hoa/index.html                V3.02 → V3.03
-  đè   dad/950901-a/index.html           V22.01 → V22.02
-  đè   dad/950901-b/index.html           (số tem nằm ở config.js)
-  đè   dad/950901-b/config.js            V04.03 → V04.04
-  đè   han/961030-a/index.html            V2.08 → V2.09
-  đè   han/961030-b/index.html            V1.11 → V2.00  ← nắn cho đúng luật
-  đè   api/ping.js
-  đè   README.md · DESIGN-SYSTEM.md · dad/950901-b/DIALOGUES.md · han/CHU-MAP3.md
-
-Không đụng tới ảnh, clip, hay file nào khác. Xong là Redeploy trên Vercel.
+⚠ VẪN CÒN MỘT VIỆC LÀM TAY: xoá file `vercelignore` cũ trên GitHub (thiếu dấu
+chấm nên Vercel không đọc → /README.md đang tải công khai được, trong đó có
+sẵn đáp án cả bốn mật thư và mọi mã PIN). Bản này kèm `.vercelignore` đúng tên.
+Kiểm tra sau deploy: mở /README.md phải ra 404.
 
 
-⚠ MỘT VIỆC PHẢI LÀM BẰNG TAY: XOÁ FILE `vercelignore` CŨ
+① OPEN WORLD — ẢNH MỒI HIỆN TRƯỚC, CLIP ĐẮP LÊN SAU
 ────────────────────────────────────────────────────────────────────────────
-Trong repo đang có file tên `vercelignore` — THIẾU DẤU CHẤM Ở ĐẦU. Vercel chỉ
-đọc file tên `.vercelignore`, nên suốt thời gian qua file đó KHÔNG có tác dụng
-gì: mọi file .md đều được deploy, tức là mở
+Bốn clip nét mặt mỗi cái ~5 MB, mà mã cũ đứng chờ tải xong hết rồi mới vẽ —
+mạng yếu là khung đen cả chục giây, đúng cái anh gặp.
 
-    https://dongchi-binh-33.vercel.app/README.md
+Nay: ảnh mồi TĨNH dán ngay lập tức, clip nặng về sau mới nhoà chồng lên. Dùng
+đúng mấy ảnh đã cắt sẵn ở /assets/poster/ — đo được bốn clip dùng CHUNG một
+khung mở đầu (lệch chưa tới 1 nấc sáng trên 255) nên MỘT ảnh mồi đủ cho cả
+bốn, không sinh thêm file nào.
 
-là tải về được cả README — trong đó có sẵn ĐÁP ÁN CỦA CẢ BỐN MẬT THƯ và MỌI
-MÃ PIN.
+Làm chung cho chỗ khác: clip nổ / clip sai nay cũng được chặn — file hỏng hay
+mất mạng giữa chừng thì KHÔNG bật lớp clip (nền đen kịt) lên nữa, cắt thẳng
+sang cảnh sau. Trước đây gặp lỗi là ngồi nhìn khung đen mấy giây.
 
-Bản này kèm file `.vercelignore` đúng tên. Sau khi chép đè, vào GitHub xoá file
-`vercelignore` cũ đi.
-
-Kiểm tra sau deploy: mở /README.md → phải ra 404.
+Muốn đổi ảnh mồi: `mat_moi` trong config.js. Để rỗng '' là tắt.
 
 
-① CHUYỂN CẢNH GATE 2 — làm lại từ gốc, không phải chỉnh thông số
+② ZHAO YUN — KHÔNG PHẢI TỐI, MÀ LÀ BẠC MÀU
 ────────────────────────────────────────────────────────────────────────────
-Ba đời trước đều làm CÙNG MỘT VIỆC: úp một mảng lên đúng ô chữ.
+Đo bằng pixel trên chính màn xem lại:
 
-    đời 1  dán mẩu đá tĩnh          → cảnh trong clip còn hạ cánh (thấp hơn
-                                      tới 13px), miếng dán trượt lên, chữ thò
-                                      ra ngay bên dưới
-    đời 2  cho miếng dán trôi theo  → hết thò chữ, nhưng thành "một hình chữ
-                                      nhật có vân đá riêng, tự bò trong khung"
-    đời 3  vệt làm mờ bầu dục       → hết vật liệu lạ, nhưng vẫn còn một cái
-                                      HÌNH: quầng xám nhạt nằm lì giữa khung
-                                      gần 5 giây
+    nét ZHAO YUN (bản cũ)    độ sáng 142    bão hoà 67
+    biển EIMIMRE bên trái    độ sáng 147    bão hoà 89
+    biển MIDNIGHT bên phải   độ sáng 136    bão hoà 80
 
-Gốc rễ: hễ vùng che CÓ HÌNH DẠNG RIÊNG thì nó là một vật thể lạ trên khung
-hình. Chỉnh thông số kiểu gì cũng vô ích — đó là lý do sửa ba lần vẫn xấu.
+Độ sáng đã ngang ngửa rồi — chỉ có MÀU là nhạt hơn một phần ba. Mắt đọc "nhạt"
+thành "tối". Nên càng vặn brightness lên càng hỏng: nét khắc gốc vốn trắng ngà,
+đẩy sáng nữa là ba kênh cùng chạm trần rồi tiệp thành trắng. Đo được: kéo
+brightness từ 2.2 tới 4 thì bão hoà vẫn đứng im ở 67.
 
-ĐỜI NÀY BỎ HẲN KHÁI NIỆM "VÙNG CHE". Thay bằng thứ máy quay nào cũng có:
-TIỀN CẢNH MẤT NÉT. Cả dải đáy khung — toàn chiều ngang, KHÔNG có mép trái mép
-phải nào để mà nhìn ra — nhoè dần từ trên xuống, y như ống kính đang lấy nét
-vào quả trứng nên mấy bệ đá sát chân khung mờ đi. Đúng ngữ pháp điện ảnh, nên
-mắt đọc ra là "chiều sâu", không phải "vết che".
+Nay NHUỘM trước rồi mới nâng sáng: sepia → saturate → brightness → contrast.
+Thứ tự quan trọng — nhuộm sau khi đã đẩy sáng thì chỉ nhuộm được một mảng
+trắng, ra màu kem nhợt. Đo lại bộ mới: 137 / 81, trùng khít biển MIDNIGHT.
 
-Ba điểm khiến nó không bao giờ lộ:
-  · không dán vật liệu nào — chỉ nhoè chính clip nằm dưới, cảnh trôi đi đâu
-    thì vệt nhoè vẫn nằm đúng trên nó. Hết chuyện canh 13px.
-  · CHỈ blur, KHÔNG đụng vào sáng / tươi / tương phản. Đời 3 hạ sáng .78 và
-    rút màu còn .3 — chính hai thứ đó vẽ ra cái quầng xám.
-  · mép trên tán bằng gradient dọc, mép dưới trùng luôn đáy khung. Không tồn
-    tại một đường viền kín nào.
-
-Bật đúng lúc 26% của clip, là lúc cả chân khung còn chìm trong khói trắng
-(đo được độ lệch sáng chỉ còn 2-5 nấc — coi như một mảng trắng phẳng).
-
-Muốn chỉnh: hằng DOF_K trong dad/950901-b/index.html (đang 0.015 = 1,5% chiều
-cao khung). Bản đầu để 0.026 là QUÁ TAY — cả dải đáy thành vệt bôi phẳng lì.
+Cả chuỗi bộ lọc nay đọc từ config (`round2.solved_glow.f`) nên RAZER vòng 1
+không đổi một nét nào.
 
 
-② GỢI Ý TỚI SỚM HƠN — cả RAZER lẫn ZHAO YUN
+③ RAZER VÒNG 1 — ĐÃ ĐÚNG NHƯ ANH NHỚ, KHÔNG ĐỤNG GÌ
 ────────────────────────────────────────────────────────────────────────────
-Bản cũ cộng dồn BA TẦNG nên gợi ý tới quá muộn, đúng như anh báo:
-
-    vòng 1 phải trật 3 ký tự  → mới thành MỘT lần sai chính thức
-    rồi phải gom thêm 3 lần sai chính thức nữa → mới mở gợi ý kế
-    mà mỗi lần mở còn vướng hạn 15 PHÚT khoá cứng ô nhập
-
-Nhân ra: gợi ý 2 của vòng 1 nằm sau 12 ký tự trật CỘNG 15 phút ngồi nhìn đồng
-hồ. Chơi cho vui mà thành ra hình phạt.
-
-Nay: SAI PHÁT NÀO MỞ TIẾP PHÁT ĐÓ, hạn giữa hai gợi ý rút còn 2 PHÚT. Cả hai
-vòng đều vậy. Đã chạy thử: trật 3 ký tự → "TRUY CẬP BỊ TỪ CHỐI" → GỢI Ý 1 hiện
-ngay.
-
-Câu báo trật rút gọn đúng như anh viết:
-    KÝ TỰ KHÔNG KHỚP. CÒN 2 LẦN THỬ SAI.
-
-Màn đầu + màn cuối Gate 2 nay không bôi đen chữ được nữa.
+Soi lại: vòng 1 đang dùng đúng ảnh `bg_r1_clean` dán khít lên khung chữ (không
+nhoè, không hạ sáng), chữ lộ theo đúng thứ tự đang có, giải xong thì xếp lại
+bình thường. Đúng bản anh nhớ hồi 1-2h sáng. Giữ nguyên.
 
 
-③ TÊN GỌI
+④ CHUYỂN CẢNH — BỎ HẲN CỤC MỜ, THAY BẰNG KHÓI
 ────────────────────────────────────────────────────────────────────────────
-"Secret's Chamber" ở màn hoàn thành Zoey's Castle → "Secret Chamber".
-Đã dò cả repo, không còn chỗ nào viết sai.
+Anh nói đúng chỗ đau: "vẫn bay lơ lửng ở không trung". Bốn đời trước đều cùng
+một bệnh — đều là HIỆU ỨNG QUANG HỌC đặt vào một chỗ chẳng có gì sinh ra nó:
 
-Luật chốt trong DESIGN-SYSTEM.md §3: đứng một mình là Secret Chamber (không
-có 's). Có tên người đứng trước mới là HongHan's Secret Chamber.
+    đời 1  dán mẩu đá tĩnh        → lệch, chữ thò ra
+    đời 2  miếng dán trôi theo    → hình chữ nhật tự bò trong khung
+    đời 3  vệt mờ hình bầu dục    → quầng xám nằm lì giữa khung
+    đời 4  cả dải đáy mất nét     → đỡ hơn, nhưng vẫn là "cục mờ giữa trời"
+
+Mắt không tìm ra nguyên nhân thì đọc ngay ra "lỗi". Không có thông số nào cứu.
+
+NAY DÙNG THỨ CÓ SẴN TRONG CHÍNH CÂU CHUYỆN: KHÓI. Phòng lab vừa nổ tung ngay
+trước đó — khói còn vương lại la đà sát mặt đất là chuyện đương nhiên, không
+cần giải thích gì. Nó không phải "vùng che", nó là một vật thể trong cảnh.
+
+Bốn điểm khiến nó tự nhiên:
+  · KHÔNG phải hình khối đều — bốn bờ khói to nhỏ khác nhau chồng lên nhau,
+    mỗi bờ trôi một tốc độ (17s/21s/23s/29s) và ngược chiều, nên đường viền
+    tổng luôn đổi, không bao giờ đứng thành một "cục"
+  · trôi NGANG, la đà theo mặt đất, đúng kiểu khói nặng sau vụ nổ
+  · đặc nhất đúng dải bảng đá rồi loãng dần cả lên trên lẫn xuống dưới, mép
+    nào cũng tán mềm — không có một đường viền kín nào
+  · nở ra từ mốc 26%, tức LÚC CẢ KHUNG CÒN TRẮNG XOÁ VÌ KHÓI THẬT. Khói giả
+    sinh ra ngay trong lòng khói thật rồi ở lại, không ai bắt được khoảnh khắc
+
+KHÔNG CHE REZAR NỮA — đúng như anh chốt, vòng 1 lúc đó giải xong rồi, thấy lại
+mã cũ cũng chẳng mất gì. Chỉ NUY OAHZ mới cần giấu.
+
+Đã kiểm bằng cách chơi hết vòng 1 rồi phóng to 3 lần từng khung clip: chỗ bảng
+đá chỉ còn một vệt nhoè, không ra chữ. Mà nhìn tổng thể thì mấy khối đá và đám
+nấm hai bên vẫn nhô lên khỏi khói — không bị thành "tường sương" như bản đầu.
 
 
-④ HỆ NÚT — lấy bộ nút của hộp pí mật làm gốc
+⑤ HỘP SỔ PHIÊN BẢN — VỪA KHUNG, THEO MÀU TỪNG TRANG
 ────────────────────────────────────────────────────────────────────────────
-Ba việc, ba hình, KHÔNG được dùng lẫn:
+Ba lỗi anh chỉ, đã sửa hết:
 
-    xem lại HIỆU ỨNG   (pháo hoa, cảnh nổ)       → CUỘN PHIM
-    xem lại NỘI DUNG   (câu trả lời, Open World) → CON MẮT
-    chơi lại / Reset                              → MŨI TÊN QUAY VÒNG
+  · TO HƠN KHUNG: bề ngang tụt từ 520px xuống 340px — bằng đúng thẻ hẹp nhất
+    trong bộ, nên hộp nằm gọn trong khung trang.
+  · UI LẠ: bỏ hẳn bộ mặt tối kiểu terminal. Hộp nay không có bảng màu riêng,
+    nó đọc sáu biến --ls-* của trang đang đứng. Zoey's Castle ra hộp pastel
+    trắng-tím, Secret Chamber ra tím ngân hà, Gate 2 ra xanh đêm hổ phách.
+    (Bẫy đã vấp: bản đầu khai màu mặc định bằng :root ngay trong lichsu.js —
+     file đó nạp SAU css trang nên đè mất màu trang khai. Nay dự phòng nằm
+     trong chính var(--x, dự-phòng).)
+  · ẢNH TRÒN BỊ CẮT NGANG: do hộp có overflow nên phần ảnh vắt lên trên mép
+    bị xén. Nay hộp bỏ overflow, cuộn giao cho lớp con — cô AI hiện đủ đầu.
 
-Vì sao tách "hiệu ứng" khỏi "nội dung": bấm nhầm nút hiệu ứng thì phải ngồi
-xem lại 15 giây pháo hoa mới thoát ra được.
-
-Đã sửa: hai nút ở màn hoàn thành Zoey's Castle trước đây là hai ký tự ↺ ↻ gõ
-thẳng vào HTML — mỗi máy một phông nên nét lúc dày lúc mảnh, mà hai vòng tròn
-lại na ná nhau. Nay là SVG (mắt + mũi tên quay vòng), có chú thích nổi.
-
-Toàn bộ luật + mã SVG chuẩn để chép nằm trong DESIGN-SYSTEM.md.
+CỘT # ĐÃ HIỂU ĐÚNG Ý ANH: mỗi dòng nay là MỘT BUILD LỚN, cột # là SỐ BẢN VÁ
+GHI LẠI ĐƯỢC của build đó (V10.08 → 09 bản), không phải số thứ tự. Không biết
+thì ghi "thiếu info" và vẫn giữ nguyên số build.
 
 
-⑤ SỔ LƯU GOOGLE SHEETS — 10 phút, làm một lần rồi quên
+⑥ LỊCH SỬ BUILD CŨ — ĐÃ NẠP HẾT
 ────────────────────────────────────────────────────────────────────────────
-Vercel gói Hobby chỉ giữ log khoảng MỘT TIẾNG. Sáng mai mở lên là không còn
-cách nào biết tối qua ai chơi tới đâu.
+Đoạn anh gửi đã vào sổ đầy đủ:
 
-Đã dựng sẵn đường Google Apps Script → Google Sheets: KHÔNG cần Google Cloud,
-không cần thẻ, không tốn tiền, không có gì phải bảo trì.
+    V1  bản đồ đầu tiên
+    V2  đếm ngược + zoom
+    V3  khung hẹp + khung phụ
+    V4  quần đảo đúng vị trí + hộp mật thư
+    V5  ô chữ + lời khen + sóng biển
+    V6  kênh bắt sóng + tên lửa
+    V7  khối chinh phục
+    V8  vá tên lửa đen + double-tap mobile
+    V9  bỏ rồi ghim lại mã morse, câu trêu xoay vòng     (04-08-2026)
+    V10 huy hiệu tên lửa vòng đời đầy đủ + lockup cờ     (04-08-2026, 09 bản)
+    V15 GAME ON, cửa hai tầng hồ sơ niêm phong           (13-08-2026, 06 bản)
+    V17 hộp chào, API nội dung, hệ nút, sổ phiên bản     (17-08-2026, 09 bản)
 
-Việc anh phải làm (6 bước, chi tiết trong docs/GOOGLE-SHEETS.md):
-   1. sheets.new → tạo một Sheet trống
-   2. Tiện ích mở rộng → Apps Script
-   3. dán docs/apps-script/Code.gs vào, đổi MỘT dòng mã bảo vệ
-   4. Deploy → Web app · Execute as: Me · Who has access: Anyone
-   5. nối "?k=<mã bảo vệ>" vào cuối địa chỉ vừa nhận
-   6. Vercel → Environment Variables → dán địa chỉ đó vào HAI biến:
-        SHEET_URL      → tab "Tiến độ"  (mọi tín hiệu chơi)
-        CHAT_LOG_URL   → tab "Chat"     (mỗi lượt hỏi Open World)
-      rồi Redeploy.
+V11-V12 và V16 thì ghi "no info" — không còn dấu vết nào.
 
-Tab tự tạo, cột tự dựng. Nội dung chat MẶC ĐỊNH KHÔNG GHI.
+CÒN DÒ ĐƯỢC THÊM ba thứ từ mấy file tài liệu cũ trong kho mã:
+  ❶ Gate 2 từng có V2.10 trước V2.11 — file không còn, chỉ còn tên trong doc.
+  ❷ Gate 2 ĐÃ TỪNG BỊ NẮN SỐ một lần rồi: doc ghi nguyên văn "hai bản
+    V2.10/V2.11 sai quy ước, đã nắn về V03.02". Nên việc nắn số đợt này đi
+    đúng tiền lệ có sẵn.
+  ❸ Chính README cũng lệch: ghi "V17.03" trong khi tem trang đã là V17.05.
+
+VÌ SAO ZOEY'S CASTLE NHẢY V2.09 → V3.00: luật đánh số trong README ghi đuôi
+chỉ chạy 00→09, hết .09 là số lớn tăng một. V2.09 là nấc cuối của dòng V2.
 
 
-⑥ SỔ PHIÊN BẢN — đã sửa lại đúng ý anh
+⑦ BOX TỔNG TƯ LỆNH — BỎ NÚT ICON, GIẤU VÀO MẶT CƯỜI
 ────────────────────────────────────────────────────────────────────────────
-Bản trước em hiểu nhầm: gắn cửa vào thẳng dòng "Last updated", thành ra vừa
-đẻ ra một cửa hậu MỚI, vừa gộp lịch sử cả sáu trang vào CHUNG một bảng.
+Đúng như anh nói. Nút icon đã gỡ khỏi Box. Cửa vào nay là cụm
 
-NAY LÀM ĐÚNG NHƯ ANH DẶN:
+    ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧
 
-  · MỌI CỬA HẬU CŨ GIỮ NGUYÊN 100%. Đã gỡ sạch phần đếm nhịp trên tem, trả
-    tem về đúng như trước. Cửa hậu hoa ở hai trang HAN lại nhận cả cụm hoa +
-    tem như cũ.
-
-  · SỔ THÀNH CỬA HẬU TẦNG HAI:
-
-        mở bảng điều khiển như xưa nay vẫn mở
-          → trong bảng có MỘT NÚT ICON nhỏ
-          → bấm 3 NHỊP vào nút đó
-          → gõ mã 0981
-          → hiện sổ CỦA RIÊNG TRANG ĐÓ
-
-  · SỔ CHỈ CỦA TRANG ĐANG ĐỨNG, không đụng, không chung. Đứng ở Zoey's Castle
-    thì chỉ thấy lịch sử Zoey's Castle. Mã đã gõ cũng nhớ riêng từng trang.
-
-Nút nằm ở đâu:
-
-    Bản đồ mật thư          Box Tổng tư lệnh      (5 nhịp dòng bản quyền)
-    Easter Egg · Gate 1     thẻ Mission 3 Phá đảo (bấm nấc ✓M3)
-    Easter Egg · Gate 2     hàng nút cửa hậu      (10 nhịp vào tem)
-    Zoey's Castle           Khối vận hành         (5 nhịp cụm hoa + tem)
-    Secret Chamber          Khối vận hành         (5 nhịp cụm hoa + tem)
-    Màn pháo hoa            ── chưa gắn, xem dưới ──
-
-Nút đặt BÊN TRÁI hàng nhãn: góc phải trên bảng nào cũng là nút đóng ✕, để bên
-phải là hai nút đè lên nhau (đã vấp đúng lỗi này rồi).
-
-⚠ MÀN PHÁO HOA CHƯA CÓ CỬA. Đó là trang DUY NHẤT trong bộ không có bảng điều
-khiển nào — không cửa hậu, không hộp lệnh, chỉ có một nút đóng. Không có chỗ
-nào đặt nút mà không phải đẻ ra một cửa hậu mới, mà anh đã dặn là đừng đẻ
-thêm cửa. Số liệu của nó vẫn giữ sẵn trong file: hôm nào trang đó có bảng thì
-gắn một dòng là xong. Anh muốn em thêm cửa cho nó thì nói em một tiếng.
-
-Sai mã 3 lần → hiện ĐÚNG MỘT câu gợi ý: "Năm sinh Bác Hồ — soi gương mà đọc."
-Từ lần thứ tư vẫn đúng câu đó, không có gợi ý thứ hai.
+cạnh dòng "Chọn chiến dịch" — bấm 3 nhịp vào đó. Không viền, không con trỏ,
+không gì cả, nhìn y như cũ.
 
 
-   CỘT "SỬA CHÍNH" NAY GHI CHUNG CHUNG
-   ─────────────────────────────────────────────────────────────────────────
-   Sổ này người chơi mở ra đọc được, nên đã viết lại toàn bộ: KHÔNG còn mã,
-   đáp án, tên nhân vật phải đoán, tên biến môi trường, tên endpoint hay tên
-   nhà cung cấp nào. Chỉ ghi LOẠI VIỆC:
-
-       "cập nhật API" · "chỉnh hiệu ứng" · "chỉnh luật chơi"
-       "đồng bộ hệ nút" · "cập nhật giao diện" · "thêm đo đạc"
-
-   Đủ để biết đời đó làm gì, không đủ để lấy làm gợi ý.
-
-
-   ĐÃ DÒ LẠI CÁC README TRONG KHO MÃ — CÓ, VÀ RA THÊM BA THỨ
-   ─────────────────────────────────────────────────────────────────────────
-   Anh hỏi có dò được version từ mấy file README không: có. Mấy file .md cùng
-   thời cũng chép lại số tem, dò qua từng lượt push thì moi thêm được:
-
-   ❶ Gate 2 TỪNG CÓ V2.10 trước V2.11. File thì không còn, chỉ còn thấy tên
-     trong tài liệu cùng thời. Đã thêm vào sổ, ghi rõ "no info".
-
-   ❷ GATE 2 ĐÃ TỪNG BỊ NẮN SỐ MỘT LẦN RỒI. Tài liệu ghi nguyên văn: "hai bản
-     V2.10/V2.11 trước đó là sai quy ước, đã nắn về V03.02". Nghĩa là việc nắn
-     han/961030-b từ V1.11 → V2.00 đợt này đi ĐÚNG TIỀN LỆ có sẵn, không phải
-     em tự nghĩ ra.
-
-   ❸ Chính README cũng lệch: dòng "Phiên bản hiện tại" chạy V17.03 → V17.04 →
-     V17.06 → V17.07, trong khi tem trên trang ngày 17-08 đã là V17.05. Tài
-     liệu chậm hơn trang 2 nấc.
-
-   Cộng với ba chỗ đã báo ở lần trước:
-     · han/961030-b đi V1.09 → V1.10 → V1.11 là SAI LUẬT (đuôi chỉ chạy
-       00→09). ĐÃ NẮN thành V2.00.
-     · index.html đi V17.05 → V17.04 rồi lại V17.05 — số lùi một nấc.
-     · Đợt 1 sửa 4 file mà không bump tem nào.
-
-   Tất cả đều đã nằm trong sổ, ghi đúng như vậy, không bịa thêm.
-
-   Bảng phiên bản sau đợt này:
-      /                    V17.07        /han/961030-a       V2.09
-      /dad/950901-a        V22.02        /han/961030-b       V2.00
-      /dad/950901-b        V04.04        /phao-hoa           V3.03
-
-
-⑦ ĐÃ SOÁT LẠI TÀI LIỆU
+⑧ MÀN CUỐI GATE 2 — GIỜ CÓ CỬA RỒI
 ────────────────────────────────────────────────────────────────────────────
-README.md          cây thư mục dựng lại cho đúng thực tế, mục 11b viết lại
-                   theo cách vào mới, thêm bảng phiên bản + phần rà soát,
-                   phần máy chủ trỏ sang docs/GOOGLE-SHEETS.md
-DIALOGUES.md       phần chuyển cảnh viết lại cùng bảng đo từng khung clip;
-                   bảng gợi ý và bảng thoại sửa cho khớp config
-CHU-MAP3.md        sửa dòng màn hoàn thành, thêm luật viết tên
-DESIGN-SYSTEM.md   file mới, gom hệ nút + tên gọi + tem + cửa hậu
+Anh bấm thử Last updated ở màn phát mã mà không ra gì là đúng: bản trước em
+chỉ gắn cửa ở MÀN CỔNG (hàng nút cửa hậu), màn cuối thì bỏ sót.
+
+Nay màn phát mã: gõ 3 nhịp vào chính dòng tem ở chân màn hình là ra sổ.
+
+BẢNG ĐẦY ĐỦ SÁU CỬA (cửa hậu cũ vào bảng thì GIỮ NGUYÊN hết):
+
+  Bản đồ            mặt cười trong Box Tổng tư lệnh   (5 nhịp dòng bản quyền)
+  Gate 1            nút tròn trong thẻ Phá đảo        (bấm nấc ✓M3)
+  Gate 2 · cổng     nút tròn cạnh nút Bỏ qua          (10 nhịp vào tem)
+  Gate 2 · phát mã  DÒNG TEM                          (tới thẳng màn đó)
+  Zoey's Castle     nút tròn trong Khối vận hành      (5 nhịp cụm hoa + tem)
+  Secret Chamber    nút tròn trong Khối vận hành      (5 nhịp cụm hoa + tem)
+
+Chỗ nào bảng còn rộng thì để nút tròn; chỗ nào thêm nút vào là hỏng bố cục thì
+giấu hẳn vào thứ có sẵn (mặt cười, dòng tem).
+
+Màn pháo hoa vẫn chưa gắn — nó là trang duy nhất không có bảng điều khiển nào.
+Số liệu giữ sẵn trong file, anh muốn thêm cửa thì nói em một tiếng.
 
 
 ĐÃ CHẠY THỬ TRÊN TRÌNH DUYỆT THẬT
 ────────────────────────────────────────────────────────────────────────────
   · sáu trang tải sạch, không lỗi JS nào
-  · chơi hết vòng 1 Gate 2, soi từng khung clip: chữ NUY OAHZ không đọc ra ở
-    bất cứ khung nào; bệ đá và đám nấm phía trước vẫn còn ra hình
-  · gợi ý 1 bật ngay sau lần sai chính thức đầu tiên
-  · năm cửa sổ phiên bản đều chạy: mở bảng bằng cửa hậu CŨ → 3 nhịp vào nút →
-    sai mã 3 lần ra gợi ý → mã đúng ra sổ, và CHỈ ra sổ của đúng trang đó
-    (bản đồ 6 dòng · Gate 1 4 dòng · Gate 2 12 dòng · Zoey's 6 dòng ·
-     Secret Chamber 5 dòng)
-  · CỬA HẬU CŨ CHẠY Y NHƯ TRƯỚC: Box Tổng tư lệnh, Khối vận hành hai trang
-    HAN, nút Bỏ qua Gate 2, thẻ Phá đảo Gate 1
-  · màn hoàn thành Zoey's Castle: hai nút mới + chú thích nổi, chữ đã đúng là
-    "Thương gửi anh PIN Secret Chamber"
+  · chơi hết vòng 1 Gate 2, soi từng khung clip ở mức phóng 3 lần: NUY OAHZ
+    không đọc ra ở bất cứ khung nào
+  · năm cửa sổ phiên bản đều chạy, và chỉ ra sổ của đúng trang đang đứng
+  · hộp sổ đo được 330-340px bề ngang, ảnh cô AI nhô lên trên mép hộp 31px
+    mà không bị xén
+  · Zoey's Castle ra hộp pastel, Gate 2 ra hộp xanh đêm — đúng màu từng trang

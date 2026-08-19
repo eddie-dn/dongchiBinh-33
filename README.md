@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V17.07** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+**Phiên bản hiện tại: V17.08** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
 Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
@@ -404,7 +404,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 19-Aug-2026 · V17.07** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 19-Aug-2026 · V17.08** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -430,11 +430,11 @@ Sửa chuỗi ở thuộc tính `data-base` của `#stamp`; `stampText()` sẽ g
 
 | Trang | Đường | Đang chạy |
 |---|---|---|
-| Bản đồ mật thư | `/` | **V17.07** |
-| Easter Egg · Gate 1 | `/dad/950901-a` | **V22.02** |
-| Easter Egg · Gate 2 | `/dad/950901-b` | **V04.04** (khai ở `config.js`) |
-| Zoey's Castle | `/han/961030-a` | **V2.09** |
-| HongHan's Secret Chamber | `/han/961030-b` | **V2.00** |
+| Bản đồ mật thư | `/` | **V17.08** |
+| Easter Egg · Gate 1 | `/dad/950901-a` | **V22.03** |
+| Easter Egg · Gate 2 | `/dad/950901-b` | **V04.05** (khai ở `config.js`) |
+| Zoey's Castle | `/han/961030-a` | **V3.00** |
+| HongHan's Secret Chamber | `/han/961030-b` | **V2.01** |
 | Màn pháo hoa | `/phao-hoa` | **V3.03** |
 
 ### Rà soát số phiên bản — ba chỗ đã lệch, đã xử
@@ -445,7 +445,9 @@ phiên bản** (§11b) để người chơi mở ra cũng đọc được đúng
 
 | Lệch | Chuyện gì | Xử thế nào |
 |---|---|---|
-| `han/961030-b` đi `V1.09 → V1.10 → V1.11` | **sai luật**: đuôi chỉ được chạy `00→09`, tới `V1.09` là phải sang `V2.00` | Nắn lại: đợt này ghi thẳng **`V2.00`**, bỏ qua `V1.12` |
+| `han/961030-b` đi `V1.09 → V1.10 → V1.11` | **sai luật**: đuôi chỉ được chạy `00→09`, tới `V1.09` là phải sang `V2.00` | Nắn lại: ghi thẳng **`V2.00`**, bỏ qua `V1.12` |
+| `dad/950901-b` từng đi `V2.10 → V2.11` | **sai luật** y hệt — moi ra từ tài liệu cùng thời, file thì không còn | Đã nắn từ hồi đó sang `V03.02`; ghi lại vào sổ cho có tiền lệ |
+| README tự nó ghi `V17.03` trong khi tem trang đã là `V17.05` | tài liệu chậm hơn mã 2 nấc ở lượt push 17-08 | Chỉ ghi lại; số tem của trang mới là số thật |
 | `index.html` đi `V17.05 → V17.04` rồi lại `V17.05` | số **lùi một nấc** giữa hai lượt push ngày 18-08 — ghi tay nhầm | Đã tự vượt qua từ `V17.06`; chỉ ghi lại cho có sổ |
 | Đợt 1 (`Sửa mục 8-13`) sửa 4 file mà **không bump tem nào** | quên | Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật |
 
@@ -502,14 +504,19 @@ Từ lần sai thứ tư trở đi vẫn đúng câu đó, **không có gợi ý
 
 ### Nút nằm ở đâu trên từng trang
 
-| Trang | Bảng điều khiển | Vào bảng bằng | Mã trang |
+| Trang | Cửa ẩn nằm ở | Vào chỗ đó bằng | Mã trang |
 |---|---|---|---|
-| Bản đồ mật thư | Box Tổng tư lệnh | 5 nhịp vào dòng bản quyền | `MAP` |
-| Easter Egg · Gate 1 | thẻ *Mission 3 · Phá đảo* | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
-| Easter Egg · Gate 2 | hàng nút cửa hậu | 10 nhịp vào tem màn cổng | `DAD-B` |
-| Zoey's Castle | Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-A` |
-| HongHan's Secret Chamber | Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-B` |
+| Bản đồ mật thư | **mặt cười** cạnh "Chọn chiến dịch" trong Box Tổng tư lệnh | 5 nhịp vào dòng bản quyền | `MAP` |
+| Easter Egg · Gate 1 | nút tròn trong thẻ *Mission 3 · Phá đảo* | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
+| Easter Egg · Gate 2 · màn cổng | nút tròn cạnh nút *Bỏ qua* | 10 nhịp vào tem | `DAD-B` |
+| Easter Egg · Gate 2 · màn phát mã | **dòng tem** ở chân màn hình | tới thẳng màn đó | `DAD-B` |
+| Zoey's Castle | nút tròn trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-A` |
+| HongHan's Secret Chamber | nút tròn trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-B` |
 | Màn pháo hoa | **chưa có bảng nào** | — | `FX` |
+
+**Có hình hay không có hình — chọn theo chỗ đặt.** Bảng còn rộng thì dùng nút tròn
+`.ls-key`; chỗ nào thêm nút vào là hỏng bố cục thì **giấu hẳn**, chỉ gắn `data-ls`
+lên một thứ đã có sẵn ở đó (mặt cười, dòng tem). Xem `DESIGN-SYSTEM.md` §5.1.
 
 > **Màn pháo hoa là trang duy nhất chưa gắn.** Nó không có cửa hậu, không có hộp lệnh,
 > chỉ có một nút đóng — không có chỗ nào đặt nút mà không phải đẻ ra một cửa hậu mới.
@@ -521,6 +528,12 @@ Từ lần sai thứ tư trở đi vẫn đúng câu đó, **không có gợi ý
 Đứng ở Zoey's Castle thì chỉ thấy lịch sử của Zoey's Castle. Sáu cuốn sổ nằm chung một
 file cho dễ sửa, nhưng mỗi lần mở chỉ vẽ **đúng một cuốn**. Mã đã gõ đúng cũng nhớ riêng
 từng trang (`sessionStorage.ls_ok_<mã trang>`), mở sổ bên này không mở hộ sổ bên kia.
+
+### Mỗi dòng là MỘT BUILD LỚN
+
+Sổ không liệt kê từng bản vá — mỗi dòng là một **build lớn** (V9, V10, V15…).
+Cột `#` là **số bản vá ghi lại được trong build đó**: `V10.08` nghĩa là 09 bản.
+Không biết thì ghi `thiếu info` và **giữ nguyên số build**.
 
 ### Ba luật của bảng dữ liệu
 
@@ -555,17 +568,25 @@ toàn bộ chúng qua từng lượt push thì ra thêm:
 <script src="/assets/lichsu.js"></script>
 ```
 
-rồi nhét đúng một chuỗi vào chỗ muốn đặt nút:
+rồi **một trong hai cách**:
 
+```html
+<!-- cửa ẩn: gắn thẳng lên thứ đã có sẵn ở đó -->
+<span class="kao" data-ls="MAP">ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧</span>
+```
 ```js
-LichSu.nut('MAP')     // trả về chuỗi HTML của nút
+// hoặc nút tròn thật, nhét chuỗi HTML vào chỗ muốn đặt
+LichSu.nut('MAP')
 ```
 
-Không phải gắn sự kiện gì cả — file tự nghe ở cấp tài liệu, nên nút dựng ra lúc nào cũng
+Không phải gắn sự kiện gì cả — file tự nghe ở cấp tài liệu, nên cửa dựng ra lúc nào cũng
 chạy, kể cả bảng được dựng lại bằng `innerHTML` sau đó.
 
-**Đặt nút bên TRÁI hàng nhãn.** Góc phải trên của mọi bảng trong bộ này đều là chỗ của
-nút đóng `✕`; để bên phải là hai nút đè lên nhau — đã vấp đúng lỗi này rồi.
+**Nút tròn đặt bên TRÁI hàng nhãn.** Góc phải trên của mọi bảng trong bộ này đều là chỗ
+của nút đóng `✕`; để bên phải là hai nút đè lên nhau — đã vấp đúng lỗi này rồi.
+
+**Muốn hộp mang màu trang** thì khai sáu biến `--ls-*` trong `:root` của trang đó —
+xem `DESIGN-SYSTEM.md` §5.2.
 
 ---
 

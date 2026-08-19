@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 19-Aug-2026 · V04.04'
+    version       : 'Last updated 19-Aug-2026 · V04.05'
   }
 };
 
@@ -170,12 +170,19 @@ const GAME_CONFIG = {
        vật liệu lạ, nhưng vẫn còn một cái HÌNH: quầng xám nhạt (hạ sáng .78,
        rút màu còn .3) nằm lì giữa khung gần 5 giây — vẫn nhìn ra.
 
-       NAY BỎ HẲN KHÁI NIỆM VÙNG CHE. Từ mốc 26% (lúc chân khung còn chìm
-       trong khói, bật gì cũng không ai thấy) cả DẢI ĐÁY KHUNG mất nét dần —
-       toàn chiều ngang, không mép trái mép phải, chỉ blur thuần không đụng
-       vào màu. Mắt đọc ra là ống kính đang lấy nét vào quả trứng nên tiền
-       cảnh mờ đi, không phải một vết che. Xem `.dof` trong index.html. */
-    che_vao_at    : 0.26,   /* bắt đầu mất nét (chân khung còn kín khói) */
+       ĐỜI SAU NỮA cho cả dải đáy khung MẤT NÉT. Đỡ hơn, nhưng vẫn bị báo là
+       "cục mờ bay lơ lửng ở không trung" — đúng, vì chỗ đó chẳng có gì sinh ra
+       độ mờ cả. Gốc rễ của cả bốn đời: đều là HIỆU ỨNG QUANG HỌC đặt vào một
+       chỗ không có nguyên nhân, mắt không giải thích được nên đọc ra "lỗi".
+
+       NAY DÙNG THỨ CÓ SẴN TRONG CHÍNH CÂU CHUYỆN: KHÓI. Phòng lab vừa nổ tung
+       ngay trước đó, khói còn vương lại la đà sát mặt đất là chuyện đương
+       nhiên. Ba bờ khói trôi ngang ngược chiều nhau, đặc nhất đúng dải bảng đá
+       rồi loãng dần — không phải "vùng che" mà là một vật thể trong cảnh.
+       Xem `.khoi` trong index.html.
+       CÒN "REZAR" THÌ KỆ: vòng 1 lúc đó giải xong rồi, thấy lại mã cũ cũng
+       không mất gì. Chỉ NUY OAHZ mới cần giấu. */
+    che_vao_at    : 0.26,   /* bắt đầu thả khói (khung còn trắng xoá khói thật) */
     chu_lo_at     : 0.40,   /* đo được: chữ bắt đầu đọc được ở đây  */
     veil_in_ms    : 380,    /* lớp che đá hiện dần trong bấy nhiêu  */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
@@ -294,7 +301,13 @@ const GAME_CONFIG = {
        tranh gốc vòng 2 tối và nhạt hơn hẳn — xem ghi chú dài ở
        `.slab.solved .cell` trong index.html. b = độ sáng · s = độ tươi ·
        c = độ tương phản (chính c mới làm nét chữ sắc lại, không phải b). */
-    solved_glow: { b: 3.35, s: 1.9, c: 1.32 },
+    /* ĐO BẰNG PIXEL, không ước lượng — xem ghi chú dài ở `.slab.solved .cell`
+       trong index.html. Tóm tắt: ZHAO YUN không tối, nó BẠC MÀU (bão hoà 67 so
+       với 80-89 của hai biển hai bên). Nhuộm hổ phách TRƯỚC rồi mới nâng sáng
+       thì đo lại được 137/81 — trùng khít biển MIDNIGHT bên cạnh.
+       Khai `f` là ghi đè cả chuỗi; bỏ `f` đi thì quay về bộ b/s/c bên dưới. */
+    solved_glow: { f: 'sepia(1) saturate(2.6) brightness(1.55) contrast(1.7)',
+                   b: 3.35, s: 1.9, c: 1.32 },
     /* Y HỆT vòng 1 — xem ghi chú đầy đủ ở round1.veil_filter. Hai bên phải
        cùng một công thức, nếu không người chơi nhìn ra ngay bên nào dễ hơn. */
     veil_filter: 'contrast(.55) brightness(.46) saturate(.05) blur(var(--veil-blur,3.2px))',
@@ -486,6 +499,21 @@ const GAME_CONFIG = {
       nghi : 'ow_2_3.webp',   /* đăm chiêu — trong lúc chờ câu trả lời         */
       gat  : 'ow_2_2.webp'    /* gật đầu — ngay khi câu trả lời hiện ra        */
     },
+    /* ── ẢNH MỒI: HIỆN NGAY, CLIP VỀ SAU MỚI ĐẮP LÊN ────────────────────────
+       Bốn clip nét mặt trên đây mỗi cái ~5 MB. Mạng khoẻ thì hiện tức thì,
+       mạng yếu thì mất cả chục giây — mà khu Open World mở ra ngay khi bấm
+       nút, nên trong lúc chờ người chơi nhìn thấy đúng một khung ĐEN và tưởng
+       hỏng. Đó chính là chỗ đã báo "lỡ mạng lag thì không thấy hình".
+
+       Ảnh mồi là khung đầu tiên của chính mấy clip đó, bản TĨNH ~35 KB, đã cắt
+       sẵn ở /assets/poster/. Đo được: bốn clip nét mặt dùng CHUNG một khung
+       mở đầu (lệch nhau chưa tới 1 nấc sáng trên 255), nên một ảnh mồi duy
+       nhất đắp cho cả bốn, khỏi sinh thêm file nào.
+
+       Cách chạy: ảnh mồi dán làm NỀN của khung và hiện ngay lập tức; clip nặng
+       tải xong mới nhoà chồng lên. Không có nhịp nào khung bị trống.
+       Để rỗng '' là tắt hẳn phần này, quay về cách cũ. */
+    mat_moi : '/assets/poster/HH_5_idle_afk.webp',
     /* 'kin' — clip là cả khung cảnh, phủ kín màn hình máy (giống anim_unlock).
        'noi' — clip là hình robot cắt rời trên nền TRONG SUỐT: robot đứng ở góc
                phải dưới, cảnh phía sau vẫn ngắm và vuốt được.               */

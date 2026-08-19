@@ -40,6 +40,10 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* ═══════════════════════════════════════════════════════════════════════════
    ① + ③ MÀN ĐẾM NGƯỢC & MÀN PHÁT MÃ — dùng chung bộ áo "gate-look"
    ═══════════════════════════════════════════════════════════════════════════ */
+/* SỔ PHIÊN BẢN mượn màu Gate 2 — xem /assets/lichsu.js */
+:root{--ls-bg:linear-gradient(180deg,#0d1c33 0%,#040b18 100%);--ls-fg:#EAF0F7;
+  --ls-mo:rgba(234,240,247,.5);--ls-line:rgba(234,240,247,.22);--ls-acc:#F2B441;
+  --ls-w:min(330px,92vw)}
 .gate-look{
   --void:#040b18;--navy:#0B1B3A;--neon:#38BDF8;--amber:#F2B441;
   --paper:#EAF0F7;--line:rgba(234,240,247,.28);
@@ -351,67 +355,109 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   -webkit-mask-composite:source-in;mask-composite:intersect;
   transition:opacity .5s ease;
 }
-/* ═══ CHE CHỮ TRONG CLIP: MẤT NÉT TIỀN CẢNH ═════════════════════════════
-   Clip nổ sập lab TỰ NÓ vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ. Đo trên
-   241 khung: chữ đọc được từ mốc 40,8% và ĐỌC ĐƯỢC LIÊN TỤC TỚI HẾT CLIP —
-   tức là phải giấu suốt 4,7 giây, đúng đoạn con rồng nở ra (khúc đẹp nhất).
+/* ═══ CHE CHỮ TRONG CLIP: KHÓI SÓT LẠI SAU VỤ NỔ ══════════════════════════
+   Clip nổ sập lab TỰ NÓ vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ mốc
+   40,8% và giữ rõ TỚI HẾT CLIP — phải giấu suốt 4,7 giây, đúng đoạn con rồng
+   nở ra. Cắt clip sớm là mất luôn khúc đẹp nhất, không làm được.
 
-   BA ĐỜI TRƯỚC ĐỀU CHỮA SAI CHỖ — đều là "úp một mảng lên đúng ô chữ":
+   BỐN ĐỜI ĐÃ THỬ, GHI LẠI CHO KHỎI ĐI VÒNG:
+     1. Dán mẩu đá tĩnh cắt từ ảnh nền → cảnh trong clip còn đang hạ cánh
+        (thấp hơn tới 13px giữa clip) nên miếng dán trượt lên, chữ thò ra dưới.
+     2. Cho miếng dán TRÔI THEO đường cong đó → hết thò chữ, nhưng thành "một
+        hình chữ nhật có vân đá riêng, tự bò trong khung". Tệ hơn hẳn.
+     3. Vệt LÀM MỜ hình bầu dục ngay trên ô chữ → hết vật liệu lạ, nhưng vẫn
+        còn một cái HÌNH: quầng xám nằm lì giữa khung gần 5 giây.
+     4. Cả dải đáy khung MẤT NÉT (tiền cảnh out nét) → đỡ hơn, nhưng vẫn bị
+        báo là "cục mờ bay lơ lửng ở không trung". Đúng: chỗ đó không có gì để
+        mà mờ — sương hay khói thì mắt chấp nhận, chứ một vùng NHOÈ giữa trời
+        thì không có lời giải thích vật lý nào.
 
-     · Đời 1 — dán mẩu đá tĩnh cắt từ ảnh nền. Cảnh trong clip còn đang hạ
-       cánh (đo được thấp hơn tới 13px giữa clip) nên miếng dán trượt lên,
-       chữ thò ra ngay bên dưới.
-     · Đời 2 — cho miếng dán TRÔI THEO đường cong ấy. Hết thò chữ, nhưng đẻ
-       ra lỗi nặng hơn: một hình chữ nhật có vân đá riêng, tự bò trong khung.
-     · Đời 3 — bỏ dán, thả một vệt LÀM MỜ hình bầu dục ngay trên ô chữ. Không
-       còn vật liệu lạ, nhưng vẫn là MỘT VỆT: một quầng xám nhạt, hạ sáng và
-       khử màu, nằm lì giữa khung suốt gần 5 giây. Mắt bắt được cái hình.
+   GỐC RỄ CỦA CẢ BỐN: đều là HIỆU ỨNG QUANG HỌC đặt vào một chỗ chẳng có gì
+   sinh ra hiệu ứng đó. Mắt không tìm ra nguyên nhân nên đọc ngay ra "lỗi".
 
-   GỐC RỄ CHUNG: hễ vùng che CÓ HÌNH DẠNG RIÊNG — chữ nhật hay bầu dục — thì
-   nó là một vật thể lạ trên khung hình, chỉnh thông số kiểu gì cũng vô ích.
+   ĐỜI NÀY DÙNG THỨ CÓ SẴN TRONG CHÍNH CÂU CHUYỆN: KHÓI. Phòng lab vừa nổ tung
+   ngay trước đó, khói trắng phủ kín khung ở mốc 26-40% — khói còn vương lại
+   la đà sát mặt đất là chuyện đương nhiên, không cần giải thích gì. Nó không
+   phải "vùng che", nó là một vật thể trong cảnh.
 
-   ĐỜI NÀY BỎ HẲN KHÁI NIỆM "VÙNG CHE". Thay bằng một thứ máy quay nào cũng
-   có: TIỀN CẢNH MẤT NÉT. Cả dải đáy khung — TOÀN CHIỀU NGANG, không có mép
-   trái mép phải nào để mà nhìn ra — nhoè dần từ trên xuống, y như ống kính
-   đang lấy nét vào quả trứng ở giữa cảnh nên mấy bệ đá sát chân khung mờ đi.
-   Đúng ngữ pháp điện ảnh, nên mắt đọc ra là "chiều sâu", không phải "vết che".
+   BỐN ĐIỂM KHIẾN NÓ TỰ NHIÊN:
+     · KHÔNG PHẢI HÌNH KHỐI ĐỀU. Ba bờ khói to nhỏ khác nhau chồng lên nhau,
+       mỗi bờ trôi một tốc độ (17s / 23s / 29s) và ngược chiều nhau, nên đường
+       viền tổng luôn đổi — không bao giờ đứng thành một cái "cục".
+     · Trôi NGANG, la đà theo mặt đất, đúng kiểu khói nặng sau vụ nổ.
+     · Đặc nhất đúng dải bảng đá rồi loãng dần lên trên và xuống dưới, mép nào
+       cũng tán bằng gradient — không tồn tại một đường viền kín nào.
+     · Nở ra từ mốc 26%, tức là LÚC CẢ KHUNG CÒN TRẮNG XOÁ VÌ KHÓI THẬT. Khói
+       giả sinh ra ngay trong lòng khói thật rồi ở lại; mắt không bắt được
+       khoảnh khắc nó xuất hiện.
 
-   BA ĐIỂM KHIẾN NÓ KHÔNG BAO GIỜ LỘ:
-     · Không dán vật liệu nào — chỉ nhoè chính clip nằm dưới. Cảnh trôi đi đâu
-       thì vệt nhoè vẫn nằm đúng trên nó. Hết chuyện canh 13px.
-     · CHỈ blur, KHÔNG đụng vào sáng / tươi / tương phản. Đời 3 hạ sáng .78 và
-       rút màu còn .3 — chính hai thứ đó vẽ ra cái quầng xám. Nhoè thuần thì
-       màu sắc vẫn y nguyên, không có ranh giới màu nào để mắt bám vào.
-     · Mép trên tán bằng gradient dọc dài 1/3 dải, mép dưới trùng luôn đáy
-       khung. Không tồn tại một đường viền kín nào.
-
-   Bật lúc nào: xem `che_vao_at` trong config — mốc 26%, lúc cả chân khung còn
-   chìm trong khói trắng (đo được độ lệch sáng chỉ còn 2-5 nấc, coi như một
-   mảng trắng phẳng). Bật một hiệu ứng nhoè lên một mảng trắng phẳng thì không
-   ai thấy gì. Clip tắt là tắt luôn, cảnh tĩnh nét lại — như cú lấy nét về. */
-#scene-game .dof{
-  position:absolute;left:0;right:0;bottom:0;height:30%;
-  opacity:0;pointer-events:none;z-index:6;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 34%,#000 100%);
-  mask-image:linear-gradient(to bottom,transparent 0%,#000 34%,#000 100%);
-  transition:opacity .55s ease;
+   VÌ SAO KHÔNG CÒN CHE "REZAR" NỮA: đã chốt là kệ. Vòng 1 lúc đó giải xong
+   rồi, người chơi thấy lại mã cũ cũng chẳng mất gì. Chỉ NUY OAHZ mới cần
+   giấu, nên khói chỉ cần sống đúng quãng clip là đủ. */
+#scene-game .khoi{
+  position:absolute;left:-25%;right:-25%;top:72%;bottom:-6%;
+  opacity:0;pointer-events:none;z-index:6;overflow:hidden;
+  /* Loãng dần cả trên lẫn dưới. Đặc nhất ở 46-72% chiều cao dải, tức đúng dải
+     bảng đá (84-92% chiều cao khung) kể cả khi cảnh trong clip còn tụt xuống. */
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 22%,
+                     #000 46%,#000 72%,rgba(0,0,0,.5) 88%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 22%,
+             #000 46%,#000 72%,rgba(0,0,0,.5) 88%,transparent 100%);
+  transition:opacity .75s ease;
 }
-/* Chỉ gắn backdrop-filter lúc THẬT SỰ cần. Để sẵn suốt thì trình duyệt phải
-   dựng một lớp nền riêng cho nó ngay cả khi opacity 0 — tốn công vô ích trong
-   suốt cả ván chơi, mà cảnh vòng 2 vốn đã có mấy lớp nặng rồi. */
-#scene-game .world.dof-on .dof{
-  opacity:1;
-  -webkit-backdrop-filter:blur(var(--dof,10px));
-  backdrop-filter:blur(var(--dof,10px));
+#scene-game .world.khoi-on .khoi{opacity:1}
+/* Ba bờ khói. Mỗi bờ là mấy cụm bầu dục tán mềm ghép lại — cố ý lệch tâm và
+   lệch cỡ để không cụm nào giống cụm nào. Màu xám hơi ám xanh cho hợp ánh
+   sáng lạnh của rừng tàn tích, KHÔNG dùng trắng tinh: trắng tinh trên nền tối
+   thành một mảng chói, nhìn ra ngay là dán vào. */
+#scene-game .khoi i{
+  position:absolute;left:0;right:0;top:-20%;bottom:-20%;display:block;
+  background-repeat:no-repeat;
+  will-change:transform;
 }
-/* Máy không hiểu backdrop-filter (rất hiếm): rơi xuống một dải tối chân khung.
-   Nét khắc cao vài pixel, dìm xuống chừng ấy là không đọc ra nữa — mà vẫn chỉ
-   là bóng tối tán dần, không phải miếng vá. Kém khéo hơn nhưng không lộ. */
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  #scene-game .world.dof-on .dof{
-    opacity:1;
-    background:linear-gradient(to bottom,rgba(4,7,12,0) 0%,rgba(4,7,12,.93) 46%,rgba(4,7,12,.97) 100%);
-  }
+#scene-game .khoi .k1{
+  background-image:
+    radial-gradient(ellipse 26% 46% at 18% 52%, rgba(206,214,222,.72) 0%, rgba(206,214,222,.46) 46%, transparent 78%),
+    radial-gradient(ellipse 34% 52% at 46% 46%, rgba(214,221,228,.76) 0%, rgba(214,221,228,.5) 44%, transparent 76%),
+    radial-gradient(ellipse 28% 44% at 76% 56%, rgba(200,209,218,.7)  0%, rgba(200,209,218,.44) 46%, transparent 78%);
+  animation:khoiTroi1 23s linear infinite;
+}
+#scene-game .khoi .k2{
+  background-image:
+    radial-gradient(ellipse 32% 40% at 30% 60%, rgba(196,206,215,.6) 0%, rgba(196,206,215,.38) 48%, transparent 80%),
+    radial-gradient(ellipse 24% 50% at 64% 44%, rgba(210,218,226,.64) 0%, rgba(210,218,226,.42) 46%, transparent 78%);
+  animation:khoiTroi2 29s linear infinite;
+}
+#scene-game .khoi .k3{
+  background-image:
+    radial-gradient(ellipse 40% 38% at 52% 62%, rgba(188,199,210,.54) 0%, rgba(188,199,210,.33) 50%, transparent 82%);
+  animation:khoiTroi3 17s linear infinite;
+}
+/* Bờ thứ tư: THẤP, DẸT, ĐẶC — nằm đúng dải bảng đá và chỉ dải đó.
+   Vì sao cần thêm một bờ riêng thay vì đẩy ba bờ trên đậm lên: đẩy cả ba lên
+   là cả mảng khói dày thêm, quay lại đúng cái "tường sương" của bản đầu, mất
+   hết mấy khối đá nhô ra hai bên. Bờ này dẹt (cao 26%) nên chỉ dày thêm đúng
+   chỗ cần giấu chữ, phần còn lại vẫn thưa như cũ.
+   ĐO ĐỂ CHỌN: bản không có bờ này, phóng to 3 lần vẫn đọc mờ mờ ra NUY OAHZ. */
+#scene-game .khoi .k4{
+  background-image:
+    radial-gradient(ellipse 46% 26% at 40% 56%, rgba(212,219,226,.8) 0%, rgba(212,219,226,.52) 52%, transparent 84%),
+    radial-gradient(ellipse 38% 22% at 74% 60%, rgba(204,213,222,.76) 0%, rgba(204,213,222,.48) 54%, transparent 86%);
+  animation:khoiTroi4 21s linear infinite;
+}
+/* Trôi ngang trong lòng khung đã nới rộng 25% mỗi bên, nên hai đầu bờ khói
+   không bao giờ lọt vào tầm nhìn — chỉ thấy khói đi qua, không thấy nó bắt
+   đầu hay kết thúc ở đâu. */
+@keyframes khoiTroi1{from{transform:translateX(-6%) scaleY(1)}
+  50%{transform:translateX(4%) scaleY(1.08)} to{transform:translateX(-6%) scaleY(1)}}
+@keyframes khoiTroi2{from{transform:translateX(5%) scaleY(1.05)}
+  50%{transform:translateX(-5%) scaleY(.96)} to{transform:translateX(5%) scaleY(1.05)}}
+@keyframes khoiTroi3{from{transform:translateX(-3%)}
+  50%{transform:translateX(6%)} to{transform:translateX(-3%)}}
+@keyframes khoiTroi4{from{transform:translateX(4%)}
+  50%{transform:translateX(-4%)} to{transform:translateX(4%)}}
+@media (prefers-reduced-motion:reduce){
+  #scene-game .khoi i{animation:none}
 }
 
 #scene-game .slab .cells{position:absolute;inset:0;display:flex}
@@ -511,10 +557,34 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    config: vòng 2 đẩy sáng và tương phản cao hơn cho nét dày và rõ ngang vòng 1.
    `contrast` là thứ làm chữ NÉT chứ không chỉ sáng: nó kéo giãn khoảng cách
    giữa nét khắc và mặt đá, mép chữ sắc lại thay vì nhoè ra. */
+/* ── ĐÁP ÁN SÁNG LÊN: CẢ CHUỖI BỘ LỌC ĐỌC TỪ CONFIG ──────────────────────
+   `--sol-f` do fitSlabs() ghi, lấy từ `solved_glow` của đúng vòng đang chơi.
+   Vòng nào khai `f` thì dùng nguyên chuỗi đó; không khai thì tự ghép lại đúng
+   bộ ba cũ brightness/saturate/contrast — vòng 1 nhờ vậy không đổi một nét.
+
+   ═══ VÌ SAO VÒNG 2 CẦN NHUỘM LẠI, KHÔNG PHẢI TĂNG SÁNG ═══════════════════
+   Đã báo: "ZHAO YUN nhìn tối hơn mấy chữ xung quanh". Đo mới ra đúng bệnh —
+   nó KHÔNG tối, nó BẠC MÀU:
+
+       nét ZHAO YUN (bản cũ)   độ sáng 142   bão hoà  67
+       biển EIMIMRE bên trái   độ sáng 147   bão hoà  89
+       biển MIDNIGHT bên phải  độ sáng 136   bão hoà  80
+
+   Độ sáng đã ngang ngửa rồi, chỉ có màu là nhạt hơn hẳn một phần ba. Mắt đọc
+   "nhạt" thành "tối", nên càng vặn brightness lên càng hỏng: nét khắc gốc vốn
+   trắng ngà, đẩy sáng nữa là ba kênh cùng chạm trần rồi tiệp thành trắng —
+   mất nốt chút màu còn lại. Đo được: kéo brightness từ 3.35 xuống 2.2 hay lên
+   4 thì bão hoà vẫn đứng im ở 67.
+
+   NAY NHUỘM: `sepia()` kéo cả mảng về một gốc hổ phách ấm, `saturate()` đẩy
+   đậm lên, rồi mới `brightness()` nâng sáng và `contrast()` làm sắc nét lại.
+   THỨ TỰ QUAN TRỌNG — nhuộm TRƯỚC lúc pixel còn tối; nhuộm sau khi đã đẩy
+   sáng thì chỉ nhuộm được một mảng trắng, ra màu kem nhợt.
+   Đo lại bộ mới: độ sáng 137, bão hoà 81 — trùng khít biển MIDNIGHT. */
 #scene-game .slab.solved .cell{
   animation:none;
   opacity:1;
-  filter:brightness(var(--sol-b,2.6)) saturate(var(--sol-s,1.5)) contrast(var(--sol-c,1))
+  filter:var(--sol-f, brightness(2.6) saturate(1.5) contrast(1))
     drop-shadow(0 0 2px var(--slab-c)) drop-shadow(0 0 7px var(--slab-c)) drop-shadow(0 0 14px var(--slab-c));
   transition:filter .42s ease-out,opacity .42s ease-out;
 }
@@ -1043,9 +1113,9 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
               </button>
 
               <div class="anim-layer" id="animLayer"></div>
-              <!-- Dải mất nét tiền cảnh, chỉ bật lúc clip nổ chạy. Phải nằm SAU
-                   .anim-layer trong DOM thì mới nhoè được cái clip nằm dưới. -->
-              <div class="dof" id="dof"></div>
+              <!-- Khói sót lại sau vụ nổ, chỉ bật lúc clip chạy. Phải nằm SAU
+                   .anim-layer trong DOM thì mới phủ được cái clip nằm dưới. -->
+              <div class="khoi" id="khoi"><i class="k1"></i><i class="k2"></i><i class="k3"></i><i class="k4"></i></div>
               <div class="ow-layer" id="owLayer"></div>
             </div>
           </div>
@@ -1139,7 +1209,10 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
         </div>
       </div>
     </div>
-    <span class="vstamp" id="cStamp"></span>
+    <!-- Cửa ẩn: gõ 3 nhịp vào tem là mở sổ phiên bản của riêng trang này.
+         Màn này không có bảng điều khiển nào để nhét nút vào, mà tem lại đúng
+         là chỗ người ta mò tới đầu tiên. Xem /assets/lichsu.js. -->
+    <span class="vstamp" id="cStamp" data-ls="DAD-B"></span>
   </div>
 </main>
 
@@ -1536,7 +1609,7 @@ const el = {
   root:$('#scene-game'), stage:$('#stage'), slot:$('#scene-game .slot'),
   bezel:$('#scene-game .bezel'), screen:$('#screen'), world:$('#world'),
   bg:$('#bgLayer'), dragon:$('#dragonLayer'), aura:$('#aura'),
-  slab1:$('#slab1'), row1:$('#row1'), slab2:$('#slab2'), row2:$('#row2'), dof:$('#dof'),
+  slab1:$('#slab1'), row1:$('#row1'), slab2:$('#slab2'), row2:$('#row2'), khoi:$('#khoi'),
   hotspot:$('#hotspot'), tapLabel:$('#tapLabel'), animLayer:$('#animLayer'),
   narr:$('#narr'), ctrl:$('#ctrl'), input:$('#answer'), unlock:$('#unlock'),
   hud:$('#hud'), hudRound:$('#hudRound'), hudText:$('#hudText'), hint:$('#hint'),
@@ -1622,20 +1695,6 @@ const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
 const VEIL_PAD_X_SACH = 0.30, VEIL_PAD_Y_SACH = 0.85;
 /* Bán kính nhoè = bấy nhiêu lần CHIỀU CAO bảng đá (xem ghi chú ở fitSlabs) */
 const VEIL_BLUR_K = 0.27;
-/* Bán kính mất nét của dải tiền cảnh = bấy nhiêu phần CHIỀU CAO KHUNG.
-   Buộc vào chiều cao khung chứ không để số px cứng: nét khắc cao ~7px trên
-   điện thoại nhưng ~14px trên màn rộng, mà blur(10px) thì ở đâu cũng 10px —
-   màn càng to chữ càng đọc được. Theo khung thì mọi cỡ máy nhoè như nhau.
-   ĐO ĐỂ CHỌN SỐ, KHÔNG ƯỚC LƯỢNG: nét khắc trên bảng đá cao 44px trong ảnh
-   nền 1376px, tức 3,2% chiều cao khung; từng nét chỉ dày cỡ 0,4%. Khung cao
-   ~300px trên điện thoại thì chữ cao ~10px, nét dày ~1,3px. Nhoè 4-5px là nét
-   tan hẳn vào nhau, không còn hình chữ nào để đọc.
-   BẢN ĐẦU ĐẶT 0.026 (~8px) LÀ QUÁ TAY: cả dải đáy thành một vệt bôi phẳng
-   lì, mất luôn hình khối mấy bệ đá — nhìn ra "ai đó bôi mờ chân màn hình"
-   chứ không ra "ống kính đang lấy nét chỗ khác". Hạ xuống 0.015 (~4,5px):
-   chữ vẫn tan sạch, mà bệ đá và đám nấm phía trước vẫn còn ra hình — đúng
-   cái mềm của tiền cảnh mất nét. Có sàn 4px cho máy nào khung quá thấp. */
-const DOF_K = 0.015, DOF_MIN = 4;
 function cutOut(node, W, H, L, T2, w, h){
   node.style.width  = w.toFixed(2) + 'px';
   node.style.height = h.toFixed(2) + 'px';
@@ -1651,8 +1710,6 @@ function cutOut(node, W, H, L, T2, w, h){
 function fitSlabs(){
   const W = el.world.offsetWidth, H = el.world.offsetHeight;
   if(!W || !H) return;
-  /* Dải mất nét tiền cảnh (xem `.dof` trong CSS) đo theo chiều cao khung */
-  el.world.style.setProperty('--dof', Math.max(DOF_MIN, H * DOF_K).toFixed(2) + 'px');
   [[el.slab1, el.row1, C.round1], [el.slab2, el.row2, C.round2]].forEach(([slab,row,cfg])=>{
     const n = row.children.length;
     if(!n) return;
@@ -1684,9 +1741,10 @@ function fitSlabs(){
     /* Độ sáng / độ tươi / độ tương phản của ĐÁP ÁN khi giải xong — mỗi vòng một
        bộ, xem ghi chú ở `.slab.solved .cell` trong CSS. */
     const sg = cfg.solved_glow || {};
-    slab.style.setProperty('--sol-b', sg.b != null ? sg.b : 2.6);
-    slab.style.setProperty('--sol-s', sg.s != null ? sg.s : 1.5);
-    slab.style.setProperty('--sol-c', sg.c != null ? sg.c : 1);
+    slab.style.setProperty('--sol-f', sg.f || (
+      'brightness(' + (sg.b != null ? sg.b : 2.6) + ') ' +
+      'saturate('   + (sg.s != null ? sg.s : 1.5) + ') ' +
+      'contrast('   + (sg.c != null ? sg.c : 1)   + ')'));
     /* Ranh giới từng ô: ưu tiên dãy `cell_edges` đo bằng dò pixel. Chia đều
        chỉ đúng khi các ký tự cách nhau bằng nhau — chuỗi có DẤU CÁCH thì không,
        chia đều là cắt mất nét của ký tự ngay sau khoảng trắng. */
@@ -2176,7 +2234,15 @@ async function apDungAnh(slab, vong, urlCoChu, nen){
    đầu chạy. Cần cái mốc đó vì mọi nhịp che đều tính theo % độ dài clip: đo từ
    trước khi `load()` xong là lệch mất một quãng, mà quãng đó dài ngắn tuỳ máy. */
 async function playClip(src, ms, khiChay){
-  await load(src);
+  /* Hỏng file / mất mạng giữa chừng thì ĐỪNG bật lớp clip lên: lớp đó nền đen
+     kịt, bật lên mà không có ảnh là người chơi ngồi nhìn một khung đen suốt
+     mấy giây rồi cảnh tự nhảy — tưởng trang chết. Thà bỏ qua clip, cắt thẳng
+     sang cảnh sau, vẫn chơi tiếp được. */
+  if(!(await load(src))){
+    if(khiChay) khiChay();
+    await wait(Math.min(ms, 600));
+    return;
+  }
   el.animLayer.innerHTML = '';
   const im = new Image(); im.src = src;
   el.animLayer.appendChild(im);
@@ -2420,12 +2486,12 @@ async function win1(){
 
   /* ── TRONG CLIP THÌ MẤT NÉT TIỀN CẢNH, RA KHỎI CLIP MỚI DÁN ĐÁ ───────────
      Suốt lúc clip chạy, lớp che đá NẰM YÊN Ở OPACITY 0 — không dán gì lên một
-     cảnh đang động. Việc giấu chữ giao hết cho dải mất nét `.dof` (xem CSS):
-     nó nhoè chính clip nằm dưới, toàn chiều ngang, nên không có vật liệu lạ
-     nào để mà lệch và cũng không có mép nào để mà nhìn ra.
-     Bật từ mốc 26% — đo trên 241 khung thì từ 26% tới 40% cả chân khung chìm
-     trong khói trắng (độ lệch sáng chỉ còn 2-5 nấc), bật một hiệu ứng nhoè
-     lên mảng trắng phẳng đó thì không ai thấy gì.
+     cảnh đang động. Việc giấu chữ giao hết cho lớp KHÓI `.khoi` (xem CSS):
+     nó là một vật thể trong chính câu chuyện — phòng lab vừa nổ xong — nên
+     mắt không đi tìm lời giải thích như với một vùng nhoè giữa trời.
+     Bật từ mốc 26% — đo trên 241 khung thì từ 26% tới 40% cả khung trắng xoá
+     vì khói THẬT. Khói giả nở ra ngay trong lòng khói thật rồi ở lại, không
+     ai bắt được khoảnh khắc nó xuất hiện.
      `chu_lo_at` (đo được 40,8%) là CHỐT CHẶN: lỡ máy lag quá mà tới mốc đó
      vẫn chưa bật thì bật tức thì, không nhoà dần nữa.
      Tới khi clip tắt mới đổi vai: tắt dải mất nét, thả lớp che đá xuống. Lúc
@@ -2442,8 +2508,8 @@ async function win1(){
   const batMo = tuc_thi =>{
     if(daMo) return;
     daMo = true;
-    if(el.dof) el.dof.style.transition = tuc_thi ? 'none' : '';
-    el.world.classList.add('dof-on');
+    if(el.khoi) el.khoi.style.transition = tuc_thi ? 'none' : '';
+    el.world.classList.add('khoi-on');
   };
   const canhMo = ()=>{
     if(daMo) return;
@@ -2463,8 +2529,8 @@ async function win1(){
      đá đục 100% (khớp từng pixel với nền), dải mất nét tắt hẳn. */
   veil2.style.transition = 'none';
   veil2.style.opacity = '1';
-  if(el.dof) el.dof.style.transition = '';
-  el.world.classList.remove('dof-on');
+  if(el.khoi) el.khoi.style.transition = '';
+  el.world.classList.remove('khoi-on');
   await startRound2();
 }
 
@@ -2833,12 +2899,17 @@ function owMatTat(){
   owMatHienTai = '';
   el.owLayer.classList.remove('on');
   el.owLayer.innerHTML = '';
+  el.owLayer.style.backgroundImage = '';    /* gỡ luôn ảnh mồi */
 }
 /* Đổi nét mặt. `giu_ms` > 0 = phát một lần rồi tự về nét nghỉ. */
 async function owMat(ten, giu_ms){
   const ten_file = (OW.mat || {})[ten];
   if(!ten_file || ten === owMatHienTai) return;
   const src = C.assets_base + ten_file;
+  /* ẢNH MỒI TRƯỚC, CLIP SAU — xem ghi chú ở `mat_moi` trong config.
+     Dán ngay ở đây, TRƯỚC `await load(src)`: cái await đó là chỗ đứng chờ cả
+     5 MB, và trước bản này thì suốt quãng chờ khung chỉ là một mảng đen. */
+  owMoi();
   if(!(await load(src))) return;            /* thiếu file thì thôi, đừng vẽ gì */
   if(!owOn) return;                          /* đã rời khu này trong lúc nạp   */
 
@@ -2855,7 +2926,23 @@ async function owMat(ten, giu_ms){
 
   if(giu_ms) owMatHen = setTimeout(()=> owMat('nhin'), giu_ms);
 }
-function owNapMat(){ Object.values(OW.mat || {}).forEach(f=> f && load(C.assets_base + f)); }
+function owNapMat(){
+  if(OW.mat_moi) load(OW.mat_moi);          /* mồi nhẹ hều, nạp trước tiên */
+  Object.values(OW.mat || {}).forEach(f=> f && load(C.assets_base + f));
+}
+/* Dán ảnh mồi làm nền khung Open World. Gọi bao nhiêu lần cũng được — đặt
+   cùng một URL thì trình duyệt không tải lại, và ảnh nằm DƯỚI mấy thẻ clip
+   nên clip về tới đâu là che tới đó, không thấy chỗ nối. */
+function owMoi(){
+  if(!OW.mat_moi) return;
+  const u = 'url("' + OW.mat_moi + '")';
+  if(el.owLayer.style.backgroundImage !== u){
+    el.owLayer.style.backgroundImage = u;
+    el.owLayer.style.backgroundSize = 'cover';
+    el.owLayer.style.backgroundPosition = 'center';
+  }
+  el.owLayer.classList.add('on');
+}
 
 function homNay(){
   return new Date(Date.now() + 7*36e5).toISOString().slice(0,10);   /* +07:00 */
@@ -3099,12 +3186,12 @@ function reset(){
   el.root.classList.remove('r2');
   el.hud.classList.remove('ok');
   el.animLayer.classList.remove('on'); el.animLayer.innerHTML = '';
-  /* Dải mất nét tiền cảnh nằm trên `.world`, KHÔNG nằm trong `.slab` như lớp
-     che đời trước — nên vòng lặp dọn slab ở trên không đụng tới nó. Phải gỡ
-     riêng ở đây, không thì bấm Chơi lại giữa lúc clip đang chạy là cả chân
-     khung nhoè lì suốt ván sau. */
-  el.world.classList.remove('dof-on');
-  if(el.dof) el.dof.style.transition = '';
+  /* Lớp khói nằm trên `.world`, KHÔNG nằm trong `.slab` như lớp che đời
+     trước — nên vòng lặp dọn slab ở trên không đụng tới nó. Phải gỡ riêng ở
+     đây, không thì bấm Chơi lại giữa lúc clip đang chạy là khói đọng lại suốt
+     ván sau. */
+  el.world.classList.remove('khoi-on');
+  if(el.khoi) el.khoi.style.transition = '';
   CAM.enabled = true; camTo(0,0);
   el.boot.style.display = ''; el.boot.classList.remove('gone');
   el.startBtn.hidden = true;

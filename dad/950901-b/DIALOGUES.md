@@ -283,11 +283,11 @@ Cách chữa:
 
 1. `win1()` gọi `prepRound2()` **trước khi phát clip** — dựng sẵn nền, rồng,
    bảng đá, cuộn thư ở phía sau clip.
-2. Tới mốc `timing.che_vao_at` (**0.26** của clip, lúc chân khung còn kín khói)
-   thì bật **dải MẤT NÉT TIỀN CẢNH** `.dof`. `timing.chu_lo_at` (0.40) là chốt
-   chặn: máy lag quá mà chưa bật thì bật tức thì, không nhoà dần nữa.
+2. Tới mốc `timing.che_vao_at` (**0.26** của clip, lúc cả khung còn trắng xoá
+   vì khói thật) thì thả lớp **KHÓI** `.khoi`. `timing.chu_lo_at` (0.40) là
+   chốt chặn: máy lag quá mà chưa bật thì bật tức thì, không nở dần nữa.
 3. Clip tắt là **cắt thẳng** sang cảnh tĩnh đã dựng sẵn (lớp che đá đục 100%,
-   khớp từng pixel), dải mất nét tắt hẳn — đọc như một cú lấy nét về.
+   khớp từng pixel), khói tan hẳn cùng lúc.
 
 #### Ba đời trước đều chữa sai chỗ
 
@@ -299,29 +299,37 @@ Cả ba đều là *"úp một mảng lên đúng ô chữ"*, và cả ba đều
 | 2 | cho miếng dán **trôi theo** đường cong đó | hết thò chữ, nhưng thành *"một hình chữ nhật có vân đá riêng, tự bò trong khung"* — tệ hơn hẳn |
 | 3 | bỏ dán, thả một vệt **làm mờ hình bầu dục** ngay trên ô chữ | hết vật liệu lạ, nhưng vẫn còn một cái HÌNH: quầng xám (hạ sáng .78, rút màu .3) nằm lì giữa khung gần 5 giây |
 
-**Gốc rễ chung:** hễ vùng che **có hình dạng riêng** — chữ nhật hay bầu dục —
-thì nó là một vật thể lạ trên khung hình. Chỉnh thông số kiểu gì cũng vô ích.
+| 4 | cả dải đáy khung **mất nét** (tiền cảnh out nét) | đỡ hơn, nhưng vẫn là "cục mờ bay lơ lửng ở không trung" — chỗ đó chẳng có gì sinh ra độ mờ cả |
 
-#### Đời này: bỏ hẳn khái niệm "vùng che"
+**Gốc rễ của cả bốn:** đều là **hiệu ứng quang học đặt vào một chỗ không có
+nguyên nhân**. Mắt không giải thích được thì đọc ngay ra "lỗi".
 
-Thay bằng thứ máy quay nào cũng có: **tiền cảnh mất nét**. Cả dải đáy khung —
-**toàn chiều ngang, không có mép trái mép phải nào** — nhoè dần từ trên xuống,
-y như ống kính đang lấy nét vào quả trứng nên mấy bệ đá sát chân khung mờ đi.
-Mắt đọc ra là *chiều sâu*, không phải *vết che*.
+#### Đời này: dùng thứ có sẵn trong chính câu chuyện — KHÓI
 
-Ba điểm khiến nó không bao giờ lộ:
+Phòng lab vừa nổ tung ngay trước đó, khói trắng phủ kín khung ở mốc 26-40%.
+Khói còn vương lại la đà sát mặt đất là chuyện đương nhiên, **không cần giải
+thích gì**. Nó không phải "vùng che", nó là một vật thể trong cảnh.
 
-- **Không dán vật liệu nào** — chỉ nhoè chính clip nằm dưới (`backdrop-filter`).
-  Cảnh trôi đi đâu thì vệt nhoè vẫn nằm đúng trên nó. Hết chuyện canh 13px.
-- **CHỈ `blur()`**, không đụng vào sáng / tươi / tương phản. Đời 3 hạ sáng và
-  rút màu — chính hai thứ đó vẽ ra cái quầng xám.
-- Mép trên tán bằng gradient dọc dài 1/3 dải, mép dưới trùng luôn đáy khung.
-  **Không tồn tại một đường viền kín nào.**
+Bốn điểm khiến nó tự nhiên:
 
-Bán kính nhoè = `DOF_K` (**0.015**) × chiều cao khung, sàn 4px — buộc vào khung
-chứ không để số px cứng, không thì màn càng to chữ càng đọc được. Bản đầu đặt
-0.026 (~8px) là **quá tay**: cả dải đáy thành một vệt bôi phẳng lì, mất luôn
-hình khối mấy bệ đá.
+- **Không phải hình khối đều.** Bốn bờ khói to nhỏ khác nhau chồng lên nhau,
+  mỗi bờ trôi một tốc độ (17s / 21s / 23s / 29s) và ngược chiều nhau, nên
+  đường viền tổng luôn đổi — không bao giờ đứng thành một cái "cục".
+- **Trôi ngang**, la đà theo mặt đất, đúng kiểu khói nặng sau vụ nổ.
+- Đặc nhất đúng dải bảng đá rồi loãng dần lên trên và xuống dưới, mép nào cũng
+  tán bằng gradient — không tồn tại một đường viền kín nào.
+- Nở ra từ mốc 26%, tức là **lúc cả khung còn trắng xoá vì khói THẬT**. Khói
+  giả sinh ra ngay trong lòng khói thật rồi ở lại; không ai bắt được khoảnh
+  khắc nó xuất hiện.
+
+**Bờ thứ tư (`.k4`) thấp và dẹt**, chỉ nằm đúng dải bảng đá. Vì sao cần thêm
+một bờ riêng thay vì đẩy ba bờ trên đậm lên: đẩy cả ba là cả mảng khói dày
+thêm, quay lại đúng cái "tường sương" của bản đầu, mất hết mấy khối đá nhô ra
+hai bên. Đo được: bản không có `.k4`, phóng to 3 lần vẫn đọc mờ mờ ra
+`NUY OAHZ`; có `.k4` thì chỉ còn một vệt nhoè không ra chữ.
+
+**Còn `REZAR` thì kệ** — vòng 1 lúc đó giải xong rồi, người chơi thấy lại mã cũ
+cũng chẳng mất gì. Chỉ `NUY OAHZ` mới cần giấu.
 
 | Trạng thái | Hiện tượng |
 |---|---|

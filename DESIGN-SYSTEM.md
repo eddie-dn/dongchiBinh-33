@@ -150,40 +150,77 @@ nhịp cách nhau dưới 0,9 giây**; quá giờ thì đếm lại từ đầu.
 
 ### 5.1 · SỔ PHIÊN BẢN — cửa hậu TẦNG HAI
 
-Sổ phiên bản **không có đường vào riêng**. Nó nằm sau cửa hậu đã có sẵn của
-từng trang, thêm một tầng nữa:
+Sổ phiên bản **không có đường vào riêng**. Nó nấp sau bảng điều khiển đã có sẵn
+của từng trang, thêm một tầng nữa:
 
 ```
 mở bảng điều khiển của trang (cửa hậu cũ, không đổi gì)
-  → trong bảng có MỘT NÚT ICON nhỏ
-  → bấm 3 nhịp vào nút đó
+  → bấm 3 nhịp vào CỬA ẨN trong bảng
   → gõ mã 0981
   → hiện sổ CỦA RIÊNG TRANG ĐÓ
 ```
 
 **"Của riêng trang đó" là luật cứng.** Đứng ở Zoey's Castle thì chỉ thấy lịch
 sử của Zoey's Castle. Sáu cuốn sổ nằm chung một file cho dễ sửa, nhưng không
-bao giờ hiện chung một bảng — mỗi trang một câu chuyện riêng.
+bao giờ hiện chung một bảng.
 
-| Trang | Bảng điều khiển | Mã trang |
+| Trang | Cửa ẩn nằm ở | Mã trang |
 |---|---|---|
-| Bản đồ mật thư | Box Tổng tư lệnh | `MAP` |
-| Easter Egg · Gate 1 | thẻ *Mission 3 · Phá đảo* | `DAD-A` |
-| Easter Egg · Gate 2 | hàng nút mà cửa hậu 10 nhịp mở ra | `DAD-B` |
-| Zoey's Castle | Khối vận hành | `HAN-A` |
-| HongHan's Secret Chamber | Khối vận hành | `HAN-B` |
+| Bản đồ mật thư | **mặt cười** cạnh "Chọn chiến dịch" trong Box Tổng tư lệnh | `MAP` |
+| Easter Egg · Gate 1 | nút tròn trong thẻ *Mission 3 · Phá đảo* | `DAD-A` |
+| Easter Egg · Gate 2 · màn cổng | nút tròn cạnh nút *Bỏ qua* | `DAD-B` |
+| Easter Egg · Gate 2 · màn phát mã | **dòng tem** ở chân màn hình | `DAD-B` |
+| Zoey's Castle · Secret Chamber | nút tròn trong Khối vận hành | `HAN-A` · `HAN-B` |
 | Màn pháo hoa | *chưa có bảng nào* → chưa gắn | `FX` |
+
+**CÓ HÌNH HAY KHÔNG CÓ HÌNH — chọn theo chỗ đặt:**
+
+- Chỗ nào bảng còn rộng, thêm một nút tròn không phá bố cục → dùng `.ls-key`
+  (nút tròn 28px, mượn màu chữ của bảng).
+- Chỗ nào thêm nút vào là hỏng bố cục → **giấu hẳn**, chỉ gắn `data-ls` lên một
+  thứ đã có sẵn ở đó (mặt cười, dòng tem). Không viền, không con trỏ, không gì
+  cả — đúng tinh thần cửa hậu.
 
 Sai mã 3 lần thì được **một** gợi ý, và chỉ một.
 
-**Nút đặt bên TRÁI hàng nhãn**, không phải bên phải: góc phải trên của mọi
+**Nút tròn đặt bên TRÁI hàng nhãn**, không phải bên phải: góc phải trên của mọi
 bảng trong bộ này đều là chỗ của nút đóng `✕`, để bên phải là hai nút đè lên
 nhau. Đã vấp đúng lỗi này.
 
-**Luật viết cột "Sửa chính":** sổ này người chơi mở ra đọc được, nên chỉ ghi
-LOẠI VIỆC (*cập nhật API · chỉnh hiệu ứng · chỉnh luật chơi · đồng bộ hệ nút*),
-tuyệt đối không ghi mã, đáp án, tên biến môi trường hay tên endpoint. Không
-biết đời đó sửa gì thì ghi `no info` và **giữ nguyên số phiên bản**.
+### 5.2 · Hộp sổ mượn màu của trang đang đứng
+
+Hộp **không có bảng màu riêng**. Mọi màu đọc từ sáu biến, trang nào khai đè thì
+hộp mang màu trang đó:
+
+```css
+:root{
+  --ls-bg:  /* nền hộp */      --ls-fg:   /* chữ chính */
+  --ls-mo:  /* chữ phụ */      --ls-line: /* đường kẻ */
+  --ls-acc: /* màu nhấn */     --ls-w:    /* bề ngang, mặc định min(340px,92vw) */
+}
+```
+
+> **BẪY ĐÃ VẤP.** Bản đầu khai bộ màu mặc định bằng một khối `:root{...}` ngay
+> trong CSS của `lichsu.js`. Hỏng: file đó gắn `<style>` vào cuối `<head>`, tức
+> nạp SAU toàn bộ CSS của trang; hai khối `:root` cùng độ ưu tiên thì khối sau
+> thắng — nên trang khai màu pastel xong vẫn ra hộp tối thui. Nay giá trị dự
+> phòng nằm trong chính `var(--x, dự-phòng)`, trang khai thì trang thắng.
+
+**Bề ngang bám theo thẻ hẹp nhất trong bộ (340px)**, không phải rộng hơn khung
+trang. Hộp bung ra to hơn cả khung màn hình là lỗi đã báo.
+
+**Ảnh cô AI vắt lên trên mép hộp thì hộp KHÔNG được `overflow`** — cuộn giao
+cho một lớp con. Để `overflow` ở hộp là đầu cô bị xén ngang.
+
+### 5.3 · Cột "#" đếm gì
+
+Mỗi dòng trong sổ là **MỘT BUILD LỚN** (V9, V10, V15…), không phải một bản vá.
+Cột `#` là **số bản vá ghi lại được trong build đó** — `V10.08` nghĩa là 09 bản.
+Không biết thì ghi **`thiếu info`** và **giữ nguyên số build**.
+
+Cột "Sửa chính" chỉ ghi **loại việc** (*cập nhật API · chỉnh hiệu ứng · chỉnh
+luật chơi · đồng bộ hệ nút*). Sổ này người chơi mở ra đọc được, nên tuyệt đối
+không ghi mã, đáp án, tên biến môi trường hay tên endpoint.
 
 ---
 
