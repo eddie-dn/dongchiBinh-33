@@ -14,6 +14,9 @@ Hai trang của Map 3 (khu hồ sơ là **khung HAN ngay trên bản đồ**, kh
 | `han/961030-a/index.html` | Bộ câu hỏi *Who's my kindred spirit?* |
 | `han/961030-b/index.html` | *HongHan's Secret Chamber* |
 
+> **Tên viết đúng một kiểu:** đứng một mình là **Secret Chamber** (không có `'s`).
+> Có tên người đứng trước mới là **HongHan's Secret Chamber**. Xem `DESIGN-SYSTEM.md` §3.
+
 ---
 
 ## 1. Câu hỏi và gợi ý — `han/961030-a/index.html`
@@ -155,8 +158,8 @@ var TRANGTHAI = [
 | `Đã trả lời đúng ✦` · `Câu này xong rồi ✦ Dùng mũi tên để đi tiếp` | hàm `drawQ()` — `961030-a`, nhánh xem lại |
 | `Câu này đang nghỉ · mở lại sau hh:mm:ss` | hàm `napXem()` — `961030-a` |
 | `Thu thập chìa khoá để mở Secret Chamber` · `Đủ chìa khoá rồi — mã mở Secret Chamber ở ngay dưới` (kèm chìa khoá hồng dựng dọc) | hàm `drawLead()` / `icoKhoa()` — `961030-a` |
-| `↺ Xem lại các câu` | hàm `xong()` — `961030-a` |
-| `Phá Đảo Lòng EM` · `HongHan's Secret` · `Thương gửi anh PIN` | hàm `xong()` — `961030-a` |
+| Hai nút biểu tượng cuối màn hoàn thành: **con mắt** = xem lại câu trả lời · **mũi tên quay vòng** = chơi lại từ đầu (chú thích nổi khi trỏ vào, xem `DESIGN-SYSTEM.md` §1) | hàm `xong()` — `961030-a` |
+| `Phá Đảo Lòng EM` · `It's you, my kindred soul.` · `Thương gửi anh PIN Secret Chamber` | hàm `xong()` — `961030-a` |
 | `Vui lòng nhập mã PIN ✦` | hàm `drawGate()` — `961030-b` |
 | `Cập nhật sau` · `Mở được rồi ✦` | hàm `drawBox()` / `moNoiDung()` — `961030-b` |
 | Nhãn hai hồ sơ trong khung HAN | mảng `NODES` + hàm `render()` — `index.html` (bản đồ) |

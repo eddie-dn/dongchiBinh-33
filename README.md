@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V17.06** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+**Phiên bản hiện tại: V17.07** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
 Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
@@ -19,34 +19,52 @@ Gate 2) → Zoey's Castle.
 /
 ├── index.html              ← TRANG CHỦ: bản đồ Việt Nam, 4 toạ độ
 ├── og.png                  ← ảnh chia sẻ 1200×630
-├── vercel.json             ← cleanUrls
-├── README.md
-├── .gitignore
+├── vercel.json             ← cleanUrls + includeFiles cho api/_lib
+├── .vercelignore           ← *.md, *.gs, docs/ — KHÔNG deploy tài liệu lên web
+├── README.md · USER-FLOW.md · DESIGN-SYSTEM.md
 │
-├── api/
-│   ├── ping.js             ← endpoint đo đạc, bắn về Telegram/Discord
+├── api/                    ← hàm serverless (xem §22b)
+│   ├── ping.js             ← đo đạc → Telegram/Discord + Google Sheets
 │   ├── note.js             ← bí danh của ping.js (đường chính, né bộ chặn)
-│   └── thu.js              ← endpoint nhận lời nhắn (hiện KHÔNG còn nút nào gọi tới)
+│   ├── thu.js              ← nhận lời nhắn (hiện KHÔNG còn nút nào gọi tới)
+│   ├── chat.js             ← khu Open World nói chuyện với Gemini
+│   ├── quote.js            ← hộp chào Greetings + Daily Quote
+│   └── _lib/               ← gạch dưới ở đầu = Vercel KHÔNG biến thành endpoint
+│       ├── tinhcach.js/.md ← giọng nhân vật trong Open World
+│       └── loichao.js/.md  ← câu chào + bộ quote sẵn
+│
+├── assets/                 ← DÙNG CHUNG cho mọi trang
+│   ├── lichsu.js           ← SỔ PHIÊN BẢN, cả sáu trang cùng nạp (xem §11b)
+│   ├── HH_*.webp           ← 6 clip nhân vật (mỗi clip ~5 MB)
+│   └── poster/HH_*.webp    ← khung tĩnh của 6 clip trên, ~35 KB mỗi cái
+│
+├── docs/                   ← tài liệu vận hành, KHÔNG deploy
+│   ├── GOOGLE-SHEETS.md    ← dựng sổ lưu Sheets trong 10 phút
+│   └── apps-script/Code.gs ← mã dán vào Apps Script
 │
 ├── phao-hoa/index.html     ← MAP 2 · màn pháo hoa, nền bản đồ tắt đèn
 ├── han/                    ← MAP 3 · ZOEY'S CASTLE
 │   ├── CHU-MAP3.md         ← toàn bộ câu chữ của Map 3, gom một chỗ để sửa
 │   ├── 961030-a/index.html ← WHO'S MY KINDRED SPIRIT · bộ câu hỏi, theme Sakura
-│   ├── 961030-b/index.html ← SECRET CHAMBER · nền dải ngân hà, mở bằng mã từ 961030-a
-│   └── 261030/index.html   ← MỒ CÔI: không còn đường nào trên bản đồ dẫn tới, xoá được
+│   └── 961030-b/index.html ← SECRET CHAMBER · nền dải ngân hà, mở bằng mã từ 961030-a
 ├── dad/
 │   ├── 950901-a/           ← DAD-950901-A · hồ sơ đã xuất bản
 │   │   ├── index.html
 │   │   ├── vercel.json     ← chỉ dùng khi deploy tách riêng
-│   │   ├── MISSIONS.md     ← luật chơi hệ 3 Mission
-│   │   ├── README.md
+│   │   ├── MISSIONS.md · README.md
 │   │   └── api/            ← bản sao cho deploy tách riêng, monorepo không build
-│   │       ├── ping.js
-│   │       └── note.js
-│   └── 950901-b/index.html ← DAD-950901-B · EASTER EGG · GATE 2 (đếm ngược, phát mã)
+│   └── 950901-b/           ← DAD-950901-B · EASTER EGG · GATE 2
+│       ├── index.html      ← toàn bộ mã game
+│       ├── config.js       ← MỌI nội dung và mốc thời gian, sửa ở đây
+│       ├── assets/         ← 2 clip + 4 ảnh nền + 5 ảnh Open World (~100 MB)
+│       └── *.md            ← DIALOGUES · OPEN-WORLD · OW-LOI-DAN · THU-VA-ANH
 ├── uih/                    ← chưa có hồ sơ
 └── sgn/                    ← chưa có hồ sơ
 ```
+
+> **`.vercelignore` PHẢI có dấu chấm ở đầu.** File này từng tên là `vercelignore`
+> (thiếu dấu chấm) nên Vercel không đọc — tức là suốt thời gian đó `/README.md` tải công
+> khai được, mà trong đó có sẵn đáp án của cả bốn mật thư lẫn mọi mã PIN. Đã đổi tên.
 
 Vercel tự phục vụ `dad/950901-a/index.html` tại `/dad/950901-a`. Một sub-page = một thư
 mục chứa đúng một `index.html`.
@@ -294,13 +312,18 @@ chạy nét đứt, cả đất liền nhấp nháy (`.frame.win`), bốn tên l
 **Độ sáng bản đồ** tăng dần theo tiến độ: `--lum = 0.80 + 0.05 × số mật thư đã giải`.
 Đường bay dùng `--lum²` nên đậm lên nhanh hơn.
 
-## 10. Ba cửa hậu
+## 10. Bốn cửa hậu
 
 | Cửa | Thao tác | Kết quả |
 |---|---|---|
 | **Tổng tư lệnh** | Bấm **5 cú liên tiếp** vào dòng bản quyền ở chân trang | Hộp **Box Tổng tư lệnh** hai bước, xem dưới |
 | **Collected: Easter Egg** | Bấm **10 cú liên tiếp** vào dòng Last updated | Khung `#credw`, xem mục riêng ngay dưới |
+| **Sổ phiên bản** | Cũng **10 cú** đó — hiện thêm một **nút icon** cạnh tem | Hỏi mã `0981` → bảng lịch sử phiên bản. Có ở **cả sáu trang**, xem §11b |
 | **Hack Map** | Trong Box Tổng tư lệnh, chọn chiến dịch rồi bấm **Hack Map** | Hộp PIN → nhập `1959`. Chữ `hackmap` gõ đúp đã bỏ, cơ chế PIN giữ nguyên |
+
+> Hai cửa "Collected" và "Sổ phiên bản" **dùng chung một thao tác** và cùng nổ ở nhịp thứ
+> 10 — cố ý vậy, người chơi chỉ phải nhớ một mẹo. Khung Collected mở đè lên màn hình,
+> nút sổ phiên bản thì nằm lại cạnh tem; đóng khung ra là thấy.
 
 Vùng bấm của cửa xoá sạch là **cả dòng bản quyền**, không chỉ lá cờ 15px — dễ trúng hơn
 nhiều trên điện thoại. Khi đang đếm, **chỉ lá cờ sáng và phóng to nhẹ**, phần chữ giữ
@@ -381,7 +404,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 19-Aug-2026 · V17.06** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 19-Aug-2026 · V17.07** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -402,6 +425,33 @@ vào `mtv1` ngay sau khi xoá. Đây là dấu vết duy nhất được phép t
 | `V22.09` | **`V24.00`** — nhảy qua 23 |
 
 Sửa chuỗi ở thuộc tính `data-base` của `#stamp`; `stampText()` sẽ ghép thêm `· R(n)`.
+
+### Bảng phiên bản của cả sáu trang (19-Aug-2026)
+
+| Trang | Đường | Đang chạy |
+|---|---|---|
+| Bản đồ mật thư | `/` | **V17.07** |
+| Easter Egg · Gate 1 | `/dad/950901-a` | **V22.02** |
+| Easter Egg · Gate 2 | `/dad/950901-b` | **V04.04** (khai ở `config.js`) |
+| Zoey's Castle | `/han/961030-a` | **V2.09** |
+| HongHan's Secret Chamber | `/han/961030-b` | **V2.00** |
+| Màn pháo hoa | `/phao-hoa` | **V3.03** |
+
+### Rà soát số phiên bản — ba chỗ đã lệch, đã xử
+
+Dò lại toàn bộ kho mã (đọc số tem của từng file ở từng lượt push) thì thấy ba chỗ số
+không khớp tiến độ. Ghi ra đây để lần sau khỏi vấp lại, và tất cả đã nằm trong **sổ
+phiên bản** (§11b) để người chơi mở ra cũng đọc được đúng như vậy:
+
+| Lệch | Chuyện gì | Xử thế nào |
+|---|---|---|
+| `han/961030-b` đi `V1.09 → V1.10 → V1.11` | **sai luật**: đuôi chỉ được chạy `00→09`, tới `V1.09` là phải sang `V2.00` | Nắn lại: đợt này ghi thẳng **`V2.00`**, bỏ qua `V1.12` |
+| `index.html` đi `V17.05 → V17.04` rồi lại `V17.05` | số **lùi một nấc** giữa hai lượt push ngày 18-08 — ghi tay nhầm | Đã tự vượt qua từ `V17.06`; chỉ ghi lại cho có sổ |
+| Đợt 1 (`Sửa mục 8-13`) sửa 4 file mà **không bump tem nào** | quên | Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật |
+
+Còn một chỗ **cố ý không đụng**: cách đệm số 0 ở phần `x` không đồng nhất
+(`V04.04`, `V22.02` có đệm — `V2.09`, `V3.03` không). Mỗi trang tự nhất quán với lịch sử
+của chính nó; nắn lại chỉ để cho đều mắt thì đổi số tem của bốn trang mà chẳng được gì.
 
 ### Nhấp nháy tem — BỐN lý do, đọc cả bảng trước khi thêm nhánh
 
@@ -429,6 +479,62 @@ Thứ tự gọi lúc khởi động (trong `boot`, sau 900 ms):
 `eggFlash('win')` → `eggFlash('gameon')` nếu đang Game On → rồi **hoặc** chuỗi
 nhắc bài (`clueChay`) **hoặc** `eggFlash('daily')` khi KHÔNG ở Game On. Ba
 nhánh sau loại trừ nhau để không có hai lượt nháy chồng lên nhau.
+
+---
+
+## 11b. SỔ PHIÊN BẢN — cửa hậu dùng chung cho cả sáu trang
+
+Một file duy nhất: **`assets/lichsu.js`**. Sáu trang cùng nạp nó, và **bảng dữ liệu nằm
+luôn trong file đó** (hằng `SO`).
+
+### Đường vào
+
+1. Gõ **10 nhịp liên tiếp** (mỗi nhịp cách nhau dưới 0,9 giây) vào dòng `Last updated…`
+   ở chân trang → hiện một **nút icon** nhỏ ngay phía trên tem.
+2. Bấm nút đó → hỏi mã. Mã là **`0981`** (chính là **1890** — năm sinh Bác Hồ — đọc ngược).
+3. Sai **3 lần** thì hiện **đúng một** câu gợi ý: *"Năm sinh Bác Hồ — soi gương mà đọc."*
+   Từ lần sai thứ tư trở đi vẫn đúng câu đó, **không có gợi ý thứ hai**.
+4. Vào rồi: một bảng cho từng trang, mỗi đời một dòng —
+   `Ngày (YYYY-MM-DD) · Bản · # (đời thứ mấy) · Sửa chính`. Trên cùng có hình cô AI
+   vắt ở mép hộp nhìn xuống.
+
+### Ba luật của bảng dữ liệu
+
+- **Không biết thì ghi `no info`, đừng đoán.** Kho mã mới bắt đầu được ghi từ
+  **17-08-2026**; mọi đời trước đó có thật (tem đã ở V17, V22, V2.05…) nhưng không còn
+  bản ghi nào để biết mỗi đời sửa gì.
+- **`no info` vẫn GIỮ NGUYÊN số phiên bản.** Không biết sửa gì là một chuyện, số tem là
+  chuyện khác — xoá số đi thì mất luôn cái mốc.
+- Mấy lượt push tên `Add files via upload` (tải thẳng qua web GitHub) cũng là `no info`:
+  không có lời ghi chú nào để mà đọc lại.
+
+### Nhớ trong PHIÊN, không nhớ vĩnh viễn
+
+Mò ra rồi thì đi sang trang khác nút vẫn còn (`sessionStorage.ls_key`). **Bắt buộc phải
+nhớ**, không phải cho tiện: ngoài bản đồ, cú bấm thứ 10 vào tem CÒN mở khung Collected và
+lần đầu nó bay thẳng sang màn pháo hoa — nút vừa hiện ra là trang đã đi mất.
+
+Đóng trình duyệt là quên, lần sau vẫn phải tự mò lại. Nhớ vĩnh viễn thì hết còn là cửa
+hậu, mà lại thêm một cái nút lạ nằm mãi trên cả sáu trang.
+
+Mã đã gõ đúng cũng chỉ nhớ trong phiên (`sessionStorage.ls_ok`).
+
+### Gắn vào một trang mới
+
+```html
+<span class="stamp" data-ls-stamp>Last updated …</span>
+…
+<script src="/assets/lichsu.js" defer></script>
+```
+
+Hết — không phải viết thêm CSS nào. Hai chỗ cần để ý:
+
+- Tem phải **bấm được**: mấy trang để `.vstamp{pointer-events:none}` thì phải mở ra
+  `auto`, kèm `user-select:none` cho gõ nhanh mười cái không dính mảng bôi đen.
+- Tổ tiên của tem đã có cửa hậu đếm nhịp riêng (Zoey's Castle và Secret Chamber: 5 nhịp
+  vào **cả cụm hoa + tem** mở bảng điều phối) thì thêm **`data-ls-rieng`** để tem nuốt cú
+  bấm. Không nuốt thì tới nhịp thứ 5 bảng kia bật ra, chẳng bao giờ đếm nổi tới 10.
+  Đổi lại, cửa hậu hoa ở hai trang đó nay **chỉ nhận cú bấm vào đúng bông hoa**.
 
 ---
 
@@ -540,6 +646,14 @@ Chế độ `telegram` không cần server nhưng **token lộ trong mã nguồn
 ---
 
 ## 15. Design system
+
+> **Bộ nút, biểu tượng và quy ước tên gọi đã tách ra file riêng: `DESIGN-SYSTEM.md`.**
+> Ở đó chốt: việc nào thì hình nào (cuộn phim = xem lại **hiệu ứng** · con mắt = xem lại
+> **nội dung** · mũi tên quay vòng = **reset**), mã SVG chuẩn để chép, luật chú thích nổi,
+> luật viết tên (**Secret Chamber**, không có `'s` khi đứng một mình), khuôn tem phiên bản
+> và luật `user-select:none`. Thêm nút mới thì tra file đó trước khi vẽ.
+>
+> Mục 15 này giữ lại phần **riêng của bản đồ** — trạng thái một dòng hồ sơ.
 
 ### Một dòng hồ sơ có ĐÚNG HAI trạng thái
 
@@ -1691,6 +1805,11 @@ Góc phải dưới mỗi trang HAN có tem giống bản đồ: chuỗi gốc �
 hàm `stampText()` ghép thêm `· R(n)` khi đã reset ít nhất một lần — nên số lần reset
 vẫn thấy được sau khi làm lại.
 
+Tem hai trang HAN mang thêm **`data-ls-rieng`**: gõ 10 nhịp vào tem mở **sổ phiên bản**
+(§11b), và thuộc tính đó bắt tem **nuốt cú bấm** để nó không chạy lên cửa hậu 5 nhịp của
+`#stampzone`. Đổi lại, **cửa hậu hoa nay chỉ nhận cú bấm vào đúng bông hoa**, không tính
+dòng tem nữa.
+
 ### Sửa nội dung
 
 - Câu hỏi và gợi ý: hằng `HOI` đầu khối script `961030-a`.
@@ -1734,6 +1853,7 @@ công khai — trình duyệt không bao giờ tải được.
 | `GEMINI_MODEL_QUOTE` | không | `gemini-flash-lite-latest` | model cho lời chào / quote |
 | `CHAT_LOG_URL` | không | — | có thì đẩy nhật ký chat tới đó (POST JSON) |
 | `CHAT_LOG_NOI_DUNG` | không | tắt | `1` = ghi cả nội dung câu hỏi/trả lời |
+| `SHEET_URL` | không | — | có thì chép **mọi tín hiệu tiến độ** sang Google Sheets |
 | `NOTIFY_KIND` | không | — | `telegram` \| `discord` \| `off` |
 | `TG_TOKEN`, `TG_CHAT` | nếu telegram | — | bot và đoạn chat nhận tin |
 | `NOTIFY_URL` | nếu discord | — | webhook của kênh |
@@ -1747,16 +1867,27 @@ Mỗi lượt hỏi ghi đúng một dòng JSON có prefix `[CHAT_LOG]`. Dòng �
 **tab Logs của Vercel** — gói Hobby giữ khoảng một tiếng rồi mất.
 
 **KHÔNG có gì trong dự án này đẩy log về GCP.** Gọi Gemini chỉ là một request
-HTTP; nó không sinh ra log nào bên Google Cloud. Muốn có thì phải tự nối, và
-đường ngắn nhất là khai `CHAT_LOG_URL` trỏ tới một chỗ nhận:
+HTTP; nó không sinh ra log nào bên Google Cloud.
 
-1. **Google Apps Script → Google Sheets** — dễ nhất, không cần GCP.
-   Tạo một Apps Script `doPost(e)` ghi `e.postData.contents` xuống Sheet, deploy
-   dạng Web App (quyền: Anyone), rồi dán URL vào `CHAT_LOG_URL`.
-2. **Cloud Run / Cloud Functions → Cloud Logging hoặc BigQuery** — đúng bài GCP.
-   Viết một hàm nhận POST rồi `console.log` (tự vào Cloud Logging) hoặc
-   `insertAll` vào BigQuery. Dán URL hàm đó vào `CHAT_LOG_URL`.
-3. **Vercel Log Drain** — không cần sửa mã, nhưng cần gói Pro.
+**Đường đã chọn: Google Apps Script → Google Sheets.** Mã dán sẵn ở
+`docs/apps-script/Code.gs`, từng bước một ở **`docs/GOOGLE-SHEETS.md`** (mất
+khoảng 10 phút, làm một lần). Không cần GCP, không cần thẻ, không tốn tiền,
+không có gì phải bảo trì — Apps Script chạy trong tài khoản Google bình thường,
+hạn mức miễn phí 20.000 lượt/ngày.
+
+Một địa chỉ Web App dùng cho **cả hai** biến, và tự chia hai tab:
+
+| Biến | Tab | Ai gửi |
+|---|---|---|
+| `SHEET_URL` | **Tiến độ** | `/api/ping` — mọi tín hiệu, kể cả sự kiện chưa khai nhãn |
+| `CHAT_LOG_URL` | **Chat** | `/api/chat` — mỗi lượt hỏi Open World một dòng |
+
+Sheets là **sổ lưu**, Telegram là **chuông báo**: sổ ghi đủ mọi thứ (nên `chepVeSheet()`
+gọi TRƯỚC hai cái chốt nhãn và chống trùng), chuông thì lọc cho đỡ ồn.
+
+Hai đường khác vẫn để ngỏ nếu sau này cần: **Cloud Run / Cloud Functions →
+Cloud Logging hoặc BigQuery** (đúng bài GCP), và **Vercel Log Drain** (không
+phải sửa mã, nhưng cần gói Pro).
 
 Mặc định nhật ký **chỉ ghi số liệu** (độ dài câu, thời gian, model, thành/bại,
 số token) — KHÔNG ghi nội dung. Đoạn chat có chuyện riêng của hai người. Muốn
@@ -1774,16 +1905,24 @@ ghi cả nội dung thì bật `CHAT_LOG_NOI_DUNG=1`, cố ý bắt khai riêng 
 | `han/CHU-MAP3.md` | Chỉ **câu chữ của Map 3** — sửa lời thoại thì mở đúng file này, khỏi lục HTML |
 | `dad/950901-a/MISSIONS.md` | Luật đầy đủ của hệ **3 Mission** trong hồ sơ DAD-950901-A |
 | `dad/950901-a/README.md` | Cách deploy hồ sơ đó **tách riêng** một domain, và hệ đo đạc bốn tầng |
+| `DESIGN-SYSTEM.md` | **Bộ nút và biểu tượng dùng chung**, quy ước tên gọi, khuôn tem, luật cửa hậu |
+| `docs/GOOGLE-SHEETS.md` | Dựng **sổ lưu Google Sheets** trong 10 phút — từng bước, kèm bảng lỗi hay vấp |
+| `docs/apps-script/Code.gs` | Mã Apps Script dán vào Sheet (không deploy lên Vercel — xem `.vercelignore`) |
 
 Quy ước để khỏi tam sao thất bản: **một chuyện chỉ nói ở một file**, chỗ khác thì trỏ
 sang. Ví dụ luật khoá gợi ý Map 3 nằm ở mục 22 của file này, `CHU-MAP3.md` chỉ nhắc lại
 đúng một hằng số cần sửa.
 
-### Trạng thái kiểm thử (16-Aug-2026)
+### Trạng thái kiểm thử (19-Aug-2026)
 
 Bộ kiểm thử đầu-cuối chạy bằng Chromium headless, **không nằm trong repo** (nó là công cụ
 dựng trang, không phải nội dung trang). Lượt chạy gần nhất: **31 bộ · 0 FAIL · 0 crash**,
 cộng một lượt soát giao diện 8 trang × 6 cỡ màn (320 → 1280 px) báo *SẠCH*.
+
+Đợt 5 soát thêm bằng tay, cả sáu trang: **sổ phiên bản** (10 nhịp → nút icon → mã `0981`
+→ bảng), **cửa hậu cũ vẫn chạy** (bản đồ mở khung Collected, Gate 2 hiện nút bỏ qua,
+Zoey's Castle 5 nhịp vào hoa mở bảng điều phối), và **chuyển cảnh Gate 2** chơi hết vòng 1
+rồi soi từng khung clip: chữ `NUY OAHZ` không đọc ra ở bất cứ khung nào.
 
 Phủ các luồng: chơi từ đầu tới phá đảo · ba Mission M1→M2→M3 · cửa hậu 10 nhịp và màn
 Collected · pháo hoa + quả trứng · Gate 2 hai trạng thái · cửa mã `HO CHI MINH` · bộ câu hỏi

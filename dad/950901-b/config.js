@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 19-Aug-2026 · V04.03'
+    version       : 'Last updated 19-Aug-2026 · V04.04'
   }
 };
 
@@ -166,15 +166,18 @@ const GAME_CONFIG = {
        bắt được ngay — đó là cái "đè lên hiệu ứng trong video". Lại còn muộn:
        chữ đọc được từ 40.8% rồi.
 
-       NAY KHÔNG DÁN MIẾNG ĐÁ NÀO NỮA. Từ mốc 26% (lúc ô đó còn chìm trong khói,
-       thả gì vào cũng không ai thấy) chỉ bật một vệt LÀM MỜ TẠI CHỖ: nó làm
-       nhoè chính cái clip nằm dưới, không mang vật liệu lạ nào lên. Cảnh có
-       trôi đi đâu thì vệt mờ vẫn nằm đúng trên nó, mép lại tán tròn nên không
-       có cạnh nào để nhìn ra. Xem `.slab .mo` trong index.html. */
-    che_vao_at    : 0.26,   /* bắt đầu thả lớp che (ô còn kín khói) */
+       ĐỜI SAU ĐÓ bỏ dán, thả một vệt LÀM MỜ HÌNH BẦU DỤC ngay trên ô chữ. Hết
+       vật liệu lạ, nhưng vẫn còn một cái HÌNH: quầng xám nhạt (hạ sáng .78,
+       rút màu còn .3) nằm lì giữa khung gần 5 giây — vẫn nhìn ra.
+
+       NAY BỎ HẲN KHÁI NIỆM VÙNG CHE. Từ mốc 26% (lúc chân khung còn chìm
+       trong khói, bật gì cũng không ai thấy) cả DẢI ĐÁY KHUNG mất nét dần —
+       toàn chiều ngang, không mép trái mép phải, chỉ blur thuần không đụng
+       vào màu. Mắt đọc ra là ống kính đang lấy nét vào quả trứng nên tiền
+       cảnh mờ đi, không phải một vết che. Xem `.dof` trong index.html. */
+    che_vao_at    : 0.26,   /* bắt đầu mất nét (chân khung còn kín khói) */
     chu_lo_at     : 0.40,   /* đo được: chữ bắt đầu đọc được ở đây  */
-    veil_in_at    : 0.40,   /* (không dùng nữa — xem che_vao_at)    */
-    veil_in_ms    : 380,    /* lớp che hiện dần trong bấy nhiêu     */
+    veil_in_ms    : 380,    /* lớp che đá hiện dần trong bấy nhiêu  */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
@@ -187,13 +190,25 @@ const GAME_CONFIG = {
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */
     idle_hint     : 20000,  /* không gõ bao lâu thì chữ "thở"      */
     idle_wrongs   : 3,      /* sai bao nhiêu lần thì chữ "thở"     */
-    /* Sai lần ĐẦU là có ngay gợi ý 1. Từ gợi ý 2 trở đi: cứ thêm 3 lần sai mới
-       mở tiếp, và hai gợi ý phải cách nhau 15 PHÚT — chưa đủ giờ thì Ô NHẬP BỊ
-       KHOÁ, chạy đồng hồ đếm ngược. Nhớ trong localStorage nên tải lại trang
-       cũng không lách được. */
+    /* ── GỢI Ý TỚI LÚC NÀO ────────────────────────────────────────────────
+       CỨ MỖI LẦN SAI CHÍNH THỨC LÀ MỞ THÊM MỘT GỢI Ý. Không phải chờ gom đủ
+       mấy lần nữa.
+
+       BẢN CŨ CỘNG DỒN BA TẦNG NÊN GỢI Ý TỚI QUÁ MUỘN, đúng như đã báo:
+         · vòng 1 phải trật 3 ký tự mới thành MỘT lần sai chính thức
+         · rồi phải gom thêm 3 lần sai chính thức nữa mới mở gợi ý kế
+         · mà mỗi lần mở còn vướng hạn 15 PHÚT, chưa đủ giờ thì KHOÁ Ô NHẬP
+       Nhân ra: gợi ý 2 của vòng 1 nằm sau 12 ký tự trật CỘNG 15 phút ngồi
+       nhìn đồng hồ. Chơi cho vui mà thành ra hình phạt.
+
+       NAY: `hint_every_wrongs` = 1 → sai phát nào mở tiếp phát đó, ở CẢ HAI
+       VÒNG (RAZER lẫn ZHAO YUN). Hạn giữa hai gợi ý rút còn 2 PHÚT — vẫn đủ
+       chặn kiểu cố tình gõ bừa để moi sạch gợi ý trong nửa phút, nhưng là một
+       nhịp nghỉ chứ không còn là bức tường.
+       Nhớ trong localStorage nên tải lại trang cũng không lách được. */
     hint_first_wrong  : 1,
-    hint_every_wrongs : 3,
-    hint_cooldown_ms  : 900000,
+    hint_every_wrongs : 1,
+    hint_cooldown_ms  : 120000,
     slide_auto    : 3000    /* tự chuyển ảnh slideshow             */
   },
 
@@ -346,7 +361,7 @@ const GAME_CONFIG = {
     round1_wrong      : '> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.',
     /* Trật một ký tự ở vòng 1 mà CHƯA tới lần tính sai chính thức — nhẹ hơn
        hẳn câu trên. {N} = còn mấy lần trật nữa mới bị tính một lần sai. */
-    round1_le_wrong   : '> KÝ TỰ KHÔNG KHỚP. CÒN {N} LẦN THỬ TRƯỚC KHI BỊ TÍNH SAI.',
+    round1_le_wrong   : '> KÝ TỰ KHÔNG KHỚP. CÒN {N} LẦN THỬ SAI.',
     /* Dùng chung cho cả hai vòng khi vừa hết quota nới tay */
     le_het_luot       : '> HẾT LƯỢT THỬ. LẦN NÀY TÍNH LÀ MỘT LẦN SAI.',
     round1_correct    : '> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...',

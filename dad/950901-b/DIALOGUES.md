@@ -244,8 +244,9 @@ Vòng 2 **giấu hẳn nút `UNLOCK`** (`.ctrl.nobtn`) — gõ ký tự nào là
 
 **Chữ chỉ lộ thêm qua đường GỢI Ý.** Đoán trật thì mất lượt chứ không được lộ
 không — nếu cho lộ thì gõ bừa cũng ra đáp án. Mỗi lần `grantHint()` chạy là bới
-thêm một ký tự, nên vẫn luôn có đường về đích: sai lần đầu → gợi ý 1 + lộ chữ
-`Z`; từ đó cứ 3 lần sai nữa mở gợi ý tiếp, cách nhau 15 phút.
+thêm một ký tự, nên vẫn luôn có đường về đích: **mỗi lần sai chính thức là mở
+thêm một gợi ý** — sai lần đầu → gợi ý 1 + lộ chữ `Z`, sai lần hai → gợi ý 2 +
+lộ tiếp một chữ, cứ thế. Chỉ vướng hạn 2 phút giữa hai gợi ý.
 
 Không có luật này thì người chơi cứ gõ lần lượt A→Z cho từng ô là ra nguyên đáp
 án — chẳng phải đoán, cũng chẳng cần bấm `UNLOCK` lần nào. Luật nói thẳng cho
@@ -261,16 +262,66 @@ bài.
 
 ### ★ Clip nổ sập lab TỰ NÓ lộ đáp án
 
-`anim_unlock.webp` (241 khung) **vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ
-khoảng khung 105 (~44%) về sau** — nằm trong ảnh gốc, không phải lỗi thứ tự dựng
-cảnh. Đã đo: **khung hình cuối của clip trùng khít `bg_r2`, lệch 0px cả hai
-chiều**. Nhờ vậy cách chữa gọn:
+`anim_unlock.webp` (241 khung) **vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ**
+— nằm trong ảnh gốc, không phải lỗi thứ tự dựng cảnh. Đo lại từng khung:
+
+| Mốc clip | Ô bảng đá |
+|---|---|
+| 0 → 20% | còn là phòng lab vòng 1 |
+| 26% → 40% | **chìm hẳn trong khói trắng** (độ lệch sáng chỉ còn 2-5 nấc, coi như một mảng phẳng) |
+| **40,8%** | chữ `NUY OAHZ` bắt đầu đọc được |
+| 43% → **100%** | chữ đọc rõ, **liên tục tới hết clip** |
+
+Tức là phải giấu suốt **4,7 giây cuối** — đúng đoạn con rồng nở ra, khúc đẹp
+nhất. Cắt clip sớm là mất luôn khúc đó, không làm được.
+
+Đã đo thêm: **khung hình cuối của clip trùng khít `bg_r2`, lệch 0px cả hai
+chiều**, nhưng **giữa clip thì cảnh còn đang hạ cánh, thấp hơn tới 13px**, và
+ánh sáng cũng khác hẳn (rồng đang phát sáng).
+
+Cách chữa:
 
 1. `win1()` gọi `prepRound2()` **trước khi phát clip** — dựng sẵn nền, rồng,
    bảng đá, cuộn thư ở phía sau clip.
-2. Tới mốc `timing.veil_in_at` (0.40 của clip) thì **thả lớp che xuống**, hiện
-   dần trong `veil_in_ms`. Lớp che nằm `z-index 6`, clip nằm `5` → che vừa vặn.
-3. Clip tắt là **cắt thẳng** sang cảnh tĩnh đã dựng sẵn, không chớp nhịp nào.
+2. Tới mốc `timing.che_vao_at` (**0.26** của clip, lúc chân khung còn kín khói)
+   thì bật **dải MẤT NÉT TIỀN CẢNH** `.dof`. `timing.chu_lo_at` (0.40) là chốt
+   chặn: máy lag quá mà chưa bật thì bật tức thì, không nhoà dần nữa.
+3. Clip tắt là **cắt thẳng** sang cảnh tĩnh đã dựng sẵn (lớp che đá đục 100%,
+   khớp từng pixel), dải mất nét tắt hẳn — đọc như một cú lấy nét về.
+
+#### Ba đời trước đều chữa sai chỗ
+
+Cả ba đều là *"úp một mảng lên đúng ô chữ"*, và cả ba đều lộ:
+
+| Đời | Cách làm | Hỏng ở đâu |
+|---|---|---|
+| 1 | dán mẩu đá tĩnh cắt từ ảnh nền | cảnh trong clip còn hạ cánh → miếng dán trượt lên, chữ thò ra dưới |
+| 2 | cho miếng dán **trôi theo** đường cong đó | hết thò chữ, nhưng thành *"một hình chữ nhật có vân đá riêng, tự bò trong khung"* — tệ hơn hẳn |
+| 3 | bỏ dán, thả một vệt **làm mờ hình bầu dục** ngay trên ô chữ | hết vật liệu lạ, nhưng vẫn còn một cái HÌNH: quầng xám (hạ sáng .78, rút màu .3) nằm lì giữa khung gần 5 giây |
+
+**Gốc rễ chung:** hễ vùng che **có hình dạng riêng** — chữ nhật hay bầu dục —
+thì nó là một vật thể lạ trên khung hình. Chỉnh thông số kiểu gì cũng vô ích.
+
+#### Đời này: bỏ hẳn khái niệm "vùng che"
+
+Thay bằng thứ máy quay nào cũng có: **tiền cảnh mất nét**. Cả dải đáy khung —
+**toàn chiều ngang, không có mép trái mép phải nào** — nhoè dần từ trên xuống,
+y như ống kính đang lấy nét vào quả trứng nên mấy bệ đá sát chân khung mờ đi.
+Mắt đọc ra là *chiều sâu*, không phải *vết che*.
+
+Ba điểm khiến nó không bao giờ lộ:
+
+- **Không dán vật liệu nào** — chỉ nhoè chính clip nằm dưới (`backdrop-filter`).
+  Cảnh trôi đi đâu thì vệt nhoè vẫn nằm đúng trên nó. Hết chuyện canh 13px.
+- **CHỈ `blur()`**, không đụng vào sáng / tươi / tương phản. Đời 3 hạ sáng và
+  rút màu — chính hai thứ đó vẽ ra cái quầng xám.
+- Mép trên tán bằng gradient dọc dài 1/3 dải, mép dưới trùng luôn đáy khung.
+  **Không tồn tại một đường viền kín nào.**
+
+Bán kính nhoè = `DOF_K` (**0.015**) × chiều cao khung, sàn 4px — buộc vào khung
+chứ không để số px cứng, không thì màn càng to chữ càng đọc được. Bản đầu đặt
+0.026 (~8px) là **quá tay**: cả dải đáy thành một vệt bôi phẳng lì, mất luôn
+hình khối mấy bệ đá.
 
 | Trạng thái | Hiện tượng |
 |---|---|
@@ -351,8 +402,8 @@ tay thì trôi mượt về giữa.
 | `type_speed` / `letter_speed` | 24 / 26 | mỗi ký tự hộp thoại / bức thư |
 | `idle_hint` / `idle_wrongs` | 20000 / 3 | khi nào chữ "thở" một nhịp |
 | **`hint_first_wrong`** | **1** | **sai lần đầu là có ngay gợi ý 1** |
-| **`hint_every_wrongs`** | **3** | **từ gợi ý 2: cứ thêm 3 lần sai** |
-| **`hint_cooldown_ms`** | **900000** | **hai gợi ý cách nhau 15 phút** |
+| **`hint_every_wrongs`** | **1** | **sai phát nào mở tiếp phát đó** |
+| **`hint_cooldown_ms`** | **120000** | **hai gợi ý cách nhau 2 phút** |
 | `slide_auto` | 3000 | tự chuyển ảnh slideshow |
 
 ---
@@ -374,8 +425,10 @@ tay thì trôi mượt về giữa.
 
 | Khoá | Nội dung | Màu |
 |---|---|---|
-| `round1_intro` | `> VÒNG 01 // Cửa đã bị niêm phong. Tìm mật khẩu để thoát khỏi phòng lab.`<br>`> Vuốt quanh phòng để quan sát. Gõ mật khẩu vào ô bên dưới.` | xanh lá |
+| `round1_intro` | `> VÒNG 01 // Cửa đã bị niêm phong. Tìm mật khẩu để thoát khỏi phòng lab.`<br>`> Vuốt quanh phòng để quan sát. Bệ đá bị đất phủ kín.`<br>`> Mỗi lần chỉ đoán được MỘT ký tự, gõ xong là nộp luôn — nhưng được thử 3 lần rồi mới tính một lần sai.` | xanh lá |
 | `round1_wrong` | `> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.` | đỏ |
+| `round1_le_wrong` | `> KÝ TỰ KHÔNG KHỚP. CÒN {N} LẦN THỬ SAI.` | đỏ |
+| `le_het_luot` | `> HẾT LƯỢT THỬ. LẦN NÀY TÍNH LÀ MỘT LẦN SAI.` | đỏ |
 | `round1_correct` | `> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...` | xanh lá |
 | `round1_boom` | `> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!` | cam |
 
@@ -386,7 +439,7 @@ tay thì trôi mượt về giữa.
 | `round2_intro` | `> PHÒNG LAB ĐÃ SẬP! BẠCH LONG ĐÃ THỨC TỈNH... NHẬP MÃ ĐỂ NHẬN BÍ TỊCH.` | cyan |
 | `round2_hint` | `> VÒNG 02 // Tìm mật khẩu để mở cổ thư trên miệng Bạch Long.`<br>`> Bệ đá bị đất phủ kín. Mỗi lần chỉ đoán được MỘT ký tự, gõ xong là nộp luôn.`<br>`> Đoán trúng thì ký tự đó lộ ra và được gõ thêm một ô nữa.` | xanh lá |
 | `round2_wrong` | `> MẬT MÃ KHÔNG HỢP LỆ! VUI LÒNG THỬ LẠI.` | đỏ |
-| `round2_le_wrong` | `> KÝ TỰ KHÔNG KHỚP. BẠCH LONG GẦM LÊN MỘT TIẾNG.` | đỏ |
+| `round2_le_wrong` | `> KÝ TỰ KHÔNG KHỚP. NHẬP LẠI ĐI DONGCHI.` | đỏ |
 | `round2_correct` | `> MẬT MÃ CHÍNH XÁC! CHẠM VÀO LÁ THƯ ĐỂ ĐỌC NỘI DUNG...` | cyan |
 
 ### Dùng chung & kết
@@ -400,10 +453,19 @@ tay thì trôi mượt về giữa.
 
 ## 5. Gợi ý theo bậc + KHOÁ ĐẾM NGƯỢC
 
-**Luật:** **sai lần đầu là có ngay gợi ý 1**. Từ gợi ý 2 trở đi, cứ **thêm 3
-lần sai** mới mở tiếp, và hai gợi ý phải **cách nhau 15 phút** — chưa đủ giờ thì
-**ô nhập bị khoá hẳn** và chạy **đồng hồ đếm ngược**, không gõ được nữa. Trong lúc đó người chơi đi vuốt quanh phòng tìm
-manh mối. Hết giờ thì tự mở khoá và phát luôn gợi ý kế tiếp.
+**Luật:** **cứ mỗi lần sai chính thức là mở thêm một gợi ý** — ở cả hai vòng.
+Hai gợi ý phải **cách nhau 2 phút**; chưa đủ giờ thì **ô nhập bị khoá** và chạy
+**đồng hồ đếm ngược**, không gõ được nữa. Trong lúc đó người chơi đi vuốt quanh
+phòng tìm manh mối. Hết giờ thì tự mở khoá và phát luôn gợi ý kế tiếp.
+
+> **BẢN CŨ CỘNG DỒN BA TẦNG NÊN GỢI Ý TỚI QUÁ MUỘN.** Vòng 1 phải trật **3 ký
+> tự** mới thành MỘT lần sai chính thức (luật nới tay `sai_moi_lan`), rồi phải
+> gom thêm **3 lần sai chính thức** nữa mới mở gợi ý kế, mà mỗi lần mở còn vướng
+> hạn **15 phút** khoá cứng ô nhập. Nhân ra: gợi ý 2 nằm sau **12 ký tự trật
+> cộng 15 phút ngồi nhìn đồng hồ**. Chơi cho vui mà thành ra hình phạt.
+> Nay `hint_every_wrongs` về **1** và hạn rút còn **2 phút** — vẫn đủ chặn kiểu
+> cố tình gõ bừa để moi sạch gợi ý trong nửa phút, nhưng là một nhịp nghỉ chứ
+> không còn là bức tường.
 
 Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage`
 (`mtv1.g2Hint`) → **F5 giữa lúc khoá thì vào lại vẫn khoá tiếp**.
@@ -413,18 +475,23 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 | # | Mở sau | Nội dung |
 |---|---|---|
 | 1 | **1 lần sai** (ngay) | `5 KÝ TỰ. TÊN 1 THƯƠNG HIỆU.` |
-| 2 | 4 lần sai + 15 phút | `TENET CONCEPT` |
-| 3 | 7 lần sai + 30 phút | `BÊN PHẢI PHÒNG LAB` |
-| 4 | 10 lần sai + 45 phút | `HÃNG GAMING NỔI TIẾNG` |
+| 2 | 2 lần sai + 2 phút | `TENET CONCEPT` |
+| 3 | 3 lần sai + 4 phút | `BÊN PHẢI PHÒNG LAB` |
+| 4 | 4 lần sai + 6 phút | `HÃNG GAMING NỔI TIẾNG` |
+
+> Vòng 1 còn **nới tay 3 lần thử** (`sai_moi_lan: 3`): trật hai ký tự chỉ bị
+> nhắc nhẹ, tới ký tự trật thứ ba mới cộng một vào bộ đếm sai ở bảng trên.
 
 ### Vòng 2 (`round2.hints`)
 
 | # | Mở sau | Nội dung |
 |---|---|---|
 | 1 | **1 lần sai** (ngay) | `Một nhân vật có thật nổi tiếng` |
-| 2 | 4 lần sai + 15 phút | `Cưỡi ngựa trắng` |
-| 3 | 7 lần sai + 30 phút | `Vị tướng này dùng Long Đảm Thương` |
-| 4 | 10 lần sai + 45 phút | `Một nhân vật Tam Quốc` |
+| 2 | 2 lần sai + 2 phút | `Cưỡi ngựa trắng` |
+| 3 | 3 lần sai + 4 phút | `Vị tướng này dùng Long Đảm Thương` |
+| 4 | 4 lần sai + 6 phút | `Một nhân vật Tam Quốc` |
+
+> Vòng 2 **không nới tay** (`sai_moi_lan: 1`): trật ký tự nào tính ký tự đó.
 
 ### Khuôn câu
 
@@ -438,8 +505,8 @@ Số lần sai, mốc giờ **và hạn khoá** đều nhớ trong `localStorage
 
 `{N}` số thứ tự · `{TEXT}` nội dung · `{M}` số phút bị khoá.
 
-> Muốn dễ hơn: hạ `hint_cooldown_ms` (ví dụ `60000` = 1 phút) hoặc
-> `hint_every_wrongs`. Đặt `hint_cooldown_ms: 0` là bỏ hẳn khoá giờ.
+> Muốn khó lại: nâng `hint_cooldown_ms` (ví dụ `900000` = 15 phút như bản cũ)
+> hoặc `hint_every_wrongs`. Đặt `hint_cooldown_ms: 0` là bỏ hẳn khoá giờ.
 
 ---
 

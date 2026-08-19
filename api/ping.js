@@ -11,8 +11,30 @@
  *
  *   Nếu discord:   NOTIFY_URL = webhook URL của kênh
  *
+ *   SHEET_URL  = (tuỳ chọn) địa chỉ Web App của Google Apps Script. Khai vào
+ *                thì MỖI tín hiệu được chép thêm một dòng vào Google Sheets,
+ *                sống mãi — khác hẳn log Vercel gói Hobby chỉ giữ ~1 tiếng.
+ *                Cách dựng: xem `docs/GOOGLE-SHEETS.md`.
+ *
  * Không khai gì thì endpoint vẫn chạy, chỉ ghi console.log (xem ở tab Logs của Vercel).
  */
+
+/* ── CHÉP VỀ GOOGLE SHEETS ────────────────────────────────────────────────
+   Bắn đi rồi thôi, KHÔNG await và KHÔNG bao giờ để nó làm hỏng câu trả lời:
+   trang gọi /api/ping là để ghi nhận, chứ không chờ kết quả gì. Sheets hỏng,
+   mạng nghẽn, dán nhầm địa chỉ — người chơi không được biết và không được
+   chậm đi một nhịp nào. */
+function chepVeSheet(o) {
+  const url = process.env.SHEET_URL;
+  if (!url) return;
+  try {
+    fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(Object.assign({ loai: 'ping' }, o))
+    }).catch(() => {});
+  } catch (e) {}
+}
 
 const NHAN = {
   mo_ho_so:      'Mở hồ sơ toạ độ',
@@ -195,6 +217,13 @@ module.exports = async (req, res) => {
   const text = dong.join('\n');
 
   console.log('[PING]', JSON.stringify({ ev, detail, solved, kenh, at: d.at }));
+
+  /* Chép về Sheets TRƯỚC hai cái chốt dưới đây, CỐ Ý vậy: Sheets là cuốn SỔ
+     LƯU, còn Telegram là cái CHUÔNG BÁO. Sổ lưu thì phải ghi đủ — kể cả sự
+     kiện chưa đặt nhãn (chính mấy dòng đó cho biết mình quên khai nhãn nào)
+     và cả mấy nhịp bị chặn vì trùng. Chuông thì mới cần lọc cho đỡ ồn. */
+  chepVeSheet({ ev, nhan: NHAN[ev] || '', detail, solved: solved.join(', '),
+                so_giai: solved.length, kenh, may, at: d.at || new Date().toISOString() });
 
   if (!NHAN[ev]) {                      /* sự kiện lạ → chỉ ghi log, không gửi đi */
     return finish(req, res);

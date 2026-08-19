@@ -621,7 +621,12 @@ render();
 <style>
 /* ── Tem phiên bản (design system): góc phải dưới, chữ nhỏ Oswald, mờ, KHÔNG
       bắt sự kiện chuột nên không bao giờ che mất thứ gì bấm được. ── */
-.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;pointer-events:none;
+/* pointer-events:auto vì tem là CỬA HẬU: gõ 10 nhịp vào đây mở SỔ PHIÊN BẢN
+   (xem file dùng chung /assets/lichsu.js). user-select:none để gõ nhanh mười
+   cái không dính một mảng bôi đen. */
+.vstamp{position:fixed;right:14px;bottom:42px;z-index:60;
+  pointer-events:auto;cursor:default;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
   color:rgba(234,240,247,.34)}
@@ -2018,11 +2023,12 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V22.01<br>Last updated 18-Aug-2026</span>
+<span class="vstamp" id="vstamp" data-ls-stamp>V22.02<br>Last updated 19-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
 <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
+<script src="/assets/lichsu.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,97 @@
+/**
+ * SỔ LƯU GOOGLE SHEETS cho bản đồ mật thư
+ * ---------------------------------------------------------------------------
+ * Dán TOÀN BỘ file này vào Apps Script của một Google Sheet, bấm Deploy →
+ * New deployment → Web app, rồi lấy địa chỉ /exec dán vào hai biến môi trường
+ * SHEET_URL và CHAT_LOG_URL trên Vercel. Từng bước một có ở docs/GOOGLE-SHEETS.md.
+ *
+ * NÓ LÀM GÌ: nhận một gói JSON qua POST rồi chép thành MỘT DÒNG trong Sheet.
+ * Có hai loại gói, tự động vào hai tab khác nhau:
+ *
+ *     loai = 'ping'  → tab "Tiến độ"   (do /api/ping gửi)
+ *     mọi gói khác   → tab "Chat"      (do /api/chat gửi)
+ *
+ * Phân biệt bằng trường `loai` chứ không đoán theo hình dạng gói: đoán thì
+ * hôm nào thêm một trường mới là vào nhầm tab, mà đã nhầm thì không ai để ý.
+ *
+ * TAB KHÔNG CÓ THÌ TỰ TẠO, kèm hàng tiêu đề. Không phải chuẩn bị gì trước.
+ *
+ * KHÔNG PHẢI BẢO TRÌ GÌ: Apps Script chạy trong tài khoản Google của mình,
+ * không có máy chủ, không có hoá đơn, không có gói dịch vụ nào hết hạn. Hạn
+ * mức miễn phí là 20.000 lượt gọi/ngày — trang này cả đời không tới nổi.
+ */
+
+/* Chỉ nhận gói có đúng mã này. Đổi thành chuỗi của riêng mình (gõ bừa cũng
+   được, miễn dài và khó đoán), rồi ghép vào cuối địa chỉ khi khai biến:
+       https://script.google.com/macros/s/..../exec?k=CHUOI_CUA_MINH
+   Vì sao cần: địa chỉ Web App mở cho "Anyone" — bắt buộc, nếu không Vercel
+   gọi vào sẽ bị Google chặn. Không có mã thì ai biết địa chỉ cũng bơm rác
+   vào Sheet được. Để rỗng ('') là tắt hẳn phần kiểm tra này. */
+var MA_BAO_VE = 'doi-chuoi-nay-di';
+
+/* Cột của từng tab. Thêm cột thì thêm tên vào đây — gói JSON thiếu trường nào
+   thì ô đó để trống, không hỏng gì. Đừng đổi THỨ TỰ cột cũ: dòng đã ghi rồi
+   không tự sắp xếp lại theo. */
+var COT = {
+  'Tiến độ': ['at', 'ev', 'nhan', 'detail', 'solved', 'so_giai', 'kenh', 'may'],
+  'Chat'   : ['luc', 'nguon', 'ok', 'ly_do', 'model', 'ms', 'hoi_dai', 'dap_dai',
+              'luot_su', 'token_vao', 'token_ra', 'token_nghi', 'block', 'loi',
+              'hoi', 'dap']
+};
+
+function doPost(e) {
+  try {
+    if (MA_BAO_VE && (!e || !e.parameter || e.parameter.k !== MA_BAO_VE)) {
+      return traLoi({ ok: false, ly_do: 'sai ma' });
+    }
+    var goi = {};
+    try { goi = JSON.parse(e.postData.contents) || {}; } catch (loi) { goi = {}; }
+
+    var tenTab = (goi.loai === 'ping') ? 'Tiến độ' : 'Chat';
+    var sheet  = layTab(tenTab);
+
+    /* Gói của /api/chat để số token trong một object con `token`. Trải phẳng
+       ra ba cột riêng — để nguyên object thì ô Sheet chỉ hiện [object Object]. */
+    var tk = goi.token || {};
+    goi.token_vao  = tk.promptTokenCount;
+    goi.token_ra   = tk.candidatesTokenCount;
+    goi.token_nghi = tk.thoughtsTokenCount;
+
+    var dong = COT[tenTab].map(function (ten) {
+      var v = goi[ten];
+      if (v === undefined || v === null) return '';
+      /* Ô Sheet chứa tối đa 50.000 ký tự. Câu chat không bao giờ dài tới vậy,
+         nhưng cắt sẵn cho chắc — vượt hạn là Google từ chối cả DÒNG. */
+      return (typeof v === 'object') ? JSON.stringify(v) : String(v).slice(0, 45000);
+    });
+    sheet.appendRow(dong);
+    return traLoi({ ok: true });
+  } catch (loi) {
+    /* Có hỏng cũng trả 200: bên Vercel bắn đi rồi thôi, không đọc kết quả.
+       Trả lỗi ra chỉ tổ đọng lại trong log của Google, không ai xem. */
+    return traLoi({ ok: false, ly_do: String(loi) });
+  }
+}
+
+/* Mở bằng trình duyệt để thử xem đã deploy đúng chưa — thấy chữ là chạy được. */
+function doGet() {
+  return traLoi({ ok: true, noi: 'So luu dang chay. Gui bang POST nhe.' });
+}
+
+function layTab(ten) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(ten);
+  if (!sh) {
+    sh = ss.insertSheet(ten);
+    sh.appendRow(COT[ten]);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, COT[ten].length).setFontWeight('bold');
+  }
+  return sh;
+}
+
+function traLoi(o) {
+  return ContentService
+    .createTextOutput(JSON.stringify(o))
+    .setMimeType(ContentService.MimeType.JSON);
+}

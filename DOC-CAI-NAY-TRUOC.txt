@@ -1,256 +1,242 @@
-BẢN SỬA ĐỢT 4  ·  CHÉP ĐÈ LÀ XONG
-==================================
-Gói này TOÀN FILE CHỮ (828 KB), không có ảnh. Ảnh của mấy đợt trước không
-đổi gì nên không cần gửi lại.
+════════════════════════════════════════════════════════════════════════════
+ĐỢT 5 — CÁCH CÀI: chép đè theo đúng cây thư mục, KHÔNG đổi tên file nào.
+════════════════════════════════════════════════════════════════════════════
 
-CÁCH DÙNG
-  1. Giải nén.
-  2. Chép toàn bộ vào THƯ MỤC GỐC repo → Ghi đè tất cả.
-  3. Xoá file DOC-CAI-NAY-TRUOC.txt này.
-  4. Redeploy trên Vercel.
+16 file. Trong đó 5 file MỚI (chưa từng có trong repo):
 
+  MỚI  assets/lichsu.js            ← SỔ PHIÊN BẢN, cả sáu trang cùng nạp
+  MỚI  DESIGN-SYSTEM.md            ← bộ nút + biểu tượng + quy ước tên gọi
+  MỚI  docs/GOOGLE-SHEETS.md       ← dựng sổ lưu Sheets trong 10 phút
+  MỚI  docs/apps-script/Code.gs    ← mã dán vào Apps Script
+  MỚI  .vercelignore               ← ĐỌC MỤC ⚠ BÊN DƯỚI, quan trọng
 
-═══════════════════════════════════════════════════════════════════════
-MỤC 1 — HIỆU ỨNG CHE LÚC CHUYỂN CẢNH: BỎ HẲN CÁCH DÁN MIẾNG ĐÁ
-═══════════════════════════════════════════════════════════════════════
-Anh nói đúng, và em nhận là hai đời trước em đi sai hướng:
+  đè   index.html                        V17.06 → V17.07
+  đè   phao-hoa/index.html                V3.02 → V3.03
+  đè   dad/950901-a/index.html           V22.01 → V22.02
+  đè   dad/950901-b/index.html           (số tem nằm ở config.js)
+  đè   dad/950901-b/config.js            V04.03 → V04.04
+  đè   han/961030-a/index.html            V2.08 → V2.09
+  đè   han/961030-b/index.html            V1.11 → V2.00  ← nắn cho đúng luật
+  đè   api/ping.js
+  đè   README.md · DESIGN-SYSTEM.md · dad/950901-b/DIALOGUES.md · han/CHU-MAP3.md
 
-  · Đời 1 — dán một mẩu đá TĨNH lên chỗ chữ. Cảnh trong clip còn đang hạ
-    cánh (thấp hơn tới 13px giữa clip) nên che trượt lên, chữ thò ra dưới.
-  · Đời 2 — cho mẩu đá TRÔI THEO đường cong đó. Hết thò chữ, nhưng đẻ ra
-    lỗi nặng hơn: một hình chữ nhật có vân đá riêng, TỰ BÒ trong khung.
-    Đứng yên còn đỡ, biết đi thì mắt bắt được ngay. Đó chính là cái anh
-    thấy "xấu hơn bản trước".
-
-GỐC RỄ: hễ còn DÁN VẬT LIỆU LẠ lên một cảnh đang động thì kiểu gì cũng có
-lúc lệch. Không có bộ thông số nào cứu được — nên đợt này bỏ hẳn cách đó.
-
-NAY KHÔNG DÁN GÌ NỮA. Lớp che trong suốt hoàn toàn, nó chỉ LÀM MỜ CHÍNH
-CÁI CLIP nằm dưới (backdrop-filter). Vật liệu là của chính clip nên không
-bao giờ lệch tông, không bao giờ lệch chỗ — cảnh trôi đi đâu thì vệt mờ
-vẫn nằm đúng trên nó. Mép tán tròn nên cũng không có cạnh nào để nhìn ra;
-đọc ra như một vùng khói giữa đám khói nổ.
-
-Đã chụp lại 14 khung suốt đoạn chuyển: không khung nào đọc được NUY OAHZ,
-không khung nào thấy hình chữ nhật. Ảnh tĩnh vòng 2 vẫn khớp từng pixel
-như đợt trước (phần đó em giữ nguyên, nó vốn đã đúng).
-
-Máy nào không hiểu backdrop-filter thì tự lùi về cách dán miếng đá cũ —
-kém khéo nhưng không hở đáp án.
+Không đụng tới ảnh, clip, hay file nào khác. Xong là Redeploy trên Vercel.
 
 
-MỤC 2 — XUỐNG HÀNG Ở HỘP CHÀO
-  Cỡ chữ 13.5px → 12.5px (dưới 360px thì 11.5px), thêm `text-wrap:balance`
-  để chữ chia đều các dòng thay vì đổ đầy dòng trên rồi thả một hai chữ
-  rơi xuống. Ghim "phá đảo" và "Easter Egg: Gate 2 ✦" không cho tách dòng.
-  Kết quả: 3 dòng cân, không còn "Gate 2 ✦" nằm trơ một mình.
+⚠ MỘT VIỆC PHẢI LÀM BẰNG TAY: XOÁ FILE `vercelignore` CŨ
+────────────────────────────────────────────────────────────────────────────
+Trong repo đang có file tên `vercelignore` — THIẾU DẤU CHẤM Ở ĐẦU. Vercel chỉ
+đọc file tên `.vercelignore`, nên suốt thời gian qua file đó KHÔNG có tác dụng
+gì: mọi file .md đều được deploy, tức là mở
 
-MỤC 3 — MÀN CUỐI ZOEY'S CASTLE
-  · "HongHan's Secret" → "It's you, my kindred soul."
-  · Hai nút "Xem lại các câu" / "Reset toàn bộ" từ hai thanh dài hết chiều
-    ngang → hai nút tròn nhỏ nằm ngang (↺ và ↻), đúng kiểu mấy hộp khác
-    trong bộ. Chữ đầy đủ chuyển vào tooltip nên rê chuột vẫn đọc được.
-  · Nút reset vẫn giữ hai nhịp xác nhận, nhưng nay báo bằng MÀU (đỏ lên)
-    thay vì đổi chữ — vì chỉ còn một ký hiệu, không viết được câu dài.
+    https://dongchi-binh-33.vercel.app/README.md
 
-MỤC 4 — SECRET CHAMBER NAY HỎI MÃ MỖI LẦN VÀO   ← lỗi thật, đã sửa
-  Anh phát hiện đúng. Có HAI chỗ sai cùng lúc:
-  1. `han/961030-b` lưu cờ `bOpen` vĩnh viễn — mở khoá đúng một lần là từ
-     đó vào thẳng, không hỏi mã nữa.
-  2. Tệ hơn: trang Zoey's Castle BẬT SẴN cờ đó ngay lúc bấm nút "Vào
-     Secret Chamber". Nghĩa là đi đường đó thì CHƯA BAO GIỜ phải gõ mã —
-     cái ô mã bên kia chỉ là trang trí.
-  Nay bỏ cả hai: luôn dựng cửa mã, mỗi lần vào là gõ một lần.
+là tải về được cả README — trong đó có sẵn ĐÁP ÁN CỦA CẢ BỐN MẬT THƯ và MỌI
+MÃ PIN.
 
-MỤC 5 — TEM CHÂN MÀN HÌNH GATE 2
-  Cấu trúc mới, đúng như anh mô tả:
-        @DESIGNED BY HONGHANDANGIU
-        LAST UPDATED 19-AUG-2026 · V04.03
-  Dòng ký tên lấy ĐÚNG cỡ chữ, giãn chữ và độ mờ của dòng "© Bản quyền ·…"
-  ở chân bản đồ trang chủ, để hai nơi cùng một chữ ký thì cùng một kiểu.
+Bản này kèm file `.vercelignore` đúng tên. Sau khi chép đè, vào GitHub xoá file
+`vercelignore` cũ đi (không xoá thì hai file cùng tồn tại, cái đúng tên vẫn
+chạy, chỉ là thừa một file rác).
 
-MỤC 10 — MÃ VÀO ZOEY'S CASTLE: TYRION → HO CHI MINH
-  Đổi ở cả hai đầu và đã kiểm khớp:
-    dad/950901-b/config.js  → `ma: 'HO CHI MINH'`
-    han/961030-a/index.html → `PIN_A = 'HO CHI MINH'`
-  Màn phát mã hiện thành ba cụm có khoảng cách: H O · C H I · M I N H
-  (dấu cách vẽ thành khoảng trống chứ không thành ô rỗng, và ô nhỏ lại
-  cho khỏi tràn ngang trên máy 320px).
-  Lúc chấm thì cả hai bên bỏ hết dấu cách rồi mới so — gõ "hochiminh" hay
-  "Ho Chi Minh" đều nhận.
-  Đã đổi luôn 12 chỗ nhắc TYRION trong tài liệu.
+Kiểm tra sau deploy: mở /README.md → phải ra 404.
 
 
-═══════════════════════════════════════════════════════════════════════
-MỤC 6 — RÀ TÀI LIỆU
-═══════════════════════════════════════════════════════════════════════
-ĐÃ SỬA
-  · 12 chỗ nhắc mã TYRION trong README.md, DIALOGUES.md, CHU-MAP3.md.
-  · Số phiên bản: README V17.04 → V17.06; DIALOGUES ghi V03.06/V17.05
-    (số của 17-Aug) → V04.03 / V17.06 / V2.07, kèm cấu trúc tem mới.
-  · DIALOGUES.md mục "Hai kiểu lộ chữ": mô tả cũ nói vòng 1 chạy kiểu
-    `flash` — nay cả hai vòng đều `progressive`, và có thêm luật nới tay
-    `sai_moi_lan`. Bảng trạng thái bệ đá cũng sửa theo.
-  · README thêm hẳn mục mới "22b. PHÍA MÁY CHỦ" — bảng bốn endpoint và
-    TOÀN BỘ biến môi trường (9 biến), thứ trước đây nằm rải rác trong
-    comment của từng file.
+① CHUYỂN CẢNH GATE 2 — làm lại từ gốc, không phải chỉnh thông số
+────────────────────────────────────────────────────────────────────────────
+Ba đời trước đều làm CÙNG MỘT VIỆC: úp một mảng lên đúng ô chữ.
 
-ĐÃ GẮN CẢNH BÁO (chưa xoá, để anh quyết)
-  dad/950901-b/OW-LOI-DAN.md   và   dad/950901-b/THU-VA-ANH.md
-  Hai file này là BẢN NHÁP để soạn nội dung rồi chép tay sang config.js —
-  chính chúng ghi "Game không nạp file này". Nghĩa là chúng SẼ LỆCH dần
-  với thứ đang chạy. Em gắn cảnh báo đỏ ngay đầu file thay vì tự xoá:
-  xoá là mất chỗ anh đang soạn thảo, mà em thì không biết anh còn dùng
-  hay không. Chép xong hết rồi thì xoá đi cũng không ảnh hưởng gì.
+    đời 1  dán mẩu đá tĩnh          → cảnh trong clip còn hạ cánh (thấp hơn
+                                      tới 13px), miếng dán trượt lên, chữ thò
+                                      ra ngay bên dưới
+    đời 2  cho miếng dán trôi theo  → hết thò chữ, nhưng thành "một hình chữ
+                                      nhật có vân đá riêng, tự bò trong khung"
+    đời 3  vệt làm mờ bầu dục       → hết vật liệu lạ, nhưng vẫn còn một cái
+                                      HÌNH: quầng xám nhạt nằm lì giữa khung
+                                      gần 5 giây
 
+Gốc rễ: hễ vùng che CÓ HÌNH DẠNG RIÊNG thì nó là một vật thể lạ trên khung
+hình. Chỉnh thông số kiểu gì cũng vô ích — đó là lý do sửa ba lần vẫn xấu.
 
-═══════════════════════════════════════════════════════════════════════
-MỤC 7 — TRACKING: PHÁT HIỆN LỚN
-═══════════════════════════════════════════════════════════════════════
-★ CẢ TRANG dad/950901-b TRƯỚC ĐÂY KHÔNG CÓ MỘT DÒNG TRACKING NÀO.
-  Bốn trang kia đều có (36 · 31 · 18 · 12 lần gọi ping), riêng Easter Egg
-  Gate 2 và khu Open World thì mù hoàn toàn. Không cách nào biết có bao
-  nhiêu người tới cổng, bấm chơi, kẹt vòng nào, mở nổi thư không.
-  → Nay có đủ phễu, 16 sự kiện:
-      g2_vao_cong · g2_cong_mo · g2_bam_choi · g2_press_start
-      g2_vong_1 · g2_giai_xong_1 · g2_vong_2 · g2_giai_xong_2
-      g2_sai · g2_goi_y · g2_mo_thu · g2_pha_dao · g2_bo_qua
-      g2_open_world · g2_ow_hoi · g2_ow_loi
+ĐỜI NÀY BỎ HẲN KHÁI NIỆM "VÙNG CHE". Thay bằng thứ máy quay nào cũng có:
+TIỀN CẢNH MẤT NÉT. Cả dải đáy khung — toàn chiều ngang, KHÔNG có mép trái mép
+phải nào để mà nhìn ra — nhoè dần từ trên xuống, y như ống kính đang lấy nét
+vào quả trứng nên mấy bệ đá sát chân khung mờ đi. Đúng ngữ pháp điện ảnh, nên
+mắt đọc ra là "chiều sâu", không phải "vết che".
 
-★ 32 SỰ KIỆN ĐANG BẮN NHƯNG BỊ /api/ping VỨT ĐI KHÔNG BÁO ĐÂU CẢ.
-  `api/ping.js` có một bảng nhãn `NHAN`, và dòng `if (!NHAN[ev]) return`
-  — sự kiện nào không có tên trong bảng thì im lặng bỏ qua. 16 sự kiện
-  của bản đồ và Zoey's Castle đã rơi vào diện đó TỪ TRƯỚC, gồm cả mấy
-  mốc quan trọng: unlock_gate1, cua_sau, hack_gate2, hop_chao,
-  sai_pin_ho_so, han_mo_cua_a…
-  → Đã khai đủ nhãn. Đối chiếu lại: 92 sự kiện / 92 nhãn, không thiếu.
+Ba điểm khiến nó không bao giờ lộ:
+  · không dán vật liệu nào — chỉ nhoè chính clip nằm dưới, cảnh trôi đi đâu
+    thì vệt nhoè vẫn nằm đúng trên nó. Hết chuyện canh 13px.
+  · CHỈ blur, KHÔNG đụng vào sáng / tươi / tương phản. Đời 3 hạ sáng .78 và
+    rút màu còn .3 — chính hai thứ đó vẽ ra cái quầng xám.
+  · mép trên tán bằng gradient dọc, mép dưới trùng luôn đáy khung. Không tồn
+    tại một đường viền kín nào.
 
-★ 12 NHÃN THỪA (khai rồi nhưng không trang nào bắn nữa: ghe_tham, reset,
-  tai_trang, giai_m3, han_hub…) → đã bỏ.
+Bật đúng lúc 26% của clip, là lúc cả chân khung còn chìm trong khói trắng
+(đo được độ lệch sáng chỉ còn 2-5 nấc — coi như một mảng trắng phẳng). Bật
+một hiệu ứng nhoè lên mảng trắng phẳng thì không ai thấy gì.
+
+Muốn chỉnh: hằng DOF_K trong dad/950901-b/index.html (đang 0.015 = 1,5% chiều
+cao khung). Bản đầu để 0.026 là QUÁ TAY — cả dải đáy thành vệt bôi phẳng lì,
+mất luôn hình khối mấy bệ đá.
 
 
-═══════════════════════════════════════════════════════════════════════
-MỤC 8 — LOG CHAT VỀ GCP: CHƯA CÓ. BƯỚC TIẾP THEO ĐÂY
-═══════════════════════════════════════════════════════════════════════
-TRẢ LỜI THẲNG: chưa, và KHÔNG có gì trong dự án này đụng tới GCP. Gọi
-Gemini chỉ là một request HTTP — nó không sinh ra log nào bên Google
-Cloud cả. Trước bản này, chat chỉ có mấy dòng console.log lúc hỏng, mà
-log Vercel gói Hobby giữ khoảng một tiếng rồi mất.
+② GỢI Ý TỚI SỚM HƠN — cả RAZER lẫn ZHAO YUN
+────────────────────────────────────────────────────────────────────────────
+Bản cũ cộng dồn BA TẦNG nên gợi ý tới quá muộn, đúng như anh báo:
 
-BẢN NÀY LÀM SẴN HAI THỨ
-  1. Mỗi lượt hỏi ghi ĐÚNG MỘT DÒNG JSON có cấu trúc, prefix [CHAT_LOG]:
-     thời gian, model, số ms, độ dài câu hỏi/trả lời, số token, thành hay
-     bại và lý do bại. Dòng có cấu trúc thì bộ thu log nào cũng đọc được.
-  2. Khai biến CHAT_LOG_URL thì bắn luôn dòng đó tới đấy bằng POST.
-     Bắn xong không chờ, hỏng cũng bỏ qua — nhật ký không bao giờ được
-     phép làm chậm hay làm hỏng câu trả lời cho người chơi.
+    vòng 1 phải trật 3 ký tự  → mới thành MỘT lần sai chính thức
+    rồi phải gom thêm 3 lần sai chính thức nữa → mới mở gợi ý kế
+    mà mỗi lần mở còn vướng hạn 15 PHÚT khoá cứng ô nhập
 
-RIÊNG TƯ: mặc định CHỈ ghi số liệu, KHÔNG ghi nội dung. Đoạn chat có
-chuyện riêng của hai người. Muốn ghi cả nội dung thì bật thêm
-CHAT_LOG_NOI_DUNG=1 — cố ý bắt khai riêng một biến nữa để không bật nhầm.
+Nhân ra: gợi ý 2 của vòng 1 nằm sau 12 ký tự trật CỘNG 15 phút ngồi nhìn đồng
+hồ. Chơi cho vui mà thành ra hình phạt.
 
-BƯỚC TIẾP THEO — chọn một, dán URL vào CHAT_LOG_URL là xong:
-  1. Google Apps Script → Google Sheets  (DỄ NHẤT, không cần GCP)
-     Tạo Apps Script `doPost(e)` ghi `e.postData.contents` xuống Sheet,
-     Deploy → Web App, quyền "Anyone". Dán URL vào CHAT_LOG_URL.
-     Được ngay một bảng tính xem lịch sử, lọc, vẽ biểu đồ.
-  2. Cloud Run / Cloud Functions → Cloud Logging hoặc BigQuery  (đúng bài GCP)
-     Viết một hàm nhận POST rồi console.log (tự vào Cloud Logging), hoặc
-     insertAll vào BigQuery nếu muốn truy vấn SQL.
-  3. Vercel Log Drain → bất kỳ đâu  (không cần sửa mã, nhưng cần gói Pro)
+Nay: SAI PHÁT NÀO MỞ TIẾP PHÁT ĐÓ (hint_every_wrongs 3 → 1), hạn giữa hai gợi
+ý rút còn 2 PHÚT (hint_cooldown_ms 900000 → 120000). Vẫn đủ chặn kiểu cố tình
+gõ bừa để moi sạch gợi ý trong nửa phút, nhưng là một nhịp nghỉ chứ không còn
+là bức tường. Cả hai vòng đều vậy.
 
-Em khuyên bắt đầu bằng cách 1: mất 10 phút, không tốn đồng nào, và đủ
-dùng cho quy mô hiện tại. Khi nào cần truy vấn nặng mới chuyển sang 2.
+Đã chạy thử: trật 3 ký tự → "TRUY CẬP BỊ TỪ CHỐI" → GỢI Ý 1 hiện ngay.
+
+Câu báo trật cũng rút gọn đúng như anh viết:
+    KÝ TỰ KHÔNG KHỚP. CÒN 2 LẦN THỬ SAI.
+
+Và màn đầu + màn cuối Gate 2 nay không bôi đen chữ được nữa.
 
 
-═══════════════════════════════════════════════════════════════════════
-MỤC 9 — TÀI NGUYÊN ĐÃ TẢI TRƯỚC KHI VÀO GAME CHƯA?
-═══════════════════════════════════════════════════════════════════════
-TRƯỚC BẢN NÀY: chưa đủ. Chỉ nạp trước ba tấm nền, còn hai clip 23 MB thì
-đợi vào tận trong game mới bắt đầu — `anim_wrong` chờ tới lúc rảnh sau
-màn boot, `anim_unlock` chờ tới giữa vòng 1. Mà nay vòng 1 chấm ngay từng
-phím nên người chơi có thể gõ trật trong vòng vài giây: clip 23 MB chưa
-về kịp là đứng hình.
+③ TÊN GỌI
+────────────────────────────────────────────────────────────────────────────
+"Secret's Chamber" ở màn hoàn thành Zoey's Castle → "Secret Chamber".
+Đã dò cả repo, không còn chỗ nào viết sai.
 
-NAY nạp ngay từ MÀN ĐẾM NGƯỢC, lúc người chơi còn đang đọc đồng hồ, và
-nạp TUẦN TỰ theo đúng thứ tự cần dùng (thả cả bảy cái một lúc thì chúng
-giành băng thông, tấm nền vòng 1 — thứ cần trước tiên — lại về sau cùng):
-     bg_r1 → đá sạch r1 → anim_wrong → bg_r2 → đá sạch r2 → anim_unlock
-
-Chỉ nạp khi người chơi SẮP VÀO ĐƯỢC (đã qua mốc, hoặc đi cửa hậu). Chưa
-tới ngày mà kéo 71 MB về thì phí, người ta còn chưa chơi được.
-
-ĐÃ ĐO: cả 6 tài nguyên (71 MB) tải xong trong 1,1 giây kể từ lúc mở
-trang, trong khi vẫn còn ở màn đếm ngược, chưa bấm nút nào.
-(Đo trên máy chủ nội bộ nên nhanh; trên 4G sẽ lâu hơn, nhưng quãng 10
-giây đếm ngược là đủ để đi trước một đoạn dài, và thứ tự ưu tiên bảo đảm
-thứ cần trước về trước.)
+Luật chốt trong DESIGN-SYSTEM.md §3: đứng một mình là Secret Chamber (không
+có 's). Có tên người đứng trước mới là HongHan's Secret Chamber.
 
 
-═══════════════════════════════════════════════════════════════════════
-MỤC 11 — QUOTE.JS VÀ LOICHAO.JS CÓ CÙNG NHAU KHÔNG?
-═══════════════════════════════════════════════════════════════════════
-CÓ — cùng MỘT hệ, chia ba vai:
-     api/_lib/loichao.md  ← chữ nghĩa   ★ CHỈ SỬA FILE NÀY
-     api/_lib/loichao.js  ← đọc file .md rồi bóc thành từng khối
-     api/quote.js         ← endpoint, nhận yêu cầu và gọi Gemini
+④ HỆ NÚT — lấy bộ nút của hộp pí mật làm gốc
+────────────────────────────────────────────────────────────────────────────
+Ba việc, ba hình, KHÔNG được dùng lẫn:
 
-NAY CÓ BỐN KHỐI, không phải ba:
-     ## sang / ## trua / ## toi   → LỜI CHÀO theo buổi
-     ## quote                     → DAILY QUOTE   ★ mới
+    xem lại HIỆU ỨNG   (pháo hoa, cảnh nổ)      → CUỘN PHIM
+    xem lại NỘI DUNG   (câu trả lời, Open World) → CON MẮT
+    chơi lại / Reset                             → MŨI TÊN QUAY VÒNG
 
-DAILY QUOTE HOẠT ĐỘNG THẾ NÀO
-  Chào xong hết mốc của ngày rồi thì thôi chào nữa — F5 hay quay lại mà
-  vẫn "Chào đồng chí" lần thứ tư thì thành ra máy móc. Từ đó hộp đổi sang
-  một câu nói của người xưa: vẫn là một lời nhắn, nhưng lần nào cũng mới
-  và không giả vờ là đang gặp nhau lần đầu.
-  Mỗi lần TẢI TRANG được đúng một câu. Ở lại trang cả buổi thì vẫn chỉ
-  một câu, không tự nhảy ra thêm — đó cũng là cái chặn spam.
+Vì sao tách "hiệu ứng" khỏi "nội dung": hai việc nghe giống nhau nhưng bấm
+nhầm nút hiệu ứng thì phải ngồi xem lại 15 giây pháo hoa mới thoát ra được.
 
-MODEL: gemini-flash-lite, khai bằng biến GEMINI_MODEL_QUOTE trên Vercel.
-  Mặc định `gemini-flash-lite-latest` (alias, Google ra bản mới là tự
-  theo). Lỡ tên sai hoặc chưa được cấp → tự lùi về GEMINI_MODEL, lùi tiếp
-  nữa là bộ câu sẵn. Không bao giờ để hộp trống.
+Đã sửa: hai nút ở màn hoàn thành Zoey's Castle trước đây là hai ký tự ↺ ↻ gõ
+thẳng vào HTML — mỗi máy một phông nên nét lúc dày lúc mảnh, mà hai vòng tròn
+lại na ná nhau, chẳng nói lên nút nào làm gì. Nay là SVG (mắt + mũi tên quay
+vòng), có chú thích nổi khi trỏ vào.
 
-UI ĐÚNG NHƯ ANH DẶN
-  · Câu nói: 13px, in nghiêng, `text-wrap:balance` chia đều chữ các dòng.
-    Máy chủ chốt câu ở 130 ký tự nên tối đa 2 dòng.
-  · Tên tác giả: xuống dòng riêng, chữ nhỏ hơn hẳn, dạng "— LÃO TỬ".
-  · Tổng cộng tối đa 3 dòng, có `line-clamp` làm chốt chặn cuối phòng khi
-    máy nào font rộng hơn dự tính.
-  · Máy chủ tách sẵn tên tác giả rồi mới trả về, trang chỉ lo hiển thị.
-
-BỘ CÂU SẴN: 12 câu có thật của Hồ Chí Minh, Lão Tử, Tôn Tử, Marcus
-Aurelius, Carl Jung, Nietzsche, Đức Phật, Khổng Tử, Jordan Peterson,
-Thích Nhất Hạnh, Gabor Maté, Seneca. Bốc không lặp cho tới khi vét hết.
-Chưa khai khoá Gemini thì dùng bộ này, chạy y như thường.
-
-THỬ NHANH:  /api/quote?buoi=quote   ·   /api/quote?gio=7
+Toàn bộ luật + mã SVG chuẩn để chép nằm trong DESIGN-SYSTEM.md.
 
 
-═══════════════════════════════════════════════════════════════════════
-SỐ PHIÊN BẢN
-═══════════════════════════════════════════════════════════════════════
-  index.html        V17.06
-  dad/950901-b      V04.03
-  han/961030-a      V2.08
-  han/961030-b      V1.11
+⑤ SỔ LƯU GOOGLE SHEETS — 10 phút, làm một lần rồi quên
+────────────────────────────────────────────────────────────────────────────
+Vercel gói Hobby chỉ giữ log khoảng MỘT TIẾNG. Sáng mai mở lên là không còn
+cách nào biết tối qua ai chơi tới đâu, hay Open World hỏng câu nào.
+
+Đã dựng sẵn đường Google Apps Script → Google Sheets: KHÔNG cần Google Cloud,
+không cần thẻ, không tốn tiền, không có gì phải bảo trì. Apps Script chạy
+trong tài khoản Google bình thường, hạn mức miễn phí 20.000 lượt/ngày.
+
+Việc anh phải làm (6 bước, có ảnh chụp từng ô trong docs/GOOGLE-SHEETS.md):
+   1. sheets.new → tạo một Sheet trống
+   2. Tiện ích mở rộng → Apps Script
+   3. dán docs/apps-script/Code.gs vào, đổi MỘT dòng mã bảo vệ
+   4. Deploy → Web app · Execute as: Me · Who has access: Anyone
+   5. nối "?k=<mã bảo vệ>" vào cuối địa chỉ vừa nhận
+   6. Vercel → Environment Variables → dán địa chỉ đó vào HAI biến:
+        SHEET_URL      → tab "Tiến độ"  (mọi tín hiệu chơi)
+        CHAT_LOG_URL   → tab "Chat"     (mỗi lượt hỏi Open World)
+      rồi Redeploy.
+
+Tab tự tạo, cột tự dựng, không phải chuẩn bị gì trước.
+
+Nội dung chat MẶC ĐỊNH KHÔNG GHI — hai cột hoi/dap để trống trừ khi anh tự
+bật thêm biến CHAT_LOG_NOI_DUNG=1. Cố ý bắt khai riêng một biến nữa để không
+ai bật nhầm.
 
 
-15 FILE TRONG GÓI
-=================
-  index.html                     mục 2, 11
-  dad/950901-b/index.html        mục 1, 5, 7, 9, 10
-  dad/950901-b/config.js         mục 5, 10
-  han/961030-a/index.html        mục 3, 4, 10
-  han/961030-b/index.html        mục 4
-  api/chat.js                    mục 8
-  api/quote.js                   mục 11
-  api/ping.js                    mục 7
-  api/_lib/loichao.js            mục 11
-  api/_lib/loichao.md            mục 11  ★ ANH SỬA Ở ĐÂY
-  README.md                      mục 6   (thêm mục 22b về phía máy chủ)
-  dad/950901-b/DIALOGUES.md      mục 6
-  han/CHU-MAP3.md                mục 6
-  dad/950901-b/OW-LOI-DAN.md     mục 6   (gắn cảnh báo bản nháp)
-  dad/950901-b/THU-VA-ANH.md     mục 6   (gắn cảnh báo bản nháp)
+⑥ SỔ PHIÊN BẢN — cửa hậu mới, có ở CẢ SÁU TRANG
+────────────────────────────────────────────────────────────────────────────
+Đường vào:
+   1. gõ 10 nhịp liên tiếp vào dòng "Last updated…" ở chân trang
+      → hiện một NÚT ICON nhỏ ngay phía trên tem
+   2. bấm nút đó → hỏi mã. Mã là 0981 (chính là 1890 đọc ngược)
+   3. sai 3 lần → hiện ĐÚNG MỘT câu gợi ý: "Năm sinh Bác Hồ — soi gương mà
+      đọc." Từ lần sai thứ tư vẫn đúng câu đó, không có gợi ý thứ hai.
+   4. vào rồi: một bảng cho từng trang —
+      Ngày (YYYY-MM-DD) · Bản · # (đời thứ mấy) · Sửa chính
+      Trên cùng có hình cô AI vắt ở mép hộp nhìn xuống.
+
+Ba luật của bảng dữ liệu:
+   · KHÔNG BIẾT THÌ GHI "no info", không đoán. Kho mã mới bắt đầu được ghi từ
+     17-08-2026; mọi đời trước đó có thật (tem đã ở V17, V22, V2.05…) nhưng
+     không còn bản ghi nào để biết mỗi đời sửa gì.
+   · "no info" VẪN GIỮ NGUYÊN SỐ PHIÊN BẢN — đúng như anh dặn.
+   · mấy lượt push tên "Add files via upload" cũng là no info: tải thẳng qua
+     web GitHub thì không có lời ghi chú nào để mà đọc lại.
+
+Nút nhớ trong PHIÊN (đóng trình duyệt là quên, lần sau vẫn phải tự mò lại).
+Bắt buộc phải nhớ chứ không phải cho tiện: ngoài BẢN ĐỒ, cú bấm thứ 10 vào tem
+CÒN mở khung Collected và lần đầu nó bay thẳng sang màn pháo hoa — nút vừa
+hiện ra là trang đã đi mất.
+
+Thêm một đời mới về sau: mở assets/lichsu.js, thêm một dòng vào hằng SO. Chỉ
+một chỗ, cả sáu trang thấy ngay.
+
+
+   RÀ LẠI SỐ PHIÊN BẢN — ba chỗ đã lệch
+   ─────────────────────────────────────────────────────────────────────────
+   Dò từng lượt push, đọc số tem của từng file. Ba chỗ không khớp tiến độ:
+
+   ❶ han/961030-b đi V1.09 → V1.10 → V1.11
+      SAI LUẬT: theo README, đuôi chỉ được chạy 00→09; tới V1.09 là phải sang
+      V2.00. ĐÃ NẮN: đợt này ghi thẳng V2.00, bỏ qua V1.12.
+
+   ❷ index.html đi V17.05 → V17.04 rồi lại V17.05
+      Số LÙI một nấc giữa hai lượt push ngày 18-08 — ghi tay nhầm. Đã tự vượt
+      qua từ V17.06, chỉ ghi lại cho có sổ.
+
+   ❸ Đợt 1 ("Sửa mục 8-13") sửa 4 file mà KHÔNG bump tem nào — quên.
+      Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật.
+
+   Còn một chỗ CỐ Ý KHÔNG ĐỤNG: cách đệm số 0 không đồng nhất (V04.04, V22.02
+   có đệm — V2.09, V3.03 không). Mỗi trang tự nhất quán với lịch sử của chính
+   nó; nắn lại chỉ để cho đều mắt thì đổi số tem của bốn trang mà chẳng được
+   gì.
+
+   Bảng phiên bản sau đợt này:
+      /                    V17.07        /han/961030-a       V2.09
+      /dad/950901-a        V22.02        /han/961030-b       V2.00
+      /dad/950901-b        V04.04        /phao-hoa           V3.03
+
+
+⑦ ĐÃ SOÁT LẠI TÀI LIỆU
+────────────────────────────────────────────────────────────────────────────
+README.md          cây thư mục dựng lại cho đúng thực tế (thiếu api/chat.js,
+                   api/quote.js, api/_lib/, assets/, config.js…), thêm mục
+                   11b (sổ phiên bản) + bảng phiên bản + phần rà soát,
+                   cửa hậu 3 → 4, phần máy chủ trỏ sang docs/GOOGLE-SHEETS.md
+DIALOGUES.md       phần chuyển cảnh viết lại cùng bảng đo từng khung clip;
+                   bảng gợi ý và bảng thoại sửa cho khớp config
+CHU-MAP3.md        sửa dòng màn hoàn thành, thêm luật viết tên
+DESIGN-SYSTEM.md   file mới, gom hệ nút + tên gọi + tem + cửa hậu
+
+
+ĐÃ CHẠY THỬ TRÊN TRÌNH DUYỆT THẬT
+────────────────────────────────────────────────────────────────────────────
+  · sáu trang tải sạch, không lỗi JS nào
+  · chơi hết vòng 1 Gate 2, soi từng khung clip: chữ NUY OAHZ không đọc ra ở
+    bất cứ khung nào; bệ đá và đám nấm phía trước vẫn còn ra hình
+  · gợi ý 1 bật ngay sau lần sai chính thức đầu tiên
+  · sổ phiên bản chạy trên cả sáu trang: 10 nhịp → nút → mã sai 3 lần → gợi ý
+    → mã đúng → bảng
+  · CỬA HẬU CŨ VẪN CHẠY: bản đồ mở khung Collected, Gate 2 hiện nút bỏ qua,
+    Zoey's Castle bấm 5 nhịp vào bông hoa mở bảng điều phối
+    (lưu ý: ở hai trang HAN, cửa hậu hoa nay CHỈ nhận cú bấm vào đúng bông
+     hoa — không tính dòng tem nữa, vì dòng tem đã dành cho sổ phiên bản)
+  · màn hoàn thành Zoey's Castle: hai nút mới + chú thích nổi, chữ đã đúng là
+    "Thương gửi anh PIN Secret Chamber"
