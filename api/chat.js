@@ -61,10 +61,19 @@ function quaTay() {
       rỗng thì báo lỗi. Đó chính là kiểu "hỏi 11 câu lỗi 6 câu": câu dễ thì
       xong, câu khó thì trượt — càng hỏi sâu càng hay hỏng.
 
-   Nay: TẮT HẲN bước suy nghĩ (`thinkingBudget: 0`) và nới hạn mức lên 1600.
-   Tắt suy nghĩ vừa trả lại toàn bộ token cho phần chữ, vừa rút ngắn thời gian
-   chờ — hàm serverless có trần thời gian, nghĩ lâu quá là đứt kết nối, lại
-   thành một kiểu lỗi nữa.
+   ── TẮT HẲN SUY NGHĨ HAY CHỈ GIỚI HẠN? ────────────────────────────────────
+   Bản trước tắt hẳn (`thinkingBudget: 0`). Chạy thì hết lỗi thật, nhưng tắt
+   hẳn là quá tay: nhân vật này sinh ra để trả lời mấy câu nặng — tự vấn, chữa
+   lành, trích Jung với Seneca. Mấy câu đó model có nghĩ một nhịp thì chọn được
+   góc nhìn sắc hơn; tắt hẳn thì câu trả lời trôi chảy nhưng nhạt, kiểu bốc đại
+   một câu mẫu gần giống rồi chép lại.
+   Mà THỦ PHẠM THẬT chưa bao giờ là chuyện có nghĩ hay không — là chuyện nghĩ
+   và viết ĂN CHUNG một hạn mức 400 quá chật. Nới lên 1600 rồi thì chỉ cần
+   ĐÓNG KHUNG phần nghĩ lại: cho nghĩ trong `THINK_TOKEN`, phần còn lại
+   (1600 - 512 = hơn 1000 token) luôn dành sẵn cho chữ. Vừa giữ được chiều
+   sâu, vừa không bao giờ hết token trước khi kịp viết.
+   Muốn tắt hẳn cho nhanh thì đặt biến môi trường GEMINI_THINK=0; muốn nghĩ
+   sâu hơn thì nâng số đó lên. Không cần sửa mã.
 
    TRẦN THỜI GIAN: 9 giây, đặt bằng AbortController. Chọn 9 vì gói Hobby của
    Vercel cắt hàm ở 10 giây — phải tự dừng TRƯỚC mốc đó thì mới kịp trả về một
@@ -72,15 +81,21 @@ function quaTay() {
    không hiện được câu gì tử tế. Tắt suy nghĩ rồi thì Flash trả lời trong
    1-3 giây, 9 giây là rộng rãi. Nâng gói thì nới số này lên cũng được. */
 const MAX_TOKEN   = 1600;
+/* Trần cho bước suy nghĩ. Đọc từ GEMINI_THINK nếu có; 0 = tắt hẳn.
+   Phải NHỎ HƠN HẲN MAX_TOKEN, vì hai thứ ăn chung một hạn mức. */
+const THINK_TOKEN = (() => {
+  const v = parseInt(process.env.GEMINI_THINK, 10);
+  return Number.isFinite(v) && v >= 0 ? Math.min(v, Math.floor(MAX_TOKEN * 0.6)) : 512;
+})();
 const HET_GIO_MS  = 9000;
 /* Trần ký tự trả về trang. Hộp thoại pixel gõ từng chữ nên dài quá thì người
    chơi ngồi đợi; 900 là mức vừa đủ một đoạn trọn ý. Cắt Ở CUỐI CÂU chứ không
    cắt giữa từ như bản trước. */
 const TRAN_KY_TU  = 900;
 
-function goiGemini(model, key, contents, tinhCach, tatSuyNghi) {
+function goiGemini(model, key, contents, tinhCach, dongKhungSuyNghi) {
   const generationConfig = { temperature: 0.9, maxOutputTokens: MAX_TOKEN };
-  if (tatSuyNghi) generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  if (dongKhungSuyNghi) generationConfig.thinkingConfig = { thinkingBudget: THINK_TOKEN };
 
   const stop = new AbortController();
   const hen = setTimeout(() => stop.abort(), HET_GIO_MS);
@@ -150,7 +165,8 @@ module.exports = async (req, res) => {
     let r = await goiGemini(model, key, contents, tinhCach, true);
     /* Model đời cũ không biết `thinkingConfig` thì Google trả 400 chứ không bỏ
        qua. Gặp đúng 400 thì gọi lại một lần, lần này bỏ khoá đó ra — nhờ vậy
-       đổi GEMINI_MODEL sang bản nào cũng chạy, không phải sửa mã. */
+       đổi GEMINI_MODEL sang bản nào cũng chạy, không phải sửa mã.
+       (Model cũ vốn không có bước suy nghĩ nên bỏ khoá đi cũng không mất gì.) */
     if (r && r.status === 400) {
       console.log('[CHAT] model không nhận thinkingConfig — gọi lại kiểu cũ');
       r = await goiGemini(model, key, contents, tinhCach, false);

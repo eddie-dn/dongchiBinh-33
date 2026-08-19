@@ -1449,7 +1449,10 @@ const fxCtx = el.fx.getContext('2d');
 
 /* mode/dug: xem khối "BỚI ĐẤT" bên dưới — 'flash' hay 'progressive', và đã bới
    ra được mấy ký tự rồi. */
-const S = { round:0, busy:true, inputLocked:true, wrongs:{1:0,2:0},
+/* `wrongs` = số lần sai CHÍNH THỨC (điều khiển gợi ý và hạn khoá).
+   `trat`   = số lần gõ trật ký tự, kể cả mấy lần được nới tay. Cứ đủ
+              `sai_moi_lan` lần trật thì `wrongs` mới cộng một — xem fail(). */
+const S = { round:0, busy:true, inputLocked:true, wrongs:{1:0,2:0}, trat:{1:0,2:0},
             slabWord:'', slabRow:null, slabEl:null, revMap:null,
             mode:'flash', dug:0, burn:false,
             lastLen:0, lastNoSp:0, idleTimer:0, done:false, booted:false };
@@ -2108,7 +2111,7 @@ el.input.addEventListener('input', ()=>{
   armIdle();
 });
 
-/* Chấm một ký tự vừa gõ ở vòng 2 */
+/* Chấm một ký tự vừa gõ (cả hai vòng — vòng 1 nay cũng chơi kiểu mò từng ký tự) */
 async function doanKyTu(ch){
   if(S.busy || S.inputLocked) return;
   const idx = S.revMap[S.dug];
@@ -2117,7 +2120,9 @@ async function doanKyTu(ch){
     S.dug++;
     el.input.value = chuoiDaLo();
     S.lastNoSp = S.lastLen = el.input.value.length;
-    if(S.dug >= S.revMap.length) win2();         /* lộ đủ chữ = giải xong */
+    /* Lộ đủ chữ = giải xong. Trước đây gọi thẳng win2() vì chỉ vòng 2 mới chơi
+       kiểu này; nay vòng 1 cũng vậy nên phải rẽ theo đúng vòng đang chơi. */
+    if(S.dug >= S.revMap.length){ if(S.round === 1) win1(); else win2(); }
     return;
   }
   missBlink();
@@ -2155,16 +2160,50 @@ function resetOnhap(trao_phim){
   try{ el.input.focus({ preventScroll:true }); }catch(_){ el.input.focus(); }
   try{ el.input.setSelectionRange(n, n); }catch(_){}
 }
-/* `le` = vừa đoán trật MỘT ký tự (vòng 2), nhẹ hơn nhập sai cả cụm */
+/* ═══ TRẬT MỘT KÝ TỰ — VÀ LUẬT NỚI TAY ════════════════════════════════════
+   `le` = vừa đoán trật MỘT ký tự (kiểu chấm theo phím), nhẹ hơn nhập sai cả cụm.
+
+   VÌ SAO CẦN NỚI TAY: từ nay CẢ HAI vòng đều chấm ngay từng phím, gõ xong là
+   nộp, không rút lại được. Nghiêm hơn hẳn kiểu cũ của vòng 1 (gõ thoải mái,
+   bấm UNLOCK mới chấm — mà không bấm thì không bao giờ bị tính sai). Nghiêm
+   quá thì bảng chữ 26 chữ cái, mới mò một tí đã hết lượt.
+   Nên có `sai_moi_lan`: trật bấy nhiêu lần mới cộng MỘT vào bộ đếm sai thật
+   (bộ đếm điều khiển gợi ý và hạn khoá). Vòng 1 để 3, vòng 2 để 1.
+
+   Mấy lần trật CHƯA tới ngưỡng chỉ bị nhắc nhẹ: nháy ô nhập, một dòng chữ,
+   mở lại ô ngay. Không chạy clip, không tiêu gợi ý, không khoá — nếu không
+   thì "nới tay" chỉ là nới trên giấy, chơi vẫn nặng y như cũ. */
 async function fail(le){
   S.busy = true;
   setInput(false);
-  S.wrongs[S.round]++;
   resetOnhap();
+
+  const cfg = S.round === 1 ? C.round1 : C.round2;
+  const cho = Math.max(1, cfg.sai_moi_lan || 1);
+  S.trat[S.round] = (S.trat[S.round] || 0) + 1;
+  const con = cho - (S.trat[S.round] % cho);      /* còn mấy lần nữa thì bị tính */
+  const chinh_thuc = (S.trat[S.round] % cho) === 0;
+
+  /* ── Chưa tới ngưỡng: nhắc một câu rồi trả ô nhập lại ngay ────────────── */
+  if(!chinh_thuc){
+    el.narr.classList.remove('shake'); void el.narr.offsetWidth;
+    el.narr.classList.add('shake');
+    if(S.round === 2) flashEyes();
+    const mau = (S.round === 1 ? C.dialogues.round1_le_wrong : C.dialogues.round2_le_wrong) || '';
+    await say(mau.replace('{N}', con), 'err');
+    setInput(true);
+    resetOnhap(true);
+    S.busy = false;
+    return;
+  }
+
+  /* ── Tính là một lần sai chính thức ───────────────────────────────────── */
+  S.wrongs[S.round]++;
+  if(cho > 1 && C.dialogues.le_het_luot) await say(C.dialogues.le_het_luot, 'warn');
 
   if(S.round === 1){
     playClip(A('anim_wrong'), T.anim_wrong);      /* chạy song song với log */
-    await say(C.dialogues.round1_wrong, 'err');
+    await say(le ? C.dialogues.round1_wrong : C.dialogues.round1_wrong, 'err');
   }else{
     el.narr.classList.remove('shake'); void el.narr.offsetWidth;
     el.narr.classList.add('shake');
@@ -2196,7 +2235,9 @@ async function startRound1(){
   el.bg.style.backgroundImage = url1;
   el.slab1.style.setProperty('--veil-f', C.round1.veil_filter);
   S.mode = C.round1.reveal_mode; S.dug = 0; S.burn = false;
-  el.ctrl.classList.remove('nobtn');
+  /* Chấm theo từng phím thì nút UNLOCK không còn việc gì — giấu đi, y như
+     vòng 2. Để lại thì người chơi cứ bấm rồi tưởng máy không nhận. */
+  el.ctrl.classList.toggle('nobtn', S.mode === 'progressive');
   S.revMap = buildSlab(el.row1, C.round1.scrambled);
   /* Ô CHỮ luôn lấy ảnh CÓ chữ (đó là thứ sẽ sáng lên khi giải đúng); còn NỀN
      và lớp che thì ưu tiên tấm đá sạch — xem apDungAnh(). */
@@ -2896,7 +2937,7 @@ el.startBtn.addEventListener('click', ()=>{
 
 /* Dọn sạch để chơi lại từ đầu */
 function reset(){
-  S.round = 0; S.busy = true; S.wrongs = {1:0,2:0}; S.done = false;
+  S.round = 0; S.busy = true; S.wrongs = {1:0,2:0}; S.trat = {1:0,2:0}; S.done = false;
   S.lastLen = 0; S.lastNoSp = 0; S.revMap = null;
   S.mode = 'flash'; S.dug = 0; S.burn = false;
   galleryOn = false; owOn = false; owBan = false; owSu = [];

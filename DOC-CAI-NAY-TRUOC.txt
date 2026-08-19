@@ -1,209 +1,193 @@
-BẢN SỬA ĐỢT 2 — GATE 2 + HỘP CHÀO  ·  CHÉP ĐÈ LÀ XONG
-=======================================================
+BẢN SỬA ĐỢT 3  ·  CHÉP ĐÈ LÀ XONG
+==================================
 
 CÁCH DÙNG
 ---------
-1. Giải nén file zip này.
-2. Chép TOÀN BỘ những thứ vừa giải nén vào THƯ MỤC GỐC của repo
-   (chỗ đang có sẵn index.html, thư mục dad/, han/, api/, assets/).
-3. Máy hỏi "có ghi đè không?" → CHỌN CÓ / REPLACE cho tất cả.
+1. Giải nén.
+2. Chép TOÀN BỘ vào THƯ MỤC GỐC của repo (chỗ có index.html, dad/, han/,
+   api/, assets/).
+3. Ghi đè / Replace tất cả.
 4. Xoá file DOC-CAI-NAY-TRUOC.txt này đi.
-5. Deploy lại (Vercel: Redeploy). Xong.
+5. Redeploy trên Vercel.
 
-GÓI NÀY CHIA LÀM HAI FILE vì file ảnh nặng quá trần gửi:
-
-  SUA-DOT-2.zip        ← file này. Toàn bộ phần sửa của đợt 2.
-                          ÁP CÁI NÀY LÀ ĐỦ cho mọi thứ trong danh sách
-                          dưới đây.
-
-  DOT-1-ANH-NANG.zip   ← 5 clip Open World + 6 ảnh mồi của ĐỢT TRƯỚC.
-                          CHỈ CẦN NẾU đợt trước anh chưa áp. Áp rồi thì
-                          bỏ qua, hai file y hệt nhau.
-                          (Cách kiểm: mở dad/950901-b/assets/, nếu 5 file
-                          ow_2_*.webp mỗi file nặng ~5 MB là đã áp rồi;
-                          nếu nặng 0 KB thì cần áp.)
+Gói này gồm cả phần đợt 2 (hai tấm đá sạch), nên áp gói này là có luôn
+đợt 2. Riêng 5 clip Open World + 6 ảnh mồi thì vẫn nằm ở
+DOT-1-ANH-NANG.zip gửi lần trước — chỉ cần nếu chưa áp lần nào.
+(Kiểm: dad/950901-b/assets/ow_2_*.webp mỗi file ~5 MB là đã áp rồi.)
 
 
-ĐÃ SỬA GÌ
-=========
+═══════════════════════════════════════════════════════════════════════
+MỤC 8 — LUẬT HAI HỘP: 15 GIÂY → MỘT PHÚT, VÀ CÓ HẠN CHỜ
+═══════════════════════════════════════════════════════════════════════
+  · Hai hộp phải cách nhau ít nhất MỘT PHÚT (trước là 15 giây).
+  · Thêm hạn chờ 90 giây: chờ quá lâu mà vẫn chưa tới lượt thì BỎ HẲN
+    lượt chào đó, không bật ra nữa.
 
-1 · Màn Gate 2, dòng ngay đầu
-    "Cổng đã thông. Dongchi Bình đang tiến vào phòng lab."
-    → "Người chơi đang tiến vào phòng lab"
-
-2 · Chân màn hình, ngay dưới số phiên bản
-    Thêm dòng ký tên "@Designed by Honghandangiu".
-    Hiện ở CẢ hai màn: màn đếm ngược và màn phát mã.
-
-3 · Dòng chờ mấy giây cuối trước khi cửa mở
-    "Cửa sẽ mở trong vài giây nữa…" (đứng im suốt 10 giây, nhìn như
-    trang bị treo) → bốn câu chạy TUẦN TỰ theo đúng việc máy đang làm:
-      Đang tải assets… → Đang thiết lập bối cảnh… →
-      Đang khởi động hệ thống… → Đang kiểm tra…
-    Cố ý đi tuần tự chứ không bốc ngẫu nhiên: ngẫu nhiên thì câu nhảy
-    lung tung, có khi lùi lại câu vừa đọc, nhìn ra ngay là chữ trang trí.
-
-4 · Bỏ nút "← Về bản đồ" ở giữa màn hình
-    Góc trái trên đã có sẵn một nút Bản đồ, và mọi màn khác trong bộ đều
-    chỉ có đúng một đường lui ở góc đó.
-
-5 · ĐOẠN CHUYỂN CẢNH SAU KHI GIẢI RA "RAZER"  ← phần nặng nhất
-    Xem mục riêng bên dưới.
-
-6 · Câu trả lời của Open World hay bị cắt cụt và hay báo lỗi
-    Xem mục riêng bên dưới.
-
-7 · Bức thư
-    Lần ĐẦU vẫn gõ từng chữ (đó là cái hay của lần đầu). Từ lần thứ hai
-    trở đi bày sẵn cả bức, cuộn tới đâu đọc tới đó — đã biết nội dung rồi
-    thì ngồi nhìn máy gõ lại chỉ là chờ suông. Nhớ bằng cờ trong máy nên
-    tải lại trang vẫn nhớ. Chạm giữa chừng để bỏ qua cũng tính là đã đọc.
-
-8 · Hộp chào ngoài bản đồ
-    · Câu sau khi phá đảo Gate 2 đổi thành:
-        Chúc mừng đồng chí phá đảo Easter Egg: Gate 2 ✦
-        Zoey's Castle đã mở khoá tại Hà Nội ✦
-    · Nhãn "Xin chào" → "Greetings".
-    · Luật mới: KHÔNG hiện hai hộp liền nhau. Trước đây mới chỉ cấm hai
-      hộp cùng lúc, nhưng "vừa đóng hộp chúc mừng thì hộp chào nhảy ra
-      ngay" cũng phiền y như đè lên nhau. Nay hộp sau phải chờ 15 giây
-      kể từ lúc hộp trước đóng.
-
-9 · Câu chào random kiểu Journal
-    Xem mục riêng bên dưới.
-
-10 · Cập nhật số phiên bản
-    index.html          V17.04 → V17.05
-    han/961030-a        V2.06  → V2.07
-    dad/950901-b        V04.00 → V04.01
-    (Các trang khác không đụng tới nên giữ nguyên số cũ.)
+  Vì sao cần hạn chờ: chờ mãi rồi cũng bật ra thì thành một kiểu spam
+  khác — người chơi đã chuyển sang việc khác từ lâu, tự dưng một hộp
+  chào của chuyện xảy ra hai phút trước nhảy lên. Thà im còn hơn chào
+  trễ.
 
 
-MỤC 5 — VÌ SAO MIẾNG CHE KHÔNG KHỚP
-====================================
-Bung cả 241 khung của clip nổ ra đo thì ra BA lỗi chồng lên nhau, không
-lỗi nào nhìn bằng mắt mà đoán ra được:
+═══════════════════════════════════════════════════════════════════════
+MỤC 9 — TÍNH CÁCH HONGHANDANGIU
+═══════════════════════════════════════════════════════════════════════
+Đã thay `api/_lib/tinhcach.md` bằng bản mới anh gửi (file .rtf), giữ
+nguyên từng chữ, chỉ chuyển định dạng RTF sang markdown thuần.
 
-★ LỖI 1 — hai file bg_r1_clean.png / bg_r2_clean.png cũ KHÔNG PHẢI bản
-  sao đã xoá chữ. Chúng là ảnh VẼ LẠI: đo ra lệch trung bình 12,5/255 và
-  27% diện tích lệch quá 8 mức, tức cả khung xê dịch chừng 1 pixel, từ
-  ngọn cỏ tới vảy rồng. Miếng che cắt từ một tấm như thế dán lên nền gốc
-  thì mép nào cũng hở — đúng cái "đè manual nhìn xấu".
-  → Dựng lại hai tấm TỪ CHÍNH bg_r1.png / bg_r2.png, chỉ xoá đúng nét
-    chữ khắc (lấp bằng vật liệu của chính tấm biển đó). Nay mọi pixel
-    ngoài vùng chữ giống HỆT ảnh gốc — đo lại: chỉ 0,2-0,3% diện tích
-    khác, đúng chỗ chữ. File cũng nhẹ hơn (7,9 MB → 5,9 MB).
+  cũ:  492 dòng · 31.144 ký tự sau khi bỏ dòng ghi chú
+  mới: 422 dòng · 25.597 ký tự sau khi bỏ dòng ghi chú   (−18%)
 
-★ LỖI 2 — thả miếng che sai lúc. Bản cũ thả quanh mốc 39-44% clip, tức
-  đúng lúc khói đang tan: một mảng đá TĨNH, SẮC NÉT hiện ra giữa làn
-  khói đang cuộn thì mắt bắt được ngay. Đó là cái "đè lên hiệu ứng
-  trong video".
-  → Đo ra từ 26% đến 37% ô bảng đá CHÌM HẲN trong khói trắng. Nay thả
-    vào đúng quãng đó — đặt giữa màn khói thì không ai thấy đặt lúc nào.
-    Kèm một lớp khói phủ chạy đúng đường cong độ sáng đo được, nên mảng
-    che trắng theo khói rồi hiện dần ra đúng nhịp khói tan.
+ƯỚC LƯỢNG TOKEN: khoảng 8.500–9.800 token, tức ĐÃ DƯỚI 10k như anh muốn.
 
-★ LỖI 3 — CÁI NÀY MỚI LÀ THỦ PHẠM CHÍNH, và tuyệt đối không nhìn ra
-  bằng mắt được. Cảnh trong clip vẫn còn đang "hạ cánh" suốt nửa sau:
-      42-48% clip … bảng đá nằm THẤP HƠN ảnh nền 13 pixel
-      55% … 11px      70% … 7px      86% … 3px      100% … 0px
-  Mà miếng che thì đứng yên ở toạ độ của ảnh nền — cao hơn chữ thật gần
-  HAI LẦN chiều cao chính nó. Kết quả: che trượt lên trên, chữ NUY OAHZ
-  thò ra ngay bên dưới suốt nửa sau đoạn chuyển.
-  → Nay miếng che TRÔI THEO đúng đường cong đó rồi về 0 đúng lúc clip
-    kết thúc. Chụp lại 14 khung suốt đoạn chuyển: không còn khung nào
-    hở chữ.
+  Nói thẳng là đây là ƯỚC LƯỢNG, không phải số đo. Máy ảo em chạy không
+  ra được mạng để tải bảng mã của tokenizer về, nên em tính bằng tỉ lệ
+  ký-tự-trên-token của tiếng Việt (2,5–3,0 ký tự/token trên các
+  tokenizer đời mới). Muốn số chính xác thì dùng
+  https://aistudio.google.com → dán nội dung vào → nó đếm thật.
 
-★ Chữ ZHAO YUN sáng và nét ngang ngửa RAZER
-  Cùng một công thức nhưng RAZER bừng lên còn ZHAO YUN lờ đờ, vì tranh
-  gốc khác hẳn: bảng vòng 1 nền nâu ẤM, chữ vàng rực, quầng sáng vẽ sẵn
-  trong tranh; bảng vòng 2 nền đá xám XANH, chữ be nhạt, không quầng.
-  → Tách thông số riêng cho từng vòng (`solved_glow` trong config.js).
-    Vòng 2 đẩy sáng 2.6→3.35, tươi 1.5→1.9 và thêm tương phản 1.32 —
-    chính tương phản mới làm mép chữ SẮC lại chứ không chỉ sáng lên.
-  → Đáp án và khung lúc ĐANG CHƠI thì không đụng gì, đúng như dặn.
+  Nếu số thật vẫn quá 10k, chỗ cắt được nhiều nhất mà ít mất chất nhất
+  là ba nhóm câu mẫu dài nhất (mỗi nhóm ~1.200 token):
+      NHÓM CHỮA LÀNH TỔN THƯƠNG & XÂY DỰNG MỐI QUAN HỆ LÀNH MẠNH
+      NHÓM TÌNH CẢM & ĐỒNG HÀNH
+      NHÓM TỰ VẤN, TÂM LÝ HỌC & ĐỐI DIỆN BẢN THÂN
+  Bỏ bớt 2-3 cặp Hỏi/Đáp trong mỗi nhóm là xuống ngay ~1.000 token.
+  Phần "## 3. Fact về người chơi" thì em khuyên GIỮ NGUYÊN — đó mới là
+  thứ làm nhân vật biết chuyện, cắt đi là nhạt ngay.
+
+  Lưu ý nhỏ: mấy dòng bắt đầu bằng "> " ở đầu file KHÔNG tốn token nào.
+  Bộ nạp cắt hết trước khi gửi cho Gemini. Anh cứ ghi chú thoải mái.
 
 
-MỤC 6 — VÌ SAO GEMINI HAY TRẢ LỜI CỤT VÀ HAY BÁO LỖI
-=====================================================
-Bản cũ đặt `maxOutputTokens: 400`. Hai chuyện xảy ra cùng lúc:
+─── "BỎ BƯỚC SUY NGHĨ THÌ CÒN ĐỦ INSIGHT KHÔNG?" ───────────────────────
 
-  1. 400 token tiếng Việt chỉ được chừng 250-350 ký tự. Câu nào dài hơn
-     là bị cắt ngang — đúng cái "trả lời không hết ý".
+Câu hỏi đúng chỗ, và câu trả lời là: CÓ RỦI RO THẬT — nên em đã đổi
+cách làm, không tắt hẳn nữa.
 
-  2. NẶNG HƠN, và đây mới là lý do "hỏi 11 câu lỗi 6 câu": các model
-     Flash đời mới có bước "suy nghĩ" nội bộ, và bước đó ĂN CHUNG hạn
-     mức 400 token. Câu hỏi càng sâu thì nghĩ càng lâu, có khi tiêu sạch
-     400 token trước khi viết được chữ nào. Google trả về phần chữ RỖNG,
-     mã cũ thấy rỗng thì báo lỗi. Nên câu dễ thì xong, câu khó thì trượt.
+Đợt trước em tắt hẳn (`thinkingBudget: 0`). Chạy thì hết lỗi thật,
+nhưng nghĩ lại thì tắt hẳn là quá tay: nhân vật này sinh ra để trả lời
+mấy câu nặng — tự vấn, chữa lành, trích Jung với Seneca. Mấy câu đó
+model có nghĩ một nhịp thì chọn được góc nhìn sắc hơn. Tắt hẳn thì câu
+trả lời vẫn trôi chảy và vẫn đúng giọng, nhưng nhạt: kiểu bốc đại một
+câu mẫu gần giống trong file tính cách rồi chép lại, thay vì thật sự
+nghĩ về câu người ta vừa hỏi.
 
-Đã sửa:
-  · TẮT HẲN bước suy nghĩ (`thinkingBudget: 0`) — trả lại toàn bộ token
-    cho phần chữ, và trả lời nhanh hơn hẳn. Model đời cũ không biết khoá
-    này thì tự gọi lại lần nữa không kèm nó, nên đổi GEMINI_MODEL sang
-    bản nào cũng chạy.
-  · Nới hạn mức 400 → 1600 token.
-  · Đặt trần thời gian 9 giây (gói Hobby của Vercel cắt hàm ở 10 giây —
-    phải tự dừng trước để còn kịp trả về một lỗi tử tế).
-  · Cắt chữ ở CUỐI CÂU chứ không cắt giữa từ, và giữ lại chỗ ngắt đoạn
-    (bản cũ gộp cả xuống dòng thành một khối chữ liền).
-  · Câu rỗng thì ghi rõ lý do vào log (hết token / bị chặn / rỗng thật),
-    lần sau mở log là biết ngay.
-  · Phía trang: hộp thoại gõ nhanh dần theo độ dài, câu nào cũng gõ xong
-    trong khoảng 8 giây thay vì ngồi gõ hơn 20 giây.
+Mà thủ phạm gây lỗi chưa bao giờ là chuyện CÓ NGHĨ hay không — là
+chuyện nghĩ và viết ĂN CHUNG một hạn mức 400 token quá chật. Nới lên
+1600 rồi thì chỉ cần ĐÓNG KHUNG phần nghĩ lại:
 
+      nghĩ  ≤ 512 token          (đóng khung)
+      viết  ≥ 1088 token         (luôn còn dư)
 
-MỤC 9 — CÂU CHÀO RANDOM KIỂU JOURNAL
-=====================================
-Làm API RIÊNG, tách hẳn khỏi file tính cách, đúng như anh nói.
+Vừa giữ được chiều sâu, vừa không bao giờ hết token trước khi kịp viết
+chữ nào. Đây là cách làm mặc định trong gói này.
 
-  api/_lib/loichao.md   ← FILE ANH SỬA. Lời dặn gửi cho Gemini + bộ câu
-                          sẵn, chia ba buổi: sang / trua / toi.
-  api/_lib/loichao.js   ← bộ nạp, đọc file .md trên. Không cần đụng.
-  api/quote.js          ← endpoint, đã viết lại cho biết buổi.
-
-Cách chia giờ (theo GIỜ MÁY NGƯỜI CHƠI, không phải giờ máy chủ — máy chủ
-chạy ở đâu thì giờ ở đó, chào "buổi sáng" lúc người ta sắp ngủ là hỏng):
-    sang  04:00-10:59      trua  11:00-17:59      toi  18:00-03:59
-
-Trang gửi kèm giờ: /api/quote?gio=<0..23>
-Thử tay:            /api/quote?buoi=toi
-
-Sửa câu chào → mở api/_lib/loichao.md, gõ như gõ văn bản, lưu, Redeploy.
-Đừng đổi tên mấy dòng tiêu đề (## sang, ### Lời dặn, ### Câu sẵn), còn
-chữ nghĩa bên trong thì thoải mái.
-
-Bộ câu ngay trong trang cũng đã đổi: bản cũ chỉ có 5 câu và bốc theo
-NGÀY, nghĩa là suốt một ngày mở lại bao nhiêu lần cũng đúng một câu đó,
-5 ngày là quay lại từ đầu. Nay chia ba buổi và bốc KHÔNG LẶP — vét hết
-kho của buổi đó mới quay vòng.
-
-Chưa khai khoá Gemini thì mọi thứ vẫn chạy, chỉ là lấy câu trong bộ câu
-sẵn. Không bao giờ hiện lỗi cấu hình cho người chơi.
+Muốn chỉnh mà không cần sửa mã — đặt biến môi trường trên Vercel:
+      GEMINI_THINK=0      → tắt hẳn (nhanh nhất, nhạt nhất)
+      GEMINI_THINK=512    → mặc định, cân bằng
+      GEMINI_THINK=900    → nghĩ sâu hơn, trả lời chậm hơn
 
 
-10 FILE TRONG GÓI NÀY
-=====================
-  index.html                              mục 8, 9, 10
-  dad/950901-b/index.html                 mục 1, 2, 3, 4, 5, 7
-  dad/950901-b/config.js                  mục 1, 2, 3, 5, 10
-  dad/950901-b/assets/bg_r1_clean.png     mục 5  ★ dựng lại
-  dad/950901-b/assets/bg_r2_clean.png     mục 5  ★ dựng lại
-  han/961030-a/index.html                 mục 10
-  api/chat.js                             mục 6
-  api/quote.js                            mục 9  ★ viết lại
-  api/_lib/loichao.js                     mục 9  ★ file mới
-  api/_lib/loichao.md                     mục 9  ★ file mới — ANH SỬA Ở ĐÂY
+═══════════════════════════════════════════════════════════════════════
+MỤC 10 — RAZER NAY CŨNG MÒ TỪNG KÝ TỰ
+═══════════════════════════════════════════════════════════════════════
+LỖ HỔNG CŨ: vòng 1 kiểu 'flash' cho gõ thoải mái vào ô, chỉ khi bấm
+UNLOCK mới chấm. Nghĩa là ai cũng gõ thử A, B, C… xem ô nào chớp sáng
+rồi xoá đi, KHÔNG BẤM GỬI — dò ra cả đáp án mà không bị tính sai lần
+nào. Bộ đếm sai, gợi ý, hạn khoá đều thành vô nghĩa.
 
-11 FILE TRONG DOT-1-ANH-NANG.zip (chỉ cần nếu đợt trước chưa áp)
-================================================================
-  dad/950901-b/assets/ow_2_1..5.webp      5 clip nét mặt Open World
-  assets/poster/ — 6 file                 ảnh mồi cho khung Collected
+NAY: vòng 1 chơi y như vòng 2 — bệ đá chôn kín, chấm NGAY từng phím,
+gõ xong một ký tự là nộp luôn, không rút lại được. Nút UNLOCK cũng ẩn
+đi (để lại thì người chơi cứ bấm rồi tưởng máy không nhận).
+
+BÙ LẠI — NỚI TAY 3 ĂN 1:
+  · Trật lần 1 → "CÒN 2 LẦN THỬ TRƯỚC KHI BỊ TÍNH SAI", mở ô lại ngay
+  · Trật lần 2 → "CÒN 1 LẦN THỬ…", mở ô lại ngay
+  · Trật lần 3 → mới tính MỘT lần sai chính thức: chạy clip ổ khoá,
+                 tính vào bộ đếm gợi ý / hạn khoá như cũ
+
+  Hai lần đầu cố ý làm thật nhẹ: không clip, không tiêu gợi ý, không
+  khoá. Nếu vẫn chạy đủ bộ thì "nới tay" chỉ là nới trên giấy, chơi
+  vẫn nặng y như cũ.
+
+CHỈNH ĐƯỢC: `round1.sai_moi_lan` trong dad/950901-b/config.js.
+  3 = như hiện tại · 2 = chặt hơn · 1 = trật phát nào tính phát đó
+  (vòng 2 đang để 1, giữ nguyên luật cũ)
+
+Chuỗi khắc là REZAR, lộ từ phải sang trái, nên thứ tự gõ đúng là
+R → A → Z → E → R. Đã chạy thử: gõ đủ 5 ký tự là sang vòng 2 bình
+thường, bệ đá lúc chưa giải chôn kín không hé chữ nào.
 
 
-NHẮC LẠI MỘT ĐIỀU TỪ ĐỢT TRƯỚC
-===============================
-Đừng đổi tên file ảnh/clip bằng nút Rename trên giao diện web GitHub.
-Chính mấy cú "Rename OW_2_1.webp to ow_2_1.webp" đã ghi đè nội dung 5
-clip Open World thành file rỗng 2 byte. Đổi tên dưới máy rồi upload lại
-thì an toàn.
+═══════════════════════════════════════════════════════════════════════
+MỤC 11 — QUOTE API: BA FILE, NHƯNG CHỈ SỬA MỘT
+═══════════════════════════════════════════════════════════════════════
+Anh hỏi "có tận 2 file vậy?" — thật ra là ba, nhưng anh chỉ đụng vào
+đúng MỘT file thôi:
+
+  ┌─ api/_lib/loichao.md ──────────── ★ CHỈ SỬA FILE NÀY ─────────────┐
+  │ Chữ nghĩa: lời dặn gửi cho Gemini + bộ câu sẵn, chia ba buổi.     │
+  │ Markdown thuần, gõ sai cũng không làm sập trang.                  │
+  └───────────────────────────────────────────────────────────────────┘
+    api/_lib/loichao.js    đọc file .md trên rồi bóc ra ba buổi. KHÔNG SỬA.
+    api/quote.js           nhận yêu cầu từ trang, gọi Gemini. KHÔNG SỬA.
+
+  Tách ba như vậy để sửa một câu chào không phải mở mã ra đọc, và ngược
+  lại sửa mã không sợ làm rơi mất câu nào.
+
+CÁCH SỬA CÂU CHÀO
+  1. Mở api/_lib/loichao.md bằng bất cứ trình soạn thảo nào (kể cả sửa
+     thẳng trên GitHub).
+  2. Tìm khối buổi cần sửa: `## sang`, `## trua`, hay `## toi`.
+  3. Trong mỗi khối có đúng hai mục:
+       ### Lời dặn   → đoạn văn dặn Gemini viết câu kiểu gì
+       ### Câu sẵn   → danh sách gạch đầu dòng, dùng khi Gemini không
+                       dùng được
+  4. Sửa / thêm / bớt thoải mái. Thêm câu thì chép đúng khuôn dòng
+     `- Câu của anh ở đây`.
+  5. Lưu → Redeploy trên Vercel.
+
+  ĐỪNG ĐỔI TÊN mấy dòng tiêu đề (`## sang`, `### Lời dặn`, `### Câu sẵn`)
+  — bộ nạp bám vào đúng ba dòng đó để bóc file ra. Chữ nghĩa bên trong
+  thì gõ kiểu gì cũng được.
+
+CHIA GIỜ (theo GIỜ MÁY NGƯỜI CHƠI, không phải giờ máy chủ)
+      sang  04:00 – 10:59
+      trua  11:00 – 17:59
+      toi   18:00 – 03:59
+  Muốn đổi mốc giờ thì sửa hàm `buoiTheoGio` trong loichao.js VÀ hàm
+  `hhBuoi` trong index.html — hai chỗ phải khớp nhau.
+
+THỬ NHANH KHÔNG CẦN CHƠI GAME
+      https://<trang-cua-anh>/api/quote?gio=7      → câu buổi sáng
+      https://<trang-cua-anh>/api/quote?gio=14     → câu buổi trưa
+      https://<trang-cua-anh>/api/quote?buoi=toi   → ép cứng buổi tối
+  Trả về JSON: { "q": "...", "buoi": "sang", "src": "gemini" }
+      src = "gemini" → Gemini viết
+      src = "san"    → lấy từ bộ Câu sẵn (chưa khai khoá / chậm / hỏng)
+
+CHƯA KHAI KHOÁ GEMINI thì mọi thứ vẫn chạy, chỉ là luôn lấy câu sẵn.
+Người chơi không bao giờ thấy lỗi cấu hình.
+
+
+═══════════════════════════════════════════════════════════════════════
+SỐ PHIÊN BẢN
+═══════════════════════════════════════════════════════════════════════
+  index.html        V17.06
+  dad/950901-b      V04.02
+  han/961030-a      V2.07   (không đổi đợt này)
+
+
+11 FILE TRONG GÓI
+=================
+  index.html                            mục 8
+  dad/950901-b/index.html               mục 10
+  dad/950901-b/config.js                mục 10
+  dad/950901-b/assets/bg_r1_clean.png   (đợt 2)
+  dad/950901-b/assets/bg_r2_clean.png   (đợt 2)
+  han/961030-a/index.html               (đợt 2)
+  api/chat.js                           mục 9 — đóng khung bước suy nghĩ
+  api/quote.js                          (đợt 2)
+  api/_lib/loichao.js                   (đợt 2)
+  api/_lib/loichao.md                   mục 11 — ★ ANH SỬA Ở ĐÂY
+  api/_lib/tinhcach.md                  mục 9 — ★ bản mới của anh

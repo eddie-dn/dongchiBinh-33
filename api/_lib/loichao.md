@@ -1,8 +1,18 @@
 # Lời chào trong hộp Greetings
 
-> **File này là BẢN GỐC của mấy câu chào.** Máy chủ đọc thẳng file này mỗi lần
-> trang xin một câu, nên sửa ở đây là ăn ngay — không phải đụng vào file `.js`
-> nào cả.
+> **CHỈ SỬA FILE NÀY. Hai file kia đừng đụng tới.**
+>
+> Cả bộ lời chào gồm ba file, nhưng chúng chia việc rõ ràng:
+>
+> | File | Việc của nó | Anh có sửa không |
+> |---|---|---|
+> | `api/_lib/loichao.md` | **chữ nghĩa** — lời dặn + câu sẵn | **CÓ — chính là file này** |
+> | `api/_lib/loichao.js` | đọc file .md trên rồi bóc ra ba buổi | không |
+> | `api/quote.js` | nhận yêu cầu từ trang, gọi Gemini | không |
+>
+> Tách ba như vậy để sửa một câu chào không phải mở mã ra đọc, và ngược lại
+> sửa mã không sợ làm rơi mất câu nào. Máy chủ đọc thẳng file .md này mỗi lần
+> trang xin một câu, nên sửa ở đây là ăn ngay.
 >
 > **File này TÁCH HẲN khỏi `tinhcach.md`.** Kia là giọng của Honghandangiu lúc
 > trò chuyện trong khu Open World, có fact riêng tư về người chơi. File này chỉ

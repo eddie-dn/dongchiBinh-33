@@ -59,7 +59,7 @@ const GATE_CONFIG = {
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V04.01<br>Last updated 19-Aug-2026'
+    version       : 'V04.02<br>Last updated 19-Aug-2026'
   }
 };
 
@@ -204,9 +204,25 @@ const GAME_CONFIG = {
     solved   : 'RAZER',
     color    : '#ffaa00',
     /* 'flash'       — nét khắc chìm mờ sẵn, gõ trúng thì chớp sáng rồi tối lại.
-       'progressive' — chôn kín hoàn toàn, mỗi lần sai / gõ trúng mới bới ra
-                       thêm một ký tự và GIỮ LUÔN. */
-    reveal_mode: 'flash',
+       'progressive' — chôn kín hoàn toàn, mỗi lần gõ trúng mới bới ra thêm
+                       một ký tự và GIỮ LUÔN.
+
+       ── VÌ SAO VÒNG 1 ĐỔI SANG 'progressive' ──────────────────────────────
+       Kiểu 'flash' cũ có một lỗ hổng: ô nhập cho gõ thoải mái, chỉ khi bấm
+       UNLOCK mới chấm. Nghĩa là ai cũng gõ thử A, B, C… xem ô nào chớp sáng
+       rồi xoá đi, KHÔNG BẤM GỬI — dò ra cả đáp án mà không bị tính sai lần
+       nào. Bộ đếm sai, gợi ý, hạn khoá đều thành vô nghĩa.
+       'progressive' chấm NGAY từng phím: gõ xong một ký tự là nộp luôn,
+       không rút lại được. Hết đường dò chùa.
+       Đổi lại phải nới tay hơn — xem `sai_moi_lan` ngay dưới. */
+    reveal_mode: 'progressive',
+    /* ── NỚI TAY: BAO NHIÊU LẦN TRẬT MỚI TÍNH LÀ MỘT LẦN SAI CHÍNH THỨC ────
+       Chấm từng phím thì nghiêm hơn hẳn kiểu cũ, mà bảng chữ có 26 chữ cái —
+       tính sai ngay từ phím trật đầu tiên thì mới mò một tí đã hết lượt.
+       Đặt 3 nghĩa là: trật hai lần chỉ bị nhắc nhẹ, tới lần thứ ba mới cộng
+       một vào bộ đếm sai (thứ điều khiển gợi ý và hạn khoá).
+       Vòng 2 để 1 = trật phát nào tính phát đó, y như cũ. */
+    sai_moi_lan: 3,
     /* Vòng 1 giữ đúng bộ số cũ — RAZER vốn đã đẹp, không đụng vào. */
     solved_glow: { b: 2.6, s: 1.5, c: 1 },
     /* ── CÔNG THỨC CHE DÙNG CHUNG CHO CẢ HAI VÒNG ──────────────────────────
@@ -256,6 +272,8 @@ const GAME_CONFIG = {
     /* Vòng 2 chôn kín: ban đầu không thấy nét chữ nào. Sai lần đầu mới bới ra
        chữ ngoài cùng bên phải (Z), rồi lộ dần sang trái. */
     reveal_mode: 'progressive',
+    /* Vòng 2 giữ nguyên luật cũ: trật phát nào tính phát đó */
+    sai_moi_lan: 1,
     /* ĐÁP ÁN ZHAO YUN sáng và nét ngang ngửa RAZER. Phải đẩy cao hơn vòng 1 vì
        tranh gốc vòng 2 tối và nhạt hơn hẳn — xem ghi chú dài ở
        `.slab.solved .cell` trong index.html. b = độ sáng · s = độ tươi ·
@@ -321,9 +339,15 @@ const GAME_CONFIG = {
     ],
     round1_intro: [
       '> VÒNG 01 // Cửa đã bị niêm phong. Tìm mật khẩu để thoát khỏi phòng lab.',
-      '> Vuốt quanh phòng để quan sát. Gõ mật khẩu vào ô bên dưới.'
+      '> Vuốt quanh phòng để quan sát. Bệ đá bị đất phủ kín.',
+      '> Mỗi lần chỉ đoán được MỘT ký tự, gõ xong là nộp luôn — nhưng được thử 3 lần rồi mới tính một lần sai.'
     ],
     round1_wrong      : '> TRUY CẬP BỊ TỪ CHỐI! MÃ KHÓA KHÔNG HỢP LỆ.',
+    /* Trật một ký tự ở vòng 1 mà CHƯA tới lần tính sai chính thức — nhẹ hơn
+       hẳn câu trên. {N} = còn mấy lần trật nữa mới bị tính một lần sai. */
+    round1_le_wrong   : '> KÝ TỰ KHÔNG KHỚP. CÒN {N} LẦN THỬ TRƯỚC KHI BỊ TÍNH SAI.',
+    /* Dùng chung cho cả hai vòng khi vừa hết quota nới tay */
+    le_het_luot       : '> HẾT LƯỢT THỬ. LẦN NÀY TÍNH LÀ MỘT LẦN SAI.',
     round1_correct    : '> MÃ KHÓA HỢP LỆ! ĐANG TÁI CẤU TRÚC DỮ LIỆU...',
     round1_boom       : '> CẢNH BÁO! KẾT CẤU PHÒNG LAB ĐANG SỤP ĐỔ. RÚT LUI NGAY!',
 

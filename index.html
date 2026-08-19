@@ -976,7 +976,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 19-Aug-2026 · V17.05">Last updated 19-Aug-2026 · V17.05</span>
+        <span class="stamp" id="stamp" data-base="Last updated 19-Aug-2026 · V17.06">Last updated 19-Aug-2026 · V17.06</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -3567,8 +3567,14 @@ const HOP_UU_TIEN = ['credw','cxw','wipew','ttw','pinw','askw','hanw','coach'];
    thứ, tay chưa kịp rời màn hình đã phải bấm tắt thứ nữa — thành ra cả hai đều
    bị coi là phiền chứ không phải chăm sóc.
    Nay mỗi lần có hộp nào ĐANG mở, hoặc hộp chào vừa đóng, đều đóng dấu thời
-   điểm. Hộp chào tiếp theo phải chờ đủ `HH_CACH_MS` kể từ dấu đó. */
-const HH_CACH_MS = 15000;
+   điểm. Hộp chào tiếp theo phải chờ đủ MỘT PHÚT kể từ dấu đó.
+
+   VÀ CÓ HẠN CHỜ. Chờ mãi rồi cũng bật ra thì thành spam kiểu khác: người chơi
+   đã chuyển sang việc khác từ lâu, tự dưng một hộp chào của chuyện xảy ra hai
+   phút trước nhảy lên. Quá `HH_CHO_TOI_DA` mà vẫn chưa tới lượt thì BỎ HẲN
+   lượt chào đó — thà im còn hơn chào trễ. */
+const HH_CACH_MS     = 60000;   /* hai hộp phải cách nhau ít nhất một phút */
+const HH_CHO_TOI_DA  = 90000;   /* chờ quá bấy nhiêu thì thôi, không chào nữa */
 let hopCuoiAt = 0;
 function dangCoHopKhac(){
   const co = HOP_UU_TIEN.some(id=>{
@@ -3578,14 +3584,15 @@ function dangCoHopKhac(){
   if(co) hopCuoiAt = Date.now();       /* còn mở thì dấu cứ dời theo, đóng mới tính */
   return co;
 }
-let hhCho = 0;
+let hhChoTu = 0;
 function hhHien(anh, nhan, chu, zoey){
   if(dangCoHopKhac() || Date.now() - hopCuoiAt < HH_CACH_MS){
-    if(hhCho++ > 40) return;                 /* chờ mãi không tới lượt thì bỏ */
+    if(!hhChoTu) hhChoTu = Date.now();
+    if(Date.now() - hhChoTu > HH_CHO_TOI_DA){ hhChoTu = 0; return; }  /* trễ quá → bỏ lượt */
     setTimeout(()=> hhHien(anh, nhan, chu, zoey), 1500);
     return;
   }
-  hhCho = 0;
+  hhChoTu = 0;
   /* Thiếu ảnh thì GIẤU khung ảnh chứ đừng bỏ luôn lời chào: người chơi vẫn nhận
      được câu nói, chỉ mất phần hình. Ảnh nằm ở thư mục /assets — nhánh nào chưa
      có bộ HH thì rơi đúng vào nhánh này. */
