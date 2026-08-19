@@ -80,6 +80,46 @@ function quaTay() {
    lỗi gọn gàng; để nền tảng cắt thì trang chỉ nhận được một cú fetch chết,
    không hiện được câu gì tử tế. Tắt suy nghĩ rồi thì Flash trả lời trong
    1-3 giây, 9 giây là rộng rãi. Nâng gói thì nới số này lên cũng được. */
+/* ═══ NHẬT KÝ CUỘC TRÒ CHUYỆN ═════════════════════════════════════════════
+   TÌNH TRẠNG TRƯỚC BẢN NÀY: KHÔNG có gì cả. Hàm chỉ `console.log` mấy dòng
+   chữ khi hỏng, mà log của Vercel thì gói Hobby giữ khoảng một tiếng rồi mất.
+   Không có chỗ nào biết được hôm qua người chơi hỏi gì, câu nào bị chặn, câu
+   nào hết token. Và KHÔNG có gì trong dự án này đụng tới GCP — Gemini chỉ là
+   một endpoint HTTP, gọi nó không tạo ra log nào bên Google Cloud cả.
+
+   BẢN NÀY LÀM HAI VIỆC:
+   1. Mỗi lượt hỏi ghi ĐÚNG MỘT DÒNG JSON có cấu trúc (prefix `[CHAT_LOG]`).
+      Dòng có cấu trúc thì mọi bộ thu log đều đọc được — Vercel Log Drain,
+      Google Cloud Logging, BigQuery, hay chỉ là mắt người đọc tab Logs.
+   2. Nếu khai biến CHAT_LOG_URL thì bắn luôn dòng đó tới đấy bằng POST.
+      Bắn xong không chờ, hỏng cũng bỏ qua — nhật ký KHÔNG BAO GIỜ được phép
+      làm chậm hay làm hỏng câu trả lời cho người chơi.
+
+   RIÊNG TƯ: mặc định CHỈ ghi số liệu (độ dài câu, thời gian, model, thành hay
+   bại), KHÔNG ghi nội dung. Đoạn chat này có chuyện riêng của hai người. Muốn
+   ghi cả nội dung thì phải tự bật CHAT_LOG_NOI_DUNG=1 — cố ý bắt khai riêng
+   một biến nữa để không ai bật nhầm.
+
+   BƯỚC TIẾP THEO nếu muốn đẩy về GCP thật: xem mục "MỤC 8" trong file hướng
+   dẫn kèm theo bản sửa này. */
+const LOG_URL     = process.env.CHAT_LOG_URL || '';
+const LOG_NOI_DUNG = process.env.CHAT_LOG_NOI_DUNG === '1';
+
+function ghiNhatKy(o) {
+  const dong = Object.assign({ luc: new Date().toISOString(), nguon: 'open-world' }, o);
+  /* Một dòng JSON — đừng xuống dòng, bộ thu log nào cũng gom theo dòng */
+  console.log('[CHAT_LOG]', JSON.stringify(dong));
+  if (!LOG_URL) return;
+  try {
+    /* KHÔNG await: người chơi không phải chờ cái nhật ký này */
+    fetch(LOG_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(dong)
+    }).catch(() => {});
+  } catch (e) {}
+}
+
 const MAX_TOKEN   = 1600;
 /* Trần cho bước suy nghĩ. Đọc từ GEMINI_THINK nếu có; 0 = tắt hẳn.
    Phải NHỎ HƠN HẲN MAX_TOKEN, vì hai thứ ăn chung một hạn mức. */
@@ -161,6 +201,7 @@ module.exports = async (req, res) => {
   const tinhCach = TINH_CACH;
   const model = process.env.GEMINI_MODEL || MODEL_MAC_DINH;
 
+  const batDau = Date.now();
   try {
     let r = await goiGemini(model, key, contents, tinhCach, true);
     /* Model đời cũ không biết `thinkingConfig` thì Google trả 400 chứ không bỏ
@@ -173,7 +214,10 @@ module.exports = async (req, res) => {
     }
 
     if (!r.ok) {
-      console.log('[CHAT] gemini hỏng:', r.status, (await r.text()).slice(0, 300));
+      const chiTiet = (await r.text()).slice(0, 300);
+      console.log('[CHAT] gemini hỏng:', r.status, chiTiet);
+      ghiNhatKy({ ok: false, ly_do: 'gemini_hong', http: r.status, model,
+                  ms: Date.now() - batDau, hoi_dai: hoi.length });
       return res.status(200).json({ loi: 'gemini_hong' });
     }
 
@@ -187,12 +231,24 @@ module.exports = async (req, res) => {
       console.log('[CHAT] không có chữ nào · finishReason =', cand.finishReason,
                   '· blockReason =', ((j.promptFeedback || {}).blockReason) || '-',
                   '· usage =', JSON.stringify(j.usageMetadata || {}));
+      ghiNhatKy({ ok: false, ly_do: 'rong_dap', model, ms: Date.now() - batDau,
+                  hoi_dai: hoi.length, finish: cand.finishReason || '',
+                  block: ((j.promptFeedback || {}).blockReason) || '',
+                  token: j.usageMetadata || {} });
       return res.status(200).json({ loi: 'rong_dap' });
     }
 
-    return res.status(200).json({ dap: gonLai(dap) });
+    const raChu = gonLai(dap);
+    ghiNhatKy(Object.assign({
+      ok: true, model, ms: Date.now() - batDau,
+      hoi_dai: hoi.length, dap_dai: raChu.length,
+      luot_su: su.length, token: j.usageMetadata || {}
+    }, LOG_NOI_DUNG ? { hoi: hoi, dap: raChu } : {}));
+    return res.status(200).json({ dap: raChu });
   } catch (e) {
     console.log('[CHAT] lỗi:', e && e.message);
+    ghiNhatKy({ ok: false, ly_do: 'mang_hong', loi: String((e && e.message) || ''),
+                ms: Date.now() - batDau, hoi_dai: hoi.length });
     return res.status(200).json({ loi: 'mang_hong' });
   }
 };

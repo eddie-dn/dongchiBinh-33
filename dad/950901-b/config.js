@@ -23,7 +23,11 @@ const GATE_CONFIG = {
   cho_lan_dau_ms : 10000,
 
   /* Mã phần thưởng — phải KHỚP với hằng PIN_A bên han/961030-a */
-  ma        : 'TYRION',
+  /* Mã phần thưởng — phải KHỚP hằng `PIN_A` bên han/961030-a.
+     Có DẤU CÁCH giữa các từ: chỗ hiện mã tách khoảng cho dễ đọc, còn lúc chấm
+     thì cả hai bên đều bỏ hết dấu cách rồi mới so, nên gõ liền hay gõ rời đều
+     được. */
+  ma        : 'HO CHI MINH',
   ma_link   : '/han/961030-a?from=map',
 
   text: {
@@ -59,7 +63,9 @@ const GATE_CONFIG = {
     ma_nhan       : 'Zoey’s Castle Key',
     nut_castle    : 'Zoey’s Castle',
     ve_ban_do     : 'Bản đồ',
-    version       : 'V04.02<br>Last updated 19-Aug-2026'
+    /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
+       nó — xem temChu() trong index.html. */
+    version       : 'Last updated 19-Aug-2026 · V04.03'
   }
 };
 
@@ -160,17 +166,12 @@ const GAME_CONFIG = {
        bắt được ngay — đó là cái "đè lên hiệu ứng trong video". Lại còn muộn:
        chữ đọc được từ 40.8% rồi.
 
-       NAY: thả lớp che từ 26%, lúc ô đó còn CHÌM HẲN TRONG KHÓI — đặt vào giữa
-       màn khói trắng thì không ai thấy đặt lúc nào. Kèm một lớp "khói phủ"
-       chạy đúng đường cong độ sáng đo được ở trên (xem `.veil::after` trong
-       index.html), nên mảng che trắng theo khói rồi hiện dần ra đúng nhịp khói
-       tan — không có khoảnh khắc nào nó là một miếng dán. */
+       NAY KHÔNG DÁN MIẾNG ĐÁ NÀO NỮA. Từ mốc 26% (lúc ô đó còn chìm trong khói,
+       thả gì vào cũng không ai thấy) chỉ bật một vệt LÀM MỜ TẠI CHỖ: nó làm
+       nhoè chính cái clip nằm dưới, không mang vật liệu lạ nào lên. Cảnh có
+       trôi đi đâu thì vệt mờ vẫn nằm đúng trên nó, mép lại tán tròn nên không
+       có cạnh nào để nhìn ra. Xem `.slab .mo` trong index.html. */
     che_vao_at    : 0.26,   /* bắt đầu thả lớp che (ô còn kín khói) */
-    /* Quãng cảnh trong clip TRÔI XUỐNG so với bg_r2, tính theo tỉ lệ chiều cao
-       khung. Đo bằng dò tương quan từng khung: lệch 13px trên ảnh clip cao
-       350px → 13/350 = 0.0371. Lớp che trôi theo đúng quãng này rồi về 0 lúc
-       clip kết thúc — xem `@keyframes veilTroi` trong index.html. */
-    troi_max      : 0.0371,
     chu_lo_at     : 0.40,   /* đo được: chữ bắt đầu đọc được ở đây  */
     veil_in_at    : 0.40,   /* (không dùng nữa — xem che_vao_at)    */
     veil_in_ms    : 380,    /* lớp che hiện dần trong bấy nhiêu     */

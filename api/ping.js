@@ -15,8 +15,6 @@
  */
 
 const NHAN = {
-  ghe_tham:      'Vừa mở bản đồ',
-  tai_lai:       'Tải lại trang',
   mo_ho_so:      'Mở hồ sơ toạ độ',
   chon_kenh:     'CHỐT KÊNH BẮT SÓNG',
   mo_khoa_morse: 'Bắt được mã morse',
@@ -25,12 +23,10 @@ const NHAN = {
   giai_dung:     'GIẢI ĐÚNG mật thư',
   giai_sai:      'Đoán sai mật thư',
   hoan_thanh:    'ĐÃ GIẢI HẾT 4/4 MẬT THƯ',
-  reset:         'Bấm chơi lại từ đầu',
   vao_ho_so:     'Bấm vào đọc hồ sơ',
   ho_so_mo:      'Vào trong hồ sơ',
   trang_ho_so:   'Xem trang hồ sơ',
   ho_so_dong:    'Rời hồ sơ',
-  tai_trang:     'Tải trang (beacon ảnh)',
   gui_form:      'ĐÃ GỬI BIỂU MẪU VỀ CĂN CỨ',
 
   /* Hệ 3 Mission trên trang bìa hồ sơ DAD-950901-A */
@@ -42,8 +38,6 @@ const NHAN = {
   khoa_pin:           'Khoá ô nhập mã',
   mo_khoa_m2:         'MỞ KHOÁ MISSION 2',
   gia_han_m2:         'Xin gia hạn đồng hồ Mission 2',
-  giai_m3:            'PHÁ ĐẢO MISSION 3',
-  skip_m3:            'Mở Mission 3 bằng nút chi viện',
   vao_ban_do:         'Bấm sang Bản đồ tác chiến',
   reset_msn:          'Chơi lại Mission từ đầu',
   test_unlock:        'CỬA TEST: tap 10 nhịp mở khoá mission',
@@ -63,20 +57,14 @@ const NHAN = {
   han_b_mo:           'Mở trang Wishlist',
   han_pin_sai:        'Nhập sai mã Wishlist',
   han_mo_wishlist:    'MỞ KHOÁ WISHLIST',
-  han_wish_tick:      'Đánh dấu một điều ước',
   han_het_luot:       'HẾT LƯỢT SAI trong ngày — phải làm lại',
-  han_hub:            'Mở màn chọn hồ sơ HAN',
-  han_hub_di:         'Từ màn chọn hồ sơ đi tiếp',
-  han_ve_hub:         'Lùi về màn chọn hồ sơ HAN',
   han_hop_mo:         'HỘP BÍ MẬT tới ngày mở nội dung',
   han_cua_hau:        'Mở khối vận hành bằng 5 nhịp',
   han_dieu_phoi:      'Lệnh trong bảng điều phối HAN',
 
   /* Hai pha điều hướng + hồ sơ người chơi (profile) — USER-FLOW.md */
-  redirect_ho_so:     'PHA 1: gõ / bị đẩy về hồ sơ',
   mo_pha_map:         'MỞ PHA MAP — bản đồ thành trang chính',
   luu_profile:        'KHAI DANH — tạo bản lưu profile',
-  doi_ten_profile:    'Đổi tên profile',
   khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile',
   doi_profile:        'Đổi sang pí danh khác',
   xoa_profile:        'Xoá một pí danh',
@@ -94,7 +82,47 @@ const NHAN = {
   phao_hoa_che:       'Đổi chế độ bắn pháo hoa',
   phao_hoa_dong:      'Rời trang pháo hoa',
   clockwise:          'CLOCKWISE — vặn kim đồng hồ bản đồ',
-  xem_lai_phao_hoa:   'Xem lại màn pháo hoa'
+  xem_lai_phao_hoa:   'Xem lại màn pháo hoa',
+
+  /* ── BẢN ĐỒ · mấy mốc trước đây BẮN NHƯNG KHÔNG CÓ NHÃN nên bị bỏ qua ──── */
+  unlock_gate1:         'MỞ ĐƯỢC Easter Egg · Gate 1',
+  cua_sau:              'Gõ 10 nhịp mở khung Collected',
+  hack_gate2:           'Mở MAP-02 bằng PIN (chưa tới ngày)',
+  reset_easter_egg:     'Reset MAP-02',
+  hop_chao:             'Hộp chào Honghandangiu hiện ra',
+  nhac_goi_y:           'Nhắc gợi ý mật thư',
+  bay_lai_bang_ron:     'Bấm băng rôn máy bay',
+  nhay_phan1:           'Nháy nút Phần 1',
+  mo_ho_so_bang_pin:    'Mở hồ sơ niêm phong bằng PIN',
+  sai_pin_ho_so:        'Nhập sai PIN hồ sơ',
+  khoa_pin_ho_so:       'PIN hồ sơ bị khoá tạm',
+  cham_ho_so_niem_phong:'Chạm hồ sơ còn niêm phong',
+  mo_toa_do_niem_phong: 'Mở toạ độ trong hồ sơ niêm phong',
+
+  /* ── ZOEY'S CASTLE · cũng đang thiếu nhãn ──────────────────────────────── */
+  han_mo_cua_a:         'Mở cửa mã Zoey\'s Castle',
+  han_ma_sai:           'Nhập sai mã Zoey\'s Castle',
+  han_cua_test:         'Dùng cửa test bỏ qua màn chờ',
+
+  /* ── EASTER EGG · GATE 2 ────────────────────────────────────────────────
+     Cả trang dad/950901-b trước đây KHÔNG báo gì cả — nay có đủ phễu, từ lúc
+     tới cổng cho tới lúc phá đảo và vào khu Open World. */
+  g2_vao_cong:          'Tới cổng Easter Egg · Gate 2',
+  g2_cong_mo:           'Cổng Gate 2 đã mở',
+  g2_bam_choi:          'Bấm Bắt đầu giải mã',
+  g2_press_start:       'Bấm PRESS START (vào game)',
+  g2_vong_1:            'VÀO VÒNG 1 (RAZER)',
+  g2_giai_xong_1:       'GIẢI XONG VÒNG 1',
+  g2_vong_2:            'VÀO VÒNG 2 (ZHAO YUN)',
+  g2_giai_xong_2:       'GIẢI XONG VÒNG 2',
+  g2_sai:               'Đoán sai trong game',
+  g2_goi_y:             'Nhận gợi ý',
+  g2_mo_thu:            'Mở bức thư',
+  g2_pha_dao:           'PHÁ ĐẢO GATE 2',
+  g2_bo_qua:            'Dùng cửa hậu bỏ qua game',
+  g2_open_world:        'Vào khu Open World',
+  g2_ow_hoi:            'Hỏi Honghandangiu một câu',
+  g2_ow_loi:            'Open World không trả lời được'
 };
 
 function gioVN(iso) {

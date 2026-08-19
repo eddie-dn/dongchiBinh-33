@@ -12,7 +12,7 @@ File `index.html` chỉ là bộ máy — sửa nội dung không cần mở nó
 
 ```
 dad/950901-b/
-├── index.html        ← 3 màn trong 1 file (đếm ngược · game · mã TYRION)
+├── index.html        ← 3 màn trong 1 file (đếm ngược · game · mã HO CHI MINH)
 ├── config.js         ← ★ SỬA Ở ĐÂY: GATE_CONFIG + GAME_CONFIG
 ├── DIALOGUES.md      ← file này
 ├── THU-VA-ANH.md     ← nội dung thư + quy ước đặt tên ảnh kỷ niệm
@@ -49,7 +49,7 @@ hơn 5 ảnh thì sửa mảng `photos` và `photo_captions`.
 ② #scene-game  MINI-GAME 2 VÒNG
       │  Vòng 1 RAZER → nổ sập lab → Vòng 2 ZHAO YUN → đọc thư
       ↓  bấm [ HOÀN THÀNH HÀNH TRÌNH ] → pháo hoa
-③ #scene-code  PHÁ ĐẢO · phát mã TYRION · đi Zoey's Castle
+③ #scene-code  PHÁ ĐẢO · phát mã HO CHI MINH · đi Zoey's Castle
       ↺  nút [ 👁 Xem lại bối cảnh ] → quay lại ② ở CHẾ ĐỘ XEM LẠI
 ```
 
@@ -78,7 +78,7 @@ khu này vẫn mở, chỉ trả câu dự phòng.
   → nhìn xuống theo dõi gõ (nét nghỉ) → đăm chiêu lúc chờ trả lời → gật đầu khi
   câu trả lời tới. Thiếu file thì bỏ qua, không vỡ gì. Chi tiết ở `OPEN-WORLD.md`.
 
-Mã `TYRION` là phần thưởng của việc **chơi xong mini-game**, không phải chỉ
+Mã `HO CHI MINH` là phần thưởng của việc **chơi xong mini-game**, không phải chỉ
 của việc tới đúng ngày.
 
 > ⚠️ Không phá đảo được thì không lấy được mã vào Map 3. Hai đường lùi: chơi
@@ -103,7 +103,7 @@ của việc tới đúng ngày.
 |---|---|---|
 | `moc_iso` | `{YEAR}-09-01T00:00:00+07:00` | `{YEAR}` tự thay bằng năm hiện tại. Múi `+07:00` nên máy ở đâu cũng chốt đúng nửa đêm VN |
 | `cho_lan_dau_ms` | `10000` | ghé lần đầu sau mốc thì đếm thêm 10 giây. Đặt `0` để bỏ |
-| `ma` | `TYRION` | **phải khớp** hằng `PIN_A` bên `han/961030-a` |
+| `ma` | `HO CHI MINH` | **phải khớp** hằng `PIN_A` bên `han/961030-a` |
 | `ma_link` | `/han/961030-a?from=map` | nút đi Map 3 |
 
 | Khoá `text` | Nội dung |
@@ -202,11 +202,18 @@ tự thì vẫn toả ra bình thường.
 
 ### ★ Hai kiểu lộ chữ (`reveal_mode`)
 
-**Vòng 1 — `flash`.** Lớp che cũng **có blur như vòng 2**, ban đầu không đọc
-được nét khắc. Gõ trúng ký tự nào thì ô đó rớt đất, sáng một nhịp rồi **chìm
-lại** — vẫn dạy được chiều đọc ngược mà không cho đọc trước đáp án. Muốn quay
-lại kiểu cũ (nét chữ chìm mờ nhưng đọc được) thì bỏ `blur` khỏi
-`round1.veil_filter`.
+**CẢ HAI VÒNG NAY ĐỀU `progressive`.** Vòng 1 trước đây chạy kiểu `flash` —
+gõ thoải mái vào ô, bấm UNLOCK mới chấm. Kiểu đó có một lỗ hổng chí mạng: gõ
+thử A, B, C xem ô nào chớp sáng rồi xoá đi, **không bấm gửi** thì dò ra cả đáp
+án mà không bị tính sai lần nào. Bộ đếm sai, gợi ý, hạn khoá đều thành vô
+nghĩa. Nay vòng 1 chấm ngay từng phím, nút UNLOCK ẩn luôn.
+
+**BÙ LẠI — LUẬT NỚI TAY `sai_moi_lan`.** Chấm từng phím nghiêm hơn hẳn, mà bảng
+chữ có 26 chữ cái. Nên vòng 1 để `sai_moi_lan: 3`: trật hai lần chỉ bị nhắc
+nhẹ (không clip, không tiêu gợi ý, không khoá), tới lần thứ ba mới cộng một vào
+bộ đếm sai thật. Vòng 2 để `1` — trật phát nào tính phát đó, y như cũ.
+
+Kiểu `flash` vẫn còn trong mã, đổi `reveal_mode` về `'flash'` là quay lại được.
 
 **Vòng 2 — `progressive`.** Lớp che có thêm `blur` nên **ban đầu không thấy nét
 chữ nào**. Chữ lộ dần và **lộ tới đâu giữ sáng tới đó**:
@@ -267,9 +274,10 @@ chiều**. Nhờ vậy cách chữa gọn:
 
 | Trạng thái | Hiện tượng |
 |---|---|
-| Vòng 1 · không gõ / gõ trượt | Nét khắc chìm hẳn vào đá, không đọc được |
-| Vòng 1 · gõ trúng một ký tự | Ô đó rớt đất, sáng ~0.9s rồi tối lại |
-| Vòng 2 · đoán trật ký tự | Ô nhập nháy đỏ, tính một lần sai |
+| Vòng 1 · chưa gõ | Nét khắc chôn hẳn dưới đá, không thấy gì |
+| Vòng 1 · gõ trúng một ký tự | Ô đó rớt đất, **giữ sáng luôn** (như vòng 2) |
+| Vòng 1 · đoán trật ký tự | Ô nhập nháy đỏ; trật 3 lần mới tính 1 lần sai |
+| Vòng 2 · đoán trật ký tự | Ô nhập nháy đỏ, tính một lần sai ngay |
 | Vòng 2 · chưa lộ | Không thấy gì cả |
 | Vòng 2 · đã lộ | Giữ sáng vĩnh viễn cho tới hết vòng |
 | Xoá phím | Không sáng gì |
@@ -523,7 +531,7 @@ Xuống dòng giữ nguyên khi hiển thị. Chạm vào khung thư là hiện 
 
 ## 8. Vài chỗ hay phải chỉnh
 
-**Phát mã TYRION ngay khi tới mốc, không bắt chơi game** — trong `index.html`,
+**Phát mã HO CHI MINH ngay khi tới mốc, không bắt chơi game** — trong `index.html`,
 hàm `Gate.moCong()`, đổi `if(Store.get().g2Game){ Code.open(); return; }` thành
 `Code.open(); return;`.
 
@@ -540,8 +548,12 @@ hoặc sửa riêng `mtv1.g2Hint`.
 **Vòng 2 vẫn đọc mờ được chữ / ngược lại quá kín** — `round2.veil_filter`, chỉnh
 `brightness` và `blur`. Bỏ `blur` là quay về kiểu vòng 1.
 
-**Muốn vòng 1 cũng chôn kín như vòng 2** (hoặc ngược lại) — đổi `reveal_mode`
-giữa `'flash'` và `'progressive'`, không phải sửa gì trong `index.html`.
+**Đổi kiểu lộ chữ** — `reveal_mode` giữa `'flash'` và `'progressive'`, không
+phải sửa gì trong `index.html`. Cả hai vòng nay mặc định `'progressive'`.
+
+**Nới tay chặt/lỏng hơn** — `round1.sai_moi_lan` (mặc định 3): bao nhiêu lần
+gõ trật mới tính là một lần sai chính thức. Để `1` là trật phát nào tính phát
+đó.
 
 **Đất rơi nhanh/chậm** — `timing.dirt_fall` (mặc định 640ms).
 
@@ -588,7 +600,9 @@ Luật đã chốt:
 - **Rồng chỉ có MỘT mắt** trong khung hình (nhìn nghiêng 3/4).
 - **Rồng thở nhẹ**: biên độ hạ hẳn (scale 1.0035, dịch 0.26%) và kéo dài 7.5s
   với easing đối xứng nên không còn cảm giác giật.
-- **Tem phiên bản**: game `V03.06`, bản đồ gốc `V17.05`, cùng ngày 17-Aug-2026.
+- **Tem phiên bản**: game `V04.03`, bản đồ gốc `V17.06`, Zoey’s Castle `V2.07`,
+  cùng ngày 19-Aug-2026. Cấu trúc tem: dòng `@Designed by Honghandangiu` ở trên,
+  dòng `Last updated … · V04.03` gói gọn một hàng ở dưới.
   Quy ước ở README: `Vx.yy`, `yy` chỉ chạy `00→09`, hết `09` thì `x` tăng 1 và
   `yy` về `00` — **không bao giờ có đuôi `.10`**. (Hai bản `V2.10`/`V2.11` trước
   đó là sai quy ước, đã nắn về `V03.02`.)

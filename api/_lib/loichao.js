@@ -79,6 +79,19 @@ try {
   LOI_CHAO = DU_PHONG;
 }
 
+/* Tách "Nội dung — Tác giả" của khối `quote`. Dấu gạch ngang DÀI (—) là ranh
+   giới; không có thì coi như cả câu là nội dung, không có tác giả. Tách ở đây
+   chứ không để trang tự tách: trang chỉ nên lo phần hiển thị. */
+function tachTacGia(t) {
+  const s = String(t || '').trim();
+  const k = s.lastIndexOf('—');
+  if (k < 0) return { cau: s, tacGia: '' };
+  const cau = s.slice(0, k).trim().replace(/[,;:]$/, '');
+  const tg  = s.slice(k + 1).trim();
+  /* Tác giả dài lê thê thì chắc chắn không phải tên người — trả nguyên câu */
+  return (cau && tg && tg.length <= 40) ? { cau, tacGia: tg } : { cau: s, tacGia: '' };
+}
+
 /* Thiếu buổi nào thì mượn tạm buổi khác, đừng để trả về undefined */
 for (const b of ['sang', 'trua', 'toi']) {
   if (!LOI_CHAO[b] || (!LOI_CHAO[b].nhac && !(LOI_CHAO[b].san || []).length)) {
@@ -97,4 +110,4 @@ function buoiTheoGio(gio) {
   return 'toi';
 }
 
-module.exports = { LOI_CHAO, buoiTheoGio };
+module.exports = { LOI_CHAO, buoiTheoGio, tachTacGia };

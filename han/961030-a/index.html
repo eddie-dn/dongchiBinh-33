@@ -192,6 +192,23 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .done-tit{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-weight:600;
   font-style:italic;margin:0 0 8px;text-align:center;color:var(--ink)}
 .done-txt{font-size:13px;line-height:1.68;text-align:center;color:var(--ink2);text-wrap:balance}
+/* ── HAI NÚT PHỤ Ở MÀN HOÀN THÀNH ────────────────────────────────────────
+   Trước đây "Xem lại các câu" và "Reset toàn bộ" là hai NÚT DÀI hết chiều
+   ngang, xếp ngay dưới nút chính. Ba thanh chồng nhau nhìn nặng, mà hai việc
+   phụ lại to ngang việc chính — mắt không biết bấm cái nào.
+   Nay gọn thành hai biểu tượng nhỏ nằm ngang, đúng kiểu mấy hộp khác trong
+   bộ (nút cuộn phim ở khung Collected, hai nút tròn ở màn phát mã Gate 2).
+   Chữ đầy đủ chuyển vào `title` + `aria-label` nên vẫn đọc được khi rê chuột
+   và trình đọc màn hình vẫn hiểu. */
+.done-ico{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px}
+.done-ico button{width:42px;height:42px;flex:none;display:flex;align-items:center;
+  justify-content:center;border-radius:50%;border:1px solid var(--line);
+  background:none;color:var(--ink2);font-size:17px;line-height:1;cursor:pointer;
+  transition:color .18s,border-color .18s,transform .12s}
+.done-ico button:hover{color:var(--ink);border-color:var(--orchid)}
+.done-ico button:active{transform:translateY(1px)}
+/* Nút reset khi đã "lên cò" (bấm lần một) — đỏ lên cho biết lần nữa là xoá */
+.done-ico button.armed{color:var(--bad);border-color:var(--bad)}
 /* Dòng trao mã: chìa khoá đi CHUNG MỘT HÀNG với chữ, không cho rớt xuống dòng
    riêng — chìa nằm lửng một mình trông như lỗi hiển thị chứ không như một nhãn. */
 .done-txt.sec{display:flex;align-items:center;justify-content:center;gap:8px;
@@ -324,7 +341,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V2.07<br>Last updated 19-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V2.08<br>Last updated 19-Aug-2026"></span>
     </span>
   </div>
 
@@ -372,7 +389,21 @@ var HINTW    = 30*60*1000;          /* chờ giữa hai gợi ý — 30 phút */
    (/dad/950901-b). Chữ, không phải số; so khớp bỏ dấu và không phân biệt hoa
    thường, y như cách chấm đáp án. Đổi mã thì sửa ĐÚNG MỘT CHỖ này, và nhớ sửa
    luôn chỗ phát mã bên trang Gate 2. */
-var PIN_A = 'TYRION';
+/* Mã vào bộ câu hỏi — phải KHỚP `ma` bên dad/950901-b/config.js.
+   Viết CÓ DẤU CÁCH để hàng ô tự tách từ cho dễ đọc; lúc chấm thì `norm()` bỏ
+   hết dấu cách nên gõ liền hay gõ rời đều nhận. */
+var PIN_A = 'HO CHI MINH';
+/* Vị trí ranh giới từ, tính trên chuỗi ĐÃ BỎ dấu cách — `xepO` dùng để chừa
+   thêm khoảng trống ở đúng mấy chỗ đó. 'HO CHI MINH' → 'HOCHIMINH', ranh giới
+   ở ô số 2 và số 5. Tính bằng mã chứ không gõ tay để đổi mã khỏi phải nhớ. */
+function ranhTu(ma){
+  var g = [], n = 0;
+  String(ma).split(/\s+/).filter(Boolean).forEach(function(t, i){
+    if(i) g.push(n);
+    n += norm(t).length;
+  });
+  return g;
+}
 var MO_GOIY_ISO = '2026-10-01T00:00:00+07:00';
 var MO_GOIY  = new Date(MO_GOIY_ISO).getTime();
 function goiYMo(){ return Date.now() >= MO_GOIY; }
@@ -1078,7 +1109,8 @@ function navGan(pos){
    cũng đứng ngoài cửa, đúng thứ tự chặng. */
 function drawGateA(){
   clearTick(); xepLai = null;
-  var len = PIN_A.length, buf = '';
+  var maA = norm(PIN_A), gapA = ranhTu(PIN_A);
+  var len = maA.length, buf = '';
   $('lead').innerHTML = '<span class="lead-1">' + icoKhoa() + 'Mã mở nằm ở <b>Easter Egg · Gate 2</b></span>';
   khitLead();
   $('stage').innerHTML =
@@ -1090,11 +1122,11 @@ function drawGateA(){
     + 'autocorrect="off" spellcheck="false" aria-label="Ô nhập mã"></div>'
     + '<div class="msg" id="msg"></div>'
     + '</div>';
-  var box = $('cells'), inp = $('inp'), o = xepO(box, inp, PIN_A, []);
+  var box = $('cells'), inp = $('inp'), o = xepO(box, inp, maA, gapA);
   xepLai = function(){
     var cu = box.querySelectorAll('.crow');
     for(var i = cu.length - 1; i >= 0; i--) box.removeChild(cu[i]);
-    o = xepO(box, inp, PIN_A, []); paint();
+    o = xepO(box, inp, maA, gapA); paint();
   };
   function paint(){
     for(var k = 0; k < len; k++){
@@ -1109,7 +1141,7 @@ function drawGateA(){
   inp.addEventListener('input', function(){
     buf = norm(inp.value).slice(0, len); paint();
     if(buf.length !== len) return;
-    if(buf === norm(PIN_A)){
+    if(buf === maA){
       st.aOpen = true; save();
       ping('han_mo_cua_a', 'nhập đúng mã');
       var m = $('msg'); m.textContent = 'Đúng rồi ✦'; m.classList.add('ok');
@@ -1170,25 +1202,41 @@ function xong(vuaXong){
     + '<p class="q-lab pha" style="justify-content:center"><span>Phá Đảo Lòng EM</span>'
     + '<span class="tim"><i>♥</i><i>♥</i><i>♥</i></span></p>'
     + '<div class="hh-pic"><img src="/assets/HH_2_happy.webp" alt="" decoding="async"></div>'
-    + '<div class="done-tit">HongHan’s Secret</div>'
+    + '<div class="done-tit">It’s you, my kindred soul.</div>'
     + '<div class="done-txt sec">' + icoKhoa()
     +   '<span>Thương gửi anh PIN <b>Secret\u2019s Chamber</b></span></div>'
     + '<div class="pin-show">' + pin + '</div>'
     + '<button class="btn" id="goB">Vào Secret Chamber ✦</button>'
-    + '<button class="btn ghost" id="xemLai" type="button">↺ Xem lại các câu</button>'
-    + '<button class="btn ghost" id="again" type="button">↻ Reset toàn bộ</button>'
+    + '<div class="done-ico">'
+    +   '<button id="xemLai" type="button" title="Xem lại các câu" '
+    +     'aria-label="Xem lại các câu">↺</button>'
+    +   '<button id="again" type="button" title="Reset toàn bộ" '
+    +     'aria-label="Reset toàn bộ">↻</button>'
+    + '</div>'
     + '<div class="sign">— Honghandangiu ฅ^>⩊&lt;^ ฅ</div>'
     + '</div>';
   if(vuaXong) ping('han_xong', 'đúng ' + TONG + '/' + TONG);
   $('goB').addEventListener('click', function(){
-    st.bOpen = true; save();
+    /* KHÔNG bật cờ `bOpen` ở đây nữa. Bật sẵn tức là mở sẵn cửa mã của Secret
+       Chamber trước khi người chơi kịp gõ chữ nào — mã hiện ngay trên màn hình
+       này mà đi qua lại không phải nhập, thành ra cái ô mã bên đó chỉ để ngắm.
+       Nay sang bên đó vẫn phải gõ đúng mã mới vào. */
     ping('han_mo_wishlist', 'từ màn hoàn thành');
     setTimeout(function(){ location.href = HREF_B; }, 150);
   });
   $('xemLai').addEventListener('click', function(){ drawQ(0); drawSteps(); });
   var ag = $('again'), armed = false;
   ag.addEventListener('click', function(){
-    if(!armed){ armed = true; ag.textContent = 'Chắc chưa? Bấm lần nữa'; return; }
+    /* Chỉ còn một ký hiệu nên không viết được "Chắc chưa? Bấm lần nữa" lên nút.
+       Đổi sang BÁO BẰNG MÀU: bấm lần đầu thì nút đỏ lên và `title` đổi lời,
+       bấm tiếp mới xoá thật. Vẫn giữ đúng hai nhịp như cũ. */
+    if(!armed){
+      armed = true;
+      ag.classList.add('armed');
+      ag.title = 'Chắc chưa? Bấm lần nữa để xoá';
+      ag.setAttribute('aria-label', ag.title);
+      return;
+    }
     st.bOpen = false; save();
     lamLai('reset toàn bộ ở màn hoàn thành');
   });

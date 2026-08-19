@@ -99,7 +99,13 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   border-radius:14px;background:rgba(56,189,248,.06)}
 .gate-look .ma-lab{font-family:"Oswald";font-size:8.5px;font-weight:600;
   letter-spacing:.26em;text-transform:uppercase;color:var(--neon);margin:0}
-.gate-look .ma-o{display:flex;justify-content:center;gap:6px;margin:11px 0 0}
+.gate-look .ma-o{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:11px 0 0}
+/* Khoảng trống giữa hai từ của mã — hẹp hơn một ô, đủ để mắt tách từ */
+.gate-look .ma-o b{width:9px;flex:none}
+/* Mã dài (trên 8 chữ) thì ô nhỏ lại, nếu không hàng tràn ra ngoài khung trên
+   mấy máy 320px. Chữ vẫn to hơn cỡ chữ thường nên không khó đọc. */
+.gate-look .ma-o.dai i{width:22px;height:29px;font-size:14px;border-radius:6px}
+.gate-look .ma-o.dai b{width:7px}
 .gate-look .ma-o i{width:27px;height:34px;display:flex;align-items:center;
   justify-content:center;border-radius:7px;font-family:"Oswald";font-size:16px;
   font-weight:600;font-style:normal;color:#0B1B3A;
@@ -196,11 +202,13 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 .gate-look .ma-go.skip:active{transform:translateY(1px)}
 /* Tem nháy nhẹ vài nhịp khi cửa hậu vừa mở, cho biết là "ăn rồi" */
 #scene-gate .vstamp.hit{color:rgba(140,225,180,.85);transition:color .18s}
-/* Dòng ký tên. Nằm CHUNG khối tem nhưng nhạt hơn và giãn chữ rộng hơn một
-   nhịp — để mắt đọc nó như chữ ký chứ không như dòng thứ ba của số phiên bản.
+/* Dòng ký tên, nằm TRÊN dòng phiên bản. Cỡ chữ · giãn chữ · độ mờ lấy ĐÚNG
+   theo dòng "© Bản quyền · …" ở chân bản đồ ngoài trang chủ (`.cr`), để hai
+   nơi cùng một chữ ký thì trông cũng phải cùng một kiểu.
    `.hit` đổi màu cả khối, nên dòng này cũng sáng theo khi mò trúng cửa hậu. */
-.gate-look .vstamp .vby{display:block;margin-top:3px;font-size:7.5px;
-  letter-spacing:.28em;color:rgba(234,240,247,.22)}
+.gate-look .vstamp .vby{display:block;margin-bottom:3px;
+  font-family:"Oswald",system-ui,sans-serif;font-size:8px;letter-spacing:.15em;
+  text-transform:uppercase;color:rgba(234,240,247,.34)}
 #scene-gate .vstamp.hit .vby{color:rgba(140,225,180,.5)}
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -333,61 +341,63 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   -webkit-mask-composite:source-in;mask-composite:intersect;
   transition:opacity .5s ease;
 }
-/* ═══ KHÓI PHỦ — CHỈ SỐNG TRONG LÚC CLIP NỔ CHẠY ══════════════════════════
-   Mảng che là một mẩu đá TĨNH và SẮC NÉT. Đặt nó xuống giữa lúc khói trong
-   clip đang cuộn thì mắt bắt được ngay: xung quanh mờ và động, riêng chỗ đó
-   đứng im và rõ mồn một. Bản trước vấp đúng chỗ này.
-   Lớp này phủ trắng lên chính mảng che, chạy THEO ĐÚNG ĐƯỜNG CONG ĐỘ SÁNG đo
-   được trên 241 khung của clip (xem ghi chú `che_vao_at` trong config.js):
-   26% khói dày → mảng che trắng xoá, lẫn hẳn vào khói; 40% khói tan → lộ dần;
-   44% trở đi khói hết, mảng che là đá thật khớp khít nền phía sau.
-   Nằm trong `.veil` nên dùng chung mặt nạ tán mép — không thêm cạnh nào mới. */
-#scene-game .slab .veil::after{
-  content:'';position:absolute;inset:0;opacity:0;pointer-events:none;
-  background:radial-gradient(ellipse 78% 130% at 50% 42%,
-             rgba(232,240,244,.98) 0%,rgba(220,231,237,.94) 52%,
-             rgba(206,219,227,.82) 100%);
-}
-#scene-game .slab.khoi .veil::after{
-  animation:kheKhoi var(--kh,8000ms) linear both;
-}
-/* ═══ LỚP CHE PHẢI TRÔI THEO CẢNH ════════════════════════════════════════
-   ĐÂY MỚI LÀ CÁI LÀM MIẾNG CHE "KHÔNG KHỚP", và nó không nhìn ra được bằng
-   mắt — phải bung 241 khung clip ra rồi dò tương quan với bg_r2 mới thấy:
+/* ═══ CHE CHỮ TRONG CLIP: LÀM MỜ TẠI CHỖ, KHÔNG DÁN MIẾNG ĐÁ ═════════════
+   HAI ĐỜI TRƯỚC ĐỀU DÁN MỘT MẨU ĐÁ TĨNH lên chỗ bảng chữ, và cả hai đều lộ:
 
-     42-48% clip … bảng đá trong clip nằm THẤP HƠN bg_r2 13 pixel (cỡ 800x350)
-     55%  ……… 11px      70% ……… 7px      86% ……… 3px
-     62%  ……… 9px       78% ……… 5px      100% ……… 0px
+     · Đời 1 — mẩu đá đứng yên ở toạ độ ảnh nền, mà cảnh trong clip còn đang
+       hạ cánh (thấp hơn tới 13px ở giữa clip). Che trượt lên, chữ thò ra dưới.
+     · Đời 2 — cho mẩu đá TRÔI THEO đường cong đó. Hết thò chữ thật, nhưng
+       sinh lỗi mới và nặng hơn: một hình chữ nhật có vân đá riêng, tự bò
+       trong khung. Đứng yên còn đỡ, biết đi thì mắt bắt được ngay.
 
-   Tức cảnh vẫn còn đang "hạ cánh" suốt nửa sau clip, tới khung cuối mới trùng
-   khít bg_r2. Mà lớp che thì đứng yên ở đúng toạ độ của bg_r2 — cao hơn chữ
-   thật gần HAI LẦN chiều cao chính nó. Kết quả: che trượt lên trên, chữ
-   NUY OAHZ thò ra ngay bên dưới. Nhìn ra thì tưởng "lớp che bị lệch", thật ra
-   là cảnh chưa đứng yên.
-   Nay lớp che trôi theo đúng đường cong đó rồi về 0 đúng lúc clip kết thúc —
-   nó bám lấy bảng đá suốt đoạn chuyển, không còn khoảnh khắc nào hở chữ.
-   `--troi` = 13px kia quy về cỡ khung thật, tính trong fitSlabs(). */
-#scene-game .slab.khoi .veil{
-  animation:veilTroi var(--kh,8000ms) linear both;
+   GỐC RỄ: hễ còn DÁN VẬT LIỆU LẠ lên một cảnh đang động thì kiểu gì cũng có
+   lúc lệch. Không chỉnh thông số nào cứu được.
+
+   NAY KHÔNG DÁN GÌ NỮA. Lớp này trong suốt, chỉ LÀM MỜ CHÍNH CÁI CLIP nằm
+   dưới nó (`backdrop-filter`). Vật liệu là của chính clip nên không bao giờ
+   lệch tông, không bao giờ lệch chỗ — cảnh có trôi đi đâu thì vệt mờ vẫn nằm
+   đúng trên nó. Mép tán tròn nên cũng không có cạnh nào để mà nhìn ra.
+   Chữ khắc chỉ cao vài pixel, mờ chừng ấy là thành một vệt nhoè, đọc không ra.
+
+   Máy nào không hiểu `backdrop-filter` thì rơi xuống nhánh @supports bên dưới:
+   quay về mẩu đá tĩnh (đời 1), vẫn chơi được, chỉ kém khéo. */
+/* VÙNG PHỦ CỐ Ý LỆCH XUỐNG DƯỚI, không cân đối quanh bảng đá. Lý do: suốt nửa
+   sau clip, cảnh vẫn đang hạ cánh nên bảng đá trong clip nằm THẤP HƠN chỗ của
+   nó ở ảnh tĩnh — đo được tới 13px (quy về khung thật là hơn 1,5 lần chiều cao
+   bảng). Phủ cân đối thì vệt mờ nằm trên đầu chữ, chữ thò ra ngay bên dưới.
+   Nay hộp bắt đầu từ trên bảng một chút và kéo xuống 4,4 lần chiều cao bảng,
+   tâm mặt nạ đẩy xuống 52% — ôm trọn cả quãng trôi. Vệt mờ không mang vật
+   liệu gì nên rộng bao nhiêu cũng vô hại, chỉ đọc ra như một vùng khói. */
+#scene-game .slab .mo{
+  position:absolute;left:-42%;right:-42%;top:-100%;height:540%;
+  opacity:0;pointer-events:none;z-index:2;
+  -webkit-mask-image:radial-gradient(ellipse 56% 54% at 50% 50%,
+                     #000 0%,#000 66%,transparent 100%);
+  mask-image:radial-gradient(ellipse 56% 54% at 50% 50%,
+             #000 0%,#000 66%,transparent 100%);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  transition:opacity .42s ease;
 }
-@keyframes veilTroi{
-  0%,48%{transform:translateY(var(--troi,0px))}
-  55%   {transform:translateY(calc(var(--troi,0px) * .85))}
-  62%   {transform:translateY(calc(var(--troi,0px) * .69))}
-  70%   {transform:translateY(calc(var(--troi,0px) * .58))}
-  78%   {transform:translateY(calc(var(--troi,0px) * .38))}
-  86%   {transform:translateY(calc(var(--troi,0px) * .27))}
-  92%   {transform:translateY(calc(var(--troi,0px) * .15))}
-  100%  {transform:translateY(0)}
+/* Chỉ gắn backdrop-filter lúc THẬT SỰ cần. Để sẵn suốt thì trình duyệt phải
+   dựng một lớp nền riêng cho nó ngay cả khi opacity 0 — tốn công vô ích trong
+   suốt cả ván chơi, mà cảnh vòng 2 vốn đã có mấy lớp nặng rồi. */
+#scene-game .slab.mo-on .mo{
+  opacity:1;
+  -webkit-backdrop-filter:blur(var(--mo-blur,5px)) brightness(.78) saturate(.3) contrast(.6);
+  backdrop-filter:blur(var(--mo-blur,5px)) brightness(.78) saturate(.3) contrast(.6);
 }
-@keyframes kheKhoi{
-  0%,25%  {opacity:0}
-  27%     {opacity:.94}
-  33%     {opacity:.80}
-  37%     {opacity:.58}
-  40%     {opacity:.20}
-  43%,100%{opacity:0}
+/* Máy không hiểu backdrop-filter: quay về cách dán mẩu đá tĩnh. Lệch thì lệch,
+   nhưng ít nhất không hở đáp án ra. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #scene-game .slab.mo-on .mo{
+    opacity:1;
+    background:var(--veil-bg,none);
+    background-repeat:no-repeat;
+    background-size:var(--veil-size,auto);
+    background-position:var(--veil-pos,0 0);
+  }
 }
+
 #scene-game .slab .cells{position:absolute;inset:0;display:flex}
 /* overflow:hidden để đất và bụi rơi khuất trong lòng ô, không tràn ra ngoài
    tấm biển. Quầng sáng của ký tự do filter vẽ nên vẫn toả ra bình thường. */
@@ -997,8 +1007,9 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
                 <div class="veil"></div><div class="cells" id="row1"></div>
               </div>
 
+              <!-- `.mo` = vệt làm mờ dùng trong lúc clip nổ chạy, xem CSS -->
               <div class="slab" id="slab2">
-                <div class="veil"></div><div class="cells" id="row2"></div>
+                <div class="veil"></div><div class="mo"></div><div class="cells" id="row2"></div>
               </div>
 
               <span class="eye" id="eye0"><i class="iris"></i><i class="ray"></i></span>
@@ -1185,11 +1196,47 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 const $ = (s,r)=> (r||document).querySelector(s);
 const wait = ms => new Promise(r=>setTimeout(r,ms));
 
+/* ═══ BÁO TIẾN ĐỘ VỀ /api/ping ═══════════════════════════════════════════
+   Trang này TRƯỚC ĐÂY KHÔNG BÁO GÌ CẢ — cả Easter Egg · Gate 2 lẫn khu Open
+   World đều mù hoàn toàn, trong khi bốn trang còn lại của bộ đều có. Nghĩa là
+   không cách nào biết được có bao nhiêu người vào tới cổng, bao nhiêu bấm nút
+   chơi, kẹt ở vòng nào, có mở nổi bức thư không, có vào Open World không.
+   Nay bám đúng khuôn của mấy trang kia: `sendBeacon` trước (gửi được cả khi
+   người ta vừa đóng tab), không có thì `fetch keepalive`. Im lặng tuyệt đối —
+   hỏng cũng không được làm phiền người chơi.
+   `chiMotLan` cho mấy mốc chỉ có ý nghĩa lần đầu (vào cổng, phá đảo…), khỏi
+   thổi phồng số liệu khi người ta F5 mấy lượt. */
+function ping(ev, detail, chiMotLan){
+  try{
+    if(chiMotLan){
+      let da = [];
+      try{ da = JSON.parse(localStorage.getItem('g2ping') || '[]') || []; }catch(e){}
+      const tag = ev + ':' + (detail || '');
+      if(da.indexOf(tag) >= 0) return;
+      da.push(tag);
+      try{ localStorage.setItem('g2ping', JSON.stringify(da)); }catch(e){}
+    }
+    const body = JSON.stringify({
+      ev: ev, detail: detail || '', at: new Date().toISOString(),
+      man: 'dad-950901-b', solved: [],
+      ua: navigator.userAgent.slice(0, 120)
+    });
+    if(navigator.sendBeacon &&
+       navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))) return;
+    fetch('/api/ping',{ method:'POST', body: body, keepalive:true,
+      headers:{'Content-Type':'application/json'} }).catch(()=>{});
+  }catch(e){}
+}
+
 /* Chữ trên tem chân màn hình: số phiên bản + dòng ký tên. Một chỗ dựng duy
    nhất cho cả màn đếm ngược lẫn màn phát mã, khỏi sửa hai nơi rồi lệch nhau. */
 function temChu(){
   const T = GATE_CONFIG.text;
-  return T.version + (T.designed_by ? '<span class="vby">' + T.designed_by + '</span>' : '');
+  /* Dòng ký tên nằm TRÊN, số phiên bản nằm dưới và gói gọn MỘT hàng
+     ("Last updated … · V04.03"). Trước đây ngược lại và số phiên bản chiếm hai
+     hàng — ba dòng chữ nhỏ chồng nhau ở chân màn hình, đọc rối mà chẳng dòng
+     nào nổi lên được. */
+  return (T.designed_by ? '<span class="vby">' + T.designed_by + '</span>' : '') + T.version;
 }
 
 /* ── Kho localStorage dùng chung, một chỗ đọc/ghi duy nhất ────────────────── */
@@ -1273,6 +1320,23 @@ const Gate = (function(){
 
   /* Cửa hậu từ Box Tổng tư lệnh: cờ `g2Hack` = coi như đã tới mốc. */
   const BYPASS = !!Store.get().g2Hack;
+
+  /* ═══ BẮT ĐẦU NẠP TÀI NGUYÊN NGAY TỪ ĐÂY ══════════════════════════════
+     Chỉ nạp khi người chơi SẮP VÀO ĐƯỢC — đã qua mốc, hoặc đi cửa hậu. Chưa
+     tới ngày mà kéo 71 MB về thì phí toi, người ta còn chưa chơi được.
+     Đặt ở đây (lúc dựng màn đếm ngược) chứ không đặt trong moCong(): moCong
+     chỉ chạy khi đồng hồ về 0, mà quãng 10 giây chờ trước đó chính là lúc
+     rảnh nhất để tải. Hoãn một nhịp cho khối Game khai báo xong đã. */
+  let daNap = false;
+  function napNgam(){
+    /* `gameReady` chứ không phải `window.Game`: khối Game khai bằng `const` nên
+       nó KHÔNG nằm trên `window`, và gọi trước dòng khai báo là vấp TDZ chết cả
+       trang (bẫy này đã ghi ở khối setTimeout bên dưới). `gameReady` bật lên ở
+       dòng cuối file, nên thấy nó true là chắc chắn gọi Game được. */
+    if(daNap || !gameReady) return;
+    daNap = true;
+    Game.prefetch();
+  }
   let vaoRoi   = !!Store.get().g2Vao;
   const CHO    = G.cho_lan_dau_ms, moTu = Date.now();
   let timer = 0, moKhoaRoi = false;
@@ -1303,7 +1367,8 @@ const Gate = (function(){
     if(Store.get().g2Game){ Code.open(); return; }
     el.loi.textContent = T.moi_vao_game;
     el.play.hidden = false;
-    Game.prefetch();                 /* nạp ngầm ảnh nền cho đỡ chờ lúc bấm */
+    ping('g2_cong_mo', '', true);
+    napNgam();                       /* thường đã chạy từ trước, gọi cho chắc */
     fitTitle(SCENES.gate);
   }
 
@@ -1312,6 +1377,7 @@ const Gate = (function(){
     if(con <= 0 && !vaoRoi){
       /* ═══ GHÉ SAU MỐC: đếm thêm vài giây rồi mới mở ═══
          Tới nơi mà cửa bày sẵn ra thì mất hẳn cảm giác "vừa mở cho mình". */
+      napNgam();                     /* qua mốc rồi → tải ngay, đừng đợi cửa mở */
       const lai = CHO - (Date.now() - moTu);
       if(lai > 0){
         el.loi.textContent = cauCho(CHO - lai);
@@ -1327,7 +1393,10 @@ const Gate = (function(){
       + '<b>' + p2(Math.floor(con%6e4/1e3)) + '</b>S';
   }
 
-  el.play.addEventListener('click', ()=>{ show('game'); Game.start(); });
+  el.play.addEventListener('click', ()=>{
+    ping('g2_bam_choi');
+    show('game'); Game.start();
+  });
 
   /* ═══ CỬA HẬU · GÕ 10 NHỊP VÀO TEM "LAST UPDATED" ════════════════════════
      Giống hệt cửa hậu trên bản đồ (10 nhịp vào dòng Last updated ở chân
@@ -1365,6 +1434,7 @@ const Gate = (function(){
        phá đảo (lần sau vào là thẳng màn phát mã), `g2Done` cho BẢN ĐỒ bật hộp
        chào Gate 2, `g2Xong` cho cảnh vòng 2 dựng lại ở trạng thái đã giải khi
        bấm xem lại. Thiếu bộ cờ này thì bỏ qua xong quay ra bản đồ vẫn im ru. */
+    ping('g2_bo_qua', 'cửa hậu 10 nhịp');
     Store.patch({ g2Skip:true, g2Game:true, g2Done:true, g2Xong:true, eggWin:true });
     Code.open();
   });
@@ -1380,6 +1450,8 @@ const Gate = (function(){
        hậu trước ngày 01-09 thì lần sau vào vẫn thấy đồng hồ, như chưa từng
        thắng. Kiểm ở đây là mọi đường vào đều nhất quán. */
     if(Store.get().g2Game){ Code.open(); return; }
+    ping('g2_vao_cong', BYPASS ? 'cửa hậu' : 'bình thường', true);
+    if(BYPASS) napNgam();            /* cửa hậu: vào tới nơi là chơi ngay */
     tick(); timer = setInterval(tick, 1000);
   }, 0);
   return {};
@@ -1409,7 +1481,12 @@ const Code = (function(){
     el.stamp.innerHTML   = temChu();
     el.back.textContent  = T.ve_ban_do;
     el.tit.innerHTML = '<span class="d">'+T.tieu_de_thang+'</span><span class="d">'+T.tieu_de+'</span>';
-    el.maO.innerHTML = [...G.ma].map(c=>'<i>'+c+'</i>').join('');
+    /* Mã nay có DẤU CÁCH ("HO CHI MINH"). Vẽ ô cho dấu cách thì ra hai ô rỗng
+       lạc lõng giữa hàng — thay bằng một khoảng trống hẹp. Mã dài hơn 8 chữ
+       thì thu nhỏ ô lại cho khỏi tràn ngang trên điện thoại nhỏ. */
+    const chuMa = [...G.ma];
+    el.maO.classList.toggle('dai', chuMa.filter(c=> c !== ' ').length > 8);
+    el.maO.innerHTML = chuMa.map(c=> c === ' ' ? '<b></b>' : '<i>'+c+'</i>').join('');
   }
 
   el.replay.addEventListener('click', ()=>{ show('game'); Game.start(true); });
@@ -1516,6 +1593,10 @@ const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
 const VEIL_PAD_X_SACH = 0.30, VEIL_PAD_Y_SACH = 0.85;
 /* Bán kính nhoè = bấy nhiêu lần CHIỀU CAO bảng đá (xem ghi chú ở fitSlabs) */
 const VEIL_BLUR_K = 0.27;
+/* Bán kính làm mờ chỗ che chữ trong clip = bấy nhiêu lần chiều cao bảng đá.
+   0.8 đo bằng mắt: đủ để nét khắc thành một vệt nhoè, chưa tới mức thành một
+   quầng sáng tách hẳn khỏi mặt đá. */
+const MO_BLUR_K = 1.55;
 function cutOut(node, W, H, L, T2, w, h){
   node.style.width  = w.toFixed(2) + 'px';
   node.style.height = h.toFixed(2) + 'px';
@@ -1559,9 +1640,18 @@ function fitSlabs(){
          như nhau ở mọi cỡ màn hình. */
       slab.style.setProperty('--veil-blur', (SH * VEIL_BLUR_K).toFixed(2) + 'px');
     }
-    /* Quãng trôi của cảnh trong clip nổ, quy ra pixel màn hình — xem ghi chú
-       dài ở `@keyframes veilTroi` trong CSS. Chỉ vòng 2 dùng tới. */
-    slab.style.setProperty('--troi', (H * (T.troi_max || 0.0371)).toFixed(2) + 'px');
+    /* Bán kính làm mờ khi che chữ lúc clip chạy. Buộc vào CHIỀU CAO BẢNG ĐÁ
+       chứ không để số px cứng: bảng cao ~7px trên điện thoại nhưng ~13px trên
+       màn rộng, mà blur(5px) thì ở đâu cũng 5px — màn càng to chữ càng đọc
+       được. Xem `.slab .mo` trong CSS. */
+    slab.style.setProperty('--mo-blur', (SH * MO_BLUR_K).toFixed(2) + 'px');
+    /* Ba biến dưới đây CHỈ nhánh dự phòng @supports dùng tới — máy hiểu
+       backdrop-filter thì không đọc tới. Ghi sẵn cho khỏi phải tính lại. */
+    if(veil){
+      slab.style.setProperty('--veil-bg',   veil.style.backgroundImage || 'none');
+      slab.style.setProperty('--veil-size', veil.style.backgroundSize   || 'auto');
+      slab.style.setProperty('--veil-pos',  veil.style.backgroundPosition || '0 0');
+    }
     /* Độ sáng / độ tươi / độ tương phản của ĐÁP ÁN khi giải xong — mỗi vòng một
        bộ, xem ghi chú ở `.slab.solved .cell` trong CSS. */
     const sg = cfg.solved_glow || {};
@@ -1893,6 +1983,7 @@ const HINTS = { 1:{n:0,at:0,w:0,lock:0}, 2:{n:0,at:0,w:0,lock:0} };
 function saveHints(){ Store.patch({ g2Hint:{ r1:HINTS[1], r2:HINTS[2] } }); }
 
 async function grantHint(round){
+  ping('g2_goi_y', 'vòng ' + round);
   const list = (round === 1 ? C.round1 : C.round2).hints || [];
   const st = HINTS[round];
   if(st.n >= list.length) return;
@@ -2199,6 +2290,7 @@ async function fail(le){
 
   /* ── Tính là một lần sai chính thức ───────────────────────────────────── */
   S.wrongs[S.round]++;
+  ping('g2_sai', 'vòng ' + S.round + ' · lần ' + S.wrongs[S.round]);
   if(cho > 1 && C.dialogues.le_het_luot) await say(C.dialogues.le_het_luot, 'warn');
 
   if(S.round === 1){
@@ -2223,6 +2315,7 @@ async function fail(le){
 
 /* ═══ VÒNG 1 ══════════════════════════════════════════════════════════════ */
 async function startRound1(){
+  ping('g2_vong_1', '', true);
   S.round = 1; S.busy = true;
   S.lastLen = 0; S.lastNoSp = 0; el.input.value = '';
   S.slabWord = C.round1.scrambled; S.slabRow = el.row1; S.slabEl = el.slab1;
@@ -2256,6 +2349,7 @@ async function startRound1(){
 }
 
 async function win1(){
+  ping('g2_giai_xong_1', 'sai ' + S.wrongs[1] + ' lần');
   S.busy = true;
   clearTimeout(S.idleTimer);
   setInput(false); showCtrl(false);
@@ -2295,15 +2389,17 @@ async function win1(){
   const veil2 = el.slab2.querySelector('.veil');
   veil2.style.transition = 'none'; veil2.style.opacity = '0';
 
-  /* ── THẢ LỚP CHE LÚC Ô ĐÓ CÒN CHÌM TRONG KHÓI ────────────────────────────
-     Hai bản trước đều thả quanh mốc 39-44%, tức đúng lúc khói đang tan: một
-     mảng đá tĩnh sắc nét hiện ra giữa làn khói đang cuộn, mắt bắt được ngay.
-     Bung 241 khung clip ra đo thì thấy từ 26% tới 37% ô bảng đá CHÌM HẲN
-     trong khói trắng — đặt mảng che vào đúng quãng đó thì không ai thấy nó
-     xuất hiện lúc nào. Lớp khói phủ (`.slab.khoi`) lo phần còn lại: giữ mảng
-     che trắng theo khói rồi nhả ra đúng nhịp khói tan.
-     `chu_lo_at` (đo được: 40.8%) từ nay chỉ còn là CHỐT CHẶN: lỡ máy lag quá
-     mà tới mốc đó vẫn chưa che xong thì đóng sập tức thì. */
+  /* ── TRONG CLIP THÌ LÀM MỜ, RA KHỎI CLIP MỚI DÁN ĐÁ ──────────────────────
+     Suốt lúc clip chạy, lớp che đá NẰM YÊN Ở OPACITY 0 — không dán gì lên một
+     cảnh đang động. Việc giấu chữ giao hết cho vệt làm mờ `.mo` (xem CSS): nó
+     làm nhoè chính clip nằm dưới nên không có vật liệu lạ nào để mà lệch.
+     Bật vệt mờ từ mốc 26% — đo trên 241 khung thì từ 26% tới 37% ô bảng đá
+     chìm hẳn trong khói trắng, bật gì vào lúc đó cũng không ai thấy.
+     `chu_lo_at` (đo được 40.8%) là CHỐT CHẶN: lỡ máy lag quá mà tới mốc đó
+     vẫn chưa bật thì bật tức thì, không nhoà dần nữa.
+     Tới khi clip tắt mới đổi vai: gỡ vệt mờ, thả lớp che đá xuống. Lúc đó
+     cảnh đã là ảnh tĩnh khớp từng pixel với ảnh đá sạch nên dán vào không hở
+     một mép nào. */
   const VAO_AT    = T.che_vao_at != null ? T.che_vao_at : 0.26;
   const bat_dau   = T.anim_unlock * VAO_AT;
   const kin_luc   = T.anim_unlock * (T.chu_lo_at || 0.40);  /* hạn chót */
@@ -2311,35 +2407,32 @@ async function win1(){
   /* Bám ĐỒNG HỒ THẬT bằng rAF thay vì một setTimeout duy nhất: main thread bận
      thì timer bắn trễ, còn clip webp vẫn chạy theo giờ của nó — lệch nhau là
      lộ chữ. Vòng rAF đo lại mỗi khung nên trễ bao nhiêu cũng tự bắt kịp. */
-  let t0 = 0, daTha = false;
-  const thaVeil = tuc_thi =>{
-    if(daTha) return;
-    daTha = true;
-    veil2.style.transition = tuc_thi ? 'none' : ('opacity ' + T.veil_in_ms + 'ms ease');
-    veil2.style.opacity = '1';
+  let t0 = 0, daMo = false;
+  const batMo = tuc_thi =>{
+    if(daMo) return;
+    daMo = true;
+    el.slab2.querySelector('.mo').style.transition = tuc_thi ? 'none' : '';
+    el.slab2.classList.add('mo-on');
   };
-  const canhVeil = ()=>{
-    if(daTha) return;
+  const canhMo = ()=>{
+    if(daMo) return;
     const qua = performance.now() - t0;
-    if(qua >= kin_luc){ thaVeil(true);  return; }   /* trễ mất rồi → che ngay */
-    if(qua >= bat_dau){ thaVeil(false); return; }
-    requestAnimationFrame(canhVeil);
+    if(qua >= kin_luc){ batMo(true);  return; }   /* trễ mất rồi → mờ ngay */
+    if(qua >= bat_dau){ batMo(false); return; }
+    requestAnimationFrame(canhMo);
   };
 
   await playClip(A('anim_unlock'), T.anim_unlock, ()=>{
     /* Chạy ĐÚNG lúc clip bắt đầu, không phải lúc gọi hàm: mọi mốc dưới đây đều
        là % độ dài clip nên lệch mốc gốc bao nhiêu là lệch hết bấy nhiêu. */
     t0 = performance.now();
-    el.slab2.style.setProperty('--kh', T.anim_unlock + 'ms');
-    el.slab2.classList.remove('khoi'); void el.slab2.offsetWidth;
-    el.slab2.classList.add('khoi');
-    canhVeil();
+    canhMo();
   });
-  /* Chốt chặn cuối: clip tắt là cắt thẳng sang cảnh tĩnh, lớp che phải đục
-     100% ngay khoảnh khắc đó dù mọi tính toán bên trên có trượt. Khói phủ cũng
-     gỡ luôn — từ đây trở đi mảng che là đá thật, khớp khít nền phía sau. */
-  thaVeil(true);
-  el.slab2.classList.remove('khoi');
+  /* Clip tắt = cắt thẳng sang cảnh tĩnh. Đổi vai đúng khoảnh khắc này: lớp che
+     đá đục 100% (khớp từng pixel với nền), vệt mờ tắt hẳn. */
+  veil2.style.transition = 'none';
+  veil2.style.opacity = '1';
+  el.slab2.classList.remove('mo-on');
   await startRound2();
 }
 
@@ -2365,6 +2458,7 @@ function prepRound2(){
 
 /* ═══ VÒNG 2 ══════════════════════════════════════════════════════════════ */
 async function startRound2(){
+  ping('g2_vong_2', '', true);
   S.round = 2; S.busy = true;
   S.slabWord = C.round2.scrambled; S.slabRow = el.row2; S.slabEl = el.slab2;
   /* Phải xoá cả `lastNoSp`: vòng 1 vừa gõ 5 ký tự, không reset thì mấy phím đầu
@@ -2394,6 +2488,7 @@ async function startRound2(){
 }
 
 async function win2(){
+  ping('g2_giai_xong_2', 'sai ' + S.wrongs[2] + ' lần');
   S.busy = true;
   clearTimeout(S.idleTimer);
   setInput(false); showCtrl(false);
@@ -2529,6 +2624,7 @@ el.letterBox.addEventListener('click', ()=>{
   if(el.finish.disabled){ thuDayDu(); ghiThuDaDoc(); }
 });
 function openModal(){
+  ping('g2_mo_thu', galleryOn ? 'xem lại' : 'lần chơi thật');
   el.hotspot.classList.remove('on');
   el.mClose.classList.toggle('on', galleryOn);   /* chỉ chế độ xem lại mới cho đóng nhanh */
   el.modal.classList.add('on');
@@ -2545,6 +2641,7 @@ el.finish.addEventListener('click', async ()=>{
   if(el.finish.disabled) return;
   closeModal();
   if(galleryOn) return;                     /* xem lại → về thẳng cảnh */
+  ping('g2_pha_dao', '', true);
   S.done = true;
   /* Ghi CẢ HAI tên: `g2Game` là tên riêng của trang này, `g2Done` là tên mà
      BẢN ĐỒ đọc để biết đã xong Gate 2 (hộp chào Honghandangiu bật lên từ đây).
@@ -2794,6 +2891,7 @@ function owChips(doi){
   }
 }
 async function owBat(){
+  ping('g2_open_world', '', true);
   if(owOn) return;
   owOn = true;
   /* Bản đồ đọc `g2Open` để biết người chơi đã vào tới khu trò chuyện — vào rồi
@@ -2886,6 +2984,7 @@ async function owGui(){
   if(narrEra !== doi){ owBan = false; return; }   /* đã rời khu trò chuyện */
 
   if(dap){
+    ping('g2_ow_hoi', 'còn ' + (owConLai() - 1) + ' lượt');
     owSu.push({ vai:'user', text:q }, { vai:'npc', text:dap });
     owTru();
     owMat('gat', OW.mat_gat_ms || 1800);   /* gật một cái rồi cúi xuống nghỉ */
@@ -2895,6 +2994,7 @@ async function owGui(){
     if(owConLai() > 0) say(owDem(OW.con_lai), 'sys');
     else say(owCau(OW.het_luot), 'warn');
   }else{
+    ping('g2_ow_loi', 'không nhận được câu trả lời');
     owMat('nhin');                    /* hỏng thì thôi, về nét nghỉ */
     await say(loi, 'err');            /* hỏng đường truyền thì KHÔNG trừ lượt */
   }
@@ -2930,6 +3030,7 @@ async function bootUp(){
   idle(()=>{ load(A('anim_wrong')); load(A('bg_r2')); });
 }
 el.startBtn.addEventListener('click', ()=>{
+  ping('g2_press_start');
   el.boot.classList.add('gone');
   setTimeout(()=>{ el.boot.style.display = 'none'; }, 520);
   startRound1();
@@ -2980,7 +3081,29 @@ return {
   layout,
   /* Nạp ngầm luôn cả hai tấm đá sạch: dò xong sớm thì lúc dựng cảnh đã biết
      dùng ảnh nào, khỏi có nhịp đổi ảnh giữa chừng. */
-  prefetch(){ load(A('bg_r1')); urlDaSach(1); urlDaSach(2); },
+  /* ═══ NẠP NGẦM · GỌI TỪ MÀN ĐẾM NGƯỢC ═══════════════════════════════════
+     Cả bộ tài nguyên nặng 71 MB, trong đó hai clip 23 MB một. Trước đây chỉ
+     nạp trước ba tấm nền, còn hai clip thì đợi vào tận trong game mới bắt đầu:
+     `anim_wrong` chờ tới lúc rảnh sau màn boot, `anim_unlock` chờ tới giữa
+     vòng 1. Mà nay vòng 1 chấm ngay từng phím nên người chơi có thể gõ trật
+     trong vòng vài giây — clip 23 MB chưa về kịp thì đứng hình.
+
+     Nay nạp ngay từ MÀN ĐẾM NGƯỢC, lúc người chơi còn đang đọc đồng hồ. Nạp
+     TUẦN TỰ theo đúng thứ tự cần dùng chứ không thả cả bảy cái một lúc: thả
+     một lúc thì chúng giành băng thông của nhau, tấm nền vòng 1 — thứ cần
+     TRƯỚC TIÊN — lại về sau cùng.
+     `load()` nhớ theo URL nên gọi lại bao nhiêu lần cũng chỉ tải một lần. */
+  async prefetch(){
+    const thuTu = [
+      ()=> load(A('bg_r1')),        /* cần ngay khi bấm PRESS START      */
+      ()=> urlDaSach(1),            /* lớp che vòng 1                     */
+      ()=> load(A('anim_wrong')),   /* gõ trật phát đầu là cần tới        */
+      ()=> load(A('bg_r2')),        /* dựng sẵn cảnh vòng 2 sau lưng clip */
+      ()=> urlDaSach(2),            /* lớp che vòng 2                     */
+      ()=> load(A('anim_unlock'))   /* nặng nhất, nhưng cần muộn nhất     */
+    ];
+    for(const b of thuTu){ try{ await b(); }catch(e){} }
+  },
   start(again){ if(again) reset(); layout(); bootUp(); },
   review(r){ load(A('bg_r2')); enterGallery(r || 1); }
 };

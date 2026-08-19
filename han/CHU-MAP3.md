@@ -80,7 +80,7 @@ Trang này có **cửa mã riêng ngay đầu**, mã lấy ở màn **Easter Egg
 (`/dad/950901-b`). Chữ, không phải số; gõ thường cũng nhận.
 
 ```js
-var PIN_A = 'TYRION';
+var PIN_A = 'HO CHI MINH';
 ```
 
 Đổi mã thì phải sửa **hai chỗ cho khớp**: hằng `PIN_A` ở đây, và biến `MA` trong khối

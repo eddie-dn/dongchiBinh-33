@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V17.04** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+**Phiên bản hiện tại: V17.06** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
 Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
@@ -381,7 +381,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 18-Aug-2026 · V17.04** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated 19-Aug-2026 · V17.06** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -776,7 +776,7 @@ Có **hai đường mở sớm**, dùng để thử hoặc để trình diễn:
 |---|---|---|
 | `?egg=1` | thêm vào URL | chỉ trong lần tải trang đó (hằng `EGG_FORCE`) |
 | **Hack Map · MAP-02** | Box Tổng tư lệnh → ô `MAP-02` → Hack Map → PIN `1959` | **vĩnh viễn**, cờ `eggHack` lưu trong `mtv1`, chỉ mất khi Reset MAP-01 |
-| **⏩ Vào thẳng màn cuối Gate 2** | Box Tổng tư lệnh → ô `MAP-02` → nút này, **không cần PIN** | Bật một lượt `eggHack` + `credFound` + `eggWin` + **`g2Hack`** rồi đi thẳng `/dad/950901-b`. `g2Hack` là cờ **bỏ qua mốc 01-09 của Gate 2**: trang đó thấy cờ là hiện luôn màn cuối (Phá Đảo · mã `TYRION` · đường vào game bên trong), khỏi đợi tới ngày. Reset MAP-02 xoá cờ, Gate 2 quay lại đếm ngược |
+| **⏩ Vào thẳng màn cuối Gate 2** | Box Tổng tư lệnh → ô `MAP-02` → nút này, **không cần PIN** | Bật một lượt `eggHack` + `credFound` + `eggWin` + **`g2Hack`** rồi đi thẳng `/dad/950901-b`. `g2Hack` là cờ **bỏ qua mốc 01-09 của Gate 2**: trang đó thấy cờ là hiện luôn màn cuối (Phá Đảo · mã `HO CHI MINH` · đường vào game bên trong), khỏi đợi tới ngày. Reset MAP-02 xoá cờ, Gate 2 quay lại đếm ngược |
 
 Cửa sổ chỉ có hiệu lực khi **đã giải đủ 4/4** — nó thay chỗ của trạng thái chiến thắng.
 
@@ -1390,10 +1390,10 @@ Bốn chỗ đã sửa từ đợt soát này:
 
 ---
 
-## 21h. Cửa mã của bộ câu hỏi — `PIN_A = TYRION`
+## 21h. Cửa mã của bộ câu hỏi — `PIN_A = HO CHI MINH`
 
 Bộ câu hỏi `HAN-961030-A` có **cửa mã riêng** ngay đầu trang, dựng y khuôn cửa mã của
-Secret Chamber: một dòng nhắc, một hàng ô, không kể lể. Mã là **`TYRION`** — chữ, không
+Secret Chamber: một dòng nhắc, một hàng ô, không kể lể. Mã là **`HO CHI MINH`** — chữ, không
 phải số; so khớp bỏ dấu và không phân biệt hoa thường, nên gõ *tyrion* cũng vào được.
 
 **Mã chỉ phát khi đã THẮNG Gate 2**, không phải khi mò được cửa. Trang
@@ -1404,7 +1404,7 @@ phải số; so khớp bỏ dấu và không phân biệt hoa thường, nên g�
 | Vai | `Player: Dongchi Bình` | `Winner: Dongchi Bình` |
 | Tiêu đề | `Easter Egg: Gate 2` + nhãn `Locked`, **không nháy** | `Phá Đảo` / `Easter Egg: Gate 2`, **nháy tông Easter Egg** |
 | Thân | *"Hẹn anh 00:00 ngày 01-09"* + đồng hồ đếm ngược | *"Phi ngựa tới Zoey's Castle 🦄"* |
-| Mã | không có | ô mã `TYRION` + hai nút (*Chơi lại* · *Zoey's Castle 🏰👸🏻*) |
+| Mã | không có | ô mã `HO CHI MINH` + hai nút (*Chơi lại* · *Zoey's Castle 🏰👸🏻*) |
 
 Dòng `Easter Egg: Gate 2` phải **gọn một hàng ở mọi cỡ màn** — hàm `khitTit()` hạ cỡ chữ
 từ 30 px xuống 15 px cho tới khi vừa, và đo lại một nhịp sau `document.fonts.ready`.
@@ -1697,12 +1697,71 @@ vẫn thấy được sau khi làm lại.
 - **Ngày mở gợi ý:** hằng `MO_GOIY` (`961030-a`) — đổi mốc là cả hệ gợi ý mở/đóng theo,
   không phải sửa chỗ nào khác.
 - Nội dung hộp: hàm `drawBox()` trong `961030-b`.
-- **Mã VÀO bộ câu hỏi:** `PIN_A` (`TYRION`) bên A **và** biến `MA` bên `dad/950901-b` —
+- **Mã VÀO bộ câu hỏi:** `PIN_A` (`HO CHI MINH`) bên A **và** biến `MA` bên `dad/950901-b` —
   hai chỗ phải khớp, xem mục 21h.
 - Mã mở khoá Secret Chamber: sửa `PIN_B` bên A **và** `PIN` bên B cho khớp; gợi ý SOS của
   cửa B nằm ở hằng `GOIY`. PIN bảng điều phối: `PIN_CTRL` (`1959`), giống khu điều phối
   ngoài bản đồ.
 - Nhãn hai hồ sơ trong khung HAN: mảng `NODES` + hàm `render()` bên `index.html`.
+
+---
+
+## 22b. PHÍA MÁY CHỦ — bốn endpoint và mọi biến môi trường
+
+Cập nhật 19-Aug-2026. Đây là bảng DUY NHẤT về phía máy chủ; chỗ nào khác nói
+khác thì tin bảng này.
+
+### File nào làm gì
+
+| File | Việc | Sửa nội dung ở đâu |
+|---|---|---|
+| `api/ping.js` | nhận tín hiệu tiến độ, bắn về Telegram/Discord | bảng `NHAN` ngay trong file |
+| `api/chat.js` | khu Open World nói chuyện với Gemini | `api/_lib/tinhcach.md` |
+| `api/quote.js` | lời chào + Daily Quote cho hộp Greetings | `api/_lib/loichao.md` |
+| `api/thu.js`, `api/note.js` | nhận biểu mẫu / ghi chú | trong file |
+
+Hai file `_lib/*.md` là **nơi sửa chữ nghĩa**; hai file `_lib/*.js` chỉ đọc
+chúng lên. Thư mục có gạch dưới ở đầu nên Vercel không biến nó thành đường dẫn
+công khai — trình duyệt không bao giờ tải được.
+
+### Biến môi trường (Vercel → Settings → Environment Variables)
+
+| Biến | Bắt buộc | Mặc định | Việc |
+|---|---|---|---|
+| `GEMINI_KEY` | có, nếu muốn Gemini chạy | — | khoá lấy ở aistudio.google.com |
+| `GEMINI_MODEL` | không | `gemini-3.7-flash` | model cho khu Open World |
+| `GEMINI_THINK` | không | `512` | trần token cho bước "suy nghĩ". `0` = tắt hẳn |
+| `GEMINI_MODEL_QUOTE` | không | `gemini-flash-lite-latest` | model cho lời chào / quote |
+| `CHAT_LOG_URL` | không | — | có thì đẩy nhật ký chat tới đó (POST JSON) |
+| `CHAT_LOG_NOI_DUNG` | không | tắt | `1` = ghi cả nội dung câu hỏi/trả lời |
+| `NOTIFY_KIND` | không | — | `telegram` \| `discord` \| `off` |
+| `TG_TOKEN`, `TG_CHAT` | nếu telegram | — | bot và đoạn chat nhận tin |
+| `NOTIFY_URL` | nếu discord | — | webhook của kênh |
+
+**Không khai gì thì mọi thứ vẫn chạy** — chỉ là lời chào lấy câu sẵn, Open
+World trả câu dự phòng, và tín hiệu tiến độ chỉ nằm ở tab Logs của Vercel.
+
+### Nhật ký cuộc trò chuyện — đang ở đâu, đi tiếp thế nào
+
+Mỗi lượt hỏi ghi đúng một dòng JSON có prefix `[CHAT_LOG]`. Dòng đó hiện ở
+**tab Logs của Vercel** — gói Hobby giữ khoảng một tiếng rồi mất.
+
+**KHÔNG có gì trong dự án này đẩy log về GCP.** Gọi Gemini chỉ là một request
+HTTP; nó không sinh ra log nào bên Google Cloud. Muốn có thì phải tự nối, và
+đường ngắn nhất là khai `CHAT_LOG_URL` trỏ tới một chỗ nhận:
+
+1. **Google Apps Script → Google Sheets** — dễ nhất, không cần GCP.
+   Tạo một Apps Script `doPost(e)` ghi `e.postData.contents` xuống Sheet, deploy
+   dạng Web App (quyền: Anyone), rồi dán URL vào `CHAT_LOG_URL`.
+2. **Cloud Run / Cloud Functions → Cloud Logging hoặc BigQuery** — đúng bài GCP.
+   Viết một hàm nhận POST rồi `console.log` (tự vào Cloud Logging) hoặc
+   `insertAll` vào BigQuery. Dán URL hàm đó vào `CHAT_LOG_URL`.
+3. **Vercel Log Drain** — không cần sửa mã, nhưng cần gói Pro.
+
+Mặc định nhật ký **chỉ ghi số liệu** (độ dài câu, thời gian, model, thành/bại,
+số token) — KHÔNG ghi nội dung. Đoạn chat có chuyện riêng của hai người. Muốn
+ghi cả nội dung thì bật `CHAT_LOG_NOI_DUNG=1`, cố ý bắt khai riêng một biến nữa
+để không ai bật nhầm.
 
 ---
 
@@ -1727,5 +1786,5 @@ dựng trang, không phải nội dung trang). Lượt chạy gần nhất: **31
 cộng một lượt soát giao diện 8 trang × 6 cỡ màn (320 → 1280 px) báo *SẠCH*.
 
 Phủ các luồng: chơi từ đầu tới phá đảo · ba Mission M1→M2→M3 · cửa hậu 10 nhịp và màn
-Collected · pháo hoa + quả trứng · Gate 2 hai trạng thái · cửa mã `TYRION` · bộ câu hỏi
+Collected · pháo hoa + quả trứng · Gate 2 hai trạng thái · cửa mã `HO CHI MINH` · bộ câu hỏi
 Map 3 và Secret Chamber · Clockwise · mọi đường reset.

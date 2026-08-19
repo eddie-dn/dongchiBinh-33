@@ -1,4 +1,4 @@
-# Lời chào trong hộp Greetings
+# Lời chào & Daily Quote trong hộp Greetings
 
 > **CHỈ SỬA FILE NÀY. Hai file kia đừng đụng tới.**
 >
@@ -31,6 +31,15 @@
 > câu không dùng được thì máy chủ bốc một câu trong đây. Nhờ vậy hộp chào KHÔNG
 > BAO GIỜ trống và cũng không bao giờ hiện lỗi. Cứ coi đây là bộ câu chính thức,
 > còn Gemini là phần thêm nếm cho mỗi ngày một khác.
+>
+> **BỐN khối, không phải ba.** Ba khối `sang` / `trua` / `toi` là LỜI CHÀO —
+> chào xong mốc của ngày rồi thì thôi. Khối `quote` là DAILY QUOTE: từ đó trở
+> đi, mỗi lần người chơi F5 hay quay lại thì hộp hiện một câu quote thay vì
+> chào lại. Khối `quote` dùng chung đúng khuôn `### Lời dặn` / `### Câu sẵn`.
+>
+> **Trong `## quote`, mỗi câu sẵn viết theo khuôn `- Nội dung — Tác giả`**
+> (dấu gạch ngang dài `—`). Máy chủ tách ra để trang hiện tên tác giả xuống
+> một dòng riêng cho gọn.
 
 ## sang
 
@@ -96,3 +105,32 @@ không dấu ngoặc kép, không lời dẫn, không giải thích.
 - Chúc đồng chí một giấc ngủ ngon
 - Ngày dài quá thì mình cất bớt đi, mai tính tiếp
 - Đồng chí ơi, hôm nay có gì làm đồng chí bận lòng không?
+
+## quote
+
+DAILY QUOTE — dùng khi các mốc chào của ngày đã xong. Không phụ thuộc buổi.
+
+### Lời dặn
+
+Chọn MỘT câu nói có thật của một nhà hiền triết, chiến lược gia hoặc nhà tư
+tưởng nổi tiếng (Seneca, Marcus Aurelius, Hồ Chí Minh, Đức Phật, Lão Tử,
+Khổng Tử, Tôn Tử, Carl Jung, Nietzsche, Thích Nhất Hạnh, Jordan Peterson,
+Gabor Maté...). Dịch sang tiếng Việt gọn gàng, TRỌN VẸN một ý, tối đa 120 ký
+tự. Trả về đúng một dòng theo khuôn: Nội dung câu nói — Tên tác giả
+Chỉ dùng câu có thật, KHÔNG bịa. Không emoji, không dấu ngoặc kép, không lời
+dẫn, không giải thích.
+
+### Câu sẵn
+
+- Không có việc gì khó, chỉ sợ lòng không bền — Hồ Chí Minh
+- Hành trình vạn dặm bắt đầu từ một bước chân — Lão Tử
+- Biết người biết ta, trăm trận không nguy — Tôn Tử
+- Bạn có quyền năng với tâm trí mình, không phải với những sự kiện bên ngoài — Marcus Aurelius
+- Chừng nào vô thức chưa thành ý thức, nó sẽ dẫn đường đời ta và ta gọi đó là số phận — Carl Jung
+- Ai có một lý do để sống thì chịu đựng được gần như mọi cách sống — Nietzsche
+- Ta là những gì ta nghĩ; mọi thứ ta là đều khởi lên từ ý nghĩ — Đức Phật
+- Người quân tử cầu ở mình, kẻ tiểu nhân cầu ở người — Khổng Tử
+- Hãy so mình với chính mình của hôm qua, đừng so với người khác của hôm nay — Jordan Peterson
+- Hiện tại là khoảnh khắc duy nhất ta thật sự đang có — Thích Nhất Hạnh
+- Đừng hỏi vì sao nghiện, hãy hỏi vì sao đau — Gabor Maté
+- Ta chịu khổ vì tưởng tượng nhiều hơn vì hiện thực — Seneca

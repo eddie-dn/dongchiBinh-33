@@ -1,5 +1,11 @@
 # Open World — lời dẫn của hệ thống
 
+> ⚠️ **BẢN NHÁP ĐỂ SOẠN THẢO — MÃ NGUỒN KHÔNG ĐỌC FILE NÀY.**
+> Nguồn thật là `dad/950901-b/config.js`. File này chỉ để gõ nội dung cho dễ
+> rồi chép sang. Nghĩa là nó SẼ LỆCH dần với thứ đang chạy — sửa ở đây mà quên
+> chép sang thì game vẫn y như cũ. Đã chép xong thì xoá file này đi cũng được,
+> không ảnh hưởng gì tới trang.
+
 Sửa thẳng vào các khối dưới đây rồi gửi lại, mình chép sang `config.js`
 (`GAME_CONFIG.openworld`). Game **không nạp file này**.
 

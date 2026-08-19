@@ -604,7 +604,28 @@ a.file:active{background:rgba(242,180,65,.07)}
 .hh-body{padding:13px 15px 15px}
 .hh-lab{margin:0;font-family:"Oswald";font-size:8.5px;font-weight:600;
   letter-spacing:.26em;text-transform:uppercase;color:var(--amber)}
-.hh-txt{margin:7px 0 0;font-size:13.5px;line-height:1.6;color:rgba(234,240,247,.9)}
+/* `text-wrap:balance` chia đều chữ cho các dòng thay vì đổ đầy dòng trên rồi
+   thả một hai chữ rơi xuống dòng dưới — chính là cảnh "Gate 2 ✦" nằm trơ một
+   mình. Cỡ chữ hạ một nấc cho câu dài đỡ phải cắt làm ba. */
+.hh-txt{margin:7px 0 0;font-size:12.5px;line-height:1.58;color:rgba(234,240,247,.9);
+  text-wrap:balance}
+/* Cụm không được phép tách dòng — tên màn phải đi liền một mạch */
+.hh-txt .lien{white-space:nowrap}
+/* ── DAILY QUOTE ────────────────────────────────────────────────────────
+   Câu nói dài hơn lời chào nên cần cỡ chữ riêng: 13px — đủ lớn để đọc thoải
+   mái, chưa tới mức một câu ngắn cũng chiếm hết hộp. `text-wrap:balance` chia
+   đều chữ cho các dòng thay vì đổ đầy dòng trên rồi thả một hai chữ rơi xuống.
+   Máy chủ đã chốt câu nói ở 130 ký tự nên tối đa 2 dòng, cộng dòng tác giả là
+   vừa 3 dòng — đúng trần đã định. `line-clamp` là chốt chặn cuối, phòng khi
+   máy nào font rộng hơn dự tính. */
+.hh-txt .qt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;font-size:13px;line-height:1.55;font-style:italic;
+  color:rgba(234,240,247,.94);text-wrap:balance}
+.hh-txt .qa{display:block;margin-top:5px;font-family:"Oswald",system-ui,sans-serif;
+  font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(234,240,247,.5)}
+@media(max-width:360px){.hh-txt .qt{font-size:12px}}
+@media(max-width:360px){.hh-txt{font-size:11.5px}}
 .hh-x{position:absolute;top:8px;right:9px;z-index:2;width:28px;height:28px;
   border:none;border-radius:50%;cursor:pointer;font-family:"Oswald";font-size:14px;
   color:#fff;background:rgba(6,16,31,.62);backdrop-filter:blur(4px)}
@@ -3701,6 +3722,55 @@ function hhXinCau(xong){
   }catch(e){ chot(hhCauNgay()); }
 }
 
+/* ═══ DAILY QUOTE ══════════════════════════════════════════════════════════
+   Chào xong hết mốc của ngày rồi thì thôi chào nữa — F5 hay quay lại mà vẫn
+   "Chào đồng chí" lần thứ tư thì thành ra máy móc. Từ đó đổi sang một câu nói
+   của người xưa: vẫn là một lời nhắn, nhưng lần nào cũng mới và không giả vờ
+   là đang gặp nhau lần đầu.
+   Cùng một endpoint `/api/quote`, chỉ khác `buoi=quote` — chữ nghĩa nằm ở khối
+   `## quote` trong `api/_lib/loichao.md`. Máy chủ dùng model flash-lite cho
+   nhanh và trả kèm tên tác giả tách sẵn. */
+const HH_QUOTE = [
+  ['Không có việc gì khó, chỉ sợ lòng không bền', 'Hồ Chí Minh'],
+  ['Hành trình vạn dặm bắt đầu từ một bước chân', 'Lão Tử'],
+  ['Biết người biết ta, trăm trận không nguy', 'Tôn Tử'],
+  ['Bạn có quyền năng với tâm trí mình, không phải với những sự kiện bên ngoài', 'Marcus Aurelius'],
+  ['Chừng nào vô thức chưa thành ý thức, nó sẽ dẫn đường đời ta và ta gọi đó là số phận', 'Carl Jung'],
+  ['Ai có một lý do để sống thì chịu đựng được gần như mọi cách sống', 'Nietzsche'],
+  ['Ta là những gì ta nghĩ; mọi thứ ta là đều khởi lên từ ý nghĩ', 'Đức Phật'],
+  ['Hãy so mình với chính mình của hôm qua, đừng so với người khác của hôm nay', 'Jordan Peterson'],
+  ['Hiện tại là khoảnh khắc duy nhất ta thật sự đang có', 'Thích Nhất Hạnh'],
+  ['Ta chịu khổ vì tưởng tượng nhiều hơn vì hiện thực', 'Seneca']
+];
+/* Bốc không lặp trong phiên, y như bộ câu chào */
+function hhQuoteTaiCho(){
+  let da = [];
+  try{ da = JSON.parse(sessionStorage.getItem('hhDaQuote') || '[]') || []; }catch(e){}
+  let con = HH_QUOTE.filter(q => da.indexOf(q[0]) < 0);
+  if(!con.length){ da = []; con = HH_QUOTE.slice(); }
+  const q = con[(Math.random() * con.length) | 0];
+  da.push(q[0]);
+  try{ sessionStorage.setItem('hhDaQuote', JSON.stringify(da)); }catch(e){}
+  return { q:q[0], tacGia:q[1] };
+}
+/* Dựng HTML hai phần: câu nói (tối đa 2 dòng) + tên tác giả xuống dòng riêng */
+function hhQuoteHtml(o){
+  const an = t => String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  return '<span class="qt">' + an(o.q) + '</span>'
+       + (o.tacGia ? '<span class="qa">— ' + an(o.tacGia) + '</span>' : '');
+}
+function hhXinQuote(xong){
+  let roi = false;
+  const chot = o => { if(roi) return; roi = true; xong(hhQuoteHtml(o)); };
+  setTimeout(()=> chot(hhQuoteTaiCho()), 2500);
+  try{
+    fetch('/api/quote?buoi=quote', { headers:{ 'accept':'application/json' } })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => chot((j && j.q) ? j : hhQuoteTaiCho()))
+      .catch(()=> chot(hhQuoteTaiCho()));
+  }catch(e){ chot(hhQuoteTaiCho()); }
+}
+
 /* Đã xong Gate 2 chưa — cờ do chính trang /dad/950901-b ghi khi màn cuối hiện
    ra. Trang đó ghi CẢ HAI tên: `g2Done` (tên bản đồ dùng) và `g2Game` (tên
    riêng của nó, có từ trước). Đọc cả hai để ai đã phá đảo từ bản cũ — lúc mới
@@ -3749,7 +3819,8 @@ function hhChon(){
   if(xongGate2() && hhG2 !== '1'){
     hhG2 = '1'; save();
     hhHien('excited', 'Easter Egg · Gate 2',
-      'Chúc mừng đồng chí phá đảo Easter Egg: Gate 2 ✦<br>Zoey’s Castle đã mở khoá tại Hà Nội ✦', true);
+      'Chúc mừng đồng chí <span class="lien">phá đảo</span> <span class="lien">Easter Egg: Gate 2 ✦</span>'
+      + '<br><span class="lien">Zoey’s Castle</span> đã mở khoá tại Hà Nội ✦', true);
     return;
   }
   /* 2 · vừa giải hết Zoey's Castle — bốc ngẫu nhiên một câu cho đỡ nhàm */
@@ -3771,8 +3842,19 @@ function hhChon(){
   if(rangoai && Date.now() - rangoai > IDLE_PHUT*60000){
     sessionStorage.removeItem('hhAfk');
     hhHien('idle', 'Đồng chí đã về', 'Nãy giờ đồng chí đi đâu đó ✦');
+    return;
+  }
+  /* 5 · hết mốc chào rồi → DAILY QUOTE.
+     `quoteRoi` là biến thường, KHÔNG lưu đâu cả: F5 là mất, nên mỗi lần tải
+     trang được đúng một câu. Đó chính là ý "F5 thì đổi sang quote" — mà cũng
+     là cái chặn spam: ở lại trang cả buổi thì vẫn chỉ một câu, không tự nhảy
+     ra thêm lần nào. */
+  if(!quoteRoi){
+    quoteRoi = true;
+    hhXinQuote(html => hhHien('back', 'Daily Quote', html));
   }
 }
+let quoteRoi = false;
 /* Ghi mốc lúc rời màn hình để lần quay lại còn biết đã vắng bao lâu */
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden){ try{ sessionStorage.setItem('hhAfk', Date.now()); }catch(e){} }
