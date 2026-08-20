@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════════════════════════
-   SỔ PHIÊN BẢN — một file dùng chung, mỗi trang một cuốn sổ RIÊNG
+   BẢN GHI — một file dùng chung, mỗi trang một cuốn sổ RIÊNG
    -------------------------------------------------------------------------
    ĐƯỜNG VÀO (cửa hậu cũ của từng trang GIỮ NGUYÊN, không đụng gì):
 
@@ -41,11 +41,22 @@
 
   /* ═══ BẢNG DỮ LIỆU ═══════════════════════════════════════════════════
      MỖI DÒNG LÀ MỘT BUILD LỚN, không phải một bản vá. Cũ nhất nằm trên.
-       ngay  — YYYY-MM-DD của build đó, hoặc 'no info'
+       ngay  — YYYY-MM-DD của build đó, hoặc 'no info' (bảng tự đổi thành N/A)
        ver   — số build, LUÔN GIỮ kể cả khi không biết nó sửa gì
-       so    — SỐ BẢN VÁ ghi lại được trong build đó (V10.08 → '09').
-               Không biết thì để `null`, bảng tự ghi "thiếu info".
+       so    — SỐ BẢN NHỎ ghi lại được trong build đó (V10.08 → '09').
+               Không biết thì để `null`, bảng tự ghi N/A.
        chinh — sửa gì, GHI CHUNG CHUNG THÔI (xem luật ngay dưới)
+       chi   — (tuỳ chọn) mảng từng bản nhỏ: { ver:'V17.05', chinh:'…' }.
+               Dòng nào có `chi` thì bấm được, mở ra bảng chi tiết của riêng
+               build đó. Từ V17 trở đi build nào cũng nên ghi.
+
+     ── LUẬT ĐÁNH SỐ · CÔNG THỨC ĐẾM ────────────────────────────────────
+     Một build LỚN đẻ tối đa MƯỜI bản nhỏ, đuôi chạy .00 → .09. Hết .09 là
+     phải sang build lớn kế tiếp (V2.09 → V03, không có V2.10). Vì vậy:
+
+         trần bản nhỏ của một trang = số build lớn × 10
+
+     Chân bảng tự tính và in ra con số này, khỏi phải nhẩm tay.
 
      ── LUẬT VIẾT CỘT "SỬA CHÍNH" — ĐỌC TRƯỚC KHI THÊM DÒNG ─────────────
      Sổ này người chơi mở ra đọc được. Nên tuyệt đối KHÔNG ghi:
@@ -61,7 +72,7 @@
        2. mấy file tài liệu cùng thời — chúng cũng chép lại số tem, nhờ vậy
           moi thêm được mấy build mà file thì không còn
        3. đoạn lịch sử chép tay trong dòng bản quyền của bản đồ đời V9-V10
-     Chỗ nào cả ba đều im thì ghi 'no info' / 'thiếu info' và GIỮ NGUYÊN số
+     Chỗ nào cả ba đều im thì để 'no info' / `null` (bảng in ra N/A) và GIỮ NGUYÊN số
      build — nói rõ mình không biết, chứ không bịa một dòng nghe cho đẹp. */
   var SO = {
     MAP: {
@@ -77,26 +88,58 @@
         { ngay:'no info', ver:'V8',  so:null, chinh:'Vá tên lửa đen, thêm gõ đúp cho điện thoại' },
         { ngay:'2026-08-04', ver:'V9',  so:null, chinh:'Bỏ rồi ghim lại mã morse, câu trêu xoay vòng, toạ độ mở khoá sáng lên' },
         { ngay:'2026-08-04', ver:'V10', so:'09', chinh:'Huy hiệu tên lửa có vòng đời đầy đủ, lockup cờ' },
-        { ngay:'no info', ver:'V11 · V12', so:null, chinh:'no info' },
-        { ngay:'2026-08-13', ver:'V15', so:'06', chinh:'Trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong' },
-        { ngay:'no info', ver:'V16', so:null, chinh:'no info' },
-        { ngay:'2026-08-17', ver:'V17', so:'09', chinh:'Thêm hộp chào đầu ngày, cập nhật API nội dung, đồng bộ hệ nút, thêm sổ phiên bản' }
+        { ngay:'no info', ver:'V11 · V12', so:null,
+          chinh:'Nối luồng người chơi từ trang hồ sơ về bản đồ',
+          chi:[
+            { ver:'V12', chinh:'Nối luồng và đưa người chơi từ trang hồ sơ về bản đồ chính' }
+          ] },
+        { ngay:'2026-08-12', ver:'V15', so:'06',
+          chinh:'Tách hẳn hai khu chơi, trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong',
+          chi:[
+            { ver:'V15.00', chinh:'Tách trang thành hai khu chơi rời nhau: bản đồ tác chiến và khu Easter Egg' },
+            { ver:'V15.05', chinh:'Khu Easter Egg chỉ mở khi khu bản đồ xong và đồng hồ về 0; thêm băng chúc mừng nhấp nháy dẫn sang' }
+          ] },
+        { ngay:'2026-08-14', ver:'V16', so:null,
+          chinh:'Trạng thái GAME ON, chỉnh hiệu ứng pháo hoa và hiệu ứng Gate 1' },
+        { ngay:'2026-08-17', ver:'V17', so:'09',
+          chinh:'Thêm hộp chào đầu ngày, cập nhật API nội dung, đồng bộ hệ nút, thêm bản ghi',
+          chi:[
+            { ver:'V17.03', chinh:'Chỉnh hiệu ứng pháo hoa và hiệu ứng khu Gate 1' },
+            { ver:'V17.04', chinh:'Nối liền ba khu chơi thành một mạch: bản đồ → Easter Egg → lâu đài' },
+            { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' }
+          ] }
       ]
     },
     'DAD-A': {
       ten: 'Easter Egg · Gate 1', duong: '/dad/950901-a',
       doi: [
         { ngay:'no info', ver:'V1 → V21', so:null, chinh:'no info — 21 build đầu không còn bản ghi' },
-        { ngay:'2026-08-17', ver:'V22', so:'04', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm sổ phiên bản' }
+        { ngay:'2026-08-19', ver:'V22', so:'04',
+          chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi',
+          chi:[
+            { ver:'V22.00 → V22.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
+            { ver:'V22.02', chinh:'Dòng nhiệm vụ ở trang bìa, ba nấc nhiệm vụ, khuôn cửa mã dùng chung, thêm đo đạc' },
+            { ver:'V22.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' }
+          ] }
       ]
     },
     'DAD-B': {
       ten: 'Easter Egg · Gate 2', duong: '/dad/950901-b',
       doi: [
-        { ngay:'no info', ver:'V1', so:null, chinh:'no info' },
-        { ngay:'2026-08-17', ver:'V2',  so:null, chinh:'Hai vòng giải mã. Số đuôi chạy quá luật nên đã nắn sang V03' },
+        { ngay:'no info', ver:'V1', so:null, chinh:'Bản chơi thử đầu tiên' },
+        { ngay:'2026-08-15', ver:'V2',  so:'10',
+          chinh:'Dựng concept và hai vòng giải mã. Số đuôi chạy quá luật nên đã nắn sang V03',
+          chi:[
+            { ver:'V2.00 → V2.03', chinh:'Dựng concept và kịch bản màn chơi, giao diện tĩnh và cảnh chuyển động' },
+            { ver:'V2.04 → V2.09', chinh:'Chỉnh luật chơi, thiết kế cách người chơi tương tác, thêm đồng hồ, gợi ý và mạch màn chơi' }
+          ] },
         { ngay:'2026-08-17', ver:'V03', so:'07', chinh:'Nắn lại số cho đúng luật, thêm khu Open World, dựng ảnh nền sạch' },
-        { ngay:'2026-08-18', ver:'V04', so:'06', chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc' }
+        { ngay:'2026-08-20', ver:'V04', so:'07',
+          chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc, gom cửa hậu vào Khối vận hành',
+          chi:[
+            { ver:'V04.05', chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc' },
+            { ver:'V04.06', chinh:'Gom cửa hậu vào Khối vận hành, mở lại cửa hậu ở màn cuối, đổi bản ghi sang khuôn mới' }
+          ] }
       ]
     },
     'HAN-A': {
@@ -104,14 +147,14 @@
       doi: [
         { ngay:'no info', ver:'V1', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V2', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-19', ver:'V3', so:'01', chinh:'Thêm sổ phiên bản (V2 đã hết nấc đuôi nên sang dòng V3)' }
+        { ngay:'2026-08-19', ver:'V3', so:'01', chinh:'Thêm bản ghi (V2 đã hết nấc đuôi nên sang dòng V3)' }
       ]
     },
     'HAN-B': {
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V1', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V2' },
-        { ngay:'2026-08-19', ver:'V2', so:'02', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm sổ phiên bản' }
+        { ngay:'2026-08-19', ver:'V2', so:'02', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' }
       ]
     },
     /* ── FX CHƯA CÓ CỬA VÀO ────────────────────────────────────────────
@@ -219,25 +262,51 @@
     '.ls-in{position:absolute;opacity:0;width:1px;height:1px;border:0;padding:0}',
 
     /* ── bảng ── */
+    /* ═══ CĂN LỀ · TẤT CẢ VỀ GÓC TRÁI ══════════════════════════════════
+       Bản trước cột "#" và ô tiêu đề cuối căn PHẢI, còn dòng "đang chạy" thì
+       căn GIỮA — ba kiểu căn trong cùng một bảng, mắt đọc xuống cứ phải nhảy
+       qua nhảy lại. Nay mọi thứ trong khối bảng đều bám mép trái, chỉ tiêu đề
+       hộp và ảnh là còn ở giữa. */
+    '.ls-nhom{text-align:left}',
     '.ls-nhom p.d{margin:0 0 8px;font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;',
-      'font-size:9px;letter-spacing:.12em;color:var(--ls-mo,rgba(234,240,247,.5));text-align:center}',
-    '.ls-doi{display:grid;grid-template-columns:62px 40px 42px 1fr;gap:5px 6px;',
-      'padding:6px 0;border-top:1px dashed var(--ls-line,rgba(234,240,247,.12));font-size:10.5px;line-height:1.45}',
+      'font-size:9px;letter-spacing:.12em;color:var(--ls-mo,rgba(234,240,247,.5));text-align:left}',
+    /* Build đứng TRƯỚC, ngày theo sau: số build là thứ người ta dò, ngày chỉ
+       để đối chiếu. Cột nào cũng căn trái. */
+    '.ls-doi{display:grid;grid-template-columns:46px 58px 30px 1fr;gap:5px 6px;',
+      'padding:6px 0;border-top:1px dashed var(--ls-line,rgba(234,240,247,.12));font-size:10.5px;line-height:1.45;',
+      'text-align:left}',
     '.ls-doi:first-of-type{border-top:0}',
     '.ls-doi b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500;',
       'font-size:9px;letter-spacing:.02em;white-space:nowrap;color:var(--ls-mo,rgba(234,240,247,.5))}',
     '.ls-doi b.v{color:var(--ls-acc,#8CE1B4)}',
-    '.ls-doi b.n{text-align:right;font-size:8.5px;white-space:nowrap}',
+    '.ls-doi b.n{font-size:8.5px;white-space:nowrap}',
     '.ls-doi span{color:var(--ls-fg,#EAF0F7);opacity:.85}',
     '.ls-doi span em,.ls-doi b em{font-style:normal;opacity:.5}',
-    '.ls-dau{display:grid;grid-template-columns:62px 40px 42px 1fr;gap:6px;padding-bottom:5px;',
+    /* Dòng có bản ghi chi tiết thì bấm được — thêm mũi nhắc ở cuối câu. */
+    '.ls-doi.co-chi{cursor:pointer}',
+    '.ls-doi.co-chi:hover span,.ls-doi.co-chi:focus-visible span{opacity:1}',
+    '.ls-doi.co-chi span::after{content:" ›";color:var(--ls-acc,#8CE1B4);font-weight:700}',
+    '.ls-dau{display:grid;grid-template-columns:46px 58px 30px 1fr;gap:6px;padding-bottom:5px;',
       'font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-size:8px;',
-      'letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;color:var(--ls-acc,#8CE1B4);opacity:.75}',
-    '.ls-dau i:last-child{text-align:right}',
-    '@media(max-width:360px){.ls-doi,.ls-dau{grid-template-columns:60px 36px 40px 1fr;gap:4px 4px}',
+      'letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;text-align:left;',
+      'color:var(--ls-acc,#8CE1B4);opacity:.75}',
+    '@media(max-width:360px){.ls-doi,.ls-dau{grid-template-columns:44px 56px 28px 1fr;gap:4px 4px}',
       '.ls-doi b{font-size:8.5px}}',
     '.ls-chan{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--ls-line,rgba(234,240,247,.12));',
-      'font-size:9.5px;line-height:1.6;color:var(--ls-mo,rgba(234,240,247,.5));text-align:center}'
+      'font-size:9.5px;line-height:1.6;color:var(--ls-mo,rgba(234,240,247,.5));text-align:left}',
+
+    /* ── bảng chi tiết một build ── */
+    '.ls-lui{display:inline-flex;align-items:center;gap:5px;margin:0 0 10px;padding:5px 9px;',
+      'border:1px solid var(--ls-line,rgba(234,240,247,.12));border-radius:999px;background:none;cursor:pointer;',
+      'font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-size:8.5px;letter-spacing:.16em;',
+      'text-transform:uppercase;color:var(--ls-mo,rgba(234,240,247,.5))}',
+    '.ls-lui:hover{color:var(--ls-fg,#EAF0F7)}',
+    '.ls-nho{display:grid;grid-template-columns:52px 1fr;gap:5px 8px;padding:6px 0;text-align:left;',
+      'border-top:1px dashed var(--ls-line,rgba(234,240,247,.12));font-size:10.5px;line-height:1.45}',
+    '.ls-nho:first-of-type{border-top:0}',
+    '.ls-nho b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500;font-size:9px;',
+      'white-space:nowrap;color:var(--ls-acc,#8CE1B4)}',
+    '.ls-nho span{color:var(--ls-fg,#EAF0F7);opacity:.85}'
   ].join('');
 
   var style = document.createElement('style');
@@ -254,7 +323,7 @@
 
   function nut(ma) {
     return '<button class="ls-key" type="button" data-ls="' + ma + '" '
-         + 'title="Sổ phiên bản" aria-label="Sổ phiên bản">' + ICON + '</button>';
+         + 'title="Bản ghi" aria-label="Bản ghi">' + ICON + '</button>';
   }
 
   /* ═══ HỘP ═════════════════════════════════════════════════════════════ */
@@ -302,12 +371,12 @@
     var sai = 0, go = '';
     var t = SO[ma];
     khung(
-        '<h2 class="ls-tit">Sổ phiên bản</h2>'
-      + '<p class="ls-sub">' + t.ten + '<br>Khu này chỉ ghi chép, không có gì để chơi.</p>'
+        '<h2 class="ls-tit">Bản ghi</h2>'
+      + '<p class="ls-sub">' + t.ten + '<br>Ghi chép update hệ thống.</p>'
       + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
       + '<p class="ls-msg" id="lsMsg">4 chữ số</p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
-      +   'autocomplete="off" maxlength="4" aria-label="Mã vào sổ phiên bản">'
+      +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
     var msg = hop.querySelector('#lsMsg');
@@ -324,14 +393,18 @@
       sai++;
       go = ''; inp.value = ''; ve();
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
+      /* KHÔNG BÁO GÌ KHI SAI. Bản trước đếm hộ "còn 2 lần trước khi có gợi ý"
+         — vừa nói toẹt là sắp có gợi ý, vừa biến cửa hậu thành một cái khoá
+         có hướng dẫn. Nay gõ sai thì hộp chỉ rung một cái rồi thôi; tới đúng
+         nấc được xem gợi ý mới hiện gợi ý, ngoài ra im lặng. */
       if (sai >= SAI_TOI_DA) {
         /* Gợi ý ĐÚNG MỘT LẦN. Từ lần sai thứ tư trở đi vẫn hiện đúng câu đó —
            không có gợi ý thứ hai. Nói thêm nữa là cho không cái mã. */
         msg.textContent = GOI_Y;
         msg.className = 'ls-msg goi';
       } else {
-        msg.textContent = 'Chưa đúng ✦ còn ' + (SAI_TOI_DA - sai) + ' lần trước khi có gợi ý';
-        msg.className = 'ls-msg xau';
+        msg.textContent = '';
+        msg.className = 'ls-msg';
       }
     }
     inp.addEventListener('input', function () {
@@ -348,24 +421,84 @@
     ve();
   }
 
+  /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số
+     lẫn cột chữ. Trước đây hai chỗ hai kiểu ("thiếu info" / "no info"), đọc
+     xuống tưởng là hai nghĩa khác nhau trong khi cùng nghĩa "không biết". */
+  var NA = '<em>N/A</em>';
+
+  /* Đếm số build lớn thật sự của một dòng: dòng gộp ("V1 → V21", "V11 · V12")
+     tính đủ số build nó gộp, chứ không tính là một. */
+  function demBuild(ver) {
+    var s = String(ver);
+    var m = s.match(/V(\d+)\s*(?:→|->)\s*V?(\d+)/i);
+    if (m) return Math.max(1, (+m[2] - +m[1]) + 1);
+    return (s.match(/V\d+/gi) || ['V']).length;
+  }
+
   function veSo(ma) {
     var t = SO[ma], d = t.doi, cuoi = d[d.length - 1];
+    var tongLon = 0, tongNho = 0;
+    for (var i = 0; i < d.length; i++) {
+      tongLon += demBuild(d[i].ver);
+      if (d[i].so != null) tongNho += +d[i].so;
+    }
     var h = '<h2 class="ls-tit">' + t.ten + '</h2>'
-          + '<p class="ls-sub">Sổ phiên bản của riêng trang này<br>'
-          +   'Cột <b>#</b> = số bản ghi lại được của build đó</p>'
-          + '<div class="ls-nhom"><p class="d">' + t.duong + ' · ĐANG CHẠY ' + cuoi.ver + '</p>'
-          + '<div class="ls-dau"><i>Ngày</i><i>Build</i><i>#</i><i>Sửa chính</i></div>';
+          + '<p class="ls-sub">Đơn vị điều phối: Zoeyzuize</p>'
+          + '<div class="ls-nhom"><p class="d">ĐANG CHẠY ' + cuoi.ver + '</p>'
+          + '<div class="ls-dau"><i>Build</i><i>Ngày</i><i>#</i><i>Sửa chính</i></div>';
     for (var k = 0; k < d.length; k++) {
       var r = d[k];
-      var so = (r.so == null) ? '<em>thiếu info</em>' : r.so;
-      var ch = r.chinh.replace(/no info/g, '<em>no info</em>');
-      h += '<div class="ls-doi"><b>' + r.ngay + '</b><b class="v">' + r.ver + '</b>'
+      var so   = (r.so == null) ? NA : r.so;
+      var ngay = (!r.ngay || r.ngay === 'no info') ? NA : r.ngay;
+      var ch   = r.chinh.replace(/no info/g, 'N/A');
+      var coChi = r.chi && r.chi.length;
+      h += '<div class="ls-doi' + (coChi ? ' co-chi' : '') + '"'
+         + (coChi ? ' data-chi="' + k + '" role="button" tabindex="0"' : '') + '>'
+         + '<b class="v">' + r.ver + '</b><b>' + ngay + '</b>'
          + '<b class="n">' + so + '</b><span>' + ch + '</span></div>';
     }
-    h += '</div><p class="ls-chan">Mỗi dòng là MỘT BUILD LỚN.<br>'
-       + 'Cột <b>#</b> đếm số bản vá ghi lại được trong build đó — '
-       + 'không biết thì để <em>thiếu info</em>, số build vẫn giữ nguyên.</p>';
+    /* ═══ CÔNG THỨC ĐẾM ══════════════════════════════════════════════════
+       Luật đánh số của cả bộ: một build LỚN đẻ tối đa MƯỜI bản nhỏ, đuôi
+       chạy .00 → .09; hết .09 là phải sang build lớn kế tiếp. Vậy trần bản
+       nhỏ của một trang luôn bằng (số build lớn × 10) — ghi thẳng công thức
+       ra đây để lần sau khỏi phải đoán vì sao con số này lại thế. */
+    h += '</div><p class="ls-chan">'
+       + '<b>Công thức:</b> 1 build lớn = tối đa 10 bản nhỏ (đuôi .00 → .09).<br>'
+       + 'Trần bản nhỏ = số build lớn × 10.<br>'
+       + 'Trang này: <b>' + tongLon + '</b> build lớn · <b>' + tongNho + '</b>/'
+       +   (tongLon * 10) + ' bản nhỏ ghi nhận được.<br>'
+       + '<em>Thông tin ghi nhận không đầy đủ — mấy build đời đầu chỉ lụm lại '
+       +   'được từ mốc còn sót, chỗ nào không có thì để N/A.</em></p>';
     khung(h);
+    /* Bấm một dòng có bản ghi chi tiết → mở bảng nhỏ của riêng build đó. */
+    var ds = hop.querySelectorAll('.ls-doi.co-chi');
+    for (var j = 0; j < ds.length; j++) {
+      (function (n) {
+        function moChi() { veChiTiet(ma, +n.getAttribute('data-chi')); }
+        n.addEventListener('click', moChi);
+        n.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); moChi(); }
+        });
+      })(ds[j]);
+    }
+  }
+
+  /* ═══ BẢNG CHI TIẾT MỘT BUILD ═══════════════════════════════════════════
+     Từ V17 trở đi mỗi build lớn ghi rõ từng bản nhỏ: đuôi mấy, làm gì. Bảng
+     ngoài giữ một dòng gọn cho dễ dò, chi tiết nằm sau một cú bấm — không thì
+     sổ dài ra gấp mười mà chín phần là chuyện vụn. */
+  function veChiTiet(ma, k) {
+    var t = SO[ma], r = t.doi[k], c = r.chi || [];
+    var h = '<h2 class="ls-tit">' + r.ver + '</h2>'
+          + '<p class="ls-sub">' + t.ten + ' · '
+          +   ((!r.ngay || r.ngay === 'no info') ? 'N/A' : r.ngay) + '</p>'
+          + '<div class="ls-nhom"><button class="ls-lui" id="lsLui" type="button">‹ Bản ghi</button>';
+    for (var i = 0; i < c.length; i++)
+      h += '<div class="ls-nho"><b>' + c[i].ver + '</b><span>' + c[i].chinh + '</span></div>';
+    h += '</div><p class="ls-chan">' + c.length + '/10 bản nhỏ của build này có ghi chép.<br>'
+       + '<em>Đuôi chạy .00 → .09, hết nấc là sang build lớn kế tiếp.</em></p>';
+    khung(h);
+    hop.querySelector('#lsLui').addEventListener('click', function () { veSo(ma); });
   }
 
   function mo(ma) {

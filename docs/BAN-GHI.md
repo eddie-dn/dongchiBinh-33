@@ -1,0 +1,147 @@
+# BẢN GHI — luật đánh số phiên bản & quy trình cập nhật
+
+Tài liệu chốt cho hệ **Bản ghi** (trước gọi là "Sổ phiên bản"). Mã nguồn dùng chung nằm
+ở [`assets/lichsu.js`](../assets/lichsu.js) — sáu cuốn sổ nằm chung một file, nhưng mỗi
+trang chỉ thấy sổ của riêng nó.
+
+---
+
+## 1. Luật đánh số — công thức đếm
+
+```
+Một build LỚN   =  tối đa MƯỜI bản nhỏ, đuôi chạy .00 → .09
+Hết .09         →  phải sang build lớn kế tiếp (V2.09 → V03, KHÔNG có V2.10)
+
+trần bản nhỏ của một trang  =  số build lớn × 10
+```
+
+Chân bảng Bản ghi tự in ra công thức này cùng hai con số thật của trang:
+*"Trang này: **4** build lớn · **24**/40 bản nhỏ ghi nhận được."* — khỏi phải nhẩm tay,
+và ai mở ra đọc cũng hiểu ngay vì sao con số lại thế.
+
+> Đã vấp hai lần: Gate 2 chạy tới `V2.09` rồi định lên `V2.10`, HongHan's Secret Chamber
+> chạy tới `V1.11`. Cả hai đều phải nắn lại (`V2 → V03`, `V1 → V2`). Nhớ luật này thì
+> khỏi phải nắn lần ba.
+
+---
+
+## 2. Quy trình khi ra một phiên bản mới
+
+Ba bước, **làm đủ cả ba** thì bản ghi mới khớp với thứ đang chạy thật:
+
+### Bước 1 — Bump tem "Last updated" ngoài trang
+
+Sửa đúng chỗ khai chuỗi tem của trang đó:
+
+| Trang | Chỗ sửa |
+|---|---|
+| Bản đồ mật thư | `index.html` — chuỗi tem ở chân trang |
+| Easter Egg · Gate 1 | `dad/950901-a/index.html` — thuộc tính `data-base` của `#stamp` |
+| Easter Egg · Gate 2 | `dad/950901-b/config.js` — khoá `version` |
+| Zoey's Castle | `han/961030-a/index.html` — `data-base` của `#stamp` |
+| HongHan's Secret Chamber | `han/961030-b/index.html` — `data-base` của `#stamp` |
+| Màn pháo hoa | `phao-hoa/index.html` |
+
+Dạng chuỗi giữ nguyên: `Last updated DD-Mon-YYYY · Vxx.yy`.
+
+### Bước 2 — Ghi vào `assets/lichsu.js`
+
+Mở bảng `SO`, tìm đúng khoá của trang (`MAP` · `DAD-A` · `DAD-B` · `HAN-A` · `HAN-B` ·
+`FX`), rồi:
+
+- **Bản nhỏ trong cùng build lớn** (V04.05 → V04.06): giữ nguyên dòng, **tăng `so`** lên
+  một, và thêm một mục vào mảng `chi`.
+- **Sang build lớn mới** (V04.09 → V05): thêm một dòng mới ở CUỐI mảng `doi`.
+
+```js
+{ ngay:'2026-08-20', ver:'V04', so:'07',
+  chinh:'Câu tóm tắt chung chung của cả build lớn',
+  chi:[
+    { ver:'V04.05', chinh:'Bản nhỏ này làm gì' },
+    { ver:'V04.06', chinh:'Bản nhỏ kế tiếp làm gì' }
+  ] }
+```
+
+Các trường:
+
+| Trường | Nghĩa |
+|---|---|
+| `ngay` | `YYYY-MM-DD`. Không biết thì `'no info'` — bảng tự in **N/A** |
+| `ver` | Số build lớn. **Luôn giữ** kể cả khi không biết nó sửa gì |
+| `so` | Số bản nhỏ ghi lại được (V04.06 → `'07'` vì đếm cả .00). `null` → **N/A** |
+| `chinh` | Tóm tắt cả build lớn, một câu |
+| `chi` | *(tuỳ chọn)* mảng từng bản nhỏ. Dòng nào có `chi` thì **bấm được**, mở ra bảng chi tiết riêng. **Từ V17 trở đi build nào cũng nên ghi** |
+
+### Bước 3 — Nếu có sửa file tài liệu
+
+Sửa gì trong `index.html`/`config.js` của trang nào thì log lại ở đúng cuốn sổ của trang
+đó. Sửa thứ dùng chung (`assets/lichsu.js`, `DESIGN-SYSTEM.md`) thì ghi vào cuốn sổ của
+trang mà lần này thật sự đụng tới — đừng nhân bản một dòng ra sáu cuốn.
+
+---
+
+## 3. Luật viết cột "Sửa chính" — đọc trước khi thêm dòng
+
+Bản ghi **người chơi mở ra đọc được**. Tuyệt đối KHÔNG ghi:
+
+- mã, mật khẩu, đáp án, tên nhân vật phải đoán
+- tên biến môi trường, tên khoá lưu, tên endpoint, tên nhà cung cấp
+- bất cứ thứ gì nói ra là bớt được một bước phải mò
+
+Chỉ ghi **loại việc**: *"cập nhật API"*, *"chỉnh hiệu ứng"*, *"chỉnh luật chơi"*,
+*"đồng bộ hệ nút"*, *"cập nhật giao diện"*, *"thêm đo đạc"*.
+
+> Ví dụ đúng: "Thêm nút cầu cứu trong cửa mã, chỉnh luật gợi ý và luật tạm khoá."
+> Ví dụ sai: "Thêm nút SOS mở gợi ý MiG-21 khi bấm 10 nhịp." — lộ cả đáp án lẫn cách mò.
+
+---
+
+## 4. Giao diện Bản ghi — những gì đã chốt
+
+- Tiêu đề cửa mã: **Bản ghi**. Phụ đề: tên trang + *"Ghi chép update hệ thống."*
+- **Nhập sai mã: không hiện dòng nào.** Hộp chỉ rung một cái. Tới đúng nấc được xem gợi
+  ý (sai 3 lần) thì mới hiện gợi ý, và chỉ **đúng một** câu.
+- Bảng: phụ đề **"Đơn vị điều phối: Zoeyzuize"**, không còn đường dẫn trang, không còn
+  câu giải thích cột `#`.
+- Thứ tự cột: **Build → Ngày → # → Sửa chính**. Mọi ô **căn trái**.
+- Không biết thì ghi **N/A** (một chữ, dùng chung cho cả cột số lẫn cột chữ).
+- Chân bảng: công thức đếm + tổng của trang + ghi chú *"Thông tin ghi nhận không đầy đủ"*.
+- Dòng có `chi` → bấm được (có mũi `›` ở cuối câu) → bảng chi tiết từng bản nhỏ, có nút
+  **‹ Bản ghi** để quay lại.
+
+---
+
+## 5. Cửa vào Bản ghi ở từng trang
+
+Luật chung của cả bộ: **mở bảng vận hành của trang → bấm 3 nhịp vào nút tròn → gõ mã**.
+
+| Trang | Cách mở bảng vận hành |
+|---|---|
+| Bản đồ mật thư | Box Tổng tư lệnh (cửa hậu sẵn có) |
+| Zoey's Castle | 5 nhịp vào cụm hoa + tem → Khối vận hành |
+| Easter Egg · Gate 2 | **10 nhịp vào tem ở chân màn hình** → Khối vận hành. Chạy ở **cả màn cổng lẫn màn cuối** |
+| Màn pháo hoa | Chưa có bảng nào để giấu cửa — dữ liệu đã sẵn ở khoá `FX`, hôm nào trang đó có bảng thì gắn `LichSu.nut('FX')` là xong |
+
+Mã vào: `0981`. Sai 3 lần được **đúng một** câu gợi ý. Mở được rồi thì trong phiên đó
+khỏi hỏi lại, nhưng **nhớ riêng từng trang** — mở sổ bên này không mở hộ sổ bên kia.
+
+---
+
+## 6. Riêng Gate 2 — Khối vận hành
+
+Gõ 10 nhịp vào tem `@Designed by … · Last updated` ở chân màn hình thì ra một bảng nhỏ
+gom mọi lối vận hành:
+
+- **Nút tròn xem bản ghi** (bấm tiếp 3 nhịp → cửa mã).
+- **⏭ Bỏ qua · vào thẳng màn cuối** — chỉ hiện ở màn cổng khi **chưa** phá đảo. Bấm là
+  ghi đủ bộ cờ như đi hết game thật rồi nhảy sang màn phát mã.
+
+Cố ý **không nhớ**: mỗi lần vào trang phải gõ lại đủ 10 nhịp. Cố ý **không đếm hộ** còn
+mấy nhịp — chỉ nháy màu tem từ nhịp thứ 4 cho biết đang gõ đúng chỗ.
+
+> **Hai lỗi đã sửa ở V04.06, ghi lại để khỏi lặp:**
+> 1. `.gate-look .vstamp` để `pointer-events:none`, và chỉ `#scene-gate` mới mở lại. Màn
+>    cuối (`#scene-code`) dùng chung lớp đó nên tem trơ hoàn toàn — khung `.frame` nằm đè
+>    nuốt sạch cú bấm. Nay cả hai màn cùng mở.
+> 2. Esc đóng cả hai lớp một lúc: đang đọc bản ghi gõ Esc thì rơi thẳng về màn chơi. Nay
+>    Khối vận hành né Esc khi sổ bản ghi đang mở, mỗi cú Esc chỉ đóng lớp trên cùng.

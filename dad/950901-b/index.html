@@ -196,26 +196,51 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    HAI MÉP, còn tem ở giữa nên không đụng nhau nữa — đặt bottom:14px cho tem
    ngồi đúng giữa hai dấu ngoặc, thành một chân trang cân đối.
    `padding` hai bên để trên máy hẹp chữ không bao giờ chạm được vào nét góc. */
-/* `pointer-events` để AUTO ở màn cổng vì tem chính là cửa hậu 10 nhịp (xem
-   khối "CỬA HẬU" trong JS). `user-select:none` cho gõ nhanh mười cái không bị
-   bôi đen chữ. Màn phát mã thì không có cửa hậu nào nên vẫn để none. */
+/* `pointer-events` để AUTO ở CẢ HAI màn có tem, vì tem chính là cửa hậu 10
+   nhịp (xem khối "CỬA HẬU" trong JS). `user-select:none` cho gõ nhanh mười
+   cái không bị bôi đen chữ.
+
+   ═══ BẪY ĐÃ VẤP · MÀN CUỐI KHÔNG BẤM ĐƯỢC VÀO TEM ═══════════════════════
+   Bản trước chỉ mở `pointer-events` cho `#scene-gate`. Màn phát mã
+   (`#scene-code`) dùng chung lớp `.gate-look` nên tem ở đó trơ hoàn toàn:
+   khung trang trí `.frame` nằm đè lên nuốt sạch cú bấm, gõ bao nhiêu nhịp
+   cũng không ra gì — đúng lỗi "màn cuối không bấm được vào khối vận hành /
+   xem bản ghi". Nay cả hai màn cùng mở. */
 .gate-look .vstamp{position:absolute;left:0;right:0;bottom:14px;padding:0 44px;pointer-events:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:8px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;text-align:center;line-height:1.6;
   color:rgba(234,240,247,.32)}
-#scene-gate .vstamp{pointer-events:auto;cursor:default;
+#scene-gate .vstamp,#scene-code .vstamp{pointer-events:auto;cursor:default;
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-/* Nút bỏ qua — chỉ hiện sau khi gõ đủ 10 nhịp vào tem. Để tông XÁM VIỀN chứ
-   không phải vàng như nút chính: đây là cửa phụ, không được tranh chỗ với
-   "Bắt đầu giải mã". */
-/* Hàng cửa hậu: nút Bỏ qua ở giữa, nút sổ phiên bản nép bên phải. */
-.gate-look .skip-row{display:flex;align-items:center;justify-content:center;gap:10px}
-.gate-look .skip-row .ma-go.skip{margin-top:0}
-.gate-look .ma-go.skip{margin-top:10px;background:none;color:rgba(140,225,180,.9);
-  border:1px dashed rgba(140,225,180,.5);box-shadow:none;font-size:9px}
-.gate-look .ma-go.skip:active{transform:translateY(1px)}
 /* Tem nháy nhẹ vài nhịp khi cửa hậu vừa mở, cho biết là "ăn rồi" */
-#scene-gate .vstamp.hit{color:rgba(140,225,180,.85);transition:color .18s}
+#scene-gate .vstamp.hit,#scene-code .vstamp.hit{color:rgba(140,225,180,.85);transition:color .18s}
+
+/* ═══ KHỐI VẬN HÀNH ═══════════════════════════════════════════════════════
+   Trước đây gõ đủ 10 nhịp thì đẻ ra một HÀNG NÚT ngay giữa màn: nút "Bỏ qua"
+   viền đứt nằm cạnh nút sổ tròn, hai thứ khác cỡ khác kiểu chen nhau, nhìn
+   như lỗi dựng trang hơn là cửa hậu. Nay gom vào MỘT BẢNG NHỎ đúng như Khối
+   vận hành bên Zoey's Castle — cả bộ cùng một luật: mò ra tem thì ra bảng,
+   mọi lối vận hành nằm gọn trong bảng. */
+.kvh{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(2,6,14,.66);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.kvh.on{display:flex}
+.kvh-hop{position:relative;width:min(320px,92vw);border-radius:14px;padding:18px 16px 16px;
+  background:linear-gradient(180deg,#0d1a2e 0%,#070e1c 100%);
+  border:1px solid rgba(234,240,247,.12);box-shadow:0 20px 50px rgba(0,0,0,.45);
+  animation:kvhLen .3s cubic-bezier(.16,1,.3,1) both}
+@keyframes kvhLen{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.kvh-x{position:absolute;top:6px;right:8px;width:30px;height:30px;border:0;background:none;
+  color:rgba(234,240,247,.5);font-size:15px;line-height:1;cursor:pointer;padding:0}
+.kvh-x:hover{color:#EAF0F7}
+.kvh-lab{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 5px;
+  font-family:"Oswald",system-ui,sans-serif;font-size:10.5px;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:rgba(140,225,180,.9)}
+.kvh-txt{margin:0;text-align:center;font-size:10.5px;line-height:1.6;color:rgba(234,240,247,.5)}
+.kvh-go{display:block;width:100%;margin:14px 0 0;padding:11px 8px;border-radius:999px;
+  font-family:"Oswald",system-ui,sans-serif;font-size:9.5px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;
+  background:none;color:rgba(140,225,180,.9);border:1px dashed rgba(140,225,180,.5)}
+.kvh-go:active{transform:translateY(1px)}
 /* Dòng ký tên, nằm TRÊN dòng phiên bản. Cỡ chữ · giãn chữ · độ mờ lấy ĐÚNG
    theo dòng "© Bản quyền · …" ở chân bản đồ ngoài trang chủ (`.cr`), để hai
    nơi cùng một chữ ký thì trông cũng phải cùng một kiểu.
@@ -1064,14 +1089,11 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
            nút Bản đồ, và mọi màn khác trong bộ đều chỉ có đúng một đường lui ở
            góc đó. Bày thêm một nút nữa giữa màn hình vừa thừa, vừa làm màn này
            trông khác hẳn các màn còn lại. -->
-      <!-- Cửa hậu: gõ 10 nhịp vào tem Last updated ở chân màn hình mới hiện.
-           Cùng lúc đó hiện luôn NÚT SỔ PHIÊN BẢN bên cạnh — trang này không có
-           bảng điều khiển riêng như bản đồ hay Zoey's Castle, nên hàng nút mà
-           cửa hậu mở ra chính là chỗ tương đương. -->
-      <div class="skip-row" id="gSkipRow" hidden>
-        <button class="ma-go skip" id="gSkip" type="button">⏭ Bỏ qua · vào thẳng màn cuối</button>
-        <span id="lsSlot"></span>
-      </div>
+      <!-- Cửa hậu: gõ 10 nhịp vào tem "@Designed by … · Last updated" ở chân
+           màn hình thì ra KHỐI VẬN HÀNH (bảng nổi, dựng trong JS bên dưới) —
+           trong đó có nút xem bản ghi và lối đi thẳng màn cuối. Trang này
+           không có bảng điều khiển riêng như bản đồ hay Zoey's Castle, nên
+           bảng đó chính là chỗ tương đương. -->
     </div>
     <span class="vstamp" id="gStamp"></span>
   </div>
@@ -1209,12 +1231,25 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
         </div>
       </div>
     </div>
-    <!-- Cửa ẩn: gõ 3 nhịp vào tem là mở sổ phiên bản của riêng trang này.
-         Màn này không có bảng điều khiển nào để nhét nút vào, mà tem lại đúng
-         là chỗ người ta mò tới đầu tiên. Xem /assets/lichsu.js. -->
-    <span class="vstamp" id="cStamp" data-ls="DAD-B"></span>
+    <!-- Cửa hậu ở màn cuối GIỐNG HỆT màn cổng: gõ 10 nhịp vào tem là ra Khối
+         vận hành, trong đó có nút xem bản ghi. Bỏ `data-ls` gắn thẳng vào tem
+         (kiểu 3 nhịp cũ) để cả bộ chỉ còn MỘT luật mò cửa, khỏi phải nhớ chỗ
+         nào 3 nhịp chỗ nào 10. Xem /assets/lichsu.js. -->
+    <span class="vstamp" id="cStamp"></span>
   </div>
 </main>
+
+<!-- ═══════════ KHỐI VẬN HÀNH · bảng cửa hậu dùng chung cho cả hai màn ═══════
+     Dựng sẵn khung rỗng, ruột do JS đổ vào từng lần mở: nội dung khác nhau
+     tuỳ đang đứng ở màn cổng (có lối đi thẳng màn cuối) hay màn cuối (chỉ còn
+     bản ghi). Nút xem bản ghi chỉ được nhét vào lúc mở, không dựng sẵn trong
+     DOM — đây là cửa hậu, bày sẵn thì ai soi mã trang cũng thấy. -->
+<div class="kvh" id="kvh" aria-hidden="true">
+  <div class="kvh-hop" role="dialog" aria-modal="true" aria-label="Khối vận hành">
+    <button class="kvh-x" id="kvhX" type="button" aria-label="Đóng">&#10005;</button>
+    <div id="kvhBody"></div>
+  </div>
+</div>
 
 <!-- ĐƯỜNG DẪN ĐẦY ĐỦ TỪ GỐC, KHÔNG ĐƯỢC viết "config.js" trống trơn.
      Viết tương đối thì trình duyệt ghép vào URL đang mở: vào đúng
@@ -1396,13 +1431,85 @@ if(document.fonts && document.fonts.ready){
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
+   KHỐI VẬN HÀNH — cửa hậu dùng chung cho màn cổng và màn phát mã
+   ----------------------------------------------------------------------------
+   Một cửa, một luật: gõ 10 nhịp vào tem ở chân màn hình. Bảng mở ra chứa mọi
+   lối vận hành của trang — nút xem BẢN GHI, và (chỉ ở màn cổng, khi chưa phá
+   đảo) lối đi thẳng màn cuối.
+
+   VÌ SAO GOM VÀO BẢNG: bản trước đẻ ra một hàng nút ngay giữa màn cổng, nút
+   "Bỏ qua" viền đứt đứng cạnh nút sổ tròn — hai thứ khác cỡ khác kiểu chen
+   nhau, trông như lỗi dựng trang. Bên Zoey's Castle đã có sẵn khuôn Khối vận
+   hành gọn gàng, nay Gate 2 dùng đúng khuôn đó cho cả bộ thống nhất.
+   ════════════════════════════════════════════════════════════════════════════ */
+const Kvh = (function(){
+  const nen = $('#kvh'), than = $('#kvhBody');
+  function dong(){ nen.classList.remove('on'); nen.setAttribute('aria-hidden','true'); }
+  $('#kvhX').addEventListener('click', dong);
+  nen.addEventListener('click', e=>{ if(e.target === nen) dong(); });
+  /* Esc đóng ĐÚNG MỘT LỚP — lớp trên cùng. Sổ bản ghi (`.ls-nen`, z-index rất
+     cao) nằm đè lên bảng này và cũng nghe Esc ở cấp cửa sổ, nên nếu không né
+     thì một cú Esc đóng luôn cả hai: người xem đang đọc bản ghi, gõ Esc để
+     quay ra bảng vận hành thì rơi thẳng về màn chơi. Đang mở sổ thì để sổ tự
+     xử, bảng này đứng yên. */
+  addEventListener('keydown', e=>{
+    if(e.key !== 'Escape' || !nen.classList.contains('on')) return;
+    if(document.querySelector('.ls-nen.on')) return;
+    dong();
+  });
+
+  function mo(man){
+    const xong = !!Store.get().g2Game;
+    /* Nút xem bản ghi dựng ĐÚNG LÚC MỞ, không dựng sẵn trong DOM: đây là cửa
+       hậu, bày sẵn thì ai soi mã trang cũng thấy. */
+    let h = '<p class="kvh-lab">Khối vận hành'
+          + (window.LichSu ? LichSu.nut('DAD-B') : '') + '</p>'
+          + '<p class="kvh-txt">Bấm 3 nhịp vào nút tròn để xem <b>bản ghi</b> của trang này.</p>';
+    if(man === 'gate' && !xong)
+      h += '<button class="kvh-go" id="kvhSkip" type="button">⏭ Bỏ qua · vào thẳng màn cuối</button>';
+    than.innerHTML = h;
+    nen.classList.add('on');
+    nen.setAttribute('aria-hidden','false');
+    const s = $('#kvhSkip');
+    if(s) s.addEventListener('click', ()=>{
+      /* Ghi ĐỦ BỘ CỜ, y như đi hết game thật: `g2Game` cho trang này nhớ là đã
+         phá đảo (lần sau vào là thẳng màn phát mã), `g2Done` cho BẢN ĐỒ bật hộp
+         chào Gate 2, `g2Xong` cho cảnh vòng 2 dựng lại ở trạng thái đã giải khi
+         bấm xem lại. Thiếu bộ cờ này thì bỏ qua xong quay ra bản đồ vẫn im ru. */
+      ping('g2_bo_qua', 'khối vận hành · cửa hậu 10 nhịp');
+      Store.patch({ g2Skip:true, g2Game:true, g2Done:true, g2Xong:true, eggWin:true });
+      dong();
+      Code.open();
+    });
+  }
+
+  /* Gắn bộ đếm nhịp vào một cái tem. Ngưng gõ 0,9 giây là đếm lại từ đầu — y
+     như cửa hậu bên bản đồ. Cố ý KHÔNG đếm hộ còn mấy nhịp: biết trước thì hết
+     thú mò ra, chỉ nháy màu tem cho biết đang gõ đúng chỗ. */
+  function gan(tem, man){
+    if(!tem) return;
+    let n = 0, hen = null;
+    tem.addEventListener('click', ()=>{
+      clearTimeout(hen);
+      n++;
+      hen = setTimeout(()=>{ n = 0; }, 900);
+      if(n >= 4){
+        tem.classList.add('hit');
+        setTimeout(()=> tem.classList.remove('hit'), 260);
+      }
+      if(n >= 10){ n = 0; mo(man); }
+    });
+  }
+  return { gan, mo, dong };
+})();
+
+/* ════════════════════════════════════════════════════════════════════════════
    ① MÀN ĐẾM NGƯỢC
    ════════════════════════════════════════════════════════════════════════════ */
 const Gate = (function(){
   const G = GATE_CONFIG, T = G.text;
   const el = { vai:$('#gVai'), tit:$('#gTit'), loi:$('#gLoi'), dem:$('#gDem'),
-               play:$('#gPlay'), stamp:$('#gStamp'), back:$('#gBack'),
-               skip:$('#gSkip') };
+               play:$('#gPlay'), stamp:$('#gStamp'), back:$('#gBack') };
 
   const ISO = G.moc_iso.replace('{YEAR}', new Date().getFullYear());
   const MOC = new Date(ISO).getTime();
@@ -1498,48 +1605,16 @@ const Gate = (function(){
   /* ═══ CỬA HẬU · GÕ 10 NHỊP VÀO TEM "LAST UPDATED" ════════════════════════
      Giống hệt cửa hậu trên bản đồ (10 nhịp vào dòng Last updated ở chân
      trang), để hai nơi cùng một luật chơi — mò ra được ở đây thì ở kia cũng
-     biết đường. Gõ đủ 10 cái hiện nút "Bỏ qua": nút đó ghi cờ phá đảo rồi vào
-     thẳng màn phát mã TYRION, từ đó bấm nút xem lại là vào được Open World.
+     biết đường. Gõ đủ 10 cái thì ra KHỐI VẬN HÀNH — bảng đó chứa nút xem bản
+     ghi và lối đi thẳng màn cuối; xem khối `Kvh` phía trên.
      Ngưng gõ 0,9 giây là đếm lại từ đầu — y như bên bản đồ.
      Cố ý KHÔNG đếm hộ còn mấy nhịp: biết trước thì hết thú mò ra. Chỉ nháy màu
      tem cho biết đang gõ đúng chỗ. */
-  let tapN = 0, tapT = null;
-  function moSkip(){
-    const hang = $('#gSkipRow');
-    if(hang && !hang.hidden) return;
-    if(hang) hang.hidden = false;
-    el.skip.textContent = T.nut_bo_qua || '⏭ Bỏ qua · vào thẳng màn cuối';
-    /* Nút sổ phiên bản dựng đúng lúc này, không dựng sẵn từ đầu: đây là cửa
-       hậu, bày sẵn trong DOM thì ai soi mã trang cũng thấy. */
-    const o = $('#lsSlot');
-    if(o && !o.innerHTML && window.LichSu) o.innerHTML = LichSu.nut('DAD-B');
-    fitTitle(SCENES.gate);
-  }
-  el.stamp.addEventListener('click', ()=>{
-    clearTimeout(tapT);
-    tapN++;
-    tapT = setTimeout(()=>{ tapN = 0; }, 900);
-    if(tapN >= 4){                       /* gõ đúng chỗ rồi thì nháy nhẹ cho biết */
-      el.stamp.classList.add('hit');
-      setTimeout(()=> el.stamp.classList.remove('hit'), 260);
-    }
-    if(tapN >= 10){ tapN = 0; moSkip(); }
-  });
+  Kvh.gan(el.stamp, 'gate');
   /* CỐ Ý KHÔNG NHỚ: mỗi lần vào là phải gõ lại đủ 10 nhịp. Bản trước có nhớ
-     (`if(Store.get().g2Skip) moSkip()`), thành ra lần sau mở trang là nút
-     "Bỏ qua" bày sẵn ngay dưới nút chính — mất hết cảm giác cửa giấu, mà người
-     chơi bình thường cũng nhìn thấy luôn đường đi tắt. Cửa hậu thì phải mò ra
-     lại từ đầu mới đúng là cửa hậu. */
-
-  el.skip.addEventListener('click', ()=>{
-    /* Ghi ĐỦ BỘ CỜ, y như đi hết game thật: `g2Game` cho trang này nhớ là đã
-       phá đảo (lần sau vào là thẳng màn phát mã), `g2Done` cho BẢN ĐỒ bật hộp
-       chào Gate 2, `g2Xong` cho cảnh vòng 2 dựng lại ở trạng thái đã giải khi
-       bấm xem lại. Thiếu bộ cờ này thì bỏ qua xong quay ra bản đồ vẫn im ru. */
-    ping('g2_bo_qua', 'cửa hậu 10 nhịp');
-    Store.patch({ g2Skip:true, g2Game:true, g2Done:true, g2Xong:true, eggWin:true });
-    Code.open();
-  });
+     (`if(Store.get().g2Skip) moSkip()`), thành ra lần sau mở trang là lối đi
+     tắt bày sẵn ngay dưới nút chính — mất hết cảm giác cửa giấu, mà người chơi
+     bình thường cũng nhìn thấy luôn. Cửa hậu thì phải mò ra lại từ đầu. */
 
   fitTitle(SCENES.gate);
   /* Hoãn nhịp ĐẦU sang vòng sau: khi đã qua mốc (hoặc bật cờ g2Hack), tick()
@@ -1581,6 +1656,10 @@ const Code = (function(){
     el.go.innerHTML      = T.nut_castle + ' <span class="ico2">🏰👸🏻</span>';
     el.go.href           = G.ma_link;
     el.stamp.innerHTML   = temChu();
+    /* Cửa hậu ở màn cuối: cùng luật 10 nhịp như màn cổng. Gắn trong `build()`
+       vì tem chỉ có ruột từ đây trở đi, mà `build()` chạy đúng một lần
+       (`dungSan`) nên không sợ chồng hai bộ đếm lên nhau. */
+    Kvh.gan(el.stamp, 'code');
     el.back.textContent  = T.ve_ban_do;
     el.tit.innerHTML = '<span class="d">'+T.tieu_de_thang+'</span><span class="d">'+T.tieu_de+'</span>';
     /* Mã nay có DẤU CÁCH ("HO CHI MINH"). Vẽ ô cho dấu cách thì ra hai ô rỗng
