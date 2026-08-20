@@ -15,6 +15,10 @@ Hết .09         →  phải sang build lớn kế tiếp (V2.09 → V03, KHÔN
 trần bản nhỏ của một trang  =  số build lớn × 10
 ```
 
+**Mấy nấc bị bỏ qua:** số build lớn **không dùng 13, 14 và 23**.
+`V12.09 → V15.00` (nhảy qua 13, 14) · `V22.09 → V24.00` (nhảy qua 23).
+Đó là lý do bảng của bản đồ nhảy thẳng từ V12 sang V15 — không phải mất dữ liệu.
+
 Chân bảng Bản ghi tự in ra công thức này cùng hai con số thật của trang:
 *"Trang này: **4** build lớn · **24**/40 bản nhỏ ghi nhận được."* — khỏi phải nhẩm tay,
 và ai mở ra đọc cũng hiểu ngay vì sao con số lại thế.
@@ -35,7 +39,7 @@ Sửa đúng chỗ khai chuỗi tem của trang đó:
 
 | Trang | Chỗ sửa |
 |---|---|
-| Bản đồ mật thư | `index.html` — chuỗi tem ở chân trang |
+| Bản đồ mật thư | `index.html` — `#stamp`: sửa **cả hai chỗ**, thuộc tính `data-base` **và** chữ nằm giữa thẻ (chữ tĩnh là thứ hiện ra trước khi JS chạy; quên nó thì tem loé số cũ một nhịp) |
 | Easter Egg · Gate 1 | `dad/950901-a/index.html` — thuộc tính `data-base` của `#stamp` |
 | Easter Egg · Gate 2 | `dad/950901-b/config.js` — khoá `version` |
 | Zoey's Castle | `han/961030-a/index.html` — `data-base` của `#stamp` |
@@ -43,6 +47,9 @@ Sửa đúng chỗ khai chuỗi tem của trang đó:
 | Màn pháo hoa | `phao-hoa/index.html` |
 
 Dạng chuỗi giữ nguyên: `Last updated DD-Mon-YYYY · Vxx.yy`.
+
+> **Mẹo kiểm tra bản đồ:** mở `/` là bị đẩy thẳng sang `/dad/950901-a` (luật dẫn người
+> chơi vào hồ sơ trước). Muốn xem bản đồ để đối chiếu tem thì mở `/?stay=1`.
 
 ### Bước 2 — Ghi vào `assets/lichsu.js`
 

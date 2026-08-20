@@ -58,6 +58,11 @@
 
      Chân bảng tự tính và in ra con số này, khỏi phải nhẩm tay.
 
+     LƯU Ý — MẤY NẤC BỊ BỎ QUA: số build lớn KHÔNG dùng 13, 14 và 23.
+     V12.09 → V15.00 (nhảy qua 13, 14) · V22.09 → V24.00 (nhảy qua 23).
+     Đó là lý do bảng MAP nhảy thẳng từ V12 sang V15 chứ không phải mất dữ
+     liệu. Luật này chép từ khối chú thích `stampText()` của bản đồ.
+
      ── LUẬT VIẾT CỘT "SỬA CHÍNH" — ĐỌC TRƯỚC KHI THÊM DÒNG ─────────────
      Sổ này người chơi mở ra đọc được. Nên tuyệt đối KHÔNG ghi:
        · mã, mật khẩu, đáp án, tên nhân vật phải đoán
@@ -101,12 +106,15 @@
           ] },
         { ngay:'2026-08-14', ver:'V16', so:null,
           chinh:'Trạng thái GAME ON, chỉnh hiệu ứng pháo hoa và hiệu ứng Gate 1' },
-        { ngay:'2026-08-17', ver:'V17', so:'09',
-          chinh:'Thêm hộp chào đầu ngày, cập nhật API nội dung, đồng bộ hệ nút, thêm bản ghi',
+        /* ⚠ V17 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09). Lần sửa sau của trang này BẮT BUỘC
+           mở dòng V18 mới, không được ghi V17.10 — xem luật ở đầu file. */
+        { ngay:'2026-08-20', ver:'V17', so:'10',
+          chinh:'Thêm hộp chào đầu ngày, cập nhật API nội dung, đồng bộ hệ nút, thêm bản ghi và làm lại khuôn bản ghi',
           chi:[
             { ver:'V17.03', chinh:'Chỉnh hiệu ứng pháo hoa và hiệu ứng khu Gate 1' },
             { ver:'V17.04', chinh:'Nối liền ba khu chơi thành một mạch: bản đồ → Easter Egg → lâu đài' },
-            { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' }
+            { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' },
+            { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] }
       ]
     },
