@@ -121,14 +121,27 @@ Quy tắc: có tên người đứng trước thì mới có `'s`. Đứng một
 
 ## 4. TEM PHIÊN BẢN Ở CHÂN MÀN HÌNH
 
-Mọi trang đều có một tem hai dòng ở chân màn hình:
+Mọi trang đều có một tem hai dòng ở chân màn hình, dòng ký tên **trên**, dòng
+phiên bản **dưới**:
 
 ```
 @Designed by Honghandangiu
 Last updated DD-Mon-YYYY · Vxx.yy
 ```
 
-- Dòng ký tên nằm **trên**, dòng phiên bản nằm **dưới**.
+> **⚠ THỰC TẾ ĐANG CÓ HAI KHUÔN, đã soát từng trang.** Không phải lỗi mới phát
+> sinh — mỗi trang dựng một thời điểm khác nhau. Ghi ra đây để sửa tem thì biết
+> đường mà tìm, **đừng nắn cho giống nhau**: mỗi trang có hàm dựng tem riêng,
+> đổi khuôn là phải sửa cả hàm đó, được cái đẹp mà mất cả buổi dò lỗi.
+>
+> | Trang | Thẻ | Khuôn thật đang dùng |
+> |---|---|---|
+> | Bản đồ mật thư | `#stamp` + `data-base` **và** chữ giữa thẻ | `Last updated … · Vxx.yy` |
+> | Hồ sơ Phi đoàn | `#vstamp`, **không có** `data-base` | `Vxx.yy<br>Last updated …` |
+> | Easter Egg · Gate 2 | `config.js` → khoá `version` | `Last updated … · Vxx.yy` |
+> | Zoey's Castle | `#stamp` + `data-base` | `Vx.yy<br>Last updated …` |
+> | Secret Chamber | `#stamp` + `data-base` | `Vx.yy<br>Last updated …` |
+> | Màn pháo hoa | `#vstamp`, chữ tĩnh | chỉ có `Vx.yy` |
 - Phông `Oswald`, cỡ 8px, giãn chữ `.15em`–`.22em`, VIẾT HOA, màu mờ ~32%.
 - Tem **không phải** cửa vào sổ phiên bản. Sổ nằm trong **bảng điều khiển** của
   từng trang — xem §5.
@@ -164,13 +177,23 @@ mở bảng điều khiển của trang (cửa hậu cũ, không đổi gì)
 sử của Zoey's Castle. Sáu cuốn sổ nằm chung một file cho dễ sửa, nhưng không
 bao giờ hiện chung một bảng.
 
-| Trang | Cửa ẩn nằm ở | Mã trang |
+| Sổ | Cửa ẩn nằm ở | Mã |
 |---|---|---|
 | Bản đồ mật thư | **mặt cười** cạnh "Chọn chiến dịch" trong Box Tổng tư lệnh | `MAP` |
-| Easter Egg · Gate 1 | **dòng tiêu đề** *Mission 3 · Phá đảo* của chính hộp đó | `DAD-A` |
+| Easter Egg · Gate 1 | **dòng tiêu đề** *Collected: Easter Egg* trên bản đồ | `EGG` |
+| Hồ sơ Phi đoàn | **dòng tiêu đề** *Mission 3 · Phá đảo* của chính hộp đó | `DAD-A` |
 | Easter Egg · Gate 2 · cả hai màn | chữ **"Khối vận hành"** trong bảng Khối vận hành | `DAD-B` |
 | Zoey's Castle · Secret Chamber | chữ **"Khối vận hành"** trong Khối vận hành | `HAN-A` · `HAN-B` |
 | Màn pháo hoa | *chưa có bảng nào* → chưa gắn | `FX` |
+
+> **⚠ `EGG` và `DAD-A` là HAI SỔ KHÁC NHAU, đừng gộp.**
+> `EGG` là khu Easter Egg / Gate 1 **nhìn từ bản đồ** — lúc nào khu mở ra, băng
+> rôn dẫn sang, khung Collected, màn pháo hoa, đường nối sang lâu đài.
+> `DAD-A` là **bản thân trang** `/dad/950901-a`, tự xưng **"Hồ sơ Phi đoàn"**
+> ngay ở thẻ `<title>` — hồ sơ 3 Mission, cửa mã, đồng hồ.
+>
+> **Lấy tên sổ theo `<title>` của trang, đừng lấy theo tên khu chơi bao ngoài.**
+> Đã ghi nhầm `DAD-A` thành "Easter Egg · Gate 1" một đời rồi.
 
 Gate 2 gộp hai màn làm một dòng vì cả màn cổng lẫn màn phát mã nay cùng đi qua
 một bảng Khối vận hành duy nhất (10 nhịp vào tem ở chân màn hình mới ra bảng).
@@ -208,13 +231,21 @@ không có gì cả — không viền, không nền, **không con trỏ bàn tay
 một nhịp thì chữ sáng đứng 200ms cho biết cú bấm ăn, nhưng **không đếm hộ còn
 mấy nhịp**. `prefers-reduced-motion` thì tắt nháy, chỉ còn đổi màu.
 
-**Cửa mã KHÔNG nói một chữ nào.** Không nhãn "4 chữ số", không báo sai, không
-đếm hộ còn mấy lần, và **không có gợi ý** — kể cả gõ sai mười lần. Phản hồi duy
-nhất là một cú rung: đủ để biết máy có nhận cú gõ, không đủ để suy ra gì.
+**Cửa mã gần như không nói gì.** Không nhãn "4 chữ số", không báo sai, không
+đếm hộ còn mấy lần. Phản hồi khi gõ sai chỉ là một cú rung: đủ để biết máy có
+nhận cú gõ, không đủ để suy ra gì.
 
-Đời trước sai 3 lần thì hiện một câu gợi ý. Nghe thì có vẻ kín, nhưng nó cho
-biết cả ba thứ cần biết — mã là một cái năm, năm nào, và phải đọc ngược — nên
-đọc xong là ra mã trong ba giây. Cửa hậu có hướng dẫn thì không còn là cửa hậu.
+**Gợi ý: sai đủ 5 lần thì hiện, và chỉ đúng một câu — "Năm sinh Bác Hồ".**
+Đời trước viết dài hơn: *"Năm sinh Bác Hồ — soi gương mà đọc."* Vế sau mới là
+chỗ hỏng — nó nói toẹt ra rằng phải **đọc ngược**, tức cho không nốt bước suy
+luận cuối cùng. Cắt đi thì ba chữ còn lại chỉ đưa tới con số 1890; từ 1890 ra
+mã vẫn phải tự nghĩ. Đó là mức đúng của một gợi ý: gỡ bí, không giải hộ.
+
+**Bộ đếm sai cộng dồn TRONG PHIÊN, đóng trình duyệt là xoá** (`sessionStorage`).
+Để biến thường thì đóng hộp mở lại là về 0, mãi không tới nấc; để
+`localStorage` thì nhớ qua nhiều tháng, con số ngưỡng mất hết nghĩa. Riêng cờ
+**đã mở gợi ý** thì ở `localStorage` — trả giá một lần là đủ, những lần mở sau
+hiện sẵn từ đầu, và mãi mãi chỉ một câu đó.
 
 Cũng đừng viết dòng "bấm 3 nhịp vào… để xem bản ghi" ở bảng chứa cửa. Mò ra
 được bảng rồi mà tầng thứ hai lại chỉ sẵn đường thì mất luôn tầng đó. Bảng cần

@@ -499,14 +499,21 @@ mở bảng điều khiển của trang (cửa hậu cũ, KHÔNG đổi gì)
   → hiện sổ CỦA RIÊNG TRANG ĐÓ
 ```
 
-**Cửa mã không nói một chữ nào.** Không nhãn *"4 chữ số"*, không báo sai, không đếm
-hộ còn mấy lần, **không gợi ý** — gõ sai mười lần cũng vậy. Phản hồi duy nhất là một
-cú rung: đủ để biết máy nhận cú gõ, không đủ để suy ra gì.
+**Cửa mã gần như không nói gì.** Không nhãn *"4 chữ số"*, không báo sai, không đếm
+hộ còn mấy lần. Gõ sai thì hộp chỉ rung một cái: đủ để biết máy nhận cú gõ, không đủ
+để suy ra gì.
 
-> Đời trước sai 3 lần thì hiện câu *"Năm sinh Bác Hồ — soi gương mà đọc."* Nghe kín,
-> nhưng nó cho biết đủ cả ba thứ cần biết — mã là một cái NĂM, năm NÀO, và phải ĐỌC
-> NGƯỢC — nên đọc xong là ra mã trong ba giây. Cửa hậu có hướng dẫn thì không còn là
-> cửa hậu. Đã bỏ hẳn.
+**Gợi ý: sai đủ 5 lần thì hiện, và chỉ đúng một câu — *"Năm sinh Bác Hồ"*.**
+
+> Đời trước viết dài hơn: *"Năm sinh Bác Hồ — soi gương mà đọc."* Vế sau mới là chỗ
+> hỏng — nó nói toẹt ra rằng phải **đọc ngược**, tức cho không nốt bước suy luận cuối.
+> Cắt đi thì ba chữ còn lại chỉ đưa tới con số 1890; từ 1890 ra mã vẫn phải tự nghĩ.
+
+**Bộ đếm sai cộng dồn TRONG PHIÊN, đóng trình duyệt là xoá** (`sessionStorage`, khoá
+`ls_sai`). Để biến thường thì đóng hộp mở lại là về 0 — gõ sai 4 lần, đóng, mở, sai 4
+lần nữa, mãi không tới nấc. Để `localStorage` thì nhớ qua nhiều tháng, con số ngưỡng
+mất hết nghĩa. Riêng cờ **đã mở gợi ý** thì ở `localStorage` — trả giá một lần là đủ,
+những lần mở sau hiện sẵn từ đầu, và mãi mãi chỉ một câu đó.
 
 Bảng chứa cửa cũng **không được chỉ đường** ("bấm 3 nhịp vào… để xem bản ghi"). Cần một
 dòng cho đỡ trống thì viết **trạng thái màn chơi** — *"Tiến độ: 3/6"*, *"Trạng thái: đã
@@ -517,11 +524,20 @@ phá đảo"* — nói về game, không nói về cửa.
 | Trang | Cửa ẩn nằm ở | Vào chỗ đó bằng | Mã trang |
 |---|---|---|---|
 | Bản đồ mật thư | **mặt cười** cạnh "Chọn chiến dịch" trong Box Tổng tư lệnh | 5 nhịp vào dòng bản quyền | `MAP` |
-| Easter Egg · Gate 1 | **dòng tiêu đề** *Mission 3 · Phá đảo* của chính hộp đó | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
+| Easter Egg · Gate 1 | **dòng tiêu đề** *Collected: Easter Egg* trên bản đồ | mở khung Collected | `EGG` |
+| Hồ sơ Phi đoàn | **dòng tiêu đề** *Mission 3 · Phá đảo* của chính hộp đó | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
 | Easter Egg · Gate 2 · cả hai màn | chữ **"Khối vận hành"** trong bảng Khối vận hành | 10 nhịp vào tem | `DAD-B` |
 | Zoey's Castle | chữ **"Khối vận hành"** trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-A` |
 | HongHan's Secret Chamber | chữ **"Khối vận hành"** trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-B` |
 | Màn pháo hoa | **chưa có bảng nào** | — | `FX` |
+
+> **⚠ `EGG` và `DAD-A` là HAI SỔ KHÁC NHAU, đừng gộp.**
+> `EGG` là khu Easter Egg / Gate 1 **nhìn từ bản đồ** — lúc nào khu mở ra, băng rôn
+> dẫn sang, khung Collected, màn pháo hoa, đường nối sang lâu đài.
+> `DAD-A` là **bản thân trang** `/dad/950901-a`, tự xưng **"Hồ sơ Phi đoàn"** ngay ở
+> thẻ `<title>` — hồ sơ 3 Mission, cửa mã, đồng hồ.
+> **Lấy tên sổ theo `<title>` của trang, đừng lấy theo tên khu chơi bao ngoài** — đã
+> ghi nhầm `DAD-A` thành "Easter Egg · Gate 1" một đời rồi.
 
 **CỬA LÀ CHỮ, KHÔNG BAO GIỜ LÀ ICON.** Nút tròn `.ls-key` của đời trước đã bỏ hẳn —
 bảng nào cũng đã có sẵn một dòng chữ nói đúng tên chỗ đó, đẻ thêm một nút cạnh nó là

@@ -1,9 +1,9 @@
 ════════════════════════════════════════════════════════════════════════════
-GÓI GỘP · ĐỢT 6 → 9 — 14 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
+GÓI GỘP · ĐỢT 6 → 10 — 16 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
 ════════════════════════════════════════════════════════════════════════════
 
-Gói này GỘP CẢ BỐN ĐỢT nên khỏi phải nhớ đã up cái gì rồi. Cứ chép đè hết là
-đúng, kể cả file đã up từ gói trước.
+Gộp cả năm đợt nên khỏi phải nhớ đã up cái gì. Cứ chép đè hết là đúng, kể cả
+file đã up từ gói trước.
 
     .vercelignore                            ← có dấu chấm đầu tên, xem ⚠ dưới
     index.html
@@ -13,6 +13,7 @@ Gói này GỘP CẢ BỐN ĐỢT nên khỏi phải nhớ đã up cái gì rồ
     api/quote.js
     api/_lib/loichao.md
     assets/lichsu.js
+    docs/BAN-GHI.md
     dad/950901-a/index.html
     dad/950901-b/index.html
     dad/950901-b/config.js
@@ -28,7 +29,7 @@ mỗi lần trang xin một câu, không redeploy thì lời chào vẫn là b�
 ────────────────────────────────────────────────────────────────────────────
 1 · `.vercelignore` CÓ DẤU CHẤM ĐẦU TÊN nên bị ẨN trên Mac/Windows.
     Mac: trong Finder bấm Cmd+Shift+. để hiện file ẩn.
-    Nếu GitHub không nhận file ẩn: bấm "Add file → Create new file", gõ tên
+    Không nhận file ẩn thì bấm "Add file → Create new file", gõ tên
     `.vercelignore` rồi dán nội dung vào.
 
     Chưa có nó thì ai gõ thẳng địa chỉ cũng tải được /README.md và 16 file
@@ -42,49 +43,60 @@ mỗi lần trang xin một câu, không redeploy thì lời chào vẫn là b�
     vẫn chạy, chỉ tấm biển vòng 1 là vẫn còn vệt chữ nhật sẫm như cũ.
 
 
-SỐ TEM SAU CẢ BỐN ĐỢT
+SỐ TEM SAU CẢ NĂM ĐỢT
 ────────────────────────────────────────────────────────────────────────────
-    /                 V18.03        /han/961030-a     V3.04
-    /dad/950901-a     V22.07        /han/961030-b     V2.05
+    /                 V18.04        /han/961030-a     V3.04
+    /dad/950901-a     V22.08        /han/961030-b     V2.05
     /dad/950901-b     V04.09        /phao-hoa         V3.03 (không đụng)
 
 
-BỐN CỬA VÀO BẢN GHI SAU ĐỢT NÀY — mỗi cửa một cuốn, không cửa nào đụng cửa nào
+SÁU CUỐN SỔ BẢN GHI — mỗi cuốn một cửa, không cửa nào đụng cửa nào
 ────────────────────────────────────────────────────────────────────────────
-    mặt cười trong Box Tổng tư lệnh      →  Bản đồ mật thư
-    tiêu đề "Collected: Easter Egg"      →  Khu Easter Egg        ← MỚI
-    tiêu đề hộp "Mission 3 · Phá đảo"    →  Easter Egg · Gate 1
-    chữ "Khối vận hành" (Gate 2, Zoey,   →  sổ của riêng trang đó
-      Secret Chamber)
-Cách vào giữ nguyên: bấm 3 nhịp vào dòng chữ rồi gõ mã. Nay được sai 5 lần
-(trước là 3) mới hiện gợi ý.
+    mặt cười trong Box Tổng tư lệnh      →  Bản đồ mật thư            MAP
+    tiêu đề "Collected: Easter Egg"      →  Easter Egg · Gate 1       EGG
+    tiêu đề hộp "Mission 3 · Phá đảo"    →  Hồ sơ Phi đoàn            DAD-A
+    chữ "Khối vận hành" (Gate 2)         →  Easter Egg · Gate 2       DAD-B
+    chữ "Khối vận hành" (Zoey, Chamber)  →  sổ của riêng trang đó     HAN-A/B
+    (màn pháo hoa chưa có bảng nào)                                   FX
+
+Cách vào giữ nguyên: bấm 3 nhịp vào dòng chữ rồi gõ mã. Được sai 5 lần mới
+hiện gợi ý, và bộ đếm chỉ sống trong phiên.
+
+    ⚠ EGG và DAD-A LÀ HAI SỔ KHÁC NHAU. EGG là khu Easter Egg nhìn từ bản đồ;
+      DAD-A là bản thân trang /dad/950901-a, tên đúng là "Hồ sơ Phi đoàn"
+      (lấy theo thẻ <title> của trang, không lấy theo tên khu bao ngoài).
 
 
 LÀM ĐƯỢC NHỮNG GÌ
 ────────────────────────────────────────────────────────────────────────────
 ĐỢT 6 · Gate 2 chuyển cảnh chạy trần: clip sạch, bỏ hẳn khói và lớp che
       · Hộp chào hết xuống dòng giữa block, lấy câu dài hơn
-      · Pop-up: 3 khung chào 06:00-07:30 / 11:00-12:30 / 17:30-19:00,
-        Daily Quote cách chào ≥1h và cách nhau ≥2h, mỗi lần một câu khác
-      · Kho quote thêm 4 đầu mục + 46 tác giả, 12 → 34 câu
-      · Thanh kéo bảng bản ghi làm lại, bảng Gate 2 đổi sang xanh lá
+      · 3 khung chào 06:00-07:30 / 11:00-12:30 / 17:30-19:00; Daily Quote
+        cách chào ≥1h và cách nhau ≥2h; kho quote 12 → 34 câu
+      · Thanh kéo bảng bản ghi, bảng Gate 2 đổi sang xanh lá
       · Cửa vào bản ghi bỏ icon, dùng chữ
 
 ĐỢT 7 · Khối vận hành thôi chỉ đường, thay bằng dòng trạng thái màn chơi
       · Nới vùng chạm mấy nút đóng (đang 21×23 và 28×28, quá nhỏ)
       · Thêm `.vercelignore` — việc đợt 5 ghi là "còn làm tay" mà chưa xong
 
-ĐỢT 8 · Cửa mã bản ghi trả lại gợi ý "Năm sinh Bác Hồ" (đã cắt vế "soi gương
-        mà đọc"); Mission 2 có gợi ý "Trong DOTA2, anh chơi vị trí gì?"
+ĐỢT 8 · Gợi ý "Năm sinh Bác Hồ" (đã cắt vế "soi gương mà đọc"); Mission 2 có
+        gợi ý "Trong DOTA2, anh chơi vị trí gì?"
       · Sửa lỗi chữ RAZER trôi khỏi bệ đá trong chuyển cảnh
       · Nắn tấm biển vòng 1 cho hết vệt chữ nhật sẫm
 
 ĐỢT 9 · Bộ đếm sai của cả hai cửa mã: cộng dồn trong phiên, đóng trình duyệt
-        là xoá — chưa đủ số lần thì lần sau đếm lại từ đầu
-      · Mission 2: gợi ý dời sang LẦN BỊ KHOÁ THỨ HAI (sai lần 6), lần khoá
-        đầu chỉ khoá chứ chưa mách
+        là xoá
+      · Mission 2: gợi ý dời sang LẦN BỊ KHOÁ THỨ HAI (sai lần 6)
       · Cửa mã bản ghi nới lượt thử sai từ 3 lên 5
-      · Sổ riêng "Khu Easter Egg" ở tiêu đề khung Collected: Easter Egg
+      · Sổ riêng cho khu Easter Egg ở tiêu đề khung Collected
 
-Chi tiết từng mục kèm số đo: mở DOC-CAI-NAY-TRUOC.txt, bốn đợt nằm trên cùng.
-Đã kiểm thử 82 phép trên trình duyệt thật, 0 hỏng.
+ĐỢT 10 · Đào lại lịch sử từ ba nhánh dựng riêng trên kho mã, sửa ngày và số
+         bản nhỏ của Gate 2 theo tem đọc được
+       · Sổ DAD-A đổi đúng tên "Hồ sơ Phi đoàn"
+       · Sửa một chỗ tài liệu chỉ sai vị trí tem; ghi ra bảng tem của cả sáu
+         trang (đang có hai khuôn khác nhau, cố ý không nắn)
+       · Hồ sơ Phi đoàn nhẹ đi 274 KB (15%) nhờ gom hai tấm nền dùng chung
+
+Chi tiết từng mục kèm số đo: mở DOC-CAI-NAY-TRUOC.txt, năm đợt nằm trên cùng.
+Đã kiểm thử 83 phép trên trình duyệt thật, 0 hỏng.

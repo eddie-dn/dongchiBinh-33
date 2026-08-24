@@ -37,16 +37,21 @@ Ba bước, **làm đủ cả ba** thì bản ghi mới khớp với thứ đang
 
 Sửa đúng chỗ khai chuỗi tem của trang đó:
 
-| Trang | Chỗ sửa |
-|---|---|
-| Bản đồ mật thư | `index.html` — `#stamp`: sửa **cả hai chỗ**, thuộc tính `data-base` **và** chữ nằm giữa thẻ (chữ tĩnh là thứ hiện ra trước khi JS chạy; quên nó thì tem loé số cũ một nhịp) |
-| Easter Egg · Gate 1 | `dad/950901-a/index.html` — thuộc tính `data-base` của `#stamp` |
-| Easter Egg · Gate 2 | `dad/950901-b/config.js` — khoá `version` |
-| Zoey's Castle | `han/961030-a/index.html` — `data-base` của `#stamp` |
-| HongHan's Secret Chamber | `han/961030-b/index.html` — `data-base` của `#stamp` |
-| Màn pháo hoa | `phao-hoa/index.html` |
+Đã soát lại từng trang — **thẻ và khuôn chuỗi mỗi trang một khác**, chép nhầm
+khuôn của trang này sang trang kia là tem hiện sai hoặc mất hẳn:
 
-Dạng chuỗi giữ nguyên: `Last updated DD-Mon-YYYY · Vxx.yy`.
+| Trang | Chỗ sửa | Khuôn chuỗi |
+|---|---|---|
+| Bản đồ mật thư | `index.html` — `#stamp`: sửa **cả hai chỗ**, thuộc tính `data-base` **và** chữ nằm giữa thẻ (chữ tĩnh là thứ hiện ra trước khi JS chạy; quên nó thì tem loé số cũ một nhịp) | `Last updated DD-Mon-YYYY · Vxx.yy` |
+| Hồ sơ Phi đoàn | `dad/950901-a/index.html` — chữ giữa thẻ `#vstamp`. **Thẻ này KHÔNG có `data-base`** — đừng đi tìm | `Vxx.yy<br>Last updated DD-Mon-YYYY` |
+| Easter Egg · Gate 2 | `dad/950901-b/config.js` — khoá `version` | `Last updated DD-Mon-YYYY · Vxx.yy` |
+| Zoey's Castle | `han/961030-a/index.html` — `data-base` của `#stamp` | `Vx.yy<br>Last updated DD-Mon-YYYY` |
+| HongHan's Secret Chamber | `han/961030-b/index.html` — `data-base` của `#stamp` | `Vx.yy<br>Last updated DD-Mon-YYYY` |
+| Màn pháo hoa | `phao-hoa/index.html` — chữ giữa thẻ `#vstamp` | chỉ có `Vx.yy` |
+
+> Vì sao không nắn cho giống nhau hết: mỗi trang có hàm dựng tem riêng, đổi
+> khuôn là phải sửa cả hàm đó — được cái đẹp mà đổi lấy nguy cơ hỏng tem ở năm
+> chỗ. Xem §4 của `DESIGN-SYSTEM.md`.
 
 > **Mẹo kiểm tra bản đồ:** mở `/` là bị đẩy thẳng sang `/dad/950901-a` (luật dẫn người
 > chơi vào hồ sơ trước). Muốn xem bản đồ để đối chiếu tem thì mở `/?stay=1`.
@@ -105,9 +110,13 @@ Chỉ ghi **loại việc**: *"cập nhật API"*, *"chỉnh hiệu ứng"*, *"c
 
 ## 4. Giao diện Bản ghi — những gì đã chốt
 
-- Tiêu đề cửa mã: **Bản ghi**. Phụ đề: tên trang + *"Ghi chép update hệ thống."*
-- **Nhập sai mã: không hiện dòng nào.** Hộp chỉ rung một cái. Tới đúng nấc được xem gợi
-  ý (sai 3 lần) thì mới hiện gợi ý, và chỉ **đúng một** câu.
+- Tiêu đề cửa mã: **Bản ghi**. Phụ đề: **chỉ tên sổ**, không còn câu *"Ghi chép update
+  hệ thống."* — bốn ô vuông đã nói rõ phải gõ gì, viết thêm là thừa.
+- **Nhập sai mã: không hiện dòng nào.** Hộp chỉ rung một cái. Sai đủ **5 lần** mới hiện
+  gợi ý, và chỉ **đúng một** câu: *"Năm sinh Bác Hồ"*.
+- **Bộ đếm sai cộng dồn trong phiên**, đóng trình duyệt là xoá (`sessionStorage`, khoá
+  `ls_sai`) — phải sai đủ 5 lần trong CÙNG một phiên. Cờ *đã mở gợi ý* thì ở
+  `localStorage`: thấy một lần là những lần sau hiện sẵn từ đầu.
 - Bảng: phụ đề **"Đơn vị điều phối: Zoeyzuize"**, không còn đường dẫn trang, không còn
   câu giải thích cột `#`.
 - Thứ tự cột: **Build → Ngày → # → Sửa chính**. Mọi ô **căn trái**.

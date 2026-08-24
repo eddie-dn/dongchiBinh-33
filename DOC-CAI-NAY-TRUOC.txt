@@ -1,4 +1,142 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 10 — soát sổ theo nhánh gốc, sửa tên, dọn dung lượng.
+════════════════════════════════════════════════════════════════════════════
+6 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+Số tem sau đợt này:
+    /                 V18.04        /han/961030-a     V3.04 (không đụng)
+    /dad/950901-a     V22.08        /han/961030-b     V2.05 (không đụng)
+    /dad/950901-b     V04.09 (không đụng)   /phao-hoa  V3.03 (không đụng)
+
+
+① ĐÀO LẠI LỊCH SỬ TỪ CÁC NHÁNH DỰNG RIÊNG TRÊN KHO MÃ
+────────────────────────────────────────────────────────────────────────────
+Kéo về ba nhánh cũ rồi dò tem phiên bản qua TỪNG COMMIT — đây là nguồn số 1
+theo bảng xếp hạng trong lichsu.js (đọc thẳng tem trong mã của từng lượt push),
+đứng trên mọi thứ chép tay.
+
+  easter-egg-gate2   101 commit, tem nằm ở config.js, khuôn
+                     'V04.00<br>Last updated 18-Aug-2026'. Dò được:
+                         V2.00 · V2.10 · V2.11    tự khai  17-Aug-2026
+                         V03.03 · V03.04          tự khai  17-Aug-2026
+                         V03.06                   tự khai  18-Aug-2026
+                         V04.00                   tự khai  18-Aug-2026
+
+  dad-950901-mission  29 commit, chạy 26-07 → 06-08-2026, KHÔNG commit nào có
+                      tem — đúng thời kỳ trang chưa đánh số. Biết được quãng
+                      thời gian, vẫn không moi ra mốc build nào.
+
+  main                42 commit, nhưng ở HEAD nó là trang Hồ sơ Phi đoàn chứ
+                      không phải bản đồ — không dùng được cho sổ bản đồ.
+
+ĐÃ SỬA THEO CHỨNG CỨ:
+
+  Gate 2 · V2    ngày 15-08 → 17-08   (tem tự khai 17-Aug)
+                 số bản nhỏ 10 → 12   (chạy tới đuôi .11)
+                 → quá luật .09 đúng hai nấc, khớp khít với chuyện phải nắn
+                   sang V03 NGAY TRONG CÙNG NGÀY. Chứng cứ tự kể lại đúng câu
+                   chuyện đã ghi trong sổ.
+  Gate 2 · V03   ngày 17-08 → 18-08   (nhịp cuối dò được là V03.06, 18-Aug)
+  Hồ sơ Phi đoàn · V1→V21
+                 'no info' → ghi rõ quãng 26-07 → 06-08-2026, vẫn giữ N/A cho
+                 cột build vì thật sự không có tem nào
+
+KHÔNG SỬA những mốc không có chứng cứ chống lại — đúng tinh thần "không biết
+thì ghi N/A, đừng bịa", và cũng đừng sửa cái đang đúng.
+
+
+② TÊN SỔ: "HỒ SƠ PHI ĐOÀN", KHÔNG PHẢI "EASTER EGG · GATE 1"
+────────────────────────────────────────────────────────────────────────────
+Sổ `DAD-A` bấy lâu mang tên "Easter Egg · Gate 1" — sai. Trang
+/dad/950901-a tự xưng "Hồ sơ Phi đoàn" ngay ở thẻ <title>, và ngoài trang bìa
+cũng in đúng chữ đó.
+
+Nay hai sổ tách bạch:
+
+    EGG     Easter Egg · Gate 1   khu nhìn TỪ BẢN ĐỒ — lúc nào khu mở, băng
+                                  rôn dẫn sang, khung Collected, pháo hoa,
+                                  đường nối sang lâu đài.
+                                  Cửa: tiêu đề "Collected: Easter Egg"
+    DAD-A   Hồ sơ Phi đoàn        bản thân TRANG /dad/950901-a — hồ sơ 3
+                                  Mission, cửa mã, đồng hồ.
+                                  Cửa: tiêu đề hộp "Mission 3 · Phá đảo"
+
+LUẬT ĐẶT TÊN, đã chốt vào DESIGN-SYSTEM và README:
+lấy tên sổ theo <title> CỦA TRANG, đừng lấy theo tên khu chơi bao ngoài.
+
+
+③ SOÁT ĐỒNG BỘ TÀI LIỆU — TÌM RA MỘT CHỖ TÀI LIỆU GHI SAI
+────────────────────────────────────────────────────────────────────────────
+Đối chiếu từng dòng tài liệu với mã thật, phát hiện `docs/BAN-GHI.md` chỉ sai
+chỗ sửa tem của Hồ sơ Phi đoàn: ghi là "thuộc tính data-base của #stamp",
+trong khi thực tế thẻ đó là `#vstamp` và KHÔNG HỀ có `data-base`. Ai theo tài
+liệu mà sửa thì đi tìm một thuộc tính không tồn tại.
+
+Soát luôn cả sáu trang thì ra: TEM ĐANG CÓ HAI KHUÔN khác nhau.
+
+    Bản đồ mật thư        #stamp + data-base VÀ chữ giữa thẻ
+                          'Last updated … · Vxx.yy'
+    Hồ sơ Phi đoàn        #vstamp, không data-base
+                          'Vxx.yy<br>Last updated …'
+    Easter Egg · Gate 2   config.js → khoá version
+                          'Last updated … · Vxx.yy'
+    Zoey's Castle         #stamp + data-base
+                          'Vx.yy<br>Last updated …'
+    Secret Chamber        #stamp + data-base
+                          'Vx.yy<br>Last updated …'
+    Màn pháo hoa          #vstamp, chữ tĩnh, chỉ có 'Vx.yy'
+
+KHÔNG NẮN CHO GIỐNG NHAU. Mỗi trang có hàm dựng tem riêng, đổi khuôn là phải
+sửa cả hàm đó — được cái đẹp mà đổi lấy nguy cơ hỏng tem ở năm chỗ. Thay vào
+đó GHI RA BẢNG trong DESIGN-SYSTEM §4 và docs/BAN-GHI.md để sau này sửa tem
+thì biết đường mà tìm.
+
+Cập nhật thêm cho khớp luật hiện hành: mốc gợi ý 3 → 5, chuyện bộ đếm cộng
+dồn theo phiên, và bảng cửa vào bản ghi nay có 6 dòng (thêm `EGG`).
+
+
+④ DỌN DUNG LƯỢNG — HỒ SƠ PHI ĐOÀN NHẸ ĐI 15%
+────────────────────────────────────────────────────────────────────────────
+File /dad/950901-a/index.html nặng 1,78 MB — đo ra thì 83% là 10 tấm ảnh nhúng
+base64 thẳng trong mã.
+
+Trong đó có phần THỪA THẬT: hai tấm nền bị dán lại nguyên xi nhiều lần —
+tấm bìa 3 lần, tấm nhiệm vụ 2 lần. Nay khai một lần thành biến CSS, chỗ nào
+cần thì gọi `var(--anh-bia)`.
+
+        1784 KB  →  1510 KB      nhẹ 274 KB, đúng 15%
+
+    ⚠ HAI LẦN VẤP TRONG LÚC LÀM, ghi lại cho khỏi đi vòng:
+    · Khai `--anh-bia:url(data:image/jpeg;base64,…)` ĐỂ TRẦN → hỏng. Chuỗi có
+      dấu chấm phẩy, mà trong custom property thì dấu đó CẮT ĐỨT khai báo ngay
+      tại chỗ. Biến thành rỗng, bốn cái nền mất sạch, CSS không báo lỗi gì.
+      Phải BỌC NHÁY KÉP.
+    · Chèn khai báo TRƯỚC rồi mới thay thế → bước thay thế nuốt luôn chính
+      khai báo vừa chèn, thành `--anh-bia:var(--anh-bia)`, ảnh biến mất khỏi
+      file. Phải THAY TRƯỚC, CHÈN SAU.
+    Cả hai lần đều bắt được bằng phép kiểm "mọi .bg có tải được ảnh không" chứ
+    mắt nhìn ảnh chụp thì vẫn thấy trang có vẻ bình thường.
+
+CÒN 1,5 MB ẢNH NHÚNG THÌ GIỮ NGUYÊN, cố ý. Tách ra thành file rời sẽ nhẹ thêm
+được nữa, nhưng đổi lại: phải up thêm 10 file ảnh, thêm 10 đường có thể 404,
+và mất cái lợi "một file chạy được ngay". So với mấy tấm webp 5-24 MB của Gate
+2 thì 1,5 MB không phải chỗ đáng động dao.
+
+
+⑤ ĐÃ KIỂM THỬ — 83 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+NỀN HỒ SƠ PHI ĐOÀN   cả 5 khối nền đều tải được ảnh thật (kiểm bằng cách nạp
+                     lại chính URL trong backgroundImage), 0 nền hỏng
+TÊN SỔ               tiêu đề Collected → "Easter Egg · Gate 1";
+                     tiêu đề Mission 3 → "Hồ sơ Phi đoàn"
+Cùng toàn bộ bộ cũ chạy lại: gợi ý hai cửa mã, bộ đếm theo phiên, chuyển cảnh
+Gate 2, bệ đá hai vòng, hộp chào, thanh cuộn, vùng chạm, quét 6 trang × 3 cỡ
+máy (tràn ngang 0px, không trang nào lỗi JS).
+
+    2 phép báo đỏ lúc chạy lại là do ĐỔI TÊN SỔ ở mục ②, đã cập nhật kỳ vọng.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 9 — nắn lại luật gợi ý, thêm sổ cho khu Easter Egg.
 ════════════════════════════════════════════════════════════════════════════
 5 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
