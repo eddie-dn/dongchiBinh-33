@@ -59,8 +59,22 @@
      này, không có gợi ý thứ hai: nói thêm nữa là cho không cái mã. */
   var MA = '0981';
   var GOI_Y = 'Năm sinh Bác Hồ';
-  var SAI_TOI_DA = 3;
+  /* Nới từ 3 lên 5: cho người ta mò lâu hơn trước khi được mách. */
+  var SAI_TOI_DA = 5;
   var KHOA_GOI_Y = 'ls_goi_y';   /* đã từng thấy gợi ý chưa — nhớ qua cả phiên */
+  /* ── ĐẾM SAI: CỘNG DỒN TRONG PHIÊN, ĐÓNG TRÌNH DUYỆT LÀ XOÁ ────────────
+     Để trong sessionStorage chứ không phải biến thường và cũng không phải
+     localStorage — mỗi chỗ hỏng một kiểu:
+
+       biến thường   → đóng hộp mở lại là về 0. Gõ sai 4 lần, đóng, mở, gõ
+                       sai 4 lần nữa… mãi không tới nấc gợi ý. Vô lý.
+       localStorage  → nhớ mãi. Hôm nay sai 2, tháng sau vào sai thêm 3 là
+                       được mách. Cũng vô lý theo chiều ngược lại.
+
+     sessionStorage đúng: phải sai đủ 5 lần TRONG CÙNG MỘT PHIÊN mới được
+     mách. Chưa đủ mà đóng trình duyệt thì lần sau đếm lại từ đầu.
+     (Cờ ĐÃ THẤY gợi ý thì vẫn nằm ở localStorage — trả giá một lần là đủ.) */
+  var KHOA_SAI = 'ls_sai';
   var NHIP = 3;         /* bấm bao nhiêu nhịp vào nút thì mở */
   var NGUNG = 900;      /* ngưng bấy nhiêu ms là đếm lại từ đầu */
   var ANH = '/assets/poster/HH_5_idle_afk.webp';
@@ -142,20 +156,56 @@
             { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', ver:'V18', so:'03',
+        { ngay:'2026-08-24', ver:'V18', so:'04',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
             { ver:'V18.01', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V18.02', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn cho những lần sau' }
+            { ver:'V18.02', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn cho những lần sau' },
+            { ver:'V18.03', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm và đếm cộng dồn theo phiên; khu Easter Egg có bản ghi riêng' }
           ] }
+      ]
+    },
+    /* ── KHU EASTER EGG · cửa vào là TIÊU ĐỀ khung "Collected: Easter Egg" ──
+       Cuốn RIÊNG, tách hẳn khỏi 'DAD-A'. Hai cuốn nói về hai thứ khác nhau:
+
+         EGG    khu Easter Egg NHÌN TỪ BẢN ĐỒ — lúc nào khu mở ra, băng rôn
+                dẫn sang, khung Collected, màn pháo hoa, đường nối sang lâu đài
+         DAD-A  bản thân TRANG /dad/950901-a — hồ sơ 3 Mission, cửa mã, đồng hồ
+
+       VÌ SAO SỐ BUILD TRÙNG VỚI SỔ BẢN ĐỒ: khu này không có trang riêng, nó
+       nằm trong chính `index.html`. Nên mốc của nó chính là mốc của bản đồ —
+       chép lại đúng những build có đụng tới khu Easter Egg, không đẻ ra một
+       dãy số mới cho ra vẻ. Cột `#` để N/A vì không tách được trong một build
+       lớn thì bao nhiêu bản vá là của riêng khu này. */
+    EGG: {
+      ten: 'Khu Easter Egg', duong: '/',
+      doi: [
+        { ngay:'no info', ver:'V1 → V14', so:null,
+          chinh:'no info — chưa tách thành khu riêng, không có bản ghi nào để lại' },
+        { ngay:'2026-08-12', ver:'V15', so:null,
+          chinh:'Tách hẳn thành một khu chơi rời khỏi bản đồ tác chiến',
+          chi:[
+            { ver:'V15.00', chinh:'Trang chia làm hai khu rời nhau: bản đồ tác chiến và khu Easter Egg' },
+            { ver:'V15.05', chinh:'Khu chỉ mở khi bản đồ xong và đồng hồ về 0; thêm băng chúc mừng nhấp nháy dẫn sang' }
+          ] },
+        { ngay:'2026-08-14', ver:'V16', so:null,
+          chinh:'Chỉnh hiệu ứng pháo hoa và hiệu ứng khu Gate 1' },
+        { ngay:'2026-08-20', ver:'V17', so:null,
+          chinh:'Nối liền ba khu chơi thành một mạch, khung Collected có nút xem lại pháo hoa',
+          chi:[
+            { ver:'V17.03', chinh:'Chỉnh hiệu ứng pháo hoa và hiệu ứng khu Gate 1' },
+            { ver:'V17.04', chinh:'Nối liền ba khu thành một mạch: bản đồ → Easter Egg → lâu đài' }
+          ] },
+        { ngay:'2026-08-24', ver:'V18', so:null,
+          chinh:'Khu có bản ghi riêng, vào bằng chính dòng tiêu đề của khung Collected' }
       ]
     },
     'DAD-A': {
       ten: 'Easter Egg · Gate 1', duong: '/dad/950901-a',
       doi: [
         { ngay:'no info', ver:'V1 → V21', so:null, chinh:'no info — 21 build đầu không còn bản ghi' },
-        { ngay:'2026-08-24', ver:'V22', so:'07',
+        { ngay:'2026-08-24', ver:'V22', so:'08',
           chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V22.00 → V22.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
@@ -163,7 +213,8 @@
             { ver:'V22.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' },
             { ver:'V22.04', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng tiêu đề của hộp, trỏ vào thì chữ đổi màu' },
             { ver:'V22.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V22.06', chinh:'Cửa mã Mission 2 cho một gợi ý sau ba lần sai và nhớ luôn cho những lần sau' }
+            { ver:'V22.06', chinh:'Cửa mã Mission 2 cho một gợi ý sau ba lần sai và nhớ luôn cho những lần sau' },
+            { ver:'V22.07', chinh:'Dời mốc gợi ý Mission 2 sang lần bị khoá thứ hai, bộ đếm sai tính theo phiên' }
           ] }
       ]
     },
@@ -194,13 +245,14 @@
       doi: [
         { ngay:'no info', ver:'V1', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V2', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', ver:'V3', so:'04',
+        { ngay:'2026-08-24', ver:'V3', so:'05',
           chinh:'Thêm bản ghi (V2 đã hết nấc đuôi nên sang dòng V3), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V3.00', chinh:'Thêm bản ghi cho trang này' },
             { ver:'V3.01', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
             { ver:'V3.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V3.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' }
+            { ver:'V3.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
+            { ver:'V3.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
           ] }
       ]
     },
@@ -208,13 +260,14 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V1', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V2' },
-        { ngay:'2026-08-24', ver:'V2', so:'05',
+        { ngay:'2026-08-24', ver:'V2', so:'06',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V2.00 → V2.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
             { ver:'V2.02', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
             { ver:'V2.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V2.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' }
+            { ver:'V2.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
+            { ver:'V2.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
           ] }
       ]
     },
@@ -538,6 +591,14 @@
   /* Gợi ý nhớ trong localStorage (KHÔNG phải sessionStorage như cờ mở mã):
      đóng trình duyệt rồi mở lại vẫn còn. Và nhớ CHUNG cho cả bộ, không tách
      theo từng trang — mã vào chỉ có một, mò ra ở đâu thì coi như biết rồi. */
+  /* Cộng một lần sai vào bộ đếm của PHIÊN, trả về tổng mới. */
+  function demSai() {
+    try {
+      var n = (+sessionStorage.getItem(KHOA_SAI) || 0) + 1;
+      sessionStorage.setItem(KHOA_SAI, n);
+      return n;
+    } catch (e) { return 0; }      /* chặn sessionStorage → thôi, không mách */
+  }
   function daThayGoiY() {
     try { return localStorage.getItem(KHOA_GOI_Y) === '1'; } catch (e) { return false; }
   }
@@ -546,7 +607,7 @@
   }
 
   function veCuaMa(ma) {
-    var sai = 0, go = '';
+    var go = '';
     var t = SO[ma];
     /* Bốn ô vuông rỗng. Bỏ câu "4 chữ số" — bốn cái ô đã nói đúng bấy nhiêu
        rồi, viết thêm là thừa. `#lsMsg` để trống, chỉ dùng cho GỢI Ý. */
@@ -581,10 +642,9 @@
        Đủ SAI_TOI_DA lần mới mở gợi ý, và từ đó nhớ luôn. */
     function cham() {
       if (go === MA) { ghiMo(ma); veSo(ma); return; }
-      sai++;
       go = ''; inp.value = ''; ve();
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
-      if (sai >= SAI_TOI_DA) { ghiThayGoiY(); hienGoiY(); }
+      if (demSai() >= SAI_TOI_DA) { ghiThayGoiY(); hienGoiY(); }
     }
     inp.addEventListener('input', function () {
       go = inp.value.replace(/\D/g, '').slice(0, 4);

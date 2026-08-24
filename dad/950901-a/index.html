@@ -1059,13 +1059,32 @@ render();
   var MAPURL = /\/dad\/950901-a(\/|$)/.test(location.pathname) ? '/' : MAPURL_ABS;
   var PIN2 = 'JUNGLE', PIN3 = 'PHAMTUAN';
   /* ── GỢI Ý MISSION 2 ───────────────────────────────────────────────────
-     Sai `M2_SAI_TOI_DA` lần thì hiện ĐÚNG MỘT câu này, không có câu thứ hai.
-     Nó chỉ khoanh vùng cho người đang bí (hỏi về DOTA2), còn từ đó ra đáp án
-     vẫn phải tự nghĩ — đúng mức của một gợi ý, không phải giải hộ.
-     Mở rồi thì nhớ luôn (`st.m2goi`): những lần mở hộp sau hiện sẵn từ đầu,
-     khỏi bắt gõ sai lại ba lần nữa. */
+     Hiện ĐÚNG MỘT câu này, không có câu thứ hai. Nó chỉ khoanh vùng cho người
+     đang bí (hỏi về DOTA2), còn từ đó ra đáp án vẫn phải tự nghĩ — đúng mức
+     của một gợi ý, không phải giải hộ.
+
+     ── MỐC: LẦN BỊ KHOÁ THỨ HAI ────────────────────────────────────────
+     Mỗi phiên được `TRY_S` lượt; hết lượt là khoá ô nhập 30 phút. Luật:
+
+         sai 1-2      im, chỉ câu trêu
+         sai lần 3    HẾT LƯỢT → khoá 30 phút. VẪN CHƯA CÓ GỢI Ý.
+         hết khoá, sai tiếp 4-5   im
+         sai lần 6    khoá lần hai → MỚI hiện gợi ý
+
+     Tức là phải đi hết một vòng khoá rồi mới được mách. Lần khoá đầu là để
+     người ta biết mình đang đoán bừa và ngồi nghĩ lại, chứ chưa phải lúc đưa
+     phao. `M2_SAI_TOI_DA` viết theo TRY_S nên đổi TRY_S thì mốc tự theo.
+
+     ── ĐẾM SAI: CỘNG DỒN TRONG PHIÊN, ĐÓNG TRÌNH DUYỆT LÀ XOÁ ──────────
+     Bộ đếm nằm ở sessionStorage (`msnsai`), KHÔNG phải localStorage như bản
+     trước. Lý do: để localStorage thì hôm nay sai 2 lần, tháng sau vào sai
+     thêm 4 lần là được mách — cộng dồn qua nhiều tháng thì con số 6 chẳng
+     còn nghĩa gì. Nay phải sai đủ 6 lần TRONG CÙNG MỘT PHIÊN; chưa đủ mà
+     đóng trình duyệt thì lần sau đếm lại từ đầu.
+     Riêng cờ ĐÃ MỞ gợi ý (`st.m2goi`) vẫn ở localStorage: trả giá một lần là
+     đủ, những lần mở hộp sau hiện sẵn từ đầu. */
   var M2_GOI_Y = 'Trong DOTA2, anh chơi vị trí gì?';
-  var M2_SAI_TOI_DA = 3;
+  /* `M2_SAI_TOI_DA` khai Ở DƯỚI, ngay sau TRY_S — xem ghi chú tại đó. */
   var HINTS = ['12', '5121', 'MIG-21', 'Tên người gồm 2 chữ'];
   var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆',
                 'Nah nah nah — cố lên anh oyyyy 💪', 'Very earth very skyyy o_O 😩💦'];
@@ -1096,11 +1115,10 @@ render();
     return { v:s.v|0, m1:!!s.m1, m2:!!s.m2, m3:!!s.m3,
       m1at:s.m1at||0, m2at:s.m2at||0, m2doneAt:s.m2doneAt||0,
       hints:s.hints|0, hintAt:s.hintAt||0, lockUntil:s.lockUntil||0, form:!!s.form,
-      /* m2sai  — đã gõ sai mã Mission 2 bao nhiêu lần (cộng dồn, không reset
-                  theo phiên: gõ sai 2 lần hôm nay rồi mai gõ sai lần nữa thì
-                  vẫn là lần thứ ba, vẫn được gợi ý).
-         m2goi  — đã mở gợi ý Mission 2 chưa. Mở rồi thì mở mãi. */
-      m2sai:s.m2sai|0, m2goi:!!s.m2goi,
+      /* m2goi — đã mở gợi ý Mission 2 chưa. Mở rồi thì mở mãi.
+         (Bộ ĐẾM số lần sai KHÔNG nằm ở đây — nó ở sessionStorage `msnsai` để
+          đóng trình duyệt là xoá. Xem khối GỢI Ý MISSION 2 ở trên.) */
+      m2goi:!!s.m2goi,
       dayKey:s.dayKey||'', dayN:s.dayN|0 };
   })();
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
@@ -1127,8 +1145,18 @@ render();
 
   /* Pool lượt nhập DÙNG CHUNG cho cả Mission 2 & 3: 3 lượt/phiên, 12 lượt/ngày */
   var TRY_S = 3, TRY_D = 12;
+  /* ⚠ PHẢI KHAI SAU TRY_S, KHÔNG ĐƯỢC ĐẨY LÊN CẠNH `M2_GOI_Y`.
+     `var` được hoisting nhưng GIÁ TRỊ thì không: đặt ở trên thì lúc chạy dòng
+     này TRY_S còn là `undefined`, nhân ra NaN, và `nSai >= NaN` LUÔN SAI —
+     gợi ý không bao giờ hiện mà cũng chẳng báo lỗi gì. Đã vấp đúng lỗi này. */
+  var M2_SAI_TOI_DA = TRY_S * 2;        /* = lần bị khoá thứ hai */
   function wget(){ try{ return +sessionStorage.getItem('msnw') || 0; }catch(e){ return 0; } }
   function wset(v){ try{ sessionStorage.setItem('msnw', v); }catch(e){} }
+  /* Tổng số lần gõ sai mã Mission 2 TRONG PHIÊN NÀY. Khác `wget()`: cái kia
+     là số lượt còn lại trước khi khoá và được reset về 0 mỗi lần hết hạn
+     khoá, còn cái này cộng dồn suốt phiên để biết đã qua mấy vòng khoá. */
+  function saiGet(){ try{ return +sessionStorage.getItem('msnsai') || 0; }catch(e){ return 0; } }
+  function saiSet(v){ try{ sessionStorage.setItem('msnsai', v); }catch(e){} }
   function dayId(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
   function dayN(){
     if(st.dayKey !== dayId()){ st.dayKey = dayId(); st.dayN = 0; save(); }
@@ -1492,8 +1520,8 @@ render();
          `st.m2goi` là cờ nhớ mãi. */
       var m2moi = false;
       if(which === 2 && !st.m2goi){
-        st.m2sai++;
-        if(st.m2sai >= M2_SAI_TOI_DA){ st.m2goi = true; m2moi = true; }
+        var nSai = saiGet() + 1; saiSet(nSai);
+        if(nSai >= M2_SAI_TOI_DA){ st.m2goi = true; m2moi = true; }
       }
       /* ═══ DỰNG GỢI Ý NGAY, KHÔNG ĐỂ NHÁNH KHOÁ NUỐT MẤT ══════════════════
          BẪY ĐÃ VẤP: `TRY_S` cũng bằng 3, nên đúng cú sai thứ ba vừa mở gợi ý
@@ -1688,6 +1716,7 @@ render();
       try{
         localStorage.removeItem(KEY);
         sessionStorage.removeItem('msnw'); sessionStorage.removeItem('msnsos');
+        sessionStorage.removeItem('msnsai');
       }catch(e){}
       /* M3 không còn "đã xong" → hạ cờ pha, quay về PHA 1 (hồ sơ là nhà).
          PROFILE thì GIỮ — chơi lại thoải mái, muốn về trạng thái cũ thì bấm chip. */
@@ -2104,7 +2133,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V22.06<br>Last updated 24-Aug-2026</span>
+<span class="vstamp" id="vstamp">V22.07<br>Last updated 24-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

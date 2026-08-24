@@ -1,4 +1,117 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 9 — nắn lại luật gợi ý, thêm sổ cho khu Easter Egg.
+════════════════════════════════════════════════════════════════════════════
+5 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+Số tem sau đợt này:
+    /                 V18.03        /han/961030-a     V3.04
+    /dad/950901-a     V22.07        /han/961030-b     V2.05
+    /dad/950901-b     V04.09 (không đụng)   /phao-hoa  V3.03 (không đụng)
+
+
+① MISSION 2 — ĐÚNG Ô "JUNGLE", ĐÃ SOÁT LẠI
+────────────────────────────────────────────────────────────────────────────
+Soát: `PIN2 = 'JUNGLE'`, còn gợi ý gắn vào nhánh `which === 2` — đúng một ô
+đó, không dính sang Mission 3 (`PIN3`). Câu hỏi về DOTA2 khớp đáp án.
+
+
+② BỘ ĐẾM SAI: CỘNG DỒN TRONG PHIÊN, ĐÓNG TRÌNH DUYỆT LÀ XOÁ
+────────────────────────────────────────────────────────────────────────────
+Áp cho CẢ HAI cửa mã. Trước đây mỗi chỗ hỏng một kiểu:
+
+    cửa mã bản ghi   biến thường  → đóng hộp mở lại là về 0. Gõ sai 4 lần,
+                                    đóng, mở, sai 4 lần nữa… mãi không tới
+                                    nấc gợi ý.
+    cửa mã Mission 2 localStorage → nhớ mãi. Hôm nay sai 2, tháng sau vào sai
+                                    thêm mấy lần là được mách. Con số ngưỡng
+                                    mất hết ý nghĩa.
+
+Nay cả hai dùng sessionStorage (`ls_sai` và `msnsai`): phải sai đủ số lần
+TRONG CÙNG MỘT PHIÊN mới được mách; chưa đủ mà đóng trình duyệt thì lần sau
+đếm lại từ đầu. Bấm "Chơi lại từ đầu" cũng dọn luôn bộ đếm.
+
+Riêng cờ ĐÃ MỞ gợi ý vẫn ở localStorage — trả giá một lần là đủ, những lần
+mở hộp sau hiện sẵn từ đầu.
+
+
+③ MISSION 2 — GỢI Ý DỜI SANG LẦN BỊ KHOÁ THỨ HAI
+────────────────────────────────────────────────────────────────────────────
+Mỗi phiên được TRY_S = 3 lượt; hết lượt là khoá ô nhập 30 phút.
+
+        sai 1-2                im, chỉ câu trêu
+        sai lần 3              HẾT LƯỢT → khoá 30 phút. VẪN CHƯA CÓ GỢI Ý.
+        hết khoá, sai 4-5      im
+        sai lần 6              khoá lần hai → MỚI hiện gợi ý
+
+Phải đi hết một vòng khoá rồi mới được mách. Lần khoá đầu là để người ta biết
+mình đang đoán bừa và ngồi nghĩ lại, chưa phải lúc đưa phao.
+
+Viết là `M2_SAI_TOI_DA = TRY_S * 2` nên đổi TRY_S thì mốc tự theo.
+
+    ⚠ BẪY ĐÃ VẤP — không báo lỗi gì cả, phải chạy kiểm mới thấy:
+    lần đầu đặt dòng `var M2_SAI_TOI_DA = TRY_S * 2;` lên cạnh `M2_GOI_Y`,
+    tức TRƯỚC chỗ khai `var TRY_S = 3`. `var` được hoisting nhưng GIÁ TRỊ thì
+    không — lúc chạy dòng đó TRY_S còn là `undefined`, nhân ra NaN, mà
+    `nSai >= NaN` thì LUÔN SAI. Gợi ý không bao giờ hiện, mà console cũng im
+    ru. Nay khai ngay dưới TRY_S, kèm ghi chú cấm đẩy lên.
+
+
+④ CỬA MÃ BẢN GHI — NỚI TỪ 3 LÊN 5 LƯỢT
+────────────────────────────────────────────────────────────────────────────
+`SAI_TOI_DA` 3 → 5, cho mò lâu hơn trước khi được mách. Áp chung cho cả bốn
+cuốn sổ (bản đồ, khu Easter Egg, Gate 1, Gate 2, hai bên Zoey) vì tất cả dùng
+chung một cửa mã trong /assets/lichsu.js.
+
+
+⑤ SỔ RIÊNG CHO KHU EASTER EGG
+────────────────────────────────────────────────────────────────────────────
+Cuốn mới, mã `EGG`, tên "Khu Easter Egg". Cửa vào: bấm 3 nhịp vào chính dòng
+tiêu đề "Collected: Easter Egg" trên bản đồ — đúng khuôn cửa-bằng-chữ đã dùng
+cho Khối vận hành và hộp Mission 3.
+
+TÁCH HẲN KHỎI 'DAD-A', hai cuốn nói hai thứ khác nhau:
+
+    EGG     khu Easter Egg NHÌN TỪ BẢN ĐỒ — lúc nào khu mở, băng rôn dẫn
+            sang, khung Collected, màn pháo hoa, đường nối sang lâu đài
+    DAD-A   bản thân trang /dad/950901-a — hồ sơ 3 Mission, cửa mã, đồng hồ
+
+DAD-A giữ nguyên chỗ cũ (tiêu đề hộp "Mission 3 · Phá đảo") và nội dung cũ.
+Mặt cười trong Box Tổng tư lệnh vẫn mở sổ bản đồ như cũ — ba cửa, ba cuốn,
+không cửa nào đụng cửa nào.
+
+NỘI DUNG LẤY TỪ ĐÂU: khu này không có trang riêng, nó nằm trong chính
+index.html, nên mốc của nó chính là mốc của bản đồ. Chép lại đúng những build
+CÓ ĐỤNG tới khu Easter Egg (V15 tách khu · V16 chỉnh hiệu ứng · V17 nối ba
+khu · V18 thêm bản ghi), không đẻ ra một dãy số mới cho ra vẻ. Cột `#` để N/A
+vì không tách được trong một build lớn thì bao nhiêu bản vá là của riêng khu
+này — đúng luật "không biết thì ghi N/A, đừng bịa".
+
+
+⑥ ĐÃ KIỂM THỬ — 82 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+CỬA MÃ BẢN GHI  sai 4 lần chưa có · lần 5 mới hiện · bộ đếm nằm ở
+                sessionStorage, KHÔNG có trong localStorage · đóng/mở lại hộp
+                bộ đếm không về 0 · sai thêm cho đủ 5 thì hiện · phiên mới thì
+                bộ đếm rỗng
+
+MISSION 2       sai 1-2 im · lần 3 bị khoá mà VẪN chưa gợi ý · hết khoá bộ đếm
+                vẫn giữ 3 · sai 4-5 im · lần 6 hiện gợi ý kể cả khi ô nhập vừa
+                bị khoá · cờ nhớ đã bật · phiên mới sai 3 lần vẫn chưa có gì
+
+SỔ KHU EASTER EGG  tiêu đề mang cửa vào, không có con trỏ bàn tay · 3 nhịp ra
+                cửa mã · vào đúng sổ "Khu Easter Egg", đủ 5 dòng, đang chạy
+                V18 · mặt cười vẫn mở đúng sổ Bản đồ mật thư
+
+Cộng toàn bộ bộ cũ chạy lại: chuyển cảnh Gate 2, bệ đá hai vòng, hộp chào ba
+khung giờ, giãn cách quote, thanh cuộn, vùng chạm, quét 6 trang × 3 cỡ máy
+(tràn ngang 0px, không trang nào lỗi JS).
+
+    5 phép báo đỏ lúc chạy lại là assertion CŨ viết theo mốc "sai 3 lần" của
+    đợt 8. Mốc đã đổi ở đợt này nên phép đó hết hiệu lực — đã cho nghỉ hưu,
+    bộ kiểm theo luật mới nằm gọn ở hai file riêng.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 8 — trả lại gợi ý, sửa lỗi RAZER bay, nắn bệ đá vòng 1.
 ════════════════════════════════════════════════════════════════════════════
 7 file sửa (1 trong đó là ẢNH). Chép đè theo đúng cây thư mục.
