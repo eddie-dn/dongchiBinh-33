@@ -1058,6 +1058,14 @@ render();
   var MAPURL_ABS = 'https://dongchi-binh-33.vercel.app/';
   var MAPURL = /\/dad\/950901-a(\/|$)/.test(location.pathname) ? '/' : MAPURL_ABS;
   var PIN2 = 'JUNGLE', PIN3 = 'PHAMTUAN';
+  /* ── GỢI Ý MISSION 2 ───────────────────────────────────────────────────
+     Sai `M2_SAI_TOI_DA` lần thì hiện ĐÚNG MỘT câu này, không có câu thứ hai.
+     Nó chỉ khoanh vùng cho người đang bí (hỏi về DOTA2), còn từ đó ra đáp án
+     vẫn phải tự nghĩ — đúng mức của một gợi ý, không phải giải hộ.
+     Mở rồi thì nhớ luôn (`st.m2goi`): những lần mở hộp sau hiện sẵn từ đầu,
+     khỏi bắt gõ sai lại ba lần nữa. */
+  var M2_GOI_Y = 'Trong DOTA2, anh chơi vị trí gì?';
+  var M2_SAI_TOI_DA = 3;
   var HINTS = ['12', '5121', 'MIG-21', 'Tên người gồm 2 chữ'];
   var TAUNTS = ['Nope 🙅', '10 chiếc hun 💋 cũng khúm đượt 😆',
                 'Nah nah nah — cố lên anh oyyyy 💪', 'Very earth very skyyy o_O 😩💦'];
@@ -1088,6 +1096,11 @@ render();
     return { v:s.v|0, m1:!!s.m1, m2:!!s.m2, m3:!!s.m3,
       m1at:s.m1at||0, m2at:s.m2at||0, m2doneAt:s.m2doneAt||0,
       hints:s.hints|0, hintAt:s.hintAt||0, lockUntil:s.lockUntil||0, form:!!s.form,
+      /* m2sai  — đã gõ sai mã Mission 2 bao nhiêu lần (cộng dồn, không reset
+                  theo phiên: gõ sai 2 lần hôm nay rồi mai gõ sai lần nữa thì
+                  vẫn là lần thứ ba, vẫn được gợi ý).
+         m2goi  — đã mở gợi ý Mission 2 chưa. Mở rồi thì mở mãi. */
+      m2sai:s.m2sai|0, m2goi:!!s.m2goi,
       dayKey:s.dayKey||'', dayN:s.dayN|0 };
   })();
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
@@ -1367,7 +1380,11 @@ render();
     body += '<div class="msn-cells" id="msnCells">'
       + '<input class="msn-in" id="msnIn" type="text" autocomplete="one-time-code" '
       + 'autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Ô nhập mã truy cập"></div>'
-      + '<div class="msn-msg" id="msnMsg"></div>';
+      + '<div class="msn-msg" id="msnMsg"></div>'
+      /* Đã mở gợi ý Mission 2 từ trước → in sẵn ngay lúc dựng hộp. Dùng cùng
+         khuôn `.msn-hints` với gợi ý Mission 3 cho hai cửa nhìn như một. */
+      + (which === 2 && st.m2goi
+          ? '<ul class="msn-hints"><li>' + M2_GOI_Y + '</li></ul>' : '');
     if(chuaForm)
       body += '<button class="navbtn wide" id="msnToForm" style="margin-top:16px;justify-content:center">Điền Form ngay ✈</button>';
     if(hetGio)
@@ -1396,6 +1413,18 @@ render();
       }
     }
     function msg(t, ok){ var m = byId('msnMsg'); if(m){ m.innerHTML = t; m.classList.toggle('ok', !!ok); } }
+    /* Chèn dòng gợi ý Mission 2 vào ngay dưới ô nhập. Dùng chung khuôn
+       `.msn-hints` với gợi ý Mission 3 để hai cửa nhìn như một. Gọi bao nhiêu
+       lần cũng chỉ dựng MỘT lần — có rồi thì thôi. */
+    function veGoiYM2(){
+      var box = ov.querySelector('.msn-card');
+      if(!box || box.querySelector('.msn-hints')) return;
+      var m = byId('msnMsg'); if(!m) return;
+      var ul = document.createElement('ul');
+      ul.className = 'msn-hints';
+      ul.innerHTML = '<li>' + M2_GOI_Y + '</li>';
+      m.insertAdjacentElement('afterend', ul);
+    }
     function hintsPaint(){
       var ul = byId('msnHints'); if(!ul) return;
       var h = '';
@@ -1458,6 +1487,22 @@ render();
         return;
       }
       var hasNew = which === 3 ? revealHint() : false;
+      /* Mission 2 có gợi ý riêng: đủ ba lần sai thì mở, và chỉ mở đúng một
+         lần này. `m2moi` = vừa mở ở chính cú gõ này (để báo ngay), còn
+         `st.m2goi` là cờ nhớ mãi. */
+      var m2moi = false;
+      if(which === 2 && !st.m2goi){
+        st.m2sai++;
+        if(st.m2sai >= M2_SAI_TOI_DA){ st.m2goi = true; m2moi = true; }
+      }
+      /* ═══ DỰNG GỢI Ý NGAY, KHÔNG ĐỂ NHÁNH KHOÁ NUỐT MẤT ══════════════════
+         BẪY ĐÃ VẤP: `TRY_S` cũng bằng 3, nên đúng cú sai thứ ba vừa mở gợi ý
+         thì ô nhập cũng vừa bị khoá. Bản đầu đặt phần in gợi ý trong nhánh
+         `else` của cái if khoá — thành ra cờ đã bật mà chữ không hiện, phải
+         đóng hộp mở lại mới thấy. Đúng lúc người ta bí nhất thì lại không đưa.
+         Nay in NGAY ở đây, trước cả nhánh khoá: khoá hay không cũng có gợi ý
+         mà ngẫm trong lúc chờ. */
+      if(m2moi) veGoiYM2();
       var w = wget() + 1; wset(w);
       st.dayN = dayN() + 1; save();
       ping('sai_pin', 'Mission ' + which + ' · lần ' + w + '/' + TRY_S
@@ -1471,6 +1516,11 @@ render();
         /* Giữ nguyên hộp cho đọc gợi ý — biết sai ở đâu còn sửa */
         msg(lockNote());
         input.disabled = true; try{ input.blur(); }catch(e){}
+      }else if(m2moi){
+        /* Vừa mở gợi ý mà chưa bị khoá — báo một tiếng, KHÔNG kèm câu trêu:
+           đang gỡ bí cho người ta thì đừng trêu thêm. Chữ gợi ý đã dựng ở
+           `veGoiYM2()` phía trên rồi. */
+        msg('Gợi ý ✦', true);
       }else{
         msg(hasNew ? SOSMSG[st.hints - 1] || SOSMSG[0] : treu(), !!hasNew);
       }
@@ -2054,7 +2104,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V22.05<br>Last updated 24-Aug-2026</span>
+<span class="vstamp" id="vstamp">V22.06<br>Last updated 24-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

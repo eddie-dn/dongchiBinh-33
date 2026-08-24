@@ -1,4 +1,139 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 8 — trả lại gợi ý, sửa lỗi RAZER bay, nắn bệ đá vòng 1.
+════════════════════════════════════════════════════════════════════════════
+7 file sửa (1 trong đó là ẢNH). Chép đè theo đúng cây thư mục.
+
+Số tem sau đợt này:
+    /                 V18.02        /han/961030-a     V3.03
+    /dad/950901-a     V22.06        /han/961030-b     V2.04
+    /dad/950901-b     V04.09        /phao-hoa         V3.03 (không đụng)
+
+
+① GỢI Ý: TRẢ LẠI, NHƯNG CHỈ NÓI MỘT NỬA
+────────────────────────────────────────────────────────────────────────────
+Đợt 7 bỏ sạch gợi ý là quá tay. Nay trả lại, nhưng cắt đúng chỗ đáng cắt.
+
+CỬA MÃ BẢN GHI (Khối vận hành)  ·  sai 3 lần → hiện "Năm sinh Bác Hồ"
+
+    bản cũ:  "Năm sinh Bác Hồ — soi gương mà đọc."
+    bản nay: "Năm sinh Bác Hồ"
+
+Vế "soi gương mà đọc" mới là chỗ hỏng: nó nói toẹt ra rằng phải ĐỌC NGƯỢC,
+tức cho không nốt bước suy luận cuối cùng. Đọc xong là gõ được ngay. Cắt vế
+đó đi thì ba chữ còn lại chỉ đưa tới con số 1890; từ 1890 ra 0981 vẫn phải tự
+nghĩ. Đúng mức của một gợi ý: gỡ bí, không giải hộ.
+
+THẤY RỒI THÌ THẤY MÃI. Nhớ trong localStorage (`ls_goi_y`), nhớ CHUNG cho cả
+bộ — mã vào chỉ có một, mò ra ở đâu thì coi như biết rồi. Những lần mở sau
+hiện luôn từ đầu, khỏi bắt gõ sai lại ba lần: người ta trả giá một lần là đủ,
+bắt trả lần hai là phạt chứ không phải đố. Và mãi mãi chỉ ĐÚNG MỘT câu này.
+
+MISSION 2 (dad/950901-a)  ·  sai 3 lần → "Trong DOTA2, anh chơi vị trí gì?"
+
+Câu này anh cho, không tự thêm chữ nào. Nó khoanh vùng chứ không đưa đáp án.
+Cũng nhớ luôn (`st.m2goi`), lần sau mở hộp là hiện sẵn.
+
+    ⚠ BẪY ĐÃ VẤP — mất một lượt kiểm mới thấy: `TRY_S` cũng bằng 3, nên đúng
+    cú sai thứ ba vừa mở gợi ý thì ô nhập cũng vừa bị khoá 30 phút. Bản đầu
+    đặt phần in gợi ý trong nhánh `else` của cái if khoá → cờ đã bật mà chữ
+    không hiện, phải đóng hộp mở lại mới thấy. Đúng lúc người ta bí nhất thì
+    lại không đưa. Nay in NGAY, trước cả nhánh khoá: khoá hay không cũng có
+    gợi ý mà ngẫm trong lúc chờ.
+
+Còn mấy thứ đợt 7 bỏ thì VẪN BỎ: không nhãn "4 chữ số", không báo sai, không
+đếm hộ còn mấy lần, và Khối vận hành vẫn không chỉ đường vào bản ghi.
+
+
+② "CHỮ RAZER BAY LÊN TRỜI" — ĐO RA ĐƯỢC, SỬA XONG
+────────────────────────────────────────────────────────────────────────────
+Bung 201 khung clip ra đo vị trí cảnh:
+
+     0% →  42%   cảnh ĐỖ YÊN, thấp hơn vị trí cuối đúng 36px
+    42% →  56%   cảnh TRƯỢT LÊN, 36px → 0
+    56% →        đứng hẳn, khớp bg_r2
+
+36px trên khung cao 720px = 5% chiều cao, mà dòng chữ chỉ cao 3,2% — bệ đá đi
+một quãng bằng 1,6 LẦN CHIỀU CAO DÒNG CHỮ. Đáp án RAZER là lớp ĐÈ dán cứng vào
+khung trang (đo được: `top` của nó đứng im tuyệt đối suốt cả đoạn). Bệ đá tụt
+xuống dưới một lớp chữ đứng im → mắt đọc ra "chữ bay lên trời". Chuẩn xác.
+
+Bản cũ đặt `slab1_out_at: 0.42` — bắt đầu mờ ĐÚNG GIÂY cảnh bắt đầu chạy, rồi
+còn mờ thêm 500ms nữa. Cả quãng bay đó chữ vẫn thấy, chỉ mờ đi.
+
+    ⚠ HAI ĐỜI SỬA ĐẦU ĐỀU TRẬT, ghi lại cho khỏi đi vòng:
+      · hạ xuống 0.34 + setTimeout đặt trước lúc gọi clip
+            → tính ra 38,8%, ĐO ĐƯỢC 46%. Vì từ chỗ đặt hẹn giờ tới lúc clip
+              thật sự chạy còn dựng cảnh vòng 2, còn dò clip, còn giải mã webp
+              14MB — main thread nghẹn thì timer bắn trễ.
+      · hạ xuống 0.30 + rAF bám mốc clip thật (kiểu lớp khói vẫn dùng)
+            → tính ra 34,8%, ĐO ĐƯỢC 41,9%. Đỡ hơn nhưng vẫn trễ 500-900ms:
+              đúng quãng đó rAF cũng bị đói khung vì cùng chen trên main thread.
+              Sát mốc 42% đúng một gang tay, máy yếu hơn là lấn qua.
+
+NAY GIAO CHO CSS. Animation `opacity` chạy trên compositor, không đụng main
+thread — nghẹn cỡ nào thì nhịp tắt vẫn đúng giờ. Main thread chỉ phải làm một
+việc rẻ tiền: gắn class `.tat` đúng lúc clip vào DOM.
+
+    ĐO LẠI SAU KHI SỬA:  tính 26,8%  ·  đo được 26,8%  — khớp tuyệt đối.
+    Dư 15,2% (1220ms) trước mốc 42%, thay vì 3,7% như đời trước.
+
+RAZER vẫn hiện trọn 2,1 giây đầu clip, cộng cả màn bới chữ, màn xếp chữ và 3
+giây `glow_hold` trước đó — thừa để ngắm.
+
+
+③ BỆ ĐÁ VÒNG 1 — ĐÃ XÀI _CLEAN RỒI, LỖI NẰM TRONG CHÍNH FILE
+────────────────────────────────────────────────────────────────────────────
+Câu hỏi "có xài ké được file _clean không" — kiểm trong game thì vòng 1 ĐANG
+dùng đúng `bg_r1_clean.png`, lớp che thủ công đã tắt hẳn (`sach:true`,
+`veil display:none`). Không thiếu gì cả.
+
+Cái xấu nằm trong chính tấm ảnh: chỗ xoá chữ bị tô TỐI HƠN phần biển xung
+quanh khoảng 6 nấc sáng —
+
+        trong vùng vá   57.6      phần biển hai bên   63-65
+
+nên giữa tấm biển hiện một hình chữ nhật sẫm. Bên vòng 2 không bị, vì thế hai
+bệ đá nhìn lệch hẳn nhau.
+
+NAY NẮN LẠI: nâng đúng vùng vá (x 1462..1700, y 1257..1314) cho bằng phần biển
+liền kề, nhân theo từng kênh màu để giữ nguyên sắc, mặt nạ tán mềm 7px nên
+không để lại đường viền nào. Đo lại: 62.8-63.3 suốt cả tấm, phẳng.
+NGOÀI VÙNG VÁ KHÔNG ĐỤNG MỘT PIXEL NÀO (lệch trung bình 0.0000), kích thước
+giữ nguyên 3136x1376.
+
+    ⚠ MỘT HƯỚNG ĐÃ THỬ VÀ VỨT: định ghép "vân đá" từ hai dải hai bên ô chữ.
+    Hỏng — hai dải đó không phải mặt đá trơn mà là KHUNG SẮT CHỮ X, ghép vào
+    thành rác. Thước đo "vân nhạt hơn xung quanh 12 lần" cũng là đo nhầm vào
+    khung sắt: lòng tấm biển vốn nhẵn ngay từ ảnh gốc, không có vân để mà trả.
+
+
+④ ĐÃ KIỂM THỬ — 66 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+GỢI Ý BẢN GHI   mở ra chưa có · sai 2 lần vẫn im · sai lần 3 hiện đúng
+                "Năm sinh Bác Hồ" · không còn vế "soi gương" trong cả trang ·
+                sai lần 4 vẫn đúng một câu đó · đã ghi localStorage · phiên
+                mới ở TRANG KHÁC vẫn hiện sẵn · gõ đúng mã vẫn vào được sổ
+
+GỢI Ý MISSION 2 mở hộp chưa có · sai 2 lần vẫn chưa · sai lần 3 hiện đúng câu
+                DOTA2 (kể cả khi ô nhập vừa bị khoá) · đã ghi st.m2goi · lần
+                sau hiện sẵn từ đầu · gợi ý không chứa đáp án
+
+RAZER           chơi thật qua vòng 1: có thấy RAZER trong đoạn đầu clip (không
+                tắt phụt ngay), tắt hẳn ở 26,8% — trước mốc 42% những 15,2%
+
+BỆ ĐÁ           vòng 1 và vòng 2 đều dùng ảnh đá sạch, lớp che thủ công tắt
+                hẳn ở cả hai vòng
+
+Cộng với toàn bộ bộ cũ chạy lại: hộp chào ba khung giờ, giãn cách quote, bốn
+cửa vào bản ghi, thanh cuộn, vùng chạm, quét 6 trang x 3 cỡ máy (tràn ngang
+0px, không trang nào lỗi JS).
+
+    Có 3 phép báo đỏ lúc chạy lại — là assertion CŨ của đợt 7 viết theo luật
+    "im lặng hoàn toàn, không gợi ý". Luật đã đổi ở đợt này nên phép đó hết
+    hiệu lực; đã gỡ, bộ kiểm theo luật mới nằm trọn ở một chỗ.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 7 — dọn gợi ý ở cửa hậu + soát lại UX. Chép đè theo đúng cây thư mục.
 ════════════════════════════════════════════════════════════════════════════
 9 file sửa, không có file mới. Đi kèm ngay sau đợt 6 (đọc đợt 6 bên dưới).

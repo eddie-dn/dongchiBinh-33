@@ -41,15 +41,26 @@
   /* ── MÃ VÀO ───────────────────────────────────────────────────────────
      0981 = 1890 đọc ngược — năm sinh Bác Hồ.
 
-     KHÔNG CÓ GỢI Ý, KHÔNG CÓ MỘT CHỮ NÀO. Đời trước sai 3 lần thì hiện câu
-     "Năm sinh Bác Hồ — soi gương mà đọc." Nghe thì có vẻ kín, nhưng đọc xong
-     là ra mã trong ba giây: nó vừa cho biết mã là một NĂM, vừa cho biết năm
-     nào, vừa cho biết phải ĐỌC NGƯỢC. Còn lại đúng một việc là gõ vào.
-     Cửa hậu có hướng dẫn thì không còn là cửa hậu — nó thành một cái khoá dán
-     sẵn tờ giấy ghi mã bên cạnh. Nay gõ sai thì hộp chỉ rung một cái rồi thôi,
-     im lặng hoàn toàn, sai bao nhiêu lần cũng vậy. Ai mò ra thì mò, không thì
-     kệ. */
+     ── GỢI Ý: CÓ, NHƯNG CHỈ NÓI MỘT NỬA ────────────────────────────────
+     Sai đủ `SAI_TOI_DA` lần thì hiện đúng ba chữ: "Năm sinh Bác Hồ".
+
+     Đời trước viết dài hơn — "Năm sinh Bác Hồ — soi gương mà đọc." — và
+     ĐÓ MỚI LÀ CHỖ HỎNG: vế sau nói toẹt ra rằng phải ĐỌC NGƯỢC, tức là cho
+     không nốt bước suy luận duy nhất còn lại. Đọc xong là gõ được ngay.
+
+     Nay cắt vế sau đi. Ba chữ còn lại chỉ đưa tới con số 1890; từ 1890 ra
+     0981 vẫn phải tự nghĩ. Đó là mức gợi ý đúng: gỡ bí cho người đang bí,
+     chứ không giải hộ.
+
+     ── THẤY RỒI THÌ THẤY MÃI ────────────────────────────────────────────
+     Nhớ trong localStorage. Đã thấy gợi ý một lần thì những lần mở sau hiện
+     luôn từ đầu, khỏi bắt gõ sai lại ba lần nữa — người ta đã trả giá rồi,
+     bắt trả lần hai là phạt chứ không phải đố. Và mãi mãi chỉ ĐÚNG MỘT câu
+     này, không có gợi ý thứ hai: nói thêm nữa là cho không cái mã. */
   var MA = '0981';
+  var GOI_Y = 'Năm sinh Bác Hồ';
+  var SAI_TOI_DA = 3;
+  var KHOA_GOI_Y = 'ls_goi_y';   /* đã từng thấy gợi ý chưa — nhớ qua cả phiên */
   var NHIP = 3;         /* bấm bao nhiêu nhịp vào nút thì mở */
   var NGUNG = 900;      /* ngưng bấy nhiêu ms là đếm lại từ đầu */
   var ANH = '/assets/poster/HH_5_idle_afk.webp';
@@ -131,11 +142,12 @@
             { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', ver:'V18', so:'02',
+        { ngay:'2026-08-24', ver:'V18', so:'03',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
-            { ver:'V18.01', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
+            { ver:'V18.01', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V18.02', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn cho những lần sau' }
           ] }
       ]
     },
@@ -143,14 +155,15 @@
       ten: 'Easter Egg · Gate 1', duong: '/dad/950901-a',
       doi: [
         { ngay:'no info', ver:'V1 → V21', so:null, chinh:'no info — 21 build đầu không còn bản ghi' },
-        { ngay:'2026-08-24', ver:'V22', so:'06',
+        { ngay:'2026-08-24', ver:'V22', so:'07',
           chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V22.00 → V22.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
             { ver:'V22.02', chinh:'Dòng nhiệm vụ ở trang bìa, ba nấc nhiệm vụ, khuôn cửa mã dùng chung, thêm đo đạc' },
             { ver:'V22.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' },
             { ver:'V22.04', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng tiêu đề của hộp, trỏ vào thì chữ đổi màu' },
-            { ver:'V22.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
+            { ver:'V22.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V22.06', chinh:'Cửa mã Mission 2 cho một gợi ý sau ba lần sai và nhớ luôn cho những lần sau' }
           ] }
       ]
     },
@@ -165,13 +178,14 @@
             { ver:'V2.04 → V2.09', chinh:'Chỉnh luật chơi, thiết kế cách người chơi tương tác, thêm đồng hồ, gợi ý và mạch màn chơi' }
           ] },
         { ngay:'2026-08-17', ver:'V03', so:'07', chinh:'Nắn lại số cho đúng luật, thêm khu Open World, dựng ảnh nền sạch' },
-        { ngay:'2026-08-24', ver:'V04', so:'09',
+        { ngay:'2026-08-24', ver:'V04', so:'10',
           chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc, gom cửa hậu vào Khối vận hành, đồng bộ màu bảng ghi',
           chi:[
             { ver:'V04.05', chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc' },
             { ver:'V04.06', chinh:'Gom cửa hậu vào Khối vận hành, mở lại cửa hậu ở màn cuối, đổi bản ghi sang khuôn mới' },
             { ver:'V04.07', chinh:'Chuyển cảnh dùng bản clip đã dọn sạch bảng tên nên bỏ hẳn lớp che và lớp khói; bảng bản ghi lấy đúng màu Khối vận hành; cửa vào bản ghi đổi từ nút hình sang chữ' },
-            { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' }
+            { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
+            { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] }
       ]
     },
@@ -180,12 +194,13 @@
       doi: [
         { ngay:'no info', ver:'V1', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V2', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', ver:'V3', so:'03',
+        { ngay:'2026-08-24', ver:'V3', so:'04',
           chinh:'Thêm bản ghi (V2 đã hết nấc đuôi nên sang dòng V3), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V3.00', chinh:'Thêm bản ghi cho trang này' },
             { ver:'V3.01', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
-            { ver:'V3.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
+            { ver:'V3.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V3.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' }
           ] }
       ]
     },
@@ -193,12 +208,13 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V1', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V2' },
-        { ngay:'2026-08-24', ver:'V2', so:'04',
+        { ngay:'2026-08-24', ver:'V2', so:'05',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V2.00 → V2.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
             { ver:'V2.02', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
-            { ver:'V2.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
+            { ver:'V2.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V2.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' }
           ] }
       ]
     },
@@ -369,12 +385,15 @@
     '.ls-hop.rung{animation:lsRung .38s}',
     '@keyframes lsRung{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}',
       '40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}',
-    /* Hàng ô mã: chừa thêm một chút hơi thở phía dưới. Trước đây chỗ này là
-       dòng thông báo `.ls-msg` cao 1.5em; nay cửa mã im lặng hoàn toàn nên đã
-       BỎ HẲN thẻ đó — giữ lại chỉ tổ chừa một mảng trống chết dưới đáy hộp.
-       (Cú rung khi gõ sai là `transform`, không đụng gì tới chiều cao, nên bỏ
-       cũng chẳng làm hộp giật.) */
-    '.ls-o{margin-bottom:8px}',
+    /* Dòng gợi ý dưới hàng ô. Chừa sẵn chiều cao `min-height` kể cả lúc chưa
+       có chữ: gợi ý hiện ra giữa chừng mà hộp cao thêm một nấc thì nhìn như
+       hộp giật. Chưa tới lượt gợi ý thì đây là một khoảng trống, không phải
+       chỗ báo lỗi — gõ sai KHÔNG bao giờ hiện chữ gì ở đây. */
+    '.ls-msg{margin:9px 0 0;text-align:center;font-size:11px;line-height:1.5;',
+      'min-height:1.5em;color:var(--ls-mo,rgba(234,240,247,.5))}',
+    /* Tông vàng đất — khác hẳn màu nhấn của bảng, để mắt biết ngay đây là lời
+       mách chứ không phải một dòng nội dung bình thường. */
+    '.ls-msg.goi{color:#d79a2b;letter-spacing:.02em}',
     /* Ô nhập thật nằm dưới, trong suốt — bàn phím ảo trên điện thoại phải có
        một <input> thật mới bật lên được, mấy ô vuông trên kia chỉ để nhìn. */
     '.ls-in{position:absolute;opacity:0;width:1px;height:1px;border:0;padding:0}',
@@ -516,22 +535,40 @@
     try { sessionStorage.setItem('ls_ok_' + ma, '1'); } catch (e) {}
   }
 
+  /* Gợi ý nhớ trong localStorage (KHÔNG phải sessionStorage như cờ mở mã):
+     đóng trình duyệt rồi mở lại vẫn còn. Và nhớ CHUNG cho cả bộ, không tách
+     theo từng trang — mã vào chỉ có một, mò ra ở đâu thì coi như biết rồi. */
+  function daThayGoiY() {
+    try { return localStorage.getItem(KHOA_GOI_Y) === '1'; } catch (e) { return false; }
+  }
+  function ghiThayGoiY() {
+    try { localStorage.setItem(KHOA_GOI_Y, '1'); } catch (e) {}
+  }
+
   function veCuaMa(ma) {
-    var go = '';
+    var sai = 0, go = '';
     var t = SO[ma];
-    /* Bốn ô vuông rỗng, KHÔNG một dòng chữ nào. Bỏ cả câu "4 chữ số" — bốn cái
-       ô đã nói đúng bấy nhiêu rồi, viết thêm là thừa. Dòng thông báo `.ls-msg`
-       cũng bỏ luôn: nó không bao giờ có chữ nữa, giữ lại thì chỉ còn là một
-       mảng trống cao 1.5em nằm chết dưới đáy hộp. */
+    /* Bốn ô vuông rỗng. Bỏ câu "4 chữ số" — bốn cái ô đã nói đúng bấy nhiêu
+       rồi, viết thêm là thừa. `#lsMsg` để trống, chỉ dùng cho GỢI Ý. */
     khung(
         '<h2 class="ls-tit">Bản ghi</h2>'
       + '<p class="ls-sub">' + t.ten + '</p>'
       + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
+      + '<p class="ls-msg" id="lsMsg"></p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
       +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
+    var msg = hop.querySelector('#lsMsg');
     var inp = hop.querySelector('#lsIn');
+
+    function hienGoiY() {
+      msg.textContent = GOI_Y;
+      msg.className = 'ls-msg goi';
+    }
+    /* Đã từng thấy gợi ý ở lần mở nào trước đó → hiện luôn từ đầu. Không bắt
+       gõ sai lại ba lần nữa: người ta trả giá một lần là đủ. */
+    if (daThayGoiY()) hienGoiY();
 
     function ve() {
       for (var i = 0; i < o.length; i++) {
@@ -539,13 +576,15 @@
         o[i].className = go[i] ? 'co' : '';
       }
     }
-    /* GÕ SAI THÌ IM. Không báo lỗi, không đếm hộ còn mấy lần, không gợi ý —
-       xem ghi chú ở khối MÃ VÀO đầu file. Phản hồi duy nhất là một cú rung:
-       đủ để biết máy có nhận cú gõ, không đủ để suy ra gì. */
+    /* GÕ SAI THÌ IM — không báo lỗi, không đếm hộ còn mấy lần. Phản hồi duy
+       nhất là một cú rung: đủ để biết máy có nhận cú gõ, không đủ để suy ra gì.
+       Đủ SAI_TOI_DA lần mới mở gợi ý, và từ đó nhớ luôn. */
     function cham() {
       if (go === MA) { ghiMo(ma); veSo(ma); return; }
+      sai++;
       go = ''; inp.value = ''; ve();
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
+      if (sai >= SAI_TOI_DA) { ghiThayGoiY(); hienGoiY(); }
     }
     inp.addEventListener('input', function () {
       go = inp.value.replace(/\D/g, '').slice(0, 4);

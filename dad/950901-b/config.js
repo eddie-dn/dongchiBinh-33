@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 24-Aug-2026 · V04.08'
+    version       : 'Last updated 24-Aug-2026 · V04.09'
   }
 };
 
@@ -195,9 +195,44 @@ const GAME_CONFIG = {
     anim_wrong    : 2000,   /* độ dài clip nhập sai                */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
     glow_hold     : 3000,   /* giữ chữ RAZER sáng rực trước khi nổ */
-    /* Đáp án RAZER ở NGUYÊN trên bệ đá suốt đoạn đầu clip nổ sập lab, tới mốc
-       này của clip (quả trứng vỡ, cảnh đã chuyển hẳn) mới tắt. */
-    slab1_out_at  : 0.42,
+    /* ═══ RAZER TẮT LÚC NÀO — ĐO THẲNG TRÊN 201 KHUNG CLIP SẠCH ═════════
+       BỆNH ĐÃ SỬA: "chữ RAZER lúc xong xuôi chuyển cảnh bị bay lên trời".
+
+       Đáp án RAZER là một lớp ĐÈ, dán cứng vào khung trang (đo được: `top`
+       của nó đứng im tuyệt đối ở một chỗ suốt cả đoạn chuyển cảnh). Còn CẢNH
+       BÊN TRONG CLIP thì có máy quay riêng. Đo từng khung:
+
+           0%  →  42%   cảnh ĐỖ YÊN, thấp hơn vị trí cuối đúng 36px
+          42%  →  56%   cảnh TRƯỢT LÊN, 36px → 0
+          56%  →        đứng hẳn, khớp bg_r2
+
+       36px trên khung cao 720px = 5% chiều cao, mà ô chữ chỉ cao 3,2% — tức
+       là bệ đá đi một quãng bằng 1,6 LẦN CHIỀU CAO DÒNG CHỮ. Lớp đè đứng im,
+       bệ đá tụt xuống dưới nó → mắt đọc ra "chữ bay lên trời". Chuẩn xác.
+
+       BẢN CŨ ĐẶT ĐÚNG 0.42 — tức là bắt đầu mờ ĐÚNG GIÂY cảnh bắt đầu chạy,
+       rồi còn mờ thêm 500ms nữa (hơn 6% clip). Thành ra suốt quãng bay đó chữ
+       vẫn còn nhìn thấy, chỉ mờ đi. Sai chỗ đó.
+
+       NAY TẮT XONG TRƯỚC KHI CẢNH KỊP NHÚC NHÍCH:
+           0.22 × 8000ms = 1760ms  bắt đầu mờ
+           + 380ms fade  = 2140ms  tắt hẳn  = 26,8% clip
+       Còn dư hơn 15% (1220ms) trước mốc 42%. Cả quãng chữ còn hiện thì cảnh
+       đứng yên tuyệt đối, không có một pixel xê dịch nào.
+
+       VÌ SAO CHỪA DƯ NHIỀU THẾ, KHÔNG BÁM SÁT 42%: đo trên máy thật thì nhịp
+       tắt luôn bắn TRỄ hơn tính toán 450-570ms — lúc đó trình duyệt đang giải
+       mã clip 14MB nên cả rAF lẫn setTimeout đều bị đói. Bản đặt 0.30 tính ra
+       34,8% nhưng đo được 41,9%, tức sát mép 42% đúng một gang tay. Máy yếu
+       hơn là lấn qua. Nay hạ xuống 0.22 để trễ cỡ nào cũng còn kịp.
+       RAZER vẫn hiện trọn 2,1 giây đầu clip — thừa để ngắm.
+
+       KHÔNG MẤT GÌ: trước đó người chơi đã ngắm RAZER sáng rực suốt màn bới
+       chữ, màn xếp lại chữ, rồi `glow_hold` 3 giây trên cảnh tĩnh, cộng thêm
+       2,7 giây đầu clip nữa. Thừa thời gian.
+       ĐỔI CLIP KHÁC thì phải ĐO LẠI mốc cảnh bắt đầu trượt rồi trừ lùi. */
+    slab1_out_at  : 0.22,
+    slab1_fade_ms : 380,
     anim_unlock   : 8000,   /* độ dài clip nổ sập lab              */
     type_speed    : 24,     /* ms / ký tự — hộp thoại              */
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */

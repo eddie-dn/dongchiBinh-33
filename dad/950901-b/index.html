@@ -380,6 +380,28 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    đúng nét chữ khắc trong tranh, không phải chữ do font vẽ ra. */
 #scene-game .slab{position:absolute;display:none;pointer-events:none;z-index:6}
 #scene-game .slab.vis{display:block}
+/* ═══ RAZER TẮT DẦN — CHẠY BẰNG CSS ANIMATION, KHÔNG PHẢI TIMER ═══════════
+   Đáp án vòng 1 phải tắt xong TRƯỚC lúc máy quay trong clip nổ bắt đầu trượt
+   (mốc 42% — xem `slab1_out_at` trong config.js). Nếu không thì lớp chữ đứng
+   im trong khi bệ đá tụt xuống dưới nó → "chữ bay lên trời".
+
+   ĐÃ THỬ HAI ĐỜI TIMER, CẢ HAI ĐỀU TRỄ:
+     · setTimeout đặt trước lúc gọi clip  → trễ, đo được chữ còn tới 46%
+     · rAF + setTimeout bám mốc clip thật → đỡ hơn nhưng vẫn trễ 500-900ms,
+       vì đúng quãng đó trình duyệt đang giải mã clip 14MB nên main thread
+       nghẹn, mọi thứ chạy trên đó đều bị đói.
+
+   NAY GIAO CHO CSS. Trình duyệt chạy animation `opacity` trên compositor,
+   không đụng main thread — nghẹn cỡ nào thì nhịp tắt vẫn đúng giờ. Main
+   thread chỉ phải làm đúng MỘT việc rẻ tiền: gắn class `.tat` đúng lúc clip
+   vào DOM. Độ trễ và thời lượng đọc từ hai biến, JS rót vào từ config. */
+@keyframes razerTat{ to{opacity:0} }
+#scene-game .slab.tat{
+  animation:razerTat var(--razer-fade,380ms) ease var(--razer-cho,1760ms) both;
+}
+@media (prefers-reduced-motion:reduce){
+  #scene-game .slab.tat{animation-duration:1ms}
+}
 /* Lớp tối: rộng hơn ô chữ một chút, mép nhoè bằng box-shadow cùng màu */
 /* Lớp che KHÔNG phải dải đen — nó là chính mẩu ảnh bệ đá, chỉ bị hạ sáng và
    khử màu để nét khắc thành rãnh đá chưa thắp. Mép nhoè hai chiều nên không
@@ -2609,17 +2631,41 @@ async function win1(){
   await urlClipNo();          /* chốt xong dùng clip sạch hay clip cũ */
   say(C.dialogues.round1_boom, 'warn');
 
-  /* Đáp án RAZER KHÔNG tắt ngay. Nó nằm nguyên trên bệ đá trong lúc clip nổ
-     sập lab chạy, tới đúng lúc quả trứng vỡ (mốc slab1_out_at) mới mờ đi —
-     người chơi vẫn ngắm được thành quả suốt đoạn chuyển cảnh. */
-  el.slab1.style.transition = 'opacity .5s ease';
-  setTimeout(()=>{
-    el.slab1.style.opacity = '0';
+  /* ═══ RAZER TẮT TRƯỚC KHI MÁY QUAY TRONG CLIP NHÚC NHÍCH ══════════════════
+     Đáp án vẫn nằm nguyên trên bệ đá một quãng đầu clip cho người chơi ngắm,
+     nhưng phải TẮT HẲN trước mốc cảnh trong clip bắt đầu trượt lên — nếu
+     không thì lớp đè đứng im trong khi bệ đá tụt xuống dưới nó, đọc ra thành
+     "chữ bay lên trời". Số đo nằm ở `slab1_out_at` trong config.js; ĐỔI CLIP
+     thì phải đo lại chỗ đó.
+
+     ═══ BẪY ĐÃ VẤP · HẸN GIỜ TỪ ĐÂY THÌ LUÔN TRỄ ═══════════════════════════
+     Bản đầu đặt `setTimeout` ngay tại chỗ này. Hỏng: từ đây tới lúc clip THẬT
+     SỰ chạy còn `prepRound2()`, còn dò clip sạch, còn giải mã khung webp 14MB
+     — main thread bận thì timer bắn trễ, mà clip lại chạy theo đồng hồ riêng
+     của nó. Đo trên máy thật: tính ra phải tắt ở 38,8% nhưng thực tế chữ còn
+     thấy tới 46% — tức là đã lấn sang quãng cảnh trượt, vẫn bay như cũ.
+
+     Nay bám ĐỒNG HỒ THẬT bằng rAF, mốc 0 lấy ĐÚNG lúc thẻ ảnh clip vào DOM
+     (`khiChay` của playClip). Vòng rAF đo lại mỗi khung nên trễ bao nhiêu cũng
+     tự bắt kịp — y hệt cách lớp khói vẫn làm ở đường lùi bên dưới. */
+  const fadeMs = T.slab1_fade_ms || 380;
+  const choMs  = T.anim_unlock * (T.slab1_out_at || 0.22);
+  el.slab1.style.setProperty('--razer-fade', fadeMs + 'ms');
+  el.slab1.style.setProperty('--razer-cho',  choMs.toFixed(0) + 'ms');
+  let daTat = false;
+  /* Gắn class là xong — nhịp chờ và nhịp mờ do CSS lo (xem `.slab.tat`).
+     Dọn `.vis` sau khi mờ hẳn; hẹn giờ này trễ vài trăm ms cũng vô hại vì
+     lúc đó chữ đã trong suốt rồi. */
+  const tatRazer = ()=>{
+    if(daTat) return;
+    daTat = true;
+    el.slab1.classList.add('tat');
     setTimeout(()=>{
-      el.slab1.classList.remove('vis');
-      el.slab1.style.opacity = ''; el.slab1.style.transition = '';
-    }, 520);
-  }, T.anim_unlock * (T.slab1_out_at || 0.42));
+      el.slab1.classList.remove('vis','tat');
+      el.slab1.style.removeProperty('--razer-fade');
+      el.slab1.style.removeProperty('--razer-cho');
+    }, choMs + fadeMs + 120);
+  };
 
   /* ═══ CHUYỂN CẢNH CHẠY TRẦN ═══════════════════════════════════════════════
      Cảnh vòng 2 dựng sẵn NGAY sau lưng clip (khung cuối clip trùng khít bg_r2,
@@ -2675,7 +2721,12 @@ async function win1(){
     batMo = ()=>{ t0 = performance.now(); canhMo(); };
   }
 
-  await playClip(clip, T.anim_unlock, batMo);
+  await playClip(clip, T.anim_unlock, ()=>{
+    /* Mốc 0 của MỌI nhịp tính theo % clip — lấy đúng lúc clip vào DOM. */
+    tatRazer();          /* bấm nút chạy CSS ngay lúc clip vào DOM */
+    if(batMo) batMo();
+  });
+  tatRazer();          /* clip tắt rồi mà còn sót thì dọn nốt, không để treo */
 
   if(chuaSach){
     /* Clip tắt = cắt thẳng sang cảnh tĩnh. Đổi vai đúng khoảnh khắc này: lớp
@@ -3327,6 +3378,8 @@ function reset(){
   showCtrl(false); setInput(false);
   [el.slab1, el.slab2].forEach(sl=>{
     sl.className = 'slab';
+    sl.style.removeProperty('--razer-fade');
+    sl.style.removeProperty('--razer-cho');
     const v = sl.querySelector('.veil');
     if(v){ v.style.opacity = ''; v.style.transition = ''; v.style.display = ''; }
   });

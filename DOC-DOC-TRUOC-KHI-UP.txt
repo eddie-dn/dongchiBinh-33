@@ -1,95 +1,75 @@
 ════════════════════════════════════════════════════════════════════════════
-GÓI ĐỢT 6 + ĐỢT 7 — 13 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
+GÓI GỘP · ĐỢT 6 + 7 + 8 — 14 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
 ════════════════════════════════════════════════════════════════════════════
 
-⚠⚠ ƯU TIÊN UP FILE `.vercelignore` TRƯỚC — ĐỌC MỤC CUỐI CÙNG ⚠⚠
+Gói này GỘP CẢ BA ĐỢT nên khỏi phải nhớ đã up cái gì rồi. Cứ chép đè hết là
+đúng, kể cả file anh đã up từ gói trước.
 
-CÁCH UP: giải nén ra, kéo cả 12 file lên GitHub theo đúng đường dẫn dưới đây
-(GitHub tự hỏi "commit changes" thì cứ commit). Không có file nào MỚI cần tạo,
-tất cả đều là chép đè lên file đã có.
-
-    .vercelignore              ← FILE MỚI, quan trọng nhất gói này
+    .vercelignore                            ← có dấu chấm đầu tên, xem ⚠ dưới
+    index.html
+    README.md
     DESIGN-SYSTEM.md
     DOC-CAI-NAY-TRUOC.txt
-    README.md
-    index.html
     api/quote.js
     api/_lib/loichao.md
     assets/lichsu.js
     dad/950901-a/index.html
-    dad/950901-b/config.js
     dad/950901-b/index.html
+    dad/950901-b/config.js
+    dad/950901-b/assets/bg_r1_clean.png      ← ẢNH, 5,5 MB
     han/961030-a/index.html
     han/961030-b/index.html
 
-⚠ `.vercelignore` CÓ DẤU CHẤM ĐẦU TÊN. Trên máy Mac/Windows file bắt đầu bằng
-dấu chấm bị ẨN — bật "hiện file ẩn" lên mới thấy (Mac: Cmd+Shift+. trong
-Finder). Kéo lên GitHub bằng nút "Add file → Upload files" bình thường.
-Nếu GitHub không nhận file ẩn: bấm "Add file → Create new file", gõ tên
-`.vercelignore` rồi dán nội dung vào.
-
-KHÔNG CẦN UP LẠI ẢNH/CLIP. `anim_unlock_clean.webp` anh đã thả sẵn vào
-/dad/950901-b/assets/ rồi — gói này không đụng tới file nặng nào.
-
-SAU KHI UP: vào Vercel bấm REDEPLOY. Máy chủ đọc thẳng `api/_lib/loichao.md`
-mỗi lần trang xin một câu, nên không redeploy thì lời chào vẫn là bộ cũ.
+Không có file nào phải tạo mới ngoài `.vercelignore`.
+Up xong bấm REDEPLOY trên Vercel — máy chủ đọc thẳng `api/_lib/loichao.md`
+mỗi lần trang xin một câu, không redeploy thì lời chào vẫn là bộ cũ.
 
 
-SỐ TEM SAU HAI ĐỢT
+⚠ HAI CHỖ DỄ VẤP KHI UP
 ────────────────────────────────────────────────────────────────────────────
-    /                 V18.01   (V17 hết nấc .09 nên phải mở dòng V18)
-    /dad/950901-a     V22.05
-    /dad/950901-b     V04.08
-    /han/961030-a     V3.02
-    /han/961030-b     V2.03
-    /phao-hoa         V3.03    (không đụng đợt này)
+1 · `.vercelignore` CÓ DẤU CHẤM ĐẦU TÊN nên bị ẨN trên Mac/Windows.
+    Mac: trong Finder bấm Cmd+Shift+. để hiện file ẩn.
+    Nếu GitHub không nhận file ẩn: bấm "Add file → Create new file", gõ tên
+    `.vercelignore` rồi dán nội dung vào.
+
+    File này quan trọng nhất gói: chưa có nó thì ai gõ thẳng địa chỉ cũng tải
+    được /README.md và 16 file tài liệu khác — trong đó có đáp án cả bốn mật
+    thư, hai mã Gate 2, mã PIN và mã cửa hậu.
+
+    KIỂM TRA SAU KHI DEPLOY:
+        mở  https://dongchi-binh-33.vercel.app/README.md  →  phải ra 404
+
+2 · `dad/950901-b/assets/bg_r1_clean.png` là ẢNH. Quên up thì mọi thứ khác
+    vẫn chạy, chỉ có tấm biển vòng 1 là vẫn còn vệt chữ nhật sẫm như cũ.
+
+
+SỐ TEM SAU CẢ BA ĐỢT
+────────────────────────────────────────────────────────────────────────────
+    /                 V18.02        /han/961030-a     V3.03
+    /dad/950901-a     V22.06        /han/961030-b     V2.04
+    /dad/950901-b     V04.09        /phao-hoa         V3.03 (không đụng)
 
 
 LÀM ĐƯỢC NHỮNG GÌ
 ────────────────────────────────────────────────────────────────────────────
-ĐỢT 6  · Gate 2 chuyển cảnh chạy trần: dùng clip sạch, bỏ hẳn khói và lớp che
-       · Hộp chào hết xuống dòng giữa block, lấy câu dài hơn
-       · Pop-up: 3 khung chào 06:00-07:30 / 11:00-12:30 / 17:30-19:00,
-         Daily Quote cách chào ≥1h và cách nhau ≥2h, mỗi lần một câu khác
-       · Kho quote thêm 4 đầu mục + 46 tác giả, 12 → 34 câu
-       · Thanh kéo bảng bản ghi làm lại theo kiểu lá thư
-       · Bảng bản ghi Gate 2 đổi sang xanh lá cho khớp Khối vận hành
-       · Cửa vào bản ghi bỏ icon, dùng chữ
+ĐỢT 6 · Gate 2 chuyển cảnh chạy trần: dùng clip sạch, bỏ hẳn khói và lớp che
+      · Hộp chào hết xuống dòng giữa block, lấy câu dài hơn
+      · Pop-up: 3 khung chào 06:00-07:30 / 11:00-12:30 / 17:30-19:00,
+        Daily Quote cách chào ≥1h và cách nhau ≥2h, mỗi lần một câu khác
+      · Kho quote thêm 4 đầu mục + 46 tác giả, 12 → 34 câu
+      · Thanh kéo bảng bản ghi làm lại theo kiểu lá thư
+      · Bảng bản ghi Gate 2 đổi sang xanh lá cho khớp Khối vận hành
+      · Cửa vào bản ghi bỏ icon, dùng chữ
 
-ĐỢT 7  · Cửa hậu im lặng hoàn toàn: bỏ câu gợi ý và dòng chỉ đường
-       · Khối vận hành Gate 2 thay bằng dòng trạng thái màn chơi
-       · Nới vùng chạm mấy nút đóng (đang 21×23 và 28×28, quá nhỏ)
+ĐỢT 7 · Khối vận hành thôi chỉ đường vào bản ghi, thay bằng dòng trạng thái
+      · Nới vùng chạm mấy nút đóng (đang 21×23 và 28×28, quá nhỏ)
+      · Thêm `.vercelignore` — việc đợt 5 ghi là "còn làm tay" mà chưa xong
 
-Chi tiết từng mục: mở DOC-CAI-NAY-TRUOC.txt, hai đợt nằm trên cùng.
+ĐỢT 8 · Cửa mã bản ghi: sai 3 lần → "Năm sinh Bác Hồ" (đã cắt vế "soi gương
+        mà đọc"). Thấy rồi thì lần sau hiện sẵn, mãi mãi chỉ một câu này.
+      · Mission 2: sai 3 lần → "Trong DOTA2, anh chơi vị trí gì?", cũng nhớ luôn
+      · Sửa lỗi chữ RAZER trôi khỏi bệ đá trong chuyển cảnh
+      · Nắn tấm biển vòng 1 cho hết vệt chữ nhật sẫm, khớp với vòng 2
 
-
-ĐÃ KIỂM THỬ: 63 phép trên trình duyệt thật, 0 hỏng. Quét 6 trang × 3 cỡ máy
-(320 / 390 / 1280 px): tràn ngang 0px, không trang nào lỗi JavaScript.
-Bảng đầy đủ ở mục ③ của ĐỢT 7 trong DOC-CAI-NAY-TRUOC.txt.
-
-
-════════════════════════════════════════════════════════════════════════════
-⚠ VIỆC GẤP NHẤT GÓI NÀY: `.vercelignore`
-════════════════════════════════════════════════════════════════════════════
-
-Soát lại thì thấy việc này đợt 5 ghi là "còn làm tay" nhưng CHƯA BAO GIỜ XONG.
-File cũ `vercelignore` (thiếu dấu chấm) đã xoá rồi, nhưng bản đúng tên thì
-không hề có trong repo.
-
-Nghĩa là ngay lúc này, trên bản chạy thật, ai gõ thẳng địa chỉ cũng tải được:
-
-    /README.md                    ← 11 chỗ có đáp án / mã
-    /DOC-CAI-NAY-TRUOC.txt        ← 9 chỗ
-    /dad/950901-b/DIALOGUES.md    ← 11 chỗ
-    ...và 14 file tài liệu khác
-
-Trong đó có đáp án cả bốn mật thư, hai mã của Gate 2, mã PIN và mã cửa hậu.
-Mở /README.md là xong cả trò chơi trong ba phút.
-
-ANH TỰ KIỂM TRA ĐƯỢC NGAY (mình ở đây không ra được mạng ngoài):
-
-    Mở  https://dongchi-binh-33.vercel.app/README.md
-      · ra CHỮ  → đúng là đang hở, up file này gấp
-      · ra 404  → đã chặn được rồi
-
-Up `.vercelignore` xong nhớ REDEPLOY, rồi mở lại địa chỉ trên — phải ra 404.
+Chi tiết từng mục kèm số đo: mở DOC-CAI-NAY-TRUOC.txt, ba đợt nằm trên cùng.
+Đã kiểm thử 66 phép trên trình duyệt thật, 0 hỏng.
