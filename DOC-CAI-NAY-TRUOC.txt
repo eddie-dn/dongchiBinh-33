@@ -1,4 +1,88 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 12 — chốt khuôn số Vxx.xx, ghi đủ lịch sử khung Collected và đường cửa hậu.
+════════════════════════════════════════════════════════════════════════════
+7 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+Số tem sau đợt này — TẤT CẢ ĐỀU ĐÃ VỀ KHUÔN Vxx.xx:
+    /                 V18.06        /han/961030-a     V03.04  ← đệm số 0
+    /dad/950901-a     V03.08        /han/961030-b     V02.05  ← đệm số 0
+    /dad/950901-b     V04.09        /phao-hoa         V03.03  ← đệm số 0
+
+
+① KHUÔN SỐ PHIÊN BẢN — LUÔN Vxx.xx, ĐỆM SỐ 0
+────────────────────────────────────────────────────────────────────────────
+        ĐÚNG    V01 · V02 · V04.05 · V17.09 · V02.02
+        SAI     V1  · V2  · V4.5   · V17.9  · V2.02
+
+Đời trước để lẫn cả hai kiểu — chỗ ghi `V02.02`, chỗ ghi `V3.02`, cùng một
+bảng mà đọc xuống cứ tưởng hai hệ đánh số khác nhau. Sắp theo chuỗi thì `V10`
+đứng trước `V2`, nhìn như mất thứ tự.
+
+    (README từng ghi chỗ này là "cố ý không đụng". Nay đã lật lại và nắn hết —
+     ghi rõ trong README để khỏi ai đó lôi câu cũ ra mà giữ nguyên cái lệch.)
+
+ĐÃ NẮN ĐỒNG LOẠT: 89 số phiên bản trong cả bảy cuốn sổ, cộng tem của cả sáu
+trang. Dòng gộp đệm cả hai đầu: `V01 → V21`, `V11 · V12`.
+Luật chốt vào bốn chỗ — lichsu.js, DESIGN-SYSTEM §4, README, docs/BAN-GHI.md.
+
+
+② KHUNG "COLLECTED: EASTER EGG" — LỊCH SỬ RIÊNG CỦA CHÍNH NÓ
+────────────────────────────────────────────────────────────────────────────
+Lọc diff của `index.html` giữa hai bản liền nhau, chỉ giữ phần đụng tới khung
+(`cred*`). Ra ba mốc thật:
+
+    V17.05   khung có ẢNH MỒI tĩnh nằm dưới clip nặng nên không còn khoảng
+             trống lúc chờ; khung cũng được xếp vào nhóm hộp ưu tiên để hộp
+             chào biết nhường đường
+    V18.01   nới vùng bấm của nút đóng khung cho vừa đầu ngón tay
+    V18.03   chính dòng tiêu đề khung thành cửa vào bản ghi
+
+Ba dòng này nay nằm trong sổ EGG, cạnh phần màn pháo hoa đã dò ở đợt 11.
+
+
+③ ĐƯỜNG CỬA HẬU NGOÀI BẢN ĐỒ: LÁ CỜ → MẶT CƯỜI
+────────────────────────────────────────────────────────────────────────────
+Rà đủ sáu nấc V17.04 → V17.09 mà nhánh này còn giữ (tem đọc thẳng được, diff
+giữa hai bản cho biết đúng cái gì vừa thêm):
+
+    V17.04   nối liền ba khu thành một mạch: bản đồ → Easter Egg → lâu đài
+    V17.05   thêm hộp chào đầu ngày chia theo buổi; mọi khung ảnh nặng có
+             ảnh mồi tĩnh nằm dưới
+    V17.06   thêm Daily Quote, và luật không tách dòng giữa tên màn
+    V17.07   THỬ đặt cửa vào bản ghi ngay trên dòng tem ở chân bản đồ
+    V17.08   DỜI cửa sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn
+             luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua LÁ CỜ giữ nguyên
+    V17.09   khuôn bản ghi mới dùng chung
+
+Nhờ vậy đường đi đầy đủ nay có trong sổ: LÁ CỜ ở dòng bản quyền (`#flagZone`,
+gõ 5 nhịp) → Box Tổng tư lệnh → MẶT CƯỜI (`.kao`, gõ 3 nhịp) → cửa mã → sổ.
+Hai tầng cửa được dựng ở hai đời khác nhau, và tầng hai từng nằm ở chỗ khác
+(dòng tem) trước khi dời sang mặt cười — chi tiết đó giờ đã có sổ ghi lại.
+
+V17.00 → V17.03 nằm TRƯỚC quãng nhánh này giữ, chỉ còn tên việc chép tay từ
+tài liệu cùng thời — giữ nguyên, không bịa thêm.
+
+
+④ ĐÃ KIỂM THỬ — 112 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+KHUÔN SỐ    quét 89 số phiên bản trong cả bảy cuốn sổ (gồm cả bảng chi tiết):
+            mọi cụm Vxx và phần đuôi đều đúng hai chữ số
+TEM         năm trang đọc thẳng trong trình duyệt, đúng số và không còn dạng
+            một chữ số
+            (mở `/` bị đẩy sang trang hồ sơ nên phải mở `/?stay=1` mới soi
+             được tem bản đồ — đúng như docs/BAN-GHI.md đã ghi)
+SỔ          EGG có cả lịch sử khung Collected lẫn màn pháo hoa; MAP ghi đủ
+            bảy nấc V17 và có đường đi lá cờ → mặt cười; không cuốn nào đả
+            động đo đạc / lưu trữ
+Cùng toàn bộ bộ cũ chạy lại: gợi ý hai cửa mã, bộ đếm theo phiên, cổng Hồ sơ
+Phi đoàn chỉ mở sau khi thắng M3, chuyển cảnh Gate 2, bệ đá, hộp chào, thanh
+cuộn, vùng chạm.
+
+    2 phép báo đỏ lúc chạy lại là kỳ vọng cũ ghi `V3`/`V3.08` — chính cái vừa
+    chuẩn hoá thành `V03`/`V03.08`. Đã cập nhật.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 11 — viết lại nội dung sổ theo lịch sử dò được, đánh lại số Hồ sơ Phi đoàn.
 ════════════════════════════════════════════════════════════════════════════
 5 file sửa, không có file mới. Chép đè theo đúng cây thư mục.

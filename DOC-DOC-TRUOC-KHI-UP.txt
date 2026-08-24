@@ -1,25 +1,25 @@
 ════════════════════════════════════════════════════════════════════════════
-GÓI GỘP · ĐỢT 6 → 11 — 15 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
+GÓI GỘP · ĐỢT 6 → 12 — 16 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
 ════════════════════════════════════════════════════════════════════════════
 
-Gộp cả sáu đợt nên khỏi phải nhớ đã up cái gì. Chép đè hết là đúng, kể cả file
-đã up từ gói trước.
+Gộp cả bảy đợt nên khỏi phải nhớ đã up cái gì. Chép đè hết là đúng.
 
-    .vercelignore                            ← có dấu chấm đầu tên, xem ⚠ dưới
-    index.html
-    README.md
+    .vercelignore    ← có dấu chấm đầu tên, xem ⚠
     DESIGN-SYSTEM.md
     DOC-CAI-NAY-TRUOC.txt
-    api/quote.js
+    README.md
     api/_lib/loichao.md
+    api/quote.js
     assets/lichsu.js
-    docs/BAN-GHI.md
     dad/950901-a/index.html
-    dad/950901-b/index.html
+    dad/950901-b/assets/bg_r1_clean.png                     ← ẢNH, 5,5 MB
     dad/950901-b/config.js
-    dad/950901-b/assets/bg_r1_clean.png      ← ẢNH, 5,5 MB
+    dad/950901-b/index.html
+    docs/BAN-GHI.md
     han/961030-a/index.html
     han/961030-b/index.html
+    index.html
+    phao-hoa/index.html
 
 Up xong bấm REDEPLOY trên Vercel — máy chủ đọc thẳng `api/_lib/loichao.md` mỗi
 lần trang xin một câu, không redeploy thì lời chào vẫn là bộ cũ.
@@ -28,35 +28,32 @@ lần trang xin một câu, không redeploy thì lời chào vẫn là bộ cũ.
 ⚠ HAI CHỖ DỄ VẤP KHI UP
 ────────────────────────────────────────────────────────────────────────────
 1 · `.vercelignore` CÓ DẤU CHẤM ĐẦU TÊN nên bị ẨN trên Mac/Windows.
-    Mac: trong Finder bấm Cmd+Shift+. để hiện file ẩn.
-    Không nhận file ẩn thì bấm "Add file → Create new file", gõ tên
-    `.vercelignore` rồi dán nội dung vào.
-
+    Mac: Finder bấm Cmd+Shift+. để hiện file ẩn. Không nhận file ẩn thì bấm
+    "Add file → Create new file", gõ tên `.vercelignore` rồi dán nội dung.
     Chưa có nó thì ai gõ thẳng địa chỉ cũng tải được /README.md và 16 file tài
-    liệu khác — trong đó có đáp án cả bốn mật thư, hai mã Gate 2, mã PIN và mã
-    cửa hậu.
-
-    KIỂM TRA SAU KHI DEPLOY:
-        mở  https://dongchi-binh-33.vercel.app/README.md  →  phải ra 404
+    liệu khác — trong đó có đáp án bốn mật thư, hai mã Gate 2 và mã cửa hậu.
+        KIỂM TRA: mở https://dongchi-binh-33.vercel.app/README.md → phải ra 404
 
 2 · `dad/950901-b/assets/bg_r1_clean.png` là ẢNH. Quên up thì mọi thứ khác vẫn
-    chạy, chỉ tấm biển vòng 1 là vẫn còn vệt chữ nhật sẫm như cũ.
+    chạy, chỉ tấm biển vòng 1 còn vệt chữ nhật sẫm như cũ.
 
 
-SỐ TEM SAU CẢ SÁU ĐỢT
+SỐ TEM — TẤT CẢ ĐÃ VỀ MỘT KHUÔN Vxx.xx
 ────────────────────────────────────────────────────────────────────────────
-    /                 V18.05        /han/961030-a     V3.04
-    /dad/950901-a     V3.08 ← đổi   /han/961030-b     V2.05
-    /dad/950901-b     V04.09        /phao-hoa         V3.03 (không đụng)
+    /                 V18.06        /han/961030-a     V03.04
+    /dad/950901-a     V03.08        /han/961030-b     V02.05
+    /dad/950901-b     V04.09        /phao-hoa         V03.03
 
-    Hồ sơ Phi đoàn đổi từ V22.08 xuống V3.08 — số V22 cũ là số đặt đại, nay
-    đánh lại theo số bản đếm được trên kho mã (18 bản thời kỳ đầu + 9 bản
-    thời kỳ hiện tại, chia theo luật 10 bản nhỏ một build).
+    LUẬT: số phiên bản LUÔN đệm số 0, cả hai vế đúng hai chữ số.
+        ĐÚNG  V01 · V02 · V04.05 · V17.09 · V02.02
+        SAI   V1  · V2  · V4.5   · V17.9  · V2.02
+    Dòng gộp đệm cả hai đầu: V01 → V21, V11 · V12.
 
 
 BẢY CUỐN SỔ BẢN GHI — mỗi cuốn một cửa
 ────────────────────────────────────────────────────────────────────────────
-    mặt cười trong Box Tổng tư lệnh      →  Bản đồ mật thư            MAP
+    LÁ CỜ ở dòng bản quyền (5 nhịp) → Box Tổng tư lệnh
+        → MẶT CƯỜI (3 nhịp)              →  Bản đồ mật thư            MAP
     tiêu đề "Collected: Easter Egg"      →  Easter Egg · Gate 1       EGG
     tiêu đề hộp "Mission 3 · Phá đảo"    →  Hồ sơ Phi đoàn            DAD-A
       (chỉ có sau khi THẮNG Mission 3)
@@ -64,42 +61,26 @@ BẢY CUỐN SỔ BẢN GHI — mỗi cuốn một cửa
     chữ "Khối vận hành" (Zoey, Chamber)  →  sổ của riêng trang đó     HAN-A/B
     (màn pháo hoa chưa có cửa)           →  Màn pháo hoa              FX
 
-Bấm 3 nhịp vào dòng chữ rồi gõ mã. Được sai 5 lần mới hiện gợi ý; bộ đếm chỉ
-sống trong phiên.
+Bấm 3 nhịp vào dòng chữ rồi gõ mã. Sai 5 lần mới hiện gợi ý; bộ đếm chỉ sống
+trong phiên.
 
 
-LÀM ĐƯỢC NHỮNG GÌ
+BẢY ĐỢT ĐÃ LÀM GÌ
 ────────────────────────────────────────────────────────────────────────────
-ĐỢT 6 · Gate 2 chuyển cảnh chạy trần: clip sạch, bỏ hẳn khói và lớp che
-      · Hộp chào hết xuống dòng giữa block, lấy câu dài hơn
-      · 3 khung chào 06:00-07:30 / 11:00-12:30 / 17:30-19:00; Daily Quote cách
-        chào ≥1h và cách nhau ≥2h; kho quote 12 → 34 câu
-      · Thanh kéo bảng bản ghi, bảng Gate 2 đổi sang xanh lá
-      · Cửa vào bản ghi bỏ icon, dùng chữ
+ĐỢT 6 · Gate 2 chuyển cảnh chạy trần (clip sạch, bỏ khói và lớp che); hộp chào
+        hết xuống dòng giữa block; 3 khung chào trong ngày + luật giãn Daily
+        Quote; kho quote 12 → 34 câu; cửa vào bản ghi bỏ icon dùng chữ
+ĐỢT 7 · Khối vận hành thôi chỉ đường; nới vùng chạm nút đóng; thêm .vercelignore
+ĐỢT 8 · Trả lại gợi ý (cắt vế lộ đáp án); sửa chữ RAZER trôi khỏi bệ đá; nắn
+        tấm biển vòng 1
+ĐỢT 9 · Bộ đếm sai cộng dồn theo phiên; gợi ý Mission 2 dời sang lần khoá thứ
+        hai; bản ghi nới lên 5 lượt; thêm sổ khu Easter Egg
+ĐỢT 10· Đào lịch sử từ ba nhánh dựng riêng; sổ DAD-A đúng tên "Hồ sơ Phi đoàn";
+        sửa chỗ tài liệu chỉ sai vị trí tem; hồ sơ nhẹ đi 15%
+ĐỢT 11· Sổ khu Easter Egg và màn pháo hoa viết theo lịch sử dò được; Hồ sơ Phi
+        đoàn đánh lại số theo bản đếm được; bỏ sạch câu đả động đo đạc/lưu trữ
+ĐỢT 12· Chốt khuôn số Vxx.xx cho cả sáu trang; ghi lịch sử riêng của khung
+        Collected; rà đủ sáu nấc V17 nên có luôn đường cửa hậu lá cờ → mặt cười
 
-ĐỢT 7 · Khối vận hành thôi chỉ đường, thay bằng dòng trạng thái màn chơi
-      · Nới vùng chạm mấy nút đóng (đang 21×23 và 28×28, quá nhỏ)
-      · Thêm `.vercelignore` — việc đợt 5 ghi là "còn làm tay" mà chưa xong
-
-ĐỢT 8 · Gợi ý "Năm sinh Bác Hồ"; Mission 2 có gợi ý về DOTA2
-      · Sửa lỗi chữ RAZER trôi khỏi bệ đá trong chuyển cảnh
-      · Nắn tấm biển vòng 1 cho hết vệt chữ nhật sẫm
-
-ĐỢT 9 · Bộ đếm sai cộng dồn trong phiên, đóng trình duyệt là xoá
-      · Mission 2: gợi ý dời sang LẦN BỊ KHOÁ THỨ HAI (sai lần 6)
-      · Cửa mã bản ghi nới lượt thử sai từ 3 lên 5
-      · Sổ riêng cho khu Easter Egg ở tiêu đề khung Collected
-
-ĐỢT 10 · Đào lịch sử từ ba nhánh dựng riêng, sửa ngày và số bản nhỏ Gate 2
-       · Sổ DAD-A đổi đúng tên "Hồ sơ Phi đoàn"
-       · Sửa một chỗ tài liệu chỉ sai vị trí tem; ghi ra bảng tem cả sáu trang
-       · Hồ sơ Phi đoàn nhẹ đi 274 KB (15%) nhờ gom hai tấm nền dùng chung
-
-ĐỢT 11 · Sổ khu Easter Egg viết chi tiết từ lịch sử màn pháo hoa dò được
-       · Sổ màn pháo hoa thay `no info` bằng ba mốc thật
-       · Hồ sơ Phi đoàn đánh lại số: V22 (đặt đại) → V1/V2/V3 theo bản đếm được
-       · Bỏ sạch mọi câu đả động đo đạc / lưu trữ trong sổ, VÀ sửa cái luật đã
-         đẻ ra chúng ở cả bốn chỗ tài liệu
-
-Chi tiết từng mục kèm số đo: mở DOC-CAI-NAY-TRUOC.txt, sáu đợt nằm trên cùng.
-Đã kiểm thử 100 phép trên trình duyệt thật, 0 hỏng.
+Chi tiết kèm số đo: mở DOC-CAI-NAY-TRUOC.txt, bảy đợt nằm trên cùng.
+Đã kiểm thử 112 phép trên trình duyệt thật, 0 hỏng.

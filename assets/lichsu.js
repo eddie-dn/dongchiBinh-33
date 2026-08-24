@@ -79,6 +79,19 @@
   var NGUNG = 900;      /* ngưng bấy nhiêu ms là đếm lại từ đầu */
   var ANH = '/assets/poster/HH_5_idle_afk.webp';
 
+  /* ═══ KHUÔN SỐ PHIÊN BẢN — LUÔN LÀ Vxx.xx, ĐỆM SỐ 0 ══════════════════
+     Cả hai vế đều ĐÚNG HAI CHỮ SỐ, không bao giờ bỏ số 0 đứng đầu:
+
+         ĐÚNG    V01 · V02 · V04.05 · V17.09 · V02.02
+         SAI     V1  · V2  · V4.5   · V17.9  · V2.02
+
+     Vì sao bắt chặt: đời trước để lẫn cả hai kiểu — chỗ ghi `V02.02`, chỗ ghi
+     `V3.02`, cùng một bảng mà đọc xuống cứ tưởng hai hệ đánh số khác nhau.
+     Sắp xếp theo chuỗi cũng loạn (`V10` đứng trước `V2`). Nay chốt một khuôn.
+
+     Áp cho CẢ tem ngoài trang lẫn cột Build trong sổ — sáu trang đã nắn đồng
+     loạt. Thêm dòng mới thì gõ đúng khuôn ngay từ đầu.
+     Dòng gộp thì đệm cả hai đầu: `V01 → V21`, `V11 · V12`. */
   /* ═══ BẢNG DỮ LIỆU ═══════════════════════════════════════════════════
      MỖI DÒNG LÀ MỘT BUILD LỚN, không phải một bản vá. Cũ nhất nằm trên.
        ngay  — YYYY-MM-DD của build đó, hoặc 'no info' (bảng tự đổi thành N/A)
@@ -133,15 +146,15 @@
     MAP: {
       ten: 'Bản đồ mật thư', duong: '/',
       doi: [
-        { ngay:'no info', ver:'V1',  so:null, chinh:'Bản đồ đầu tiên' },
-        { ngay:'no info', ver:'V2',  so:null, chinh:'Thêm đếm ngược và phóng to thu nhỏ' },
-        { ngay:'no info', ver:'V3',  so:null, chinh:'Đổi sang khung hẹp, thêm khung phụ' },
-        { ngay:'no info', ver:'V4',  so:null, chinh:'Nắn quần đảo về đúng vị trí, thêm hộp mật thư' },
-        { ngay:'no info', ver:'V5',  so:null, chinh:'Thêm ô chữ, lời khen, sóng biển' },
-        { ngay:'no info', ver:'V6',  so:null, chinh:'Thêm kênh bắt sóng và tên lửa' },
-        { ngay:'no info', ver:'V7',  so:null, chinh:'Thêm khối chinh phục' },
-        { ngay:'no info', ver:'V8',  so:null, chinh:'Vá tên lửa đen, thêm gõ đúp cho điện thoại' },
-        { ngay:'2026-08-04', ver:'V9',  so:null, chinh:'Bỏ rồi ghim lại mã morse, câu trêu xoay vòng, toạ độ mở khoá sáng lên' },
+        { ngay:'no info', ver:'V01',  so:null, chinh:'Bản đồ đầu tiên' },
+        { ngay:'no info', ver:'V02',  so:null, chinh:'Thêm đếm ngược và phóng to thu nhỏ' },
+        { ngay:'no info', ver:'V03',  so:null, chinh:'Đổi sang khung hẹp, thêm khung phụ' },
+        { ngay:'no info', ver:'V04',  so:null, chinh:'Nắn quần đảo về đúng vị trí, thêm hộp mật thư' },
+        { ngay:'no info', ver:'V05',  so:null, chinh:'Thêm ô chữ, lời khen, sóng biển' },
+        { ngay:'no info', ver:'V06',  so:null, chinh:'Thêm kênh bắt sóng và tên lửa' },
+        { ngay:'no info', ver:'V07',  so:null, chinh:'Thêm khối chinh phục' },
+        { ngay:'no info', ver:'V08',  so:null, chinh:'Vá tên lửa đen, thêm gõ đúp cho điện thoại' },
+        { ngay:'2026-08-04', ver:'V09',  so:null, chinh:'Bỏ rồi ghim lại mã morse, câu trêu xoay vòng, toạ độ mở khoá sáng lên' },
         { ngay:'2026-08-04', ver:'V10', so:'09', chinh:'Huy hiệu tên lửa có vòng đời đầy đủ, lockup cờ' },
         { ngay:'no info', ver:'V11 · V12', so:null,
           chinh:'Nối luồng người chơi từ trang hồ sơ về bản đồ',
@@ -158,15 +171,23 @@
           chinh:'Trạng thái GAME ON, chỉnh hiệu ứng pháo hoa và hiệu ứng Gate 1' },
         /* V17 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau đã mở dòng V18 ngay
            bên dưới, không ghi V17.10 — xem luật ở đầu file. */
+        /* ── V17.04 → V17.09 DÒ ĐƯỢC ĐỦ SÁU NẤC ─────────────────────────────
+           Nhánh này còn giữ nguyên từng lượt push của quãng đó, nên tem đọc
+           thẳng được và diff giữa hai bản liền nhau cho biết đúng cái gì vừa
+           thêm. V17.00 → V17.03 nằm trước quãng nhánh giữ lại, chỉ còn tên
+           việc chép tay từ tài liệu cùng thời. */
         { ngay:'2026-08-20', ver:'V17', so:'10',
           chinh:'Thêm hộp chào đầu ngày, mở rộng kho lời chào, đồng bộ hệ nút, thêm bản ghi và làm lại khuôn bản ghi',
           chi:[
             { ver:'V17.03', chinh:'Chỉnh hiệu ứng pháo hoa và hiệu ứng khu Gate 1' },
             { ver:'V17.04', chinh:'Nối liền ba khu chơi thành một mạch: bản đồ → Easter Egg → lâu đài' },
-            { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' },
+            { ver:'V17.05', chinh:'Thêm hộp chào đầu ngày chia theo buổi; mọi khung ảnh nặng có ảnh mồi tĩnh nằm dưới nên không còn khoảng trống lúc chờ' },
+            { ver:'V17.06', chinh:'Thêm Daily Quote cho hộp chào, và luật không tách dòng giữa tên màn' },
+            { ver:'V17.07', chinh:'Thử đặt cửa vào bản ghi ngay trên dòng tem ở chân bản đồ' },
+            { ver:'V17.08', chinh:'Dời cửa vào bản ghi từ dòng tem sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua lá cờ giữ nguyên' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', ver:'V18', so:'06',
+        { ngay:'2026-08-24', ver:'V18', so:'07',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
@@ -174,7 +195,8 @@
             { ver:'V18.02', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn cho những lần sau' },
             { ver:'V18.03', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm và đếm cộng dồn theo phiên; khu Easter Egg có bản ghi riêng' },
             { ver:'V18.04', chinh:'Soát lại toàn bộ tên sổ và mốc thời gian theo nhánh dựng riêng trên kho mã; đồng bộ lại tài liệu' },
-            { ver:'V18.05', chinh:'Viết lại nội dung sổ khu Easter Egg và màn pháo hoa theo lịch sử dò được; đánh lại số build của Hồ sơ Phi đoàn' }
+            { ver:'V18.05', chinh:'Viết lại nội dung sổ khu Easter Egg và màn pháo hoa theo lịch sử dò được; đánh lại số build của Hồ sơ Phi đoàn' },
+            { ver:'V18.06', chinh:'Chốt khuôn số phiên bản Vxx.xx cho cả sáu trang; ghi đủ các nấc V17 và lịch sử riêng của khung Collected' }
           ] }
       ]
     },
@@ -228,14 +250,22 @@
             { ver:'16-08', chinh:'Màn pháo hoa có tem phiên bản riêng' },
             { ver:'18-08', chinh:'Dời tem lên cao và vào trong, khỏi đè lên mép màn hình' }
           ] },
+        /* Mấy dòng chi tiết dưới đây dò thẳng từ diff của `index.html` giữa hai
+           bản liền nhau, lọc riêng phần đụng tới khung Collected (`cred*`). */
         { ngay:'2026-08-20', ver:'V17', so:null,
-          chinh:'Nối liền ba khu chơi thành một mạch, khung Collected có nút xem lại pháo hoa',
+          chinh:'Nối liền ba khu chơi thành một mạch, khung Collected có ảnh mồi và nút xem lại pháo hoa',
           chi:[
             { ver:'V17.03', chinh:'Chỉnh hiệu ứng pháo hoa và hiệu ứng khu Gate 1' },
-            { ver:'V17.04', chinh:'Nối liền ba khu thành một mạch: bản đồ → Easter Egg → lâu đài' }
+            { ver:'V17.04', chinh:'Nối liền ba khu thành một mạch: bản đồ → Easter Egg → lâu đài' },
+            { ver:'V17.05', chinh:'Khung Collected có ảnh mồi tĩnh nằm dưới clip nặng nên không còn khoảng trống lúc chờ; khung cũng được xếp vào nhóm hộp ưu tiên để hộp chào biết nhường' }
           ] },
         { ngay:'2026-08-24', ver:'V18', so:null,
-          chinh:'Khu có bản ghi riêng, vào bằng chính dòng tiêu đề của khung Collected' }
+          chinh:'Khung Collected thành cửa vào bản ghi riêng của khu',
+          chi:[
+            { ver:'V18.01', chinh:'Nới vùng bấm của nút đóng khung Collected cho vừa đầu ngón tay' },
+            { ver:'V18.03', chinh:'Chính dòng tiêu đề khung thành cửa vào bản ghi, trỏ vào thì chữ đổi màu' },
+            { ver:'V18.05', chinh:'Viết lại nội dung sổ theo lịch sử dò được của khung và của màn pháo hoa' }
+          ] }
       ]
     },
     /* ── ⚠ TÊN: "HỒ SƠ PHI ĐOÀN", KHÔNG PHẢI "EASTER EGG · GATE 1" ─────────
@@ -263,28 +293,28 @@
          .00 → .09) thì ra V1 (10 bản) · V2 (8 bản) · V3 (9 bản, đang chạy).
          Tem ngoài trang cũng đổi theo, thành V3.08.                        */
       doi: [
-        { ngay:'2026-08-04', ver:'V1', so:'10',
+        { ngay:'2026-08-04', ver:'V01', so:'10',
           chinh:'Dựng trang Hồ sơ Phi đoàn. Chưa đánh số phiên bản nên không còn mốc build nào' },
-        { ngay:'2026-08-07', ver:'V2', so:'08',
+        { ngay:'2026-08-07', ver:'V02', so:'08',
           chinh:'Hoàn thiện hồ sơ trước khi gộp vào site chung. Vẫn chưa có tem' },
-        { ngay:'2026-08-24', ver:'V3', so:'09',
+        { ngay:'2026-08-24', ver:'V03', so:'09',
           chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi, chỉnh luật gợi ý',
           chi:[
-            { ver:'V3.00 → V3.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
-            { ver:'V3.02', chinh:'Dòng nhiệm vụ ở trang bìa, ba nấc nhiệm vụ, khuôn cửa mã dùng chung' },
-            { ver:'V3.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' },
-            { ver:'V3.04', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng tiêu đề của hộp, trỏ vào thì chữ đổi màu' },
-            { ver:'V3.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V3.06', chinh:'Cửa mã Mission 2 cho một gợi ý sau ba lần sai và nhớ luôn cho những lần sau' },
-            { ver:'V3.07', chinh:'Dời mốc gợi ý Mission 2 sang lần bị khoá thứ hai, bộ đếm sai tính theo phiên' },
-            { ver:'V3.08', chinh:'Đặt lại đúng tên trang trong bản ghi, đánh lại số build theo bản đếm được; gom hai tấm nền dùng chung về một chỗ' }
+            { ver:'V03.00 → V03.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
+            { ver:'V03.02', chinh:'Dòng nhiệm vụ ở trang bìa, ba nấc nhiệm vụ, khuôn cửa mã dùng chung' },
+            { ver:'V03.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' },
+            { ver:'V03.04', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng tiêu đề của hộp, trỏ vào thì chữ đổi màu' },
+            { ver:'V03.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V03.06', chinh:'Cửa mã Mission 2 cho một gợi ý sau ba lần sai và nhớ luôn cho những lần sau' },
+            { ver:'V03.07', chinh:'Dời mốc gợi ý Mission 2 sang lần bị khoá thứ hai, bộ đếm sai tính theo phiên' },
+            { ver:'V03.08', chinh:'Đặt lại đúng tên trang trong bản ghi, đánh lại số build theo bản đếm được; gom hai tấm nền dùng chung về một chỗ' }
           ] }
       ]
     },
     'DAD-B': {
       ten: 'Easter Egg · Gate 2', duong: '/dad/950901-b',
       doi: [
-        { ngay:'no info', ver:'V1', so:null, chinh:'Bản chơi thử đầu tiên' },
+        { ngay:'no info', ver:'V01', so:null, chinh:'Bản chơi thử đầu tiên' },
         /* ── NGÀY VÀ SỐ ĐUÔI ĐỌC THẲNG TỪ TEM ────────────────────────────
            Nguồn: nhánh dựng riêng `easter-egg-gate2` trên GitHub, tem nằm ở
            `config.js` theo khuôn 'V04.00<br>Last updated 18-Aug-2026'. Đây là
@@ -300,11 +330,11 @@
            nấc — khớp khít với chuyện phải nắn sang V03 NGAY TRONG CÙNG NGÀY.
            Bản trước ghi V2 ngày 15-08 và 10 bản nhỏ, cả hai đều không có
            nguồn nào đỡ. */
-        { ngay:'2026-08-17', ver:'V2',  so:'12',
+        { ngay:'2026-08-17', ver:'V02',  so:'12',
           chinh:'Dựng concept và hai vòng giải mã. Số đuôi chạy tới .11, quá luật nên đã nắn sang V03',
           chi:[
-            { ver:'V2.00 → V2.03', chinh:'Dựng concept và kịch bản màn chơi, giao diện tĩnh và cảnh chuyển động' },
-            { ver:'V2.04 → V2.09', chinh:'Chỉnh luật chơi, thiết kế cách người chơi tương tác, thêm đồng hồ, gợi ý và mạch màn chơi' }
+            { ver:'V02.00 → V02.03', chinh:'Dựng concept và kịch bản màn chơi, giao diện tĩnh và cảnh chuyển động' },
+            { ver:'V02.04 → V02.09', chinh:'Chỉnh luật chơi, thiết kế cách người chơi tương tác, thêm đồng hồ, gợi ý và mạch màn chơi' }
           ] },
         /* V03.06 tự khai 18-Aug-2026 — đó là nhịp cuối của build này dò được,
            nên lấy 18-08 chứ không phải 17-08 như bản trước (cột `ngay` của cả
@@ -324,31 +354,31 @@
     'HAN-A': {
       ten: 'Zoey’s Castle', duong: '/han/961030-a',
       doi: [
-        { ngay:'no info', ver:'V1', so:null, chinh:'no info' },
-        { ngay:'2026-08-17', ver:'V2', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', ver:'V3', so:'05',
-          chinh:'Thêm bản ghi (V2 đã hết nấc đuôi nên sang dòng V3), đồng bộ hệ nút bản ghi',
+        { ngay:'no info', ver:'V01', so:null, chinh:'no info' },
+        { ngay:'2026-08-17', ver:'V02', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
+        { ngay:'2026-08-24', ver:'V03', so:'05',
+          chinh:'Thêm bản ghi (V02 đã hết nấc đuôi nên sang dòng V03), đồng bộ hệ nút bản ghi',
           chi:[
-            { ver:'V3.00', chinh:'Thêm bản ghi cho trang này' },
-            { ver:'V3.01', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
-            { ver:'V3.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V3.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
-            { ver:'V3.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
+            { ver:'V03.00', chinh:'Thêm bản ghi cho trang này' },
+            { ver:'V03.01', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
+            { ver:'V03.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V03.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
+            { ver:'V03.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
           ] }
       ]
     },
     'HAN-B': {
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
-        { ngay:'2026-08-17', ver:'V1', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V2' },
-        { ngay:'2026-08-24', ver:'V2', so:'06',
+        { ngay:'2026-08-17', ver:'V01', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V02' },
+        { ngay:'2026-08-24', ver:'V02', so:'06',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
-            { ver:'V2.00 → V2.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
-            { ver:'V2.02', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
-            { ver:'V2.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
-            { ver:'V2.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
-            { ver:'V2.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
+            { ver:'V02.00 → V02.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
+            { ver:'V02.02', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
+            { ver:'V02.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
+            { ver:'V02.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
+            { ver:'V02.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
           ] }
       ]
     },
@@ -366,11 +396,11 @@
     FX: {
       ten: 'Màn pháo hoa', duong: '/phao-hoa',
       doi: [
-        { ngay:'2026-08-14', ver:'V1', so:null,
+        { ngay:'2026-08-14', ver:'V01', so:null,
           chinh:'Màn pháo hoa đầu tiên: bắn tự động, lời chúc hiện dần, thêm chế độ chạm-để-bắn' },
-        { ngay:'2026-08-15', ver:'V2', so:null,
+        { ngay:'2026-08-15', ver:'V02', so:null,
           chinh:'Quả trứng và vụ nổ vẽ tay trên canvas, thêm nút bắn lại và lối vào khu Easter Egg' },
-        { ngay:'2026-08-19', ver:'V3', so:'04',
+        { ngay:'2026-08-19', ver:'V03', so:'04',
           chinh:'Chỉnh khung màn và chỗ đứng của tem phiên bản' }
       ]
     }

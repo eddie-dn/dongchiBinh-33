@@ -37,6 +37,11 @@ Ba bước, **làm đủ cả ba** thì bản ghi mới khớp với thứ đang
 
 Sửa đúng chỗ khai chuỗi tem của trang đó:
 
+**Số phiên bản LUÔN là `Vxx.xx`** — đệm số 0, cả hai vế đúng hai chữ số:
+`V01` · `V02` · `V04.05` · `V17.09` · `V02.02`. Không bao giờ `V1`, `V2.02`, `V4.5`.
+Áp cho cả tem ngoài trang lẫn cột Build trong sổ. Dòng gộp đệm cả hai đầu
+(`V01 → V21`, `V11 · V12`).
+
 Đã soát lại từng trang — **thẻ và khuôn chuỗi mỗi trang một khác**, chép nhầm
 khuôn của trang này sang trang kia là tem hiện sai hoặc mất hẳn:
 

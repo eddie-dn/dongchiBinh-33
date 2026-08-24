@@ -451,9 +451,18 @@ phiên bản** (§11b) để người chơi mở ra cũng đọc được đúng
 | `index.html` đi `V17.05 → V17.04` rồi lại `V17.05` | số **lùi một nấc** giữa hai lượt push ngày 18-08 — ghi tay nhầm | Đã tự vượt qua từ `V17.06`; chỉ ghi lại cho có sổ |
 | Đợt 1 (`Sửa mục 8-13`) sửa 4 file mà **không bump tem nào** | quên | Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật |
 
-Còn một chỗ **cố ý không đụng**: cách đệm số 0 ở phần `x` không đồng nhất
-(`V04.04` có đệm — `V2.09`, `V3.03` không). Mỗi trang tự nhất quán với lịch sử
-của chính nó; nắn lại chỉ để cho đều mắt thì đổi số tem của bốn trang mà chẳng được gì.
+Chỗ **đệm số 0 thì ĐÃ NẮN**, không còn để lẫn nữa. Trước đây `V04.04` có đệm mà
+`V2.09`, `V3.03` thì không — cùng một bảng mà đọc xuống tưởng hai hệ đánh số khác
+nhau, sắp theo chuỗi thì `V10` đứng trước `V2`.
+
+**Luật chốt: số phiên bản LUÔN là `Vxx.xx`, cả hai vế đúng hai chữ số.**
+
+| Đúng | Sai |
+|---|---|
+| `V01` · `V02` · `V04.05` · `V17.09` · `V02.02` | ~~`V1`~~ · ~~`V2`~~ · ~~`V4.5`~~ · ~~`V2.02`~~ |
+
+Áp cho cả tem ngoài trang lẫn cột Build trong sổ; sáu trang đã nắn đồng loạt. Dòng
+gộp đệm cả hai đầu: `V01 → V21`, `V11 · V12`.
 
 ### Nhấp nháy tem — BỐN lý do, đọc cả bảng trước khi thêm nhánh
 

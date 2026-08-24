@@ -129,6 +129,17 @@ phiên bản **dưới**:
 Last updated DD-Mon-YYYY · Vxx.yy
 ```
 
+**Số phiên bản LUÔN là `Vxx.xx` — đệm số 0, cả hai vế đúng hai chữ số.**
+
+| Đúng | Sai |
+|---|---|
+| `V01` · `V02` · `V04.05` · `V17.09` · `V02.02` | ~~`V1`~~ · ~~`V2`~~ · ~~`V4.5`~~ · ~~`V17.9`~~ · ~~`V2.02`~~ |
+
+Đời trước để lẫn cả hai kiểu — chỗ ghi `V02.02`, chỗ ghi `V3.02`, cùng một bảng
+mà đọc xuống tưởng hai hệ đánh số khác nhau; sắp theo chuỗi thì `V10` đứng
+trước `V2`. Nay chốt một khuôn, áp cho **cả tem ngoài trang lẫn cột Build trong
+sổ**. Dòng gộp đệm cả hai đầu: `V01 → V21`, `V11 · V12`.
+
 > **⚠ THỰC TẾ ĐANG CÓ HAI KHUÔN, đã soát từng trang.** Không phải lỗi mới phát
 > sinh — mỗi trang dựng một thời điểm khác nhau. Ghi ra đây để sửa tem thì biết
 > đường mà tìm, **đừng nắn cho giống nhau**: mỗi trang có hàm dựng tem riêng,
