@@ -1,4 +1,118 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 11 — viết lại nội dung sổ theo lịch sử dò được, đánh lại số Hồ sơ Phi đoàn.
+════════════════════════════════════════════════════════════════════════════
+5 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+Số tem sau đợt này:
+    /                 V18.05        /han/961030-a     V3.04 (không đụng)
+    /dad/950901-a     V3.08  ← ĐỔI  /han/961030-b     V2.05 (không đụng)
+    /dad/950901-b     V04.09 (không đụng)   /phao-hoa  V3.03 (không đụng)
+
+
+① SỔ KHU EASTER EGG — VIẾT CHI TIẾT TỪ LỊCH SỬ MÀN PHÁO HOA
+────────────────────────────────────────────────────────────────────────────
+Dò `phao-hoa/index.html` qua từng commit trên mọi nhánh: tem tự khai nằm ở thẻ
+`.vstamp`, còn diff giữa hai bản liền nhau cho biết ĐÚNG cái gì vừa thêm — hàm
+mới, nút mới, chữ mới. Dò ra một mạch rõ ràng:
+
+    14-08   bản đầu, 21 KB    bắn tự động, lời chúc, tôn trọng giảm chuyển động
+    14-08   21 KB             thêm chạm-để-bắn (giữ tay tụ lửa, thả ra thì nổ)
+    15-08   29 KB             quả trứng, nút Bắn lại, nút Vào Easter Egg
+    15-08   34 KB             vẽ tay quả trứng và vụ nổ thẳng trên canvas
+    16-08   V3.01, 35 KB      màn pháo hoa có tem riêng
+    18-08   V3.02             dời tem lên cao và vào trong
+    19-08   V3.03             chốt số hiệu
+
+Sáu dòng đầu nay nằm trong sổ EGG dưới mốc V16, đánh dấu bằng NGÀY chứ không
+bằng số đuôi (bốn bản đầu chạy trước khi màn pháo hoa có tem).
+
+    ⚠ LẦN ĐẦU VIẾT BỊ LẪN HAI HỆ SỐ: nhét cả V1/V2 của pháo hoa lẫn V15-V18
+    của bản đồ vào chung một bảng, thành ra thứ tự thời gian nhảy loạn
+    (V1 14-08 → V2 15-08 → V15 12-08…). Sổ hiển thị theo đúng thứ tự mảng nên
+    đọc xuống rất khó chịu. Đã làm lại: MỘT TRỤC SỐ DUY NHẤT là số build của
+    bản đồ (khu này nằm trong chính index.html, không có trang riêng), chi
+    tiết pháo hoa nằm gọn trong `chi` của đúng mốc.
+
+Sổ FX (màn pháo hoa) cũng thay được `no info` bằng ba mốc thật, và ngày của V3
+sửa từ 17-08 thành 19-08 theo tem đọc được.
+
+
+② HỒ SƠ PHI ĐOÀN — ĐÁNH LẠI SỐ, V22 LÀ SỐ ĐẶT ĐẠI
+────────────────────────────────────────────────────────────────────────────
+Trang này CHƯA BAO GIỜ có tem trong suốt thời kỳ đầu, nên không moi ra được
+mốc nào từ tem — `main` cũng không có (chuỗi "v13.4" tưởng là tem hoá ra là dữ
+liệu đường SVG).
+
+Nên đếm bằng thứ đếm được: SỐ BẢN KHÁC NHAU của chính file trang, gộp mọi
+nhánh trên kho mã (`main`, `dad-950901-mission`, nhánh gộp site):
+
+    18 bản   26-07 → 07-08-2026    thời kỳ dựng trang, chưa có tem
+     9 bản   18-08 → 24-08-2026    thời kỳ gộp vào site, có tem
+
+Chia theo đúng luật của bộ (1 build lớn = tối đa 10 bản nhỏ, đuôi .00 → .09):
+
+    V1   10 bản   tới 04-08-2026
+    V2    8 bản   tới 07-08-2026
+    V3    9 bản   tới 24-08-2026   ← đang chạy, tem ngoài trang = V3.08
+
+Tem ngoài trang đổi theo: V22.08 → V3.08. Bảng tem trong README cũng sửa.
+
+    Ghi rõ để đời sau khỏi hỏi: tem `V22.03` ĐÃ CÓ SẴN trên trang từ trước khi
+    đợt 6 bắt đầu — không phải tự thêm vào, chỉ bump số qua các đợt. Nay số
+    gốc là số đặt đại nên bump tiếp cũng vô nghĩa, thay bằng số đếm được.
+
+CỬA VÀO GIỮ ĐÚNG NHƯ YÊU CẦU: chỉ gắn trong hàm dựng hộp "Mission 3 · Phá
+đảo", tức chỉ có sau khi thắng Mission 3. Mọi hộp khác đều bị gỡ `data-ls` khi
+mở. Đã kiểm: chưa thắng M3 thì bấm 3 nhịp vào tiêu đề hộp cũng không ra gì.
+
+
+③ BỎ SẠCH MỌI CÂU ĐẢ ĐỘNG TỚI ĐO ĐẠC / LƯU TRỮ
+────────────────────────────────────────────────────────────────────────────
+Gỡ ba chỗ trong sổ: "thêm đo đạc" (hai chỗ), "cập nhật API", "nạp trước tài
+nguyên". Thay bằng loại việc người chơi nhìn thấy được.
+
+QUAN TRỌNG HƠN LÀ SỬA CÁI LUẬT ĐÃ ĐẺ RA MẤY CÂU ĐÓ. Khối chú thích "LUẬT VIẾT
+CỘT SỬA CHÍNH" trong lichsu.js trước đây LIỆT KÊ "thêm đo đạc" và "cập nhật
+API" như ví dụ ĐƯỢC PHÉP — cả README, DESIGN-SYSTEM và docs/BAN-GHI.md đều
+chép lại y hệt. Không sửa luật thì lần sau lại viết vào đúng như cũ.
+
+Nay cả bốn chỗ đều ghi cấm rõ ràng:
+
+    KHÔNG MỘT CHỮ NÀO về đo đạc · theo dõi · ghi nhận · bắn số liệu về · lưu
+    trữ. Người chơi đang đọc một cuốn sổ trong game, không phải tài liệu kỹ
+    thuật — và cũng không cần biết trang có ghi lại gì hay không.
+
+    CHỈ ghi loại việc NHÌN THẤY ĐƯỢC: chỉnh hiệu ứng · chỉnh hiệu ứng pháo hoa
+    nổ · chỉnh khung màn · chỉnh luật chơi · chỉnh luật gợi ý · đồng bộ hệ nút
+    · cập nhật giao diện · làm lại chuyển cảnh.
+
+Bổ sung thêm hai luật vào README, rút từ chính đợt này:
+  · TRƯỚC KHI ghi `no info` thì phải đi dò các nhánh dựng riêng đã.
+  · Trang chưa bao giờ có tem thì ĐẾM BẢN, đừng bịa số.
+
+
+④ SỔ GATE 2 — ĐÃ ĐÚNG CHỖ, KHÔNG ĐỤNG
+────────────────────────────────────────────────────────────────────────────
+Cửa vào nằm trong chính html trò chơi (chữ "Khối vận hành" ở cả màn cổng lẫn
+màn phát mã). Giữ nguyên.
+
+
+⑤ ĐÃ KIỂM THỬ — 100 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+BẢY CUỐN SỔ    đọc thẳng dữ liệu trong trình duyệt: tên, số dòng, mốc đang
+               chạy; và quét toàn bộ chữ trong cả bảy cuốn (kể cả phần chi
+               tiết) để chắc KHÔNG cuốn nào còn chữ đo đạc / theo dõi / lưu trữ
+CỔNG HỒ SƠ     chưa thắng M3 → tiêu đề hộp không mang cửa, bấm 3 nhịp cũng
+               không ra gì; thắng rồi → vào đúng sổ "Hồ sơ Phi đoàn"
+TEM            trang hồ sơ hiện V3.08
+Cùng toàn bộ bộ cũ chạy lại: gợi ý hai cửa mã, bộ đếm theo phiên, chuyển cảnh
+Gate 2, bệ đá hai vòng, nền hồ sơ, hộp chào, thanh cuộn, vùng chạm.
+
+    1 phép báo đỏ lúc chạy lại là do sổ EGG viết lại còn 4 mốc (trước 5) — đã
+    cập nhật kỳ vọng.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 10 — soát sổ theo nhánh gốc, sửa tên, dọn dung lượng.
 ════════════════════════════════════════════════════════════════════════════
 6 file sửa, không có file mới. Chép đè theo đúng cây thư mục.

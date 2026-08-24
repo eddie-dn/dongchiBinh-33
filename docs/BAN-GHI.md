@@ -100,8 +100,14 @@ Bản ghi **người chơi mở ra đọc được**. Tuyệt đối KHÔNG ghi:
 - tên biến môi trường, tên khoá lưu, tên endpoint, tên nhà cung cấp
 - bất cứ thứ gì nói ra là bớt được một bước phải mò
 
-Chỉ ghi **loại việc**: *"cập nhật API"*, *"chỉnh hiệu ứng"*, *"chỉnh luật chơi"*,
-*"đồng bộ hệ nút"*, *"cập nhật giao diện"*, *"thêm đo đạc"*.
+Chỉ ghi **loại việc người chơi nhìn thấy được**: *"chỉnh hiệu ứng"*, *"chỉnh hiệu ứng
+pháo hoa nổ"*, *"chỉnh khung màn"*, *"chỉnh luật chơi"*, *"chỉnh luật gợi ý"*,
+*"đồng bộ hệ nút"*, *"cập nhật giao diện"*, *"làm lại chuyển cảnh"*.
+
+> **⚠ VÀ KHÔNG MỘT CHỮ NÀO về đo đạc · theo dõi · ghi nhận · bắn số liệu về · lưu
+> trữ.** Không *"thêm đo đạc"*, không *"cập nhật API"*, không *"nạp trước tài nguyên"*.
+> Người chơi đang đọc một cuốn sổ trong game, không phải tài liệu kỹ thuật — và cũng
+> không cần biết trang có ghi lại gì hay không. Đời trước lỡ ghi ở ba chỗ, đã gỡ hết.
 
 > Ví dụ đúng: "Thêm nút cầu cứu trong cửa mã, chỉnh luật gợi ý và luật tạm khoá."
 > Ví dụ sai: "Thêm nút SOS mở gợi ý MiG-21 khi bấm 10 nhịp." — lộ cả đáp án lẫn cách mò.

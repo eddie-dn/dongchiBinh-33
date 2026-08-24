@@ -327,9 +327,17 @@ Mỗi dòng trong sổ là **MỘT BUILD LỚN** (V9, V10, V15…), không phả
 Cột `#` là **số bản vá ghi lại được trong build đó** — `V10.08` nghĩa là 09 bản.
 Không biết thì ghi **`thiếu info`** và **giữ nguyên số build**.
 
-Cột "Sửa chính" chỉ ghi **loại việc** (*cập nhật API · chỉnh hiệu ứng · chỉnh
-luật chơi · đồng bộ hệ nút*). Sổ này người chơi mở ra đọc được, nên tuyệt đối
-không ghi mã, đáp án, tên biến môi trường hay tên endpoint.
+Cột "Sửa chính" chỉ ghi **loại việc người chơi nhìn thấy được** (*chỉnh hiệu
+ứng · chỉnh hiệu ứng pháo hoa nổ · chỉnh khung màn · chỉnh luật chơi · chỉnh
+luật gợi ý · đồng bộ hệ nút · cập nhật giao diện · làm lại chuyển cảnh*).
+Sổ này người chơi mở ra đọc được, nên tuyệt đối không ghi mã, đáp án, tên biến
+môi trường hay tên endpoint.
+
+> **⚠ VÀ KHÔNG MỘT CHỮ NÀO về đo đạc · theo dõi · ghi nhận · bắn số liệu về ·
+> lưu trữ.** Không *"thêm đo đạc"*, không *"cập nhật API"*, không *"nạp trước
+> tài nguyên"*. Người chơi đang đọc một cuốn sổ trong game, không phải tài liệu
+> kỹ thuật — và cũng không cần biết trang có ghi lại gì hay không.
+> Đời trước lỡ ghi *"thêm đo đạc"* ở ba chỗ, đã gỡ hết.
 
 ---
 

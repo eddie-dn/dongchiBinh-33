@@ -431,7 +431,7 @@ Sửa chuỗi ở thuộc tính `data-base` của `#stamp`; `stampText()` sẽ g
 | Trang | Đường | Đang chạy |
 |---|---|---|
 | Bản đồ mật thư | `/` | **V17.08** |
-| Easter Egg · Gate 1 | `/dad/950901-a` | **V22.03** |
+| Hồ sơ Phi đoàn | `/dad/950901-a` | **V3.08** |
 | Easter Egg · Gate 2 | `/dad/950901-b` | **V04.05** (khai ở `config.js`) |
 | Zoey's Castle | `/han/961030-a` | **V3.00** |
 | HongHan's Secret Chamber | `/han/961030-b` | **V2.01** |
@@ -452,7 +452,7 @@ phiên bản** (§11b) để người chơi mở ra cũng đọc được đúng
 | Đợt 1 (`Sửa mục 8-13`) sửa 4 file mà **không bump tem nào** | quên | Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật |
 
 Còn một chỗ **cố ý không đụng**: cách đệm số 0 ở phần `x` không đồng nhất
-(`V04.04`, `V22.02` có đệm — `V2.09`, `V3.03` không). Mỗi trang tự nhất quán với lịch sử
+(`V04.04` có đệm — `V2.09`, `V3.03` không). Mỗi trang tự nhất quán với lịch sử
 của chính nó; nắn lại chỉ để cho đều mắt thì đổi số tem của bốn trang mà chẳng được gì.
 
 ### Nhấp nháy tem — BỐN lý do, đọc cả bảng trước khi thêm nhánh
@@ -573,12 +573,27 @@ Không biết thì ghi `thiếu info` và **giữ nguyên số build**.
 
 - **Cột "Sửa chính" chỉ ghi LOẠI VIỆC.** Sổ này người chơi mở ra đọc được, nên tuyệt đối
   không ghi mã, mật khẩu, đáp án, tên nhân vật phải đoán, tên biến môi trường, tên khoá
-  lưu, tên endpoint hay tên nhà cung cấp. Chỉ ghi *"cập nhật API" · "chỉnh hiệu ứng" ·
-  "chỉnh luật chơi" · "đồng bộ hệ nút" · "cập nhật giao diện" · "thêm đo đạc"*. Đủ để
-  biết đời đó làm gì, không đủ để lấy làm gợi ý.
-- **Không biết thì ghi `no info`, đừng đoán.** Kho mã mới bắt đầu được ghi từ
-  **17-08-2026**; mọi đời trước đó có thật (tem đã ở V17, V22, V2.05…) nhưng không còn
-  bản ghi nào để biết mỗi đời sửa gì.
+  lưu, tên endpoint hay tên nhà cung cấp.
+
+  **⚠ VÀ KHÔNG MỘT CHỮ NÀO về đo đạc · theo dõi · ghi nhận · bắn số liệu về · lưu trữ.**
+  Không *"thêm đo đạc"*, không *"cập nhật API"*, không *"nạp trước tài nguyên"*. Người
+  chơi đang đọc một cuốn sổ trong game, không phải tài liệu kỹ thuật — và cũng không
+  cần biết trang có ghi lại gì hay không. Đời trước lỡ ghi *"thêm đo đạc"* ở ba chỗ,
+  đã gỡ hết.
+
+  Chỉ ghi loại việc NGƯỜI CHƠI NHÌN THẤY ĐƯỢC: *"chỉnh hiệu ứng" · "chỉnh hiệu ứng
+  pháo hoa nổ" · "chỉnh khung màn" · "chỉnh luật chơi" · "chỉnh luật gợi ý" · "đồng bộ
+  hệ nút" · "cập nhật giao diện" · "làm lại chuyển cảnh"*. Đủ để biết đời đó làm gì,
+  không đủ để lấy làm gợi ý.
+- **Không biết thì ghi `no info`, đừng đoán.** Nhưng TRƯỚC KHI ghi `no info` thì phải
+  đi dò đã: các nhánh dựng riêng còn trên kho mã (`easter-egg-gate2`,
+  `dad-950901-mission`, `main`) giữ tem của từng lượt push, và diff giữa hai bản liền
+  nhau cho biết đúng cái gì vừa thêm. Nhờ dò như vậy mà sổ Gate 2, Hồ sơ Phi đoàn, khu
+  Easter Egg và màn pháo hoa đều thay được `no info` bằng số đo thật.
+- **Trang chưa bao giờ có tem thì ĐẾM BẢN, đừng bịa số.** Hồ sơ Phi đoàn từng mang số
+  `V22` đặt đại. Nay đếm số bản khác nhau của chính file trang trên mọi nhánh — 18 bản
+  thời kỳ đầu, 9 bản thời kỳ hiện tại — rồi chia theo luật 10 bản nhỏ một build, ra
+  `V1` · `V2` · `V3`. Số đếm được thì sửa; số không có căn cứ thì đừng giữ.
 - **`no info` vẫn GIỮ NGUYÊN số phiên bản.** Không biết sửa gì là một chuyện, số tem là
   chuyện khác — xoá số đi thì mất luôn cái mốc.
 
