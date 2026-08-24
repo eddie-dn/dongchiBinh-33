@@ -515,8 +515,18 @@ a.file:active{background:rgba(242,180,65,.07)}
   border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:5px;
   background:linear-gradient(180deg,#0e2140 0%,#071427 100%);
   padding:20px 16px 18px;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+/* ═══ VÙNG CHẠM CỦA NÚT ĐÓNG ═════════════════════════════════════════════
+   Đo trên máy 390px: nút này chỉ 21×23 — nhỏ hơn cả đầu ngón tay, bấm ba lần
+   trượt một. Cùng một bệnh với `.hh-x` (28×28).
+
+   Cách xử ĐÚNG BẰNG CÁCH ĐÃ DÙNG CHO `.grip` ở sheet mật thư: giữ nguyên NÉT
+   NHÌN, chỉ nới VÙNG BẤM. Nới bằng `::before` phủ ra ngoài chứ không tăng
+   padding: hai nút này đều `position:absolute` neo vào góc phải trên, tăng
+   padding là dấu ✕ tự dịch vào trong, lệch khỏi chỗ mắt đã quen.
+   -10px mỗi phía → vùng chạm ~41×43, đủ tay. */
 .cx-close{position:absolute;top:9px;right:11px;font-family:"Oswald";font-size:15px;
   color:rgba(234,240,247,.5);line-height:1;padding:4px}
+.cx-close::before{content:"";position:absolute;inset:-10px}
 /* Quy ước: nhãn nhỏ trên đầu MỌI hộp thoại dùng tông amber; tiêu đề và chữ
    nội dung giữ tông sáng/xanh. */
 .cx-eyebrow{font-family:"Oswald","Be Vietnam Pro",system-ui;font-size:11px;
@@ -604,31 +614,42 @@ a.file:active{background:rgba(242,180,65,.07)}
 .hh-body{padding:13px 15px 15px}
 .hh-lab{margin:0;font-family:"Oswald";font-size:8.5px;font-weight:600;
   letter-spacing:.26em;text-transform:uppercase;color:var(--amber)}
-/* `text-wrap:balance` chia đều chữ cho các dòng thay vì đổ đầy dòng trên rồi
-   thả một hai chữ rơi xuống dòng dưới — chính là cảnh "Gate 2 ✦" nằm trơ một
-   mình. Cỡ chữ hạ một nấc cho câu dài đỡ phải cắt làm ba. */
+/* ═══ LUẬT XUỐNG DÒNG · VÌ SAO BỎ `text-wrap:balance` ══════════════════════
+   `balance` chia ĐỀU số chữ cho các dòng. Nghe thì hay, nhưng nó chính là thứ
+   đã bẻ câu "Đồng chí làm việc đến đâu rồi, nhớ đứng dậy ăn chút gì nha" thành
+   hai dòng ngắn tũn nằm giữa khung, chừa hẳn một khoảng trống bên phải — đúng
+   cảnh "tự dưng xuống dòng ở giữa block, không kéo dài ra hết khung".
+   Nay đổ chữ theo lối thường: ĐẦY dòng trên rồi mới xuống dòng, tức là dùng
+   trọn bề ngang hộp. `pretty` chỉ can thiệp đúng một việc — không để MỘT chữ
+   rơi trơ ở dòng cuối; trình duyệt nào chưa hiểu thì rơi về `normal`, vẫn đầy
+   dòng như thường.
+   `hyphens:none` để không bao giờ có gạch nối cắt đôi chữ tiếng Việt. */
 .hh-txt{margin:7px 0 0;font-size:12.5px;line-height:1.58;color:rgba(234,240,247,.9);
-  text-wrap:balance}
+  text-wrap:pretty;hyphens:none;-webkit-hyphens:none}
 /* Cụm không được phép tách dòng — tên màn phải đi liền một mạch */
 .hh-txt .lien{white-space:nowrap}
 /* ── DAILY QUOTE ────────────────────────────────────────────────────────
    Câu nói dài hơn lời chào nên cần cỡ chữ riêng: 13px — đủ lớn để đọc thoải
-   mái, chưa tới mức một câu ngắn cũng chiếm hết hộp. `text-wrap:balance` chia
-   đều chữ cho các dòng thay vì đổ đầy dòng trên rồi thả một hai chữ rơi xuống.
-   Máy chủ đã chốt câu nói ở 130 ký tự nên tối đa 2 dòng, cộng dòng tác giả là
-   vừa 3 dòng — đúng trần đã định. `line-clamp` là chốt chặn cuối, phòng khi
+   mái, chưa tới mức một câu ngắn cũng chiếm hết hộp. Cũng đổ chữ đầy dòng như
+   `.hh-txt` (xem ghi chú luật xuống dòng ở trên), không chia đều nữa.
+   Trần ký tự phía máy chủ nới lên 168 nên câu có thể chạm 3 dòng, cộng dòng
+   tác giả là 4 — hộp vẫn thoáng. `line-clamp:3` là chốt chặn cuối, phòng khi
    máy nào font rộng hơn dự tính. */
-.hh-txt .qt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+.hh-txt .qt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;
   overflow:hidden;font-size:13px;line-height:1.55;font-style:italic;
-  color:rgba(234,240,247,.94);text-wrap:balance}
+  color:rgba(234,240,247,.94);text-wrap:pretty;hyphens:none;-webkit-hyphens:none}
 .hh-txt .qa{display:block;margin-top:5px;font-family:"Oswald",system-ui,sans-serif;
   font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
   color:rgba(234,240,247,.5)}
 @media(max-width:360px){.hh-txt .qt{font-size:12px}}
 @media(max-width:360px){.hh-txt{font-size:11.5px}}
+/* Vùng chạm nới bằng `::before` — xem ghi chú ở `.cx-close`. Vòng tròn 28px
+   giữ nguyên (nó nằm đè lên ảnh, to hơn là che mất mặt cô AI), chỉ vùng bấm
+   rộng ra ~44px. */
 .hh-x{position:absolute;top:8px;right:9px;z-index:2;width:28px;height:28px;
   border:none;border-radius:50%;cursor:pointer;font-family:"Oswald";font-size:14px;
   color:#fff;background:rgba(6,16,31,.62);backdrop-filter:blur(4px)}
+.hh-x::before{content:"";position:absolute;inset:-8px}
 /* Theme Zoey — dùng khi trạng thái thuộc về Map 3 */
 .hh.zoey{background:linear-gradient(168deg,#F7EEFB 0%,#F2E2EE 100%);
   border-color:rgba(200,168,233,.75)}
@@ -1001,7 +1022,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 20-Aug-2026 · V17.09">Last updated 20-Aug-2026 · V17.09</span>
+        <span class="stamp" id="stamp" data-base="Last updated 24-Aug-2026 · V18.01">Last updated 24-Aug-2026 · V18.01</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1539,10 +1560,21 @@ let visits = 0, seasonMark = null, eggDone = false, winCheer = false, winParty =
    màn chúc mừng sinh nhật. Ghé TRƯỚC 01-09 thì không đụng tới: đồng hồ đếm
    ngược vẫn chạy như thường và ngày 01-09 vẫn là cò. */
 let eggG1 = false;
-/* Hộp chào: `hhNgay` ngày đã chào gần nhất · `hhG2`/`hhHan` đã chào mừng hai
-   mốc đó chưa · `g2Done` đã xem xong màn cuối Gate 2 · `g2Open` đã vào được
-   Open World bên trong Gate 2 (vào rồi thì thôi nhắc chế độ xem lại). */
+/* Hộp chào:
+     `hhNgay`    ngày đã chào gần nhất — nay chỉ còn dùng để biết "đã từng chào
+                 lần nào chưa" (chưa thì nhãn là Greetings, rồi Welcome back)
+     `hhKhungDa` { ngay, ds[] } — hôm nay đã chào những KHUNG nào (sang/trua/toi)
+     `hhChaoAt`  mốc người chơi XEM lời chào gần nhất (quote phải cách 1 tiếng)
+     `hhQuoteAt` mốc hiện câu quote gần nhất (hai quote phải cách 2 tiếng)
+     `hhG2`/`hhHan` đã chào mừng hai mốc đó chưa
+     `g2Done`    đã xem xong màn cuối Gate 2
+     `g2Open`    đã vào được Open World bên trong Gate 2 (vào rồi thì thôi
+                 nhắc chế độ xem lại)
+   Ba khoá giờ giấc PHẢI nằm trong localStorage chứ không phải biến thường:
+   luật cũ dùng biến thường nên F5 một cái là mất sạch, mở đi mở lại mười lần
+   là mười câu quote liền tay. */
 let hhNgay = null, hhG2 = '', hhHan = '', g2Done = false, g2Open = false;
+let hhKhungDa = null, hhChaoAt = 0, hhQuoteAt = 0;
 /* Khai Ở ĐÂY chứ không để cạnh hàm dùng nó: `openCredFx` nạp ảnh qua hhSrc(),
    mà openCredFx đứng trước khối hộp chào — const khai sau là dính temporal dead
    zone y như bẫy ở mục 20 của README. */
@@ -1933,6 +1965,11 @@ const store = {
   g2Hack = !!s.g2Hack;
   eggG1 = !!s.eggG1;
   hhNgay = s.hhNgay || null; hhG2 = s.hhG2 || ''; hhHan = s.hhHan || '';
+  /* Bản lưu đời cũ không có ba khoá này — thiếu thì coi như chưa chào lần nào,
+     người chơi được một lời chào ở khung gần nhất rồi vào nếp mới. */
+  hhKhungDa = (s.hhKhungDa && s.hhKhungDa.ds instanceof Array) ? s.hhKhungDa : null;
+  hhChaoAt  = s.hhChaoAt  || 0;
+  hhQuoteAt = s.hhQuoteAt || 0;
   g2Done = !!s.g2Done; g2Open = !!s.g2Open;
   eggWin = !!s.eggWin;
   pinFail = s.pinFail || 0;
@@ -1967,7 +2004,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3564,8 +3601,12 @@ credw.addEventListener('click', e=>{ if(e.target === credw) closeCred(); });
    |------------|------------------|-------------------------------------------|
    | gate2      | HH_3_excited     | Lần đầu quay ra bản đồ sau khi xong Gate 2 |
    | hanwin     | HH_2_happy       | Lần đầu quay ra sau khi giải hết Zoey's Castle |
-   | daily      | HH_1 / HH_2_back | Phiên đầu tiên trong ngày                 |
+   | chào       | HH_1 / HH_2_back | Trong một KHUNG CHÀO (06:00–07:30 · 11:00–12:30 · 17:30–19:00), mỗi khung một lần/ngày |
    | idle       | HH_5_idle_afk    | Rời máy ≥ IDLE_PHUT phút rồi quay lại     |
+   | quote      | HH_2_back        | Ngoài khung chào — cách lời chào ≥ 1 tiếng, cách câu quote trước ≥ 2 tiếng |
+
+   Ba khung giờ và hai mốc giãn cách khai ở `HH_KHUNG` / `HH_QUOTE_SAU_CHAO` /
+   `HH_QUOTE_CACH` ngay trên khối "BA KHUNG CHÀO TRONG NGÀY" bên dưới.
 
    ẢNH RẤT NẶNG (mỗi file ~15 MB, webp động 121 khung) nên KHÔNG preload, KHÔNG
    gắn sẵn `src` vào thẻ img trong HTML. Chỉ nạp đúng file của trạng thái đang
@@ -3613,14 +3654,25 @@ function dangCoHopKhac(){
   return co;
 }
 let hhChoTu = 0;
-function hhHien(anh, nhan, chu, zoey){
+/* Có một lượt chào đang chờ mạng hay chờ hộp khác đóng. Khai Ở ĐÂY chứ không
+   để cạnh `hhChon()` bên dưới: `hhHien()` đọc nó, mà hàm này đứng trước —
+   const/let khai sau là dính temporal dead zone y như bẫy ở mục 20 của README. */
+let hhDangDoi = false;
+/* `khiHien` chạy ĐÚNG lúc hộp thật sự hiện ra, không phải lúc gọi hàm. Cần cái
+   mốc đó vì mọi luật giãn cách (đã chào khung nào, quote gần nhất lúc nào) đều
+   phải tính từ lúc NGƯỜI CHƠI THẤY. Đóng dấu sớm là hỏng: lượt chào có thể bị
+   bỏ giữa chừng — đang có hộp khác đè, hoặc chờ quá hạn — mà dấu thì đã ghi,
+   thành ra mất trắng một khung chào hoặc một câu quote mà không ai được xem. */
+function hhHien(anh, nhan, chu, zoey, khiHien){
   if(dangCoHopKhac() || Date.now() - hopCuoiAt < HH_CACH_MS){
     if(!hhChoTu) hhChoTu = Date.now();
-    if(Date.now() - hhChoTu > HH_CHO_TOI_DA){ hhChoTu = 0; return; }  /* trễ quá → bỏ lượt */
-    setTimeout(()=> hhHien(anh, nhan, chu, zoey), 1500);
+    if(Date.now() - hhChoTu > HH_CHO_TOI_DA){   /* trễ quá → bỏ lượt */
+      hhChoTu = 0; hhDangDoi = false; return;
+    }
+    setTimeout(()=> hhHien(anh, nhan, chu, zoey, khiHien), 1500);
     return;
   }
-  hhChoTu = 0;
+  hhChoTu = 0; hhDangDoi = false;
   /* Thiếu ảnh thì GIẤU khung ảnh chứ đừng bỏ luôn lời chào: người chơi vẫn nhận
      được câu nói, chỉ mất phần hình. Ảnh nằm ở thư mục /assets — nhánh nào chưa
      có bộ HH thì rơi đúng vào nhánh này. */
@@ -3636,6 +3688,7 @@ function hhHien(anh, nhan, chu, zoey){
   hhw.classList.add('on'); hhw.setAttribute('aria-hidden','false');
   requestAnimationFrame(()=> hhw.classList.add('show'));
   ping('hop_chao', nhan);
+  if(khiHien) khiHien();                /* đóng dấu ĐÚNG lúc hộp lên hình */
   clearTimeout(hhT);
   hhT = setTimeout(hhDong, 12000);      /* tự rút, khỏi bắt người ta bấm */
 }
@@ -3653,6 +3706,72 @@ function hhDong(){
 $('hhX').addEventListener('click', hhDong);
 hhw.addEventListener('click', e=>{ if(e.target === hhw) hhDong(); });
 
+/* ═══ BA KHUNG CHÀO TRONG NGÀY ═════════════════════════════════════════════
+   ── HAI RULE CŨ ĐÃ GHI ĐÈ NHAU, GHI LẠI CHO KHỎI DỰNG LẠI ────────────────
+   Bản trước có sẵn `hhBuoi()` chia sáng / trưa / tối, nhưng nó CHỈ dùng để
+   chọn câu chữ, không hề quyết định LÚC NÀO chào. Việc "lúc nào" nằm ở hai
+   chỗ khác, và hai chỗ đó đè mất cả ba buổi:
+
+     rule 1 — `if(hhNgay !== hnay)`: chào ở PHIÊN ĐẦU TIÊN của ngày, xong là
+              đóng dấu ngày. Mở lúc nào cũng được coi là "lời chào của hôm
+              nay", nên cả ngày chỉ có ĐÚNG MỘT lời chào; mở lúc 2h sáng thì
+              lời chào duy nhất của ngày đó là câu buổi tối, và tới 7h sáng
+              thật thì im.
+     rule 2 — `if(!quoteRoi)`: quote bắn NGAY ở lượt kế tiếp, không cách lời
+              chào một phút nào, mà cũng không cách quote trước — vì `quoteRoi`
+              là biến thường, F5 là mất sạch. Mở đi mở lại năm lần là năm câu
+              quote liền tay.
+
+   ── LUẬT MỚI ────────────────────────────────────────────────────────────
+   Chào theo ĐÚNG BA KHUNG GIỜ dưới đây, mỗi khung tối đa MỘT lần trong ngày.
+   Ngoài ba khung đó thì không chào — không phải im, mà là nhường chỗ cho
+   Daily Quote (xem luật giãn cách ngay dưới).                               */
+const HH_KHUNG = [
+  { ma:'sang', tu:  6*60,      den:  7*60 + 30, nhan:'Buổi sáng'  },  /* 06:00 – 07:30 */
+  { ma:'trua', tu: 11*60,      den: 12*60 + 30, nhan:'Buổi trưa'  },  /* 11:00 – 12:30 */
+  { ma:'toi',  tu: 17*60 + 30, den: 19*60,      nhan:'Buổi tối'   }   /* 17:30 – 19:00 */
+];
+/* Khung 17:30–19:00 vắt qua ranh giới 18:00 của máy chủ (trước 18:00 là "trưa",
+   sau là "tối"). Nên trang KHÔNG gửi `gio` nữa mà gửi thẳng `buoi=<mã khung>`:
+   khung nào thì chữ nấy, khỏi phụ thuộc vào việc người chơi mở lúc 17:45 hay
+   18:15. `/api/quote` có sẵn tham số này. */
+function hhKhungBayGio(d){
+  const x = d || new Date(), phut = x.getHours()*60 + x.getMinutes();
+  for(const k of HH_KHUNG) if(phut >= k.tu && phut < k.den) return k;
+  return null;
+}
+/* Ngày + danh sách khung ĐÃ CHÀO của ngày đó. Sang ngày mới thì tự dọn. */
+function hhKhungDaChao(){
+  const hnay = ngay();
+  if(!hhKhungDa || hhKhungDa.ngay !== hnay) hhKhungDa = { ngay:hnay, ds:[] };
+  return hhKhungDa;
+}
+function daChaoKhung(ma){ return hhKhungDaChao().ds.indexOf(ma) >= 0; }
+function ghiChaoKhung(ma){
+  const k = hhKhungDaChao();
+  if(k.ds.indexOf(ma) < 0) k.ds.push(ma);
+  hhNgay = k.ngay;             /* giữ khoá cũ: dùng để biết "đã từng chào lần nào chưa" */
+  hhChaoAt = Date.now();       /* mốc NGƯỜI CHƠI XEM lời chào — quote đếm từ đây */
+  save();
+}
+
+/* ═══ GIÃN CÁCH DAILY QUOTE ════════════════════════════════════════════════
+   Hai con số, cả hai đều đo từ lúc HỘP THẬT SỰ LÊN HÌNH (xem `khiHien` trong
+   `hhHien`), và cả hai đều nằm trong localStorage nên F5 không lách được:
+
+     · vừa xem một LỜI CHÀO xong → phải cách 1 TIẾNG mới tới lượt quote. Chào
+       xong mấy phút đã bồi ngay một câu danh ngôn thì hai hộp dính vào nhau,
+       đọc như một cái thông báo dài chứ không phải hai lần ghé thăm.
+     · giữa hai QUOTE phải cách 2 TIẾNG. Ở lại trang cả ngày thì được vài câu
+       rải đều, mở đi mở lại mười lần cũng chỉ được đúng bấy nhiêu.           */
+const HH_QUOTE_SAU_CHAO = 60  * 60000;   /* 1 tiếng sau khi xem lời chào */
+const HH_QUOTE_CACH     = 120 * 60000;   /* 2 tiếng giữa hai câu quote   */
+/* Ngó lại mỗi 5 phút. Cần thật: hai luật trên đều là luật GIỜ, mà trang này
+   người ta mở rồi để đó cả buổi — chỉ nghe `visibilitychange` thì tới giờ
+   cũng không có gì đánh thức. Nhẹ hều: một hàm thuần tính toán, đụng mạng chỉ
+   khi thật sự tới lượt. */
+const HH_NGO_LAI = 5 * 60000;
+
 /* ═══ CÂU CHÀO ĐẦU PHIÊN ═══════════════════════════════════════════════════
    Hai tầng, tầng nào hỏng cũng còn tầng kia:
 
@@ -3660,45 +3779,48 @@ hhw.addEventListener('click', e=>{ if(e.target === hhw) hhDong(); });
       `api/_lib/loichao.md` rồi nhờ Gemini viết — mỗi lần một câu khác hẳn,
       đúng kiểu Journal trên máy Mac. Khoá Gemini nằm ở biến môi trường, KHÔNG
       bao giờ xuống trình duyệt.
-      Trang gửi kèm `gio` = GIỜ MÁY NGƯỜI CHƠI. Bắt buộc phải vậy: hàm
-      serverless chạy ở máy chủ nào thì mang giờ máy đó, chào "buổi sáng" lúc
-      người ta sắp đi ngủ là hỏng cả ý.
+      Trang gửi kèm `buoi` = MÃ KHUNG vừa rơi vào (xem `HH_KHUNG`), không gửi
+      giờ máy nữa: khung tối bắt đầu từ 17:30, sớm hơn ranh giới 18:00 của máy
+      chủ nửa tiếng, gửi giờ là ra câu buổi trưa.
 
    2. Chậm quá / chưa khai khoá / mạng hỏng thì lấy bộ câu ngay tại đây.
 
-   BỘ CÂU TẠI CHỖ CŨNG ĐÃ ĐỔI. Bản cũ chỉ có 5 câu và bốc theo NGÀY, nghĩa là
-   suốt một ngày mở lại bao nhiêu lần cũng đúng một câu đó, mà 5 ngày là quay
-   lại từ đầu — chào mãi một câu thì thà đừng chào. Nay chia ba buổi cho câu
-   hợp giờ, và bốc KHÔNG LẶP: đã dùng câu nào thì ghi lại, vét hết kho mới
-   quay vòng. */
+   BỘ CÂU TẠI CHỖ VIẾT DÀI HƠN BẢN CŨ. Hộp chào nay đổ chữ đầy dòng (bỏ
+   `text-wrap:balance`, xem CSS `.hh-txt`) nên câu 8-10 từ chỉ lấp được một
+   dòng rưỡi, chừa trống hẳn một mảng bên phải. Câu 16-26 từ vừa khung.
+   Bốc KHÔNG LẶP: đã dùng câu nào thì ghi lại, vét hết kho mới quay vòng. */
 const HH_BUOI = {
   sang: [
-    'Chào đồng chí ✦ Mỗi ngày là một ngày mới',
-    'Đồng chí ăn sáng chưa đó?',
-    'Sáng nay đồng chí thấy trong người thế nào?',
-    'Hôm nay đồng chí định làm xong việc gì trước tiên?',
-    'Có điều gì đang chờ đồng chí sáng nay không?',
-    'Chúc đồng chí một buổi sáng nhẹ đầu'
+    'Chào đồng chí ✦ Một ngày mới nữa lại mở ra, hôm nay mình bắt đầu từ việc nhẹ nhất nha',
+    'Đồng chí ăn sáng chưa đó, hay lại vừa mở máy ra là ngồi luôn vào việc rồi?',
+    'Sáng nay đồng chí thấy trong người thế nào, ngủ có đủ giấc không đó?',
+    'Hôm nay đồng chí định làm xong việc gì trước tiên, kể em nghe với',
+    'Dậy sớm được là đã thắng một nửa rồi đó đồng chí, nửa còn lại để dành cho buổi chiều',
+    'Có điều gì đang chờ đồng chí sáng nay không, hay hôm nay là một ngày yên yên?',
+    'Chúc đồng chí một buổi sáng nhẹ đầu, việc gì khó thì để qua trưa tính tiếp',
+    'Cà phê hay trà, đồng chí chọn gì để mở màn ngày hôm nay đây?'
   ],
   trua: [
-    'Đồng chí ăn trưa chưa đó?',
-    'Nửa ngày trôi qua rồi, mọi thứ ổn chứ đồng chí?',
-    'Nghỉ tay một chút đi đồng chí',
-    'Công việc hôm nay có gì khó không?',
-    'Uống miếng nước đi đồng chí, ngồi lâu rồi đó',
-    'Buổi chiều còn dài, đồng chí đừng vội'
+    'Đồng chí ăn trưa chưa đó, hay lại định làm nốt cái này rồi mới ăn?',
+    'Nửa ngày trôi qua rồi đó đồng chí, mọi thứ tới giờ vẫn trong tầm tay chứ?',
+    'Nghỉ tay một chút đi đồng chí, việc có chạy đi đâu mất đâu mà vội',
+    'Công việc hôm nay có gì khó không, hay chỉ là nhiều thứ lặt vặt chồng lên nhau?',
+    'Uống miếng nước đi đồng chí, ngồi một mạch từ sáng tới giờ rồi đó',
+    'Đồng chí làm việc đến đâu rồi, nhớ đứng dậy ăn chút gì cho lại sức nha',
+    'Buổi chiều còn dài, đồng chí đừng vội, làm xong một việc rồi tính việc sau'
   ],
   toi: [
-    'Hôm nay của đồng chí thế nào?',
-    'Có gì vui hôm nay kể em nghe với',
-    'Việc hôm nay để hôm nay thôi, đồng chí nhé',
-    'Khuya rồi đó đồng chí, nghỉ sớm nha',
-    'Hôm nay đồng chí đã cố gắng rồi',
-    'Đồng chí ơi, hôm nay có gì làm đồng chí bận lòng không?'
+    'Hôm nay của đồng chí thế nào, có việc nào làm xong mà thấy nhẹ người không?',
+    'Có gì vui hôm nay kể em nghe với, chuyện nhỏ xíu cũng được mà',
+    'Việc hôm nay để hôm nay thôi đồng chí nhé, mai mở máy ra là chuyện của mai',
+    'Khuya rồi đó đồng chí, màn hình tắt được thì tắt, mai còn cả một ngày',
+    'Hôm nay đồng chí đã cố gắng rồi, kết quả thế nào thì cũng ghi nhận cái đã',
+    'Chúc đồng chí một giấc ngủ ngon, sâu và không mơ thấy việc chưa làm xong',
+    'Đồng chí ơi, hôm nay có gì làm đồng chí bận lòng không, nói ra nhẹ hơn đó'
   ]
 };
-/* Cùng một cách chia giờ với `api/_lib/loichao.js` — sửa một bên thì sửa cả
-   hai, kẻo câu tại chỗ và câu từ máy chủ nói hai buổi khác nhau. */
+/* Cùng một cách chia giờ với `api/_lib/loichao.js`. Nay chỉ còn dùng làm ĐƯỜNG
+   LÙI: khi có mã khung thì lấy thẳng mã đó, hàm này chỉ chạy khi không có. */
 function hhBuoi(){
   const g = new Date().getHours();
   if(g >= 4  && g < 11) return 'sang';
@@ -3706,8 +3828,8 @@ function hhBuoi(){
   return 'toi';
 }
 /* Nhớ những câu đã dùng để không lặp lại cho tới khi vét hết kho của buổi đó */
-function hhCauNgay(){
-  const b = hhBuoi(), kho = HH_BUOI[b] || HH_BUOI.sang;
+function hhCauNgay(ma){
+  const b = ma || hhBuoi(), kho = HH_BUOI[b] || HH_BUOI.sang;
   let da = [];
   try{ da = JSON.parse(sessionStorage.getItem('hhDaChao_' + b) || '[]') || []; }catch(e){}
   let con = kho.filter(t => da.indexOf(t) < 0);
@@ -3717,50 +3839,83 @@ function hhCauNgay(){
   try{ sessionStorage.setItem('hhDaChao_' + b, JSON.stringify(da)); }catch(e){}
   return t;
 }
-function hhXinCau(xong){
+function hhXinCau(ma, xong){
   let roi = false;
   const chot = t => { if(roi) return; roi = true; xong(t); };
-  setTimeout(()=> chot(hhCauNgay()), 2500);      /* chậm quá thì thôi, đừng bắt chờ */
+  setTimeout(()=> chot(hhCauNgay(ma)), 2500);     /* chậm quá thì thôi, đừng bắt chờ */
   try{
-    fetch('/api/quote?gio=' + new Date().getHours(), { headers:{ 'accept':'application/json' } })
+    fetch('/api/quote?buoi=' + encodeURIComponent(ma || hhBuoi()),
+          { headers:{ 'accept':'application/json' } })
       .then(r => r.ok ? r.json() : null)
-      .then(j => chot((j && j.q) ? j.q : hhCauNgay()))
-      .catch(()=> chot(hhCauNgay()));
-  }catch(e){ chot(hhCauNgay()); }
+      .then(j => chot((j && j.q) ? j.q : hhCauNgay(ma)))
+      .catch(()=> chot(hhCauNgay(ma)));
+  }catch(e){ chot(hhCauNgay(ma)); }
 }
 
 /* ═══ DAILY QUOTE ══════════════════════════════════════════════════════════
-   Chào xong hết mốc của ngày rồi thì thôi chào nữa — F5 hay quay lại mà vẫn
-   "Chào đồng chí" lần thứ tư thì thành ra máy móc. Từ đó đổi sang một câu nói
-   của người xưa: vẫn là một lời nhắn, nhưng lần nào cũng mới và không giả vờ
-   là đang gặp nhau lần đầu.
+   Ngoài ba khung chào thì hộp không im hẳn: nó đổi sang một câu nói của người
+   xưa — vẫn là một lời nhắn, nhưng lần nào cũng mới và không giả vờ là đang
+   gặp nhau lần đầu. Nhịp thì theo hai con số `HH_QUOTE_SAU_CHAO` /
+   `HH_QUOTE_CACH` ở trên.
    Cùng một endpoint `/api/quote`, chỉ khác `buoi=quote` — chữ nghĩa nằm ở khối
-   `## quote` trong `api/_lib/loichao.md`. Máy chủ dùng model flash-lite cho
-   nhanh và trả kèm tên tác giả tách sẵn. */
+   `## quote` trong `api/_lib/loichao.md`, nay xếp theo bốn đầu mục: tự biết
+   mình · tự trọng · tự soi lại · khiêm nhường. Bộ dưới đây là bản rút gọn của
+   chính kho đó, dùng khi máy chủ không trả lời kịp. */
 const HH_QUOTE = [
-  ['Không có việc gì khó, chỉ sợ lòng không bền', 'Hồ Chí Minh'],
-  ['Hành trình vạn dặm bắt đầu từ một bước chân', 'Lão Tử'],
-  ['Biết người biết ta, trăm trận không nguy', 'Tôn Tử'],
-  ['Bạn có quyền năng với tâm trí mình, không phải với những sự kiện bên ngoài', 'Marcus Aurelius'],
   ['Chừng nào vô thức chưa thành ý thức, nó sẽ dẫn đường đời ta và ta gọi đó là số phận', 'Carl Jung'],
-  ['Ai có một lý do để sống thì chịu đựng được gần như mọi cách sống', 'Nietzsche'],
-  ['Ta là những gì ta nghĩ; mọi thứ ta là đều khởi lên từ ý nghĩ', 'Đức Phật'],
+  ['Ai nhìn ra ngoài thì mơ, ai nhìn vào trong mới thật sự tỉnh ra', 'Carl Jung'],
+  ['Ta chịu khổ vì tưởng tượng nhiều hơn là vì hiện thực', 'Seneca'],
+  ['Biết người là khôn, biết được chính mình mới gọi là sáng', 'Lão Tử'],
+  ['Người ta không bị làm khổ bởi sự việc, mà bởi cách mình nghĩ về sự việc đó', 'Epictetus'],
+  ['Giữa kích thích và phản ứng có một khoảng trống, tự do của ta nằm trong khoảng đó', 'Viktor Frankl'],
+  ['Quan sát mà không kèm phán xét là hình thức cao nhất của trí tuệ con người', 'Krishnamurti'],
+  ['Đừng hỏi vì sao nghiện, hãy hỏi vì sao đau', 'Gabor Maté'],
+  ['Giá trị của một người đúng bằng giá trị của những gì người ấy để tâm tới', 'Marcus Aurelius'],
+  ['Không ai làm nhục được bạn nếu không có sự cho phép của chính bạn', 'Eleanor Roosevelt'],
+  ['Người quân tử cầu ở mình, còn kẻ tiểu nhân thì cầu ở người khác', 'Khổng Tử'],
   ['Hãy so mình với chính mình của hôm qua, đừng so với người khác của hôm nay', 'Jordan Peterson'],
-  ['Hiện tại là khoảnh khắc duy nhất ta thật sự đang có', 'Thích Nhất Hạnh'],
-  ['Ta chịu khổ vì tưởng tượng nhiều hơn vì hiện thực', 'Seneca']
+  ['Ai có một lý do để sống thì chịu đựng được gần như mọi cách sống', 'Nietzsche'],
+  ['Nếu ta không tự bênh vực chính mình thì cũng đừng mong ai đứng ra bênh vực hộ', 'Maya Angelou'],
+  ['Một đời sống không được đem ra xét lại thì không đáng sống', 'Socrates'],
+  ['Mỗi tối hãy tự hỏi: hôm nay ta chữa được tật nào, cưỡng lại được lỗi nào', 'Seneca'],
+  ['Hãy nhìn vào bên trong; nguồn của điều lành nằm ở đó, đào mãi thì nó phun mãi', 'Marcus Aurelius'],
+  ['Ai cũng nghĩ tới chuyện đổi thế giới, chẳng ai nghĩ tới chuyện đổi chính mình', 'Leo Tolstoy'],
+  ['Mọi bất hạnh của con người đến từ chỗ không ngồi yên một mình trong phòng được', 'Blaise Pascal'],
+  ['Hiện tại là khoảnh khắc duy nhất mà ta thật sự đang có trong tay', 'Thích Nhất Hạnh'],
+  ['Vết thương chính là chỗ ánh sáng đi được vào trong con người bạn', 'Rumi'],
+  ['Tôi chỉ biết đúng một điều, ấy là tôi không biết gì cả', 'Socrates'],
+  ['Biết thì nhận là biết, không biết thì nhận là không biết, thế mới là biết', 'Khổng Tử'],
+  ['Biển sở dĩ làm vua trăm khe suối là vì nó biết nằm ở chỗ thấp hơn', 'Lão Tử'],
+  ['Biết người biết ta thì trăm trận cũng không lấy gì làm nguy', 'Tôn Tử'],
+  ['Việc đầu tiên là đừng tự lừa mình, mà mình lại là kẻ dễ lừa nhất trên đời', 'Richard Feynman'],
+  ['Rắc rối không nằm ở chỗ ta dốt, mà ở chỗ ta đinh ninh những điều vốn không phải vậy', 'Mark Twain'],
+  ['Không có việc gì khó, chỉ sợ lòng mình không bền', 'Hồ Chí Minh'],
+  ['Hành trình vạn dặm nào rồi cũng phải bắt đầu từ đúng một bước chân', 'Lão Tử']
 ];
-/* Bốc không lặp trong phiên, y như bộ câu chào */
+/* ── "MỖI LẦN MỘT CÂU KHÁC" — NHỚ Ở localStorage, KHÔNG PHẢI sessionStorage ─
+   Bản trước nhớ trong sessionStorage: đóng tab là quên sạch, mở lại rất dễ
+   trúng đúng câu vừa đọc. Nay nhớ `HH_QUOTE_NHO` câu GẦN NHẤT ở localStorage,
+   và nhớ chung cho cả câu của máy chủ lẫn câu tại chỗ — máy chủ trả trúng câu
+   vừa hiện thì trang tự đổi sang một câu chưa dùng. */
+const HH_QUOTE_NHO = 24;
+function hhQuoteDa(){
+  try{ const a = JSON.parse(localStorage.getItem('hhQuoteDa') || '[]'); return a instanceof Array ? a : []; }
+  catch(e){ return []; }
+}
+function hhGhiQuote(t){
+  if(!t) return;
+  const a = hhQuoteDa().filter(x => x !== t);
+  a.push(t);
+  try{ localStorage.setItem('hhQuoteDa', JSON.stringify(a.slice(-HH_QUOTE_NHO))); }catch(e){}
+}
 function hhQuoteTaiCho(){
-  let da = [];
-  try{ da = JSON.parse(sessionStorage.getItem('hhDaQuote') || '[]') || []; }catch(e){}
+  const da = hhQuoteDa();
   let con = HH_QUOTE.filter(q => da.indexOf(q[0]) < 0);
-  if(!con.length){ da = []; con = HH_QUOTE.slice(); }
+  if(!con.length) con = HH_QUOTE.slice();      /* vét hết kho thì quay vòng */
   const q = con[(Math.random() * con.length) | 0];
-  da.push(q[0]);
-  try{ sessionStorage.setItem('hhDaQuote', JSON.stringify(da)); }catch(e){}
   return { q:q[0], tacGia:q[1] };
 }
-/* Dựng HTML hai phần: câu nói (tối đa 2 dòng) + tên tác giả xuống dòng riêng */
+/* Dựng HTML hai phần: câu nói + tên tác giả xuống dòng riêng */
 function hhQuoteHtml(o){
   const an = t => String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
   return '<span class="qt">' + an(o.q) + '</span>'
@@ -3768,7 +3923,12 @@ function hhQuoteHtml(o){
 }
 function hhXinQuote(xong){
   let roi = false;
-  const chot = o => { if(roi) return; roi = true; xong(hhQuoteHtml(o)); };
+  const chot = o => {
+    if(roi) return; roi = true;
+    /* Máy chủ trả trúng một câu vừa dùng → đổi sang câu tại chỗ chưa dùng */
+    if(o && o.q && hhQuoteDa().indexOf(o.q) >= 0) o = hhQuoteTaiCho();
+    xong(hhQuoteHtml(o), o && o.q);
+  };
   setTimeout(()=> chot(hhQuoteTaiCho()), 2500);
   try{
     fetch('/api/quote?buoi=quote', { headers:{ 'accept':'application/json' } })
@@ -3810,18 +3970,34 @@ function hhNhac(){
   return ' <b>Xem lại được đó</b> — bấm nút cuộn phim trong khung Collected ✦';
 }
 
+/* ═══ AI ĐƯỢC RA TRƯỚC ═════════════════════════════════════════════════════
+   Xếp từ trên xuống, gặp nhánh nào hợp là ra nhánh đó rồi dừng — mỗi lượt
+   đúng MỘT hộp, dồn hai ba lời chào vào một lượt là phiền chứ không phải
+   chăm sóc.
+
+     1 · vừa phá đảo Gate 2      → chào mừng, một lần duy nhất cả đời
+     2 · vừa xong Zoey's Castle  → khen, một lần duy nhất cả đời
+     3 · đang trong KHUNG CHÀO   → lời chào của khung đó, mỗi khung 1 lần/ngày
+     4 · đi vắng ≥ IDLE_PHUT rồi quay lại → "Đồng chí đã về"
+     5 · còn lại                 → DAILY QUOTE, nếu đủ giãn cách
+
+   `hhDangDoi` (khai ở trên, cạnh `hhChoTu`) chặn chồng lượt: từ lúc quyết định
+   hiện tới lúc hộp lên hình còn một quãng chờ mạng, mà `hhChon()` thì bị gọi
+   lại mỗi lần quay về tab và mỗi nhịp ngó lại. Không chặn thì một khung chào
+   bắn ra hai ba hộp liền. */
 function hhChon(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(hhDangDoi) return;
   /* ═══ CỬA CHÍNH CỦA CẢ HỘP CHÀO ═══════════════════════════════════════════
      Honghandangiu CHƯA xuất hiện chừng nào Easter Egg · Gate 2 chưa được giải.
      Người mới đi từ /dad/950901-a vào bản đồ lần đầu phải được yên: chưa quen
      nhau thì chưa có ai nhảy ra chào. Giải xong Gate 2 mới mở lời — và lời
      chào ĐẦU TIÊN chính là nhánh 1 ngay dưới đây. Từ đó trở đi các nhánh còn
-     lại (theo ngày, đi vắng về, xong Zoey's Castle) mới chạy như thường.
-     Chặn ở ĐÂY, trước cả `hhNgay`, nên trong lúc còn khoá thì không nhánh nào
-     kịp ghi dấu — tới lúc mở, "Greetings" vẫn đúng là lần chào đầu tiên. */
+     lại mới chạy như thường.
+     Chặn ở ĐÂY, trước cả mấy nhánh dưới, nên trong lúc còn khoá thì không
+     nhánh nào kịp ghi dấu — tới lúc mở, "Greetings" vẫn đúng là lần chào
+     đầu tiên. */
   if(!xongGate2()) return;
-  const hnay = ngay();
   /* 1 · vừa xong Gate 2 — lời chào đầu tiên của cả hành trình */
   if(xongGate2() && hhG2 !== '1'){
     hhG2 = '1'; save();
@@ -3836,12 +4012,19 @@ function hhChon(){
     hhHien('happy', 'Zoey’s Castle', HH_KHEN[(Math.random()*HH_KHEN.length)|0], true);
     return;
   }
-  /* 3 · phiên đầu trong ngày */
-  if(hhNgay !== hnay){
+  /* 3 · ĐANG TRONG MỘT KHUNG CHÀO và khung đó hôm nay chưa chào.
+     Dấu "đã chào khung này" ghi ĐÚNG LÚC HỘP LÊN HÌNH (`ghiChaoKhung` truyền
+     vào `hhHien` làm `khiHien`), không ghi ở đây: lượt chào có thể bị bỏ vì
+     đang có hộp khác đè: ghi sớm là mất trắng khung đó tới tận ngày mai. */
+  const khung = hhKhungBayGio();
+  if(khung && !daChaoKhung(khung.ma)){
     const dau = !hhNgay;                 /* chưa từng chào lần nào = người mới */
-    hhNgay = hnay; save();
-    hhXinCau(cau => hhHien(dau ? 'welcome' : 'back',
-      dau ? 'Greetings' : 'Welcome back', cau + hhNhac()));
+    hhDangDoi = true;
+    hhXinCau(khung.ma, cau => hhHien(
+      dau ? 'welcome' : 'back',
+      dau ? 'Greetings' : 'Welcome back',
+      cau + hhNhac(), false,
+      ()=> ghiChaoKhung(khung.ma)));
     return;
   }
   /* 4 · đi vắng rồi quay lại */
@@ -3851,23 +4034,29 @@ function hhChon(){
     hhHien('idle', 'Đồng chí đã về', 'Nãy giờ đồng chí đi đâu đó ✦');
     return;
   }
-  /* 5 · hết mốc chào rồi → DAILY QUOTE.
-     `quoteRoi` là biến thường, KHÔNG lưu đâu cả: F5 là mất, nên mỗi lần tải
-     trang được đúng một câu. Đó chính là ý "F5 thì đổi sang quote" — mà cũng
-     là cái chặn spam: ở lại trang cả buổi thì vẫn chỉ một câu, không tự nhảy
-     ra thêm lần nào. */
-  if(!quoteRoi){
-    quoteRoi = true;
-    hhXinQuote(html => hhHien('back', 'Daily Quote', html));
-  }
+  /* 5 · ngoài khung chào → DAILY QUOTE, nếu đủ giãn cách.
+     Cả hai mốc đều nằm trong localStorage nên F5 không lách được, và cả hai
+     đều đóng dấu lúc hộp LÊN HÌNH chứ không phải lúc gửi yêu cầu. */
+  const gio = Date.now();
+  if(gio - (hhChaoAt  || 0) < HH_QUOTE_SAU_CHAO) return;   /* chào xong chưa đủ 1 tiếng */
+  if(gio - (hhQuoteAt || 0) < HH_QUOTE_CACH)     return;   /* chưa đủ 2 tiếng từ câu trước */
+  hhDangDoi = true;
+  hhXinQuote((html, cau)=> hhHien('back', 'Daily Quote', html, false, ()=>{
+    hhQuoteAt = Date.now(); save();
+    hhGhiQuote(cau);
+  }));
 }
-let quoteRoi = false;
 /* Ghi mốc lúc rời màn hình để lần quay lại còn biết đã vắng bao lâu */
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden){ try{ sessionStorage.setItem('hhAfk', Date.now()); }catch(e){} }
   else hhChon();
 });
 setTimeout(hhChon, 2200);
+/* Ngó lại theo nhịp: cả ba khung chào lẫn hai mốc giãn cách của quote đều là
+   luật GIỜ, mà trang này người ta mở rồi để đó cả buổi. Không có nhịp này thì
+   mở lúc 5h50 là cả ngày không thấy khung 06:00 đâu. Bỏ qua lúc tab đang ẩn —
+   quay lại tab đã có `visibilitychange` gọi rồi. */
+setInterval(()=>{ if(!document.hidden) hhChon(); }, HH_NGO_LAI);
 
 /* ═══════════ MÀN "COLLECTED: EASTER EGG" ═══════════
    Pháo hoa KHÔNG còn chạy đè lên khung này nữa — nó có hẳn trang riêng

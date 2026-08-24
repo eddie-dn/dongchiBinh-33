@@ -4,10 +4,15 @@
    ĐƯỜNG VÀO (cửa hậu cũ của từng trang GIỮ NGUYÊN, không đụng gì):
 
        mở bảng điều khiển của trang như xưa nay vẫn mở
-         → trong bảng có MỘT NÚT ICON nhỏ
-         → bấm 3 nhịp vào nút đó
+         → bấm 3 nhịp vào DÒNG CHỮ tên của bảng đó
+            ("Khối vận hành", "Mission 3 · Phá đảo"…)
          → gõ mã
          → hiện sổ CỦA RIÊNG TRANG ĐÓ
+
+   KHÔNG CÒN NÚT ICON. Đời trước đẻ ra một nút tròn nhỏ đứng cạnh dòng nhãn:
+   vừa thừa (dòng nhãn đã nói đúng tên chỗ đó rồi), vừa hết là cửa hậu (ai mở
+   bảng cũng thấy ngay có thứ bấm được). Nay cửa chính là dòng chữ, trỏ vào
+   mới đổi màu và nháy; đứng yên thì không có dấu vết gì.
 
    "Của riêng trang đó" là điểm quan trọng nhất: đứng ở Zoey's Castle thì chỉ
    thấy lịch sử của Zoey's Castle, không thấy trang nào khác. Sáu cuốn sổ nằm
@@ -19,22 +24,32 @@
    cửa hậu có ai mở hằng ngày đâu.
 
    ── CÁCH GẮN VÀO MỘT BẢNG ĐIỀU KHIỂN ────────────────────────────────────
-   Nạp file này, rồi nhét đúng một chuỗi HTML vào chỗ muốn đặt nút:
+   Nạp file này, rồi rắc một mẩu thuộc tính vào ĐÚNG DÒNG CHỮ muốn làm cửa:
 
-       LichSu.nut('MAP')        → trả về chuỗi HTML của nút
+       '<span ' + LichSu.chu('MAP') + '>Khối vận hành</span>'
 
-   Không phải gắn sự kiện gì cả: file tự nghe ở cấp tài liệu, nút dựng ra lúc
+   Chỗ nào dòng chữ đã có sẵn thẻ riêng thì gắn thẳng vào thẻ đó:
+
+       el.setAttribute('data-ls', 'DAD-A'); el.classList.add('ls-chu');
+
+   Không phải gắn sự kiện gì cả: file tự nghe ở cấp tài liệu, thẻ dựng ra lúc
    nào cũng chạy — kể cả bảng điều khiển được dựng lại bằng innerHTML sau đó.
    ═════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
   /* ── MÃ VÀO ───────────────────────────────────────────────────────────
-     0981 = 1890 đọc ngược — năm sinh Bác Hồ. Sai 3 lần thì được ĐÚNG MỘT
-     câu gợi ý, và chỉ một: nói tới lần thứ hai thì hết còn là cửa hậu. */
+     0981 = 1890 đọc ngược — năm sinh Bác Hồ.
+
+     KHÔNG CÓ GỢI Ý, KHÔNG CÓ MỘT CHỮ NÀO. Đời trước sai 3 lần thì hiện câu
+     "Năm sinh Bác Hồ — soi gương mà đọc." Nghe thì có vẻ kín, nhưng đọc xong
+     là ra mã trong ba giây: nó vừa cho biết mã là một NĂM, vừa cho biết năm
+     nào, vừa cho biết phải ĐỌC NGƯỢC. Còn lại đúng một việc là gõ vào.
+     Cửa hậu có hướng dẫn thì không còn là cửa hậu — nó thành một cái khoá dán
+     sẵn tờ giấy ghi mã bên cạnh. Nay gõ sai thì hộp chỉ rung một cái rồi thôi,
+     im lặng hoàn toàn, sai bao nhiêu lần cũng vậy. Ai mò ra thì mò, không thì
+     kệ. */
   var MA = '0981';
-  var GOI_Y = 'Năm sinh Bác Hồ — soi gương mà đọc.';
-  var SAI_TOI_DA = 3;
   var NHIP = 3;         /* bấm bao nhiêu nhịp vào nút thì mở */
   var NGUNG = 900;      /* ngưng bấy nhiêu ms là đếm lại từ đầu */
   var ANH = '/assets/poster/HH_5_idle_afk.webp';
@@ -106,8 +121,8 @@
           ] },
         { ngay:'2026-08-14', ver:'V16', so:null,
           chinh:'Trạng thái GAME ON, chỉnh hiệu ứng pháo hoa và hiệu ứng Gate 1' },
-        /* ⚠ V17 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09). Lần sửa sau của trang này BẮT BUỘC
-           mở dòng V18 mới, không được ghi V17.10 — xem luật ở đầu file. */
+        /* V17 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau đã mở dòng V18 ngay
+           bên dưới, không ghi V17.10 — xem luật ở đầu file. */
         { ngay:'2026-08-20', ver:'V17', so:'10',
           chinh:'Thêm hộp chào đầu ngày, cập nhật API nội dung, đồng bộ hệ nút, thêm bản ghi và làm lại khuôn bản ghi',
           chi:[
@@ -115,6 +130,12 @@
             { ver:'V17.04', chinh:'Nối liền ba khu chơi thành một mạch: bản đồ → Easter Egg → lâu đài' },
             { ver:'V17.05', chinh:'Nắn lại đường dẫn của Gate 2 vào luồng chính và sang lâu đài, chỉnh giao diện' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
+          ] },
+        { ngay:'2026-08-24', ver:'V18', so:'02',
+          chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
+          chi:[
+            { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
+            { ver:'V18.01', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
           ] }
       ]
     },
@@ -122,12 +143,14 @@
       ten: 'Easter Egg · Gate 1', duong: '/dad/950901-a',
       doi: [
         { ngay:'no info', ver:'V1 → V21', so:null, chinh:'no info — 21 build đầu không còn bản ghi' },
-        { ngay:'2026-08-19', ver:'V22', so:'04',
-          chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi',
+        { ngay:'2026-08-24', ver:'V22', so:'06',
+          chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V22.00 → V22.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
             { ver:'V22.02', chinh:'Dòng nhiệm vụ ở trang bìa, ba nấc nhiệm vụ, khuôn cửa mã dùng chung, thêm đo đạc' },
-            { ver:'V22.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' }
+            { ver:'V22.03', chinh:'Thanh tiến độ kèm mức khó, đồng hồ ghi rõ ngày–giờ–phút–giây, nút cầu cứu và luật tạm khoá' },
+            { ver:'V22.04', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng tiêu đề của hộp, trỏ vào thì chữ đổi màu' },
+            { ver:'V22.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
           ] }
       ]
     },
@@ -142,11 +165,13 @@
             { ver:'V2.04 → V2.09', chinh:'Chỉnh luật chơi, thiết kế cách người chơi tương tác, thêm đồng hồ, gợi ý và mạch màn chơi' }
           ] },
         { ngay:'2026-08-17', ver:'V03', so:'07', chinh:'Nắn lại số cho đúng luật, thêm khu Open World, dựng ảnh nền sạch' },
-        { ngay:'2026-08-20', ver:'V04', so:'07',
-          chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc, gom cửa hậu vào Khối vận hành',
+        { ngay:'2026-08-24', ver:'V04', so:'09',
+          chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc, gom cửa hậu vào Khối vận hành, đồng bộ màu bảng ghi',
           chi:[
             { ver:'V04.05', chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, cập nhật API, nạp trước tài nguyên, thêm đo đạc' },
-            { ver:'V04.06', chinh:'Gom cửa hậu vào Khối vận hành, mở lại cửa hậu ở màn cuối, đổi bản ghi sang khuôn mới' }
+            { ver:'V04.06', chinh:'Gom cửa hậu vào Khối vận hành, mở lại cửa hậu ở màn cuối, đổi bản ghi sang khuôn mới' },
+            { ver:'V04.07', chinh:'Chuyển cảnh dùng bản clip đã dọn sạch bảng tên nên bỏ hẳn lớp che và lớp khói; bảng bản ghi lấy đúng màu Khối vận hành; cửa vào bản ghi đổi từ nút hình sang chữ' },
+            { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' }
           ] }
       ]
     },
@@ -155,14 +180,26 @@
       doi: [
         { ngay:'no info', ver:'V1', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V2', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-19', ver:'V3', so:'01', chinh:'Thêm bản ghi (V2 đã hết nấc đuôi nên sang dòng V3)' }
+        { ngay:'2026-08-24', ver:'V3', so:'03',
+          chinh:'Thêm bản ghi (V2 đã hết nấc đuôi nên sang dòng V3), đồng bộ hệ nút bản ghi',
+          chi:[
+            { ver:'V3.00', chinh:'Thêm bản ghi cho trang này' },
+            { ver:'V3.01', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
+            { ver:'V3.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
+          ] }
       ]
     },
     'HAN-B': {
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V1', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V2' },
-        { ngay:'2026-08-19', ver:'V2', so:'02', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' }
+        { ngay:'2026-08-24', ver:'V2', so:'04',
+          chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
+          chi:[
+            { ver:'V2.00 → V2.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
+            { ver:'V2.02', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
+            { ver:'V2.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' }
+          ] }
       ]
     },
     /* ── FX CHƯA CÓ CỬA VÀO ────────────────────────────────────────────
@@ -207,16 +244,36 @@
        dính một mảng xanh, và chặn menu chạm-giữ trên điện thoại. */
     '[data-ls]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;',
       '-webkit-tap-highlight-color:transparent}',
-    /* Riêng chỗ nào muốn có nút thật thì thêm class .ls-key — nút mượn màu
-       chữ của bảng chứa nó (currentColor) nên không phải khai màu riêng. */
-    '.ls-key{width:28px;height:28px;flex:none;padding:0;border-radius:50%;',
-      'display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;',
-      'border:1px solid currentColor;background:none;color:inherit;cursor:pointer;',
-      'opacity:.42;box-shadow:none;transition:opacity .2s,transform .12s}',
-    '.ls-key:hover,.ls-key:focus-visible{opacity:.9;outline:none}',
-    '.ls-key:active{transform:scale(.92)}',
-    '.ls-key svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;',
-      'stroke-linecap:round;stroke-linejoin:round;display:block}',
+    /* ═══ CỬA VÀO LÀ CHỮ, KHÔNG PHẢI ICON ══════════════════════════════
+       BỎ HẲN NÚT TRÒN `.ls-key`. Nó sai ở hai chỗ:
+         · Bảng nào cũng đã có sẵn một dòng nhãn nói đúng tên chỗ đó ("Khối
+           vận hành", "Mission 3 · Phá đảo"). Đẻ thêm một nút tròn cạnh dòng
+           nhãn là hai thứ cùng trỏ vào một việc, mà cái nút thì chẳng nói
+           được nó làm gì — phải bấm thử mới biết.
+         · Cửa hậu mà có một nút tròn viền sáng đứng chình ình thì hết là cửa
+           hậu. Ai mở bảng ra cũng thấy ngay "có cái gì đó bấm được ở đây".
+
+       NAY: gắn thẳng `data-ls` lên CHÍNH DÒNG CHỮ đã có, thêm class `.ls-chu`.
+       Cách vào KHÔNG đổi một nét nào — vẫn 3 nhịp rồi gõ mã.
+
+       Dấu hiệu duy nhất là lúc TRỎ VÀO: chữ ăn màu nhấn của trang, sáng lên
+       một quầng mỏng rồi nháy chậm. Đứng yên thì không có gì cả — không viền,
+       không nền, không con trỏ bàn tay (giữ đúng luật cửa hậu ở §5.1 của
+       DESIGN-SYSTEM: nút chỉ có hình thì mới bắt buộc chú thích, còn cửa hậu
+       thì càng không có hình hài càng tốt).
+
+       `.go` là nhịp sáng lúc bấm trúng, do bộ đếm nhịp bật lên 200ms — cho
+       biết cú bấm ăn, nhưng KHÔNG đếm hộ còn mấy nhịp. */
+    '.ls-chu{-webkit-tap-highlight-color:transparent;',
+      'transition:color .18s ease,text-shadow .18s ease,opacity .18s ease}',
+    '.ls-chu:hover,.ls-chu:focus-visible{outline:none;opacity:1;',
+      'color:var(--ls-acc,#8CE1B4);text-shadow:0 0 10px currentColor;',
+      'animation:lsNhay 1.15s ease-in-out infinite}',
+    '@keyframes lsNhay{0%,100%{opacity:1}50%{opacity:.42}}',
+    '.ls-chu.go{animation:none;opacity:1;',
+      'color:var(--ls-acc,#8CE1B4);text-shadow:0 0 12px currentColor}',
+    '@media (prefers-reduced-motion:reduce){',
+      '.ls-chu:hover,.ls-chu:focus-visible{animation:none}}',
 
     '.ls-nen{position:fixed;inset:0;z-index:99999;display:none;',
       'align-items:center;justify-content:center;padding:16px;',
@@ -232,7 +289,52 @@
       'box-shadow:0 20px 50px rgba(0,0,0,.45);',
       'animation:lsLen .3s cubic-bezier(.16,1,.3,1) both}',
     '@keyframes lsLen{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}',
-    '.ls-than{max-height:min(62vh,420px);overflow:auto;-webkit-overflow-scrolling:touch}',
+    /* ═══ VÙNG CUỘN · THANH KÉO KIỂU LÁ THƯ ════════════════════════════
+       BẢN TRƯỚC ĐỂ THANH CUỘN MẶC ĐỊNH — và đó là thứ xấu nhất trong hộp:
+       trên Windows nó là một máng xám dày 17px có hai nút mũi tên ở hai đầu,
+       dán thẳng vào mép phải một cái hộp bo góc 14px. Máng đó mang màu của hệ
+       điều hành chứ không mang màu của trang, nên đứng ở Zoey's Castle pastel
+       thì nó xám, đứng ở bản đồ tối thì nó lại sáng. Nhìn ra ngay là một mẩu
+       trình duyệt lọt vào giữa một khung được vẽ tay.
+
+       Bộ này đã có sẵn MỘT lối cuộn đẹp — mấy khung đọc THƯ: không máng, không
+       nút, chỉ có nội dung trôi và hai mép trên dưới nhoà dần cho biết còn chữ
+       ở ngoài tầm mắt (`.wrap::-webkit-scrollbar{width:0}` bên Zoey's Castle,
+       `.letterbox` bên Gate 2). Nay chép đúng lối đó sang đây, thêm một nấc:
+
+         · THANH MẢNH 4px, KHÔNG MÁNG. `scrollbar-width:thin` cho Firefox,
+           `::-webkit-scrollbar` cho phần còn lại. Máng để trong suốt hẳn —
+           nền hộp chạy liền một mạch tới mép.
+         · TAY KÉO mượn `--ls-acc` của trang, đục 34%, bo tròn hết cỡ nên nhìn
+           như một nét bút chứ không phải một cái nút. Trỏ vào thì đậm lên 62%.
+         · HAI MÉP NHOÀ bằng `mask-image`: mép trên chỉ nhoà khi đã cuộn xuống,
+           mép dưới chỉ nhoà khi còn chữ phía dưới — hai biến `--ls-tren` /
+           `--ls-duoi` do JS bật tắt (xem `ganNhoaMep`). Đứng ở đầu bảng mà mép
+           trên đã mờ sẵn thì thành ra dòng tiêu đề bị cắt cụt.
+         · `overflow-x:hidden` — bảng bốn cột đã bó đúng bề ngang hộp, không
+           bao giờ được đẻ thêm một thanh cuộn NGANG. */
+    '.ls-than{max-height:min(62vh,420px);overflow-y:auto;overflow-x:hidden;',
+      '-webkit-overflow-scrolling:touch;overscroll-behavior:contain;',
+      'scrollbar-width:thin;scrollbar-color:var(--ls-acc,#8CE1B4) transparent;',
+      'padding-right:6px;margin-right:-6px;',
+      '-webkit-mask-image:linear-gradient(to bottom,',
+        'transparent 0,#000 var(--ls-tren,0px),',
+        '#000 calc(100% - var(--ls-duoi,0px)),transparent 100%);',
+      'mask-image:linear-gradient(to bottom,',
+        'transparent 0,#000 var(--ls-tren,0px),',
+        '#000 calc(100% - var(--ls-duoi,0px)),transparent 100%);',
+      'transition:-webkit-mask-image .2s,mask-image .2s}',
+    '.ls-than::-webkit-scrollbar{width:4px;height:4px}',
+    '.ls-than::-webkit-scrollbar-track{background:transparent}',
+    '.ls-than::-webkit-scrollbar-thumb{border-radius:999px;',
+      'background:var(--ls-acc,#8CE1B4);opacity:.34}',
+    /* Safari/Chrome không nhận `opacity` trên thumb — pha loãng bằng
+       color-mix, máy nào chưa hiểu color-mix thì rơi về đúng màu nhấn đặc. */
+    '@supports (background:color-mix(in srgb,red 30%,transparent)){',
+      '.ls-than::-webkit-scrollbar-thumb{',
+        'background:color-mix(in srgb,var(--ls-acc,#8CE1B4) 34%,transparent)}',
+      '.ls-than:hover::-webkit-scrollbar-thumb,.ls-than:focus-within::-webkit-scrollbar-thumb{',
+        'background:color-mix(in srgb,var(--ls-acc,#8CE1B4) 62%,transparent)}}',
 
     /* Cô AI vắt ở mép trên, nhìn xuống chỗ vừa mò ra. Ảnh gốc là cảnh ngang
        800x446, cắt tròn lấy phần đầu — `object-position` 50%/30% đo bằng mắt
@@ -243,8 +345,13 @@
       'box-shadow:0 8px 20px rgba(0,0,0,.4)}',
     '.ls-ai img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}',
 
+    /* Vòng ✕ nhìn thì 28px, nhưng VÙNG BẤM nới ra ~44px bằng `::before` — cùng
+       cách đã dùng cho `.grip` và `.cx-close` ngoài bản đồ. Không tăng padding
+       vì nút neo tuyệt đối vào góc phải trên: tăng padding là dấu ✕ tự dịch
+       vào trong, lệch khỏi chỗ mắt đã quen. */
     '.ls-x{position:absolute;top:8px;right:10px;width:28px;height:28px;border:0;',
       'background:none;color:var(--ls-mo,rgba(234,240,247,.5));font-size:15px;line-height:1;cursor:pointer;padding:0}',
+    '.ls-x::before{content:"";position:absolute;inset:-8px}',
     '.ls-x:hover{color:var(--ls-fg,#EAF0F7)}',
 
     '.ls-tit{margin:0;text-align:center;font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;',
@@ -262,9 +369,12 @@
     '.ls-hop.rung{animation:lsRung .38s}',
     '@keyframes lsRung{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}',
       '40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}',
-    '.ls-msg{margin:10px 0 0;text-align:center;font-size:11.5px;min-height:1.5em;color:var(--ls-mo,rgba(234,240,247,.5))}',
-    '.ls-msg.xau{color:#e0736b}',
-    '.ls-msg.goi{color:#d79a2b}',
+    /* Hàng ô mã: chừa thêm một chút hơi thở phía dưới. Trước đây chỗ này là
+       dòng thông báo `.ls-msg` cao 1.5em; nay cửa mã im lặng hoàn toàn nên đã
+       BỎ HẲN thẻ đó — giữ lại chỉ tổ chừa một mảng trống chết dưới đáy hộp.
+       (Cú rung khi gõ sai là `transform`, không đụng gì tới chiều cao, nên bỏ
+       cũng chẳng làm hộp giật.) */
+    '.ls-o{margin-bottom:8px}',
     /* Ô nhập thật nằm dưới, trong suốt — bàn phím ảo trên điện thoại phải có
        một <input> thật mới bật lên được, mấy ô vuông trên kia chỉ để nhìn. */
     '.ls-in{position:absolute;opacity:0;width:1px;height:1px;border:0;padding:0}',
@@ -321,17 +431,19 @@
   style.textContent = CSS;
   (document.head || document.documentElement).appendChild(style);
 
-  /* ═══ NÚT ═════════════════════════════════════════════════════════════
-     Trả về CHUỖI HTML chứ không phải phần tử: mấy bảng điều khiển trong bộ
-     này đều dựng bằng innerHTML nối chuỗi, trả về chuỗi thì nhét vào đâu
-     cũng được mà không phải đổi cách dựng của trang. */
-  var ICON = '<svg viewBox="0 0 20 20" aria-hidden="true">'
-    + '<path d="M10 3.2a6.8 6.8 0 1 1-6.6 8.4"/><path d="M3.2 8.1v3.6h3.6"/>'
-    + '<path d="M10 6.6V10l2.4 1.6"/></svg>';
+  /* ═══ CỬA VÀO ═════════════════════════════════════════════════════════
+     Trả về CHUỖI THUỘC TÍNH chứ không phải một phần tử: mấy bảng điều khiển
+     trong bộ này đều dựng bằng innerHTML nối chuỗi, mà cửa vào nay là chính
+     dòng chữ đã có sẵn ở đó — không đẻ thêm thẻ nào cả. Dùng:
 
-  function nut(ma) {
-    return '<button class="ls-key" type="button" data-ls="' + ma + '" '
-         + 'title="Bản ghi" aria-label="Bản ghi">' + ICON + '</button>';
+         '<p class="ov-lab"><span ' + LichSu.chu('HAN-A') + '>Khối vận hành</span></p>'
+
+     Gắn được lên bất cứ thẻ nào: <span>, <p>, cả dòng tiêu đề của một hộp
+     (xem `openDone` bên /dad/950901-a). Không phải gắn sự kiện gì — file tự
+     nghe ở cấp tài liệu.
+     `nut()` (nút tròn có icon) đã BỎ, xem ghi chú trong khối CSS ở trên. */
+  function chu(ma) {
+    return 'class="ls-chu" data-ls="' + ma + '"';
   }
 
   /* ═══ HỘP ═════════════════════════════════════════════════════════════ */
@@ -364,6 +476,35 @@
       + '<button class="ls-x" type="button" aria-label="Đóng">&#10005;</button>'
       + '<div class="ls-than">' + than + '</div>';
     hop.querySelector('.ls-x').addEventListener('click', dong);
+    ganNhoaMep(hop.querySelector('.ls-than'));
+  }
+
+  /* ═══ HAI MÉP NHOÀ · CHỈ NHOÀ KHI CÒN CHỮ Ở NGOÀI TẦM MẮT ═══════════════
+     Mượn đúng lối của mấy khung đọc THƯ trong bộ này: thay vì một cái máng
+     cuộn, để hai mép tự nhoà đi — mắt đọc ra ngay là "còn nữa ở dưới".
+     Nhưng phải nhoà CÓ ĐIỀU KIỆN: nhoà sẵn cả hai mép thì lúc đứng ở đầu bảng,
+     dòng tiêu đề "BUILD · NGÀY · # · SỬA CHÍNH" đã mờ tịt — trông như bị cắt
+     cụt chứ không phải như còn chữ.
+       · mép TRÊN chỉ nhoà khi đã cuộn xuống (scrollTop > 0)
+       · mép DƯỚI chỉ nhoà khi chưa chạm đáy
+     Nội dung ngắn hơn khung thì không mép nào nhoà cả.
+     Đo lại ở ba chỗ: lúc dựng, lúc cuộn, lúc đổi cỡ cửa sổ. Không nghe được
+     ResizeObserver (trình duyệt cũ) thì bỏ, hai mốc kia vẫn đủ. */
+  var NHOA = 16;                       /* độ dày dải nhoà, px */
+  function ganNhoaMep(n) {
+    if (!n) return;
+    function do_() {
+      var con = n.scrollHeight - n.clientHeight;
+      var tren = con > 1 && n.scrollTop > 1;
+      var duoi = con > 1 && n.scrollTop < con - 1;
+      n.style.setProperty('--ls-tren', (tren ? NHOA : 0) + 'px');
+      n.style.setProperty('--ls-duoi', (duoi ? NHOA : 0) + 'px');
+    }
+    n.addEventListener('scroll', do_, { passive: true });
+    try { new ResizeObserver(do_).observe(n); } catch (e) {}
+    do_();
+    /* Ảnh cô AI và phông chữ về sau có thể đẩy chiều cao đổi một nhịp nữa */
+    setTimeout(do_, 120);
   }
 
   /* Mở mã rồi thì trong PHIÊN này khỏi hỏi lại — nhưng nhớ RIÊNG TỪNG TRANG,
@@ -376,18 +517,20 @@
   }
 
   function veCuaMa(ma) {
-    var sai = 0, go = '';
+    var go = '';
     var t = SO[ma];
+    /* Bốn ô vuông rỗng, KHÔNG một dòng chữ nào. Bỏ cả câu "4 chữ số" — bốn cái
+       ô đã nói đúng bấy nhiêu rồi, viết thêm là thừa. Dòng thông báo `.ls-msg`
+       cũng bỏ luôn: nó không bao giờ có chữ nữa, giữ lại thì chỉ còn là một
+       mảng trống cao 1.5em nằm chết dưới đáy hộp. */
     khung(
         '<h2 class="ls-tit">Bản ghi</h2>'
-      + '<p class="ls-sub">' + t.ten + '<br>Ghi chép update hệ thống.</p>'
+      + '<p class="ls-sub">' + t.ten + '</p>'
       + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
-      + '<p class="ls-msg" id="lsMsg">4 chữ số</p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
       +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
-    var msg = hop.querySelector('#lsMsg');
     var inp = hop.querySelector('#lsIn');
 
     function ve() {
@@ -396,24 +539,13 @@
         o[i].className = go[i] ? 'co' : '';
       }
     }
+    /* GÕ SAI THÌ IM. Không báo lỗi, không đếm hộ còn mấy lần, không gợi ý —
+       xem ghi chú ở khối MÃ VÀO đầu file. Phản hồi duy nhất là một cú rung:
+       đủ để biết máy có nhận cú gõ, không đủ để suy ra gì. */
     function cham() {
       if (go === MA) { ghiMo(ma); veSo(ma); return; }
-      sai++;
       go = ''; inp.value = ''; ve();
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
-      /* KHÔNG BÁO GÌ KHI SAI. Bản trước đếm hộ "còn 2 lần trước khi có gợi ý"
-         — vừa nói toẹt là sắp có gợi ý, vừa biến cửa hậu thành một cái khoá
-         có hướng dẫn. Nay gõ sai thì hộp chỉ rung một cái rồi thôi; tới đúng
-         nấc được xem gợi ý mới hiện gợi ý, ngoài ra im lặng. */
-      if (sai >= SAI_TOI_DA) {
-        /* Gợi ý ĐÚNG MỘT LẦN. Từ lần sai thứ tư trở đi vẫn hiện đúng câu đó —
-           không có gợi ý thứ hai. Nói thêm nữa là cho không cái mã. */
-        msg.textContent = GOI_Y;
-        msg.className = 'ls-msg goi';
-      } else {
-        msg.textContent = '';
-        msg.className = 'ls-msg';
-      }
     }
     inp.addEventListener('input', function () {
       go = inp.value.replace(/\D/g, '').slice(0, 4);
@@ -540,5 +672,5 @@
     if (dem >= NHIP) { dem = 0; dangDem = null; mo(ma); }
   }, true);
 
-  window.LichSu = { nut: nut, mo: mo, so: SO };
+  window.LichSu = { chu: chu, mo: mo, so: SO };
 })();

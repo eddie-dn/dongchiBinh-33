@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 20-Aug-2026 · V04.06'
+    version       : 'Last updated 24-Aug-2026 · V04.08'
   }
 };
 
@@ -96,6 +96,22 @@ const GAME_CONFIG = {
     bg_r2       : 'bg_r2.png',        /* Vòng 2 — rừng tàn tích, Bạch Long ngậm thư  */
     anim_wrong  : 'anim_wrong.webp',  /* ổ khóa rung đỏ (~2s)                        */
     anim_unlock : 'anim_unlock.webp', /* nổ sập lab + thức tỉnh Bạch Long (~8s)      */
+
+    /* ── ★ CLIP NỔ BẢN SẠCH — BẢN ĐANG DÙNG ────────────────────────────────
+       Cùng đúng cảnh nổ sập lab đó, nhưng đã XOÁ SẠCH hai bảng tên khắc trên
+       bệ đá (REZAR ở đầu clip, NUY OAHZ từ mốc 40% trở đi). Nhờ vậy clip
+       KHÔNG còn lộ đáp án vòng 2 nữa.
+
+       ĐÂY LÀ CHỖ GỠ ĐƯỢC CẢ MỘT ĐỐNG VÁ. Suốt năm đời trước, mọi thứ đắp lên
+       khung chuyển cảnh — miếng đá dán, vệt mờ bầu dục, dải đáy mất nét, rồi
+       tới ba bờ khói — đều chỉ để giấu đúng mấy chữ VẼ SẴN TRONG CLIP. Chữ
+       không còn thì cũng chẳng còn gì phải giấu: nay chuyển cảnh chạy TRẦN,
+       không lớp che, không khói, không hạ sáng. Xem `win1()` trong index.html.
+
+       THIẾU FILE CŨNG KHÔNG VỠ: không tải được thì game tự lùi về
+       `anim_unlock` cũ và bật lại lớp khói y như trước. Thả file vào assets/
+       là tự động sạch.                                                       */
+    anim_unlock_clean : 'anim_unlock_clean.webp',
 
     /* ── ★ HAI TẤM "ĐÁ SẠCH" — CÁCH CHE ĐẸP NHẤT, KHÔNG CẦN BLUR ────────────
        Đây là bản y hệt bg_r1 / bg_r2 nhưng CHỖ KHẮC CHỮ ĐƯỢC VẼ ĐÈ THÀNH MẶT
@@ -150,38 +166,28 @@ const GAME_CONFIG = {
     flip_ms       : 700,    /* xếp lại chữ về đúng chiều đọc        */
     flip_step     : 45,     /* độ lệch nhịp giữa hai ô liền nhau    */
     solved_hold   : 420,    /* giữ đáp án sáng đều trước khi xếp lại */
-    /* ═══ NHỊP THẢ LỚP CHE TRONG CLIP NỔ — ĐO THẲNG TRÊN 241 KHUNG CLIP ═════
-       Clip nổ sập lab tự nó vẽ sẵn bảng đá vòng 2 với "NUY OAHZ". Trước đây
-       hai mốc dưới đây là ước lượng; nay đo bằng cách bung từng khung của
-       anim_unlock.webp ra rồi nhìn đúng ô bảng đá:
+    /* ═══ NHỊP THẢ KHÓI — CHỈ CÒN DÙNG CHO ĐƯỜNG LÙI ════════════════════
+       ĐỌC TRƯỚC: từ đời này trở đi chuyển cảnh dùng `anim_unlock_clean` —
+       clip đã xoá sẵn hai bảng tên, nên KHÔNG thả khói, KHÔNG dán lớp che,
+       không hạ sáng gì hết. Hai mốc dưới đây chỉ chạy khi clip sạch không tải
+       được và game phải lùi về `anim_unlock` cũ.
 
-         26% → 37%  ô bảng đá CHÌM HẲN TRONG KHÓI TRẮNG (độ sáng 203→240→179,
-                    không thấy gì bên dưới)
+       Ghi lại đường đã đi cho khỏi lặp lại — năm đời đều cùng một bệnh: đều
+       là HIỆU ỨNG QUANG HỌC đặt vào một chỗ chẳng có gì sinh ra nó, nên mắt
+       không giải thích được và đọc ngay ra "lỗi":
+         đời 1  dán mẩu đá tĩnh        → lệch theo cảnh đang hạ cánh, thò chữ
+         đời 2  miếng dán trôi theo    → hình chữ nhật tự bò trong khung
+         đời 3  vệt mờ hình bầu dục    → quầng xám nằm lì giữa khung ~5 giây
+         đời 4  cả dải đáy mất nét     → "cục mờ bay lơ lửng ở không trung"
+         đời 5  ba bờ khói trôi ngang  → tự nhiên nhất, nhưng vẫn là lớp đắp
+       Đời này bỏ hẳn lớp đắp: sửa thẳng vào clip. Không còn chữ thì không còn
+       việc gì phải giấu.
+
+       Mốc đo trên 241 khung của clip CŨ, giữ lại cho đường lùi:
+         26% → 37%  ô bảng đá chìm hẳn trong khói trắng thật
          ~40.8%     chữ NUY OAHZ đã đọc được lờ mờ qua khói
          43% → 47%  khói tan, chữ hiện rõ
-         85% →      cảnh đứng hẳn, khung cuối khớp bg_r2
-
-       BẢN CŨ SAI Ở ĐÂU: thả lớp che quanh mốc 39-44%, tức đúng lúc khói đang
-       tan. Một mảng đá TĨNH, sắc nét, hiện ra giữa làn khói đang cuộn thì mắt
-       bắt được ngay — đó là cái "đè lên hiệu ứng trong video". Lại còn muộn:
-       chữ đọc được từ 40.8% rồi.
-
-       ĐỜI SAU ĐÓ bỏ dán, thả một vệt LÀM MỜ HÌNH BẦU DỤC ngay trên ô chữ. Hết
-       vật liệu lạ, nhưng vẫn còn một cái HÌNH: quầng xám nhạt (hạ sáng .78,
-       rút màu còn .3) nằm lì giữa khung gần 5 giây — vẫn nhìn ra.
-
-       ĐỜI SAU NỮA cho cả dải đáy khung MẤT NÉT. Đỡ hơn, nhưng vẫn bị báo là
-       "cục mờ bay lơ lửng ở không trung" — đúng, vì chỗ đó chẳng có gì sinh ra
-       độ mờ cả. Gốc rễ của cả bốn đời: đều là HIỆU ỨNG QUANG HỌC đặt vào một
-       chỗ không có nguyên nhân, mắt không giải thích được nên đọc ra "lỗi".
-
-       NAY DÙNG THỨ CÓ SẴN TRONG CHÍNH CÂU CHUYỆN: KHÓI. Phòng lab vừa nổ tung
-       ngay trước đó, khói còn vương lại la đà sát mặt đất là chuyện đương
-       nhiên. Ba bờ khói trôi ngang ngược chiều nhau, đặc nhất đúng dải bảng đá
-       rồi loãng dần — không phải "vùng che" mà là một vật thể trong cảnh.
-       Xem `.khoi` trong index.html.
-       CÒN "REZAR" THÌ KỆ: vòng 1 lúc đó giải xong rồi, thấy lại mã cũ cũng
-       không mất gì. Chỉ NUY OAHZ mới cần giấu. */
+         85% →      cảnh đứng hẳn, khung cuối khớp bg_r2                      */
     che_vao_at    : 0.26,   /* bắt đầu thả khói (khung còn trắng xoá khói thật) */
     chu_lo_at     : 0.40,   /* đo được: chữ bắt đầu đọc được ở đây  */
     veil_in_ms    : 380,    /* lớp che đá hiện dần trong bấy nhiêu  */

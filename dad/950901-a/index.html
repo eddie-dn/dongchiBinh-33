@@ -873,8 +873,12 @@ render();
 .msn-quota b{color:rgba(242,180,65,.85);font-weight:600;font-variant-numeric:tabular-nums}
 .msn-tit{font-size:15px;font-weight:600;line-height:1.55;letter-spacing:.005em;margin-bottom:8px}
 .msn-txt{font-size:12.5px;line-height:1.7;color:#9fb2c9}
+/* Vùng bấm nới ra ~44px bằng `::before`, nét nhìn giữ nguyên — cùng cách đã
+   dùng cho `.grip` và `.cx-close` ngoài bản đồ. Không tăng padding vì nút neo
+   tuyệt đối vào góc phải trên, tăng padding là dấu ✕ tự dịch vào trong. */
 .msn-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:none;background:none;
   color:rgba(234,240,247,.55);font-size:14px;cursor:pointer}
+.msn-x::before{content:"";position:absolute;inset:-7px}
 .msn-hints{margin:12px 0 0;padding:0;list-style:none;font-size:12.5px;line-height:1.85;color:#cfe0f2}
 .msn-hints li{margin-bottom:3px;letter-spacing:.01em}
 .msn-hints li::before{content:"✦ ";color:var(--amber)}
@@ -916,7 +920,8 @@ render();
   color:#ffb4a6;margin:15px 2px 0}
 .msn-msg:empty{margin-top:0;min-height:6px}
 .msn-msg.ok{color:#8be0ff}
-/* Hàng cuối thẻ Phá đảo: nút chữ ở giữa, nút sổ phiên bản nép bên phải. */
+/* Hàng cuối thẻ Phá đảo: chỉ còn đúng nút chữ, căn giữa. Nút sổ phiên bản đã
+   bỏ — cửa vào nay là chính dòng tiêu đề của hộp (xem openDone). */
 .msn-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
 .msn-row .msn-ghost{margin:0}
 .msn-ghost{display:block;margin:12px auto 0;border:none;background:none;cursor:pointer;
@@ -1302,7 +1307,12 @@ render();
   var cdTimer = 0;
   function openOv(lab, html){ clearInterval(cdTimer); cdTimer = 0;
     ov.querySelector('.msn-card').className = 'msn-card';   /* reset padding/canh chữ giữa các hộp */
-    byId('msnLab').textContent = lab; byId('msnBody').innerHTML = html; ov.classList.add('show'); }
+    /* Dòng tiêu đề cũng phải reset: hộp Phá đảo gắn `data-ls` lên nó để làm
+       cửa vào sổ phiên bản (xem openDone). Hộp nào dùng lại thẻ này mà không
+       gỡ ra thì cửa hậu mọc ở cả những hộp không nên có. */
+    var lb = byId('msnLab');
+    lb.className = 'msn-lab'; lb.removeAttribute('data-ls');
+    lb.textContent = lab; byId('msnBody').innerHTML = html; ov.classList.add('show'); }
   function closeOv(){ ov.classList.remove('show');
     ov.querySelector('.msn-card').classList.remove('haspin');
     clearInterval(cdTimer); cdTimer = 0;
@@ -1598,16 +1608,27 @@ render();
       + '<b>Map: Bản đồ tác chiến</b>.</div>'
       + '<div class="msn-sign">--Kí tên: Hội Đồng MeowMeow ฅ^>⩊&lt;^ ฅ</div>'
       + '<button class="navbtn wide" id="msnGo" style="margin-top:18px;justify-content:center">Mở khoá Bản đồ tác chiến ✈</button>'
-      /* NÚT SỔ PHIÊN BẢN — bấm 3 nhịp rồi gõ mã là ra sổ của riêng trang này
-         (xem /assets/lichsu.js). Đặt ở thẻ Phá đảo vì đây là chỗ gần nhất với
-         một "bảng điều khiển" của trang: nó là thẻ duy nhất có nút reset, và
-         mở lại lúc nào cũng được bằng cách bấm vào nấc ✓M3 trên dòng Mission.
-         Đường vào thẻ này KHÔNG đổi gì. */
       + '<div class="msn-row">'
       +   '<button class="msn-ghost" id="msnReset" type="button">↻ Chơi lại từ đầu</button>'
-      +   (window.LichSu ? LichSu.nut('DAD-A') : '')
       + '</div>');
     ov.querySelector('.msn-card').classList.add('done');
+    /* ═══ CỬA VÀO SỔ PHIÊN BẢN LÀ DÒNG TIÊU ĐỀ CỦA CHÍNH HỘP NÀY ═══════════
+       Bấm 3 nhịp vào dòng "MISSION 3 · PHÁ ĐẢO" rồi gõ mã là ra sổ của riêng
+       trang này (xem /assets/lichsu.js). Đường vào thẻ KHÔNG đổi gì.
+
+       Vì sao đặt ở thẻ Phá đảo: đây là chỗ gần nhất với một "bảng điều khiển"
+       của trang — thẻ duy nhất có nút reset, và mở lại lúc nào cũng được bằng
+       cách bấm vào nấc ✓M3 trên dòng Mission.
+       Vì sao là DÒNG TIÊU ĐỀ chứ không phải một nút mới: bên Zoey's Castle và
+       Gate 2, cửa vào là dòng chữ "Khối vận hành" — tức là TÊN CỦA BẢNG. Trang
+       này không có Khối vận hành, nên lấy tên của hộp, đúng cùng một luật.
+       Đẻ thêm một cái icon nữa là mỗi trang một kiểu, mò ra chỗ này không giúp
+       gì cho việc mò ra chỗ kia. */
+    if(window.LichSu){
+      var lb = byId('msnLab');
+      lb.className = 'msn-lab ls-chu';
+      lb.setAttribute('data-ls', 'DAD-A');
+    }
     byId('msnGo').addEventListener('click', function(){ goMap('hộp Mission 3'); });
     var rs = byId('msnReset'), armed = false;
     rs.addEventListener('click', function(){
@@ -2033,7 +2054,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V22.03<br>Last updated 19-Aug-2026</span>
+<span class="vstamp" id="vstamp">V22.05<br>Last updated 24-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

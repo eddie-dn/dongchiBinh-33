@@ -40,9 +40,19 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* ═══════════════════════════════════════════════════════════════════════════
    ① + ③ MÀN ĐẾM NGƯỢC & MÀN PHÁT MÃ — dùng chung bộ áo "gate-look"
    ═══════════════════════════════════════════════════════════════════════════ */
-/* SỔ PHIÊN BẢN mượn màu Gate 2 — xem /assets/lichsu.js */
-:root{--ls-bg:linear-gradient(180deg,#0d1c33 0%,#040b18 100%);--ls-fg:#EAF0F7;
-  --ls-mo:rgba(234,240,247,.5);--ls-line:rgba(234,240,247,.22);--ls-acc:#F2B441;
+/* ═══ BẢN GHI MƯỢN MÀU KHỐI VẬN HÀNH, KHÔNG PHẢI MÀU MÀN CỔNG ═════════════
+   Bản trước lấy màu nhấn amber `#F2B441` của màn cổng. Hỏng ở chỗ: bản ghi
+   KHÔNG mở từ màn cổng — nó chỉ mở từ trong Khối vận hành, mà Khối vận hành
+   dùng nguyên một tông xanh lá `rgba(140,225,180,.9)`. Bấm vào một dòng chữ
+   xanh lá thì bật ra một cái bảng vàng cam: hai bảng chồng lên nhau ngay trên
+   màn hình, mỗi bảng một màu — đọc ra là hai chỗ khác nhau chứ không phải một
+   tầng nữa của cùng một chỗ.
+   Nay bộ sáu biến khớp đúng bảng màu Khối vận hành (`.kvh-hop` / `.kvh-lab`
+   ngay dưới đây): cùng nền, cùng viền, cùng chữ nhấn.
+   ĐỔI MÀU KHỐI VẬN HÀNH thì nhớ đổi cả sáu biến này theo. */
+:root{--ls-bg:linear-gradient(180deg,#0d1a2e 0%,#070e1c 100%);--ls-fg:#EAF0F7;
+  --ls-mo:rgba(234,240,247,.5);--ls-line:rgba(140,225,180,.2);
+  --ls-acc:#8CE1B4;
   --ls-w:min(330px,92vw)}
 .gate-look{
   --void:#040b18;--navy:#0B1B3A;--neon:#38BDF8;--amber:#F2B441;
@@ -229,8 +239,12 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   border:1px solid rgba(234,240,247,.12);box-shadow:0 20px 50px rgba(0,0,0,.45);
   animation:kvhLen .3s cubic-bezier(.16,1,.3,1) both}
 @keyframes kvhLen{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* Vùng bấm nới ra ~44px bằng `::before`, nét nhìn giữ nguyên — cùng cách đã
+   dùng cho `.grip` và `.cx-close` ngoài bản đồ. Không tăng padding vì nút neo
+   tuyệt đối vào góc phải trên, tăng padding là dấu ✕ tự dịch vào trong. */
 .kvh-x{position:absolute;top:6px;right:8px;width:30px;height:30px;border:0;background:none;
   color:rgba(234,240,247,.5);font-size:15px;line-height:1;cursor:pointer;padding:0}
+.kvh-x::before{content:"";position:absolute;inset:-7px}
 .kvh-x:hover{color:#EAF0F7}
 .kvh-lab{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 5px;
   font-family:"Oswald",system-ui,sans-serif;font-size:10.5px;font-weight:600;
@@ -380,8 +394,14 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   -webkit-mask-composite:source-in;mask-composite:intersect;
   transition:opacity .5s ease;
 }
-/* ═══ CHE CHỮ TRONG CLIP: KHÓI SÓT LẠI SAU VỤ NỔ ══════════════════════════
-   Clip nổ sập lab TỰ NÓ vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ mốc
+/* ═══ KHÓI SÓT LẠI SAU VỤ NỔ — CHỈ CÒN LÀ ĐƯỜNG LÙI ══════════════════════
+   ĐỌC TRƯỚC: bình thường lớp này KHÔNG BAO GIỜ bật. Chuyển cảnh nay dùng
+   `anim_unlock_clean.webp` — bản clip đã xoá sẵn hai bảng tên khắc trên bệ đá
+   — nên trong clip chẳng còn chữ nào để giấu, và cả khung chạy TRẦN. Lớp khói
+   dưới đây chỉ sống lại đúng một trường hợp: clip sạch không tải được, game
+   lùi về `anim_unlock` cũ (xem `urlClipNo()` và `win1()`).
+
+   Giữ lại vì clip CŨ tự nó vẽ sẵn bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ mốc
    40,8% và giữ rõ TỚI HẾT CLIP — phải giấu suốt 4,7 giây, đúng đoạn con rồng
    nở ra. Cắt clip sớm là mất luôn khúc đẹp nhất, không làm được.
 
@@ -1091,7 +1111,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
            trông khác hẳn các màn còn lại. -->
       <!-- Cửa hậu: gõ 10 nhịp vào tem "@Designed by … · Last updated" ở chân
            màn hình thì ra KHỐI VẬN HÀNH (bảng nổi, dựng trong JS bên dưới) —
-           trong đó có nút xem bản ghi và lối đi thẳng màn cuối. Trang này
+           trong đó dòng chữ "Khối vận hành" là cửa vào bản ghi, kèm lối đi
+           thẳng màn cuối. Trang này
            không có bảng điều khiển riêng như bản đồ hay Zoey's Castle, nên
            bảng đó chính là chỗ tương đương. -->
     </div>
@@ -1232,7 +1253,8 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
       </div>
     </div>
     <!-- Cửa hậu ở màn cuối GIỐNG HỆT màn cổng: gõ 10 nhịp vào tem là ra Khối
-         vận hành, trong đó có nút xem bản ghi. Bỏ `data-ls` gắn thẳng vào tem
+         vận hành, trong đó dòng chữ "Khối vận hành" là cửa vào bản ghi. Bỏ
+         `data-ls` gắn thẳng vào tem
          (kiểu 3 nhịp cũ) để cả bộ chỉ còn MỘT luật mò cửa, khỏi phải nhớ chỗ
          nào 3 nhịp chỗ nào 10. Xem /assets/lichsu.js. -->
     <span class="vstamp" id="cStamp"></span>
@@ -1460,11 +1482,24 @@ const Kvh = (function(){
 
   function mo(man){
     const xong = !!Store.get().g2Game;
-    /* Nút xem bản ghi dựng ĐÚNG LÚC MỞ, không dựng sẵn trong DOM: đây là cửa
-       hậu, bày sẵn thì ai soi mã trang cũng thấy. */
-    let h = '<p class="kvh-lab">Khối vận hành'
-          + (window.LichSu ? LichSu.nut('DAD-B') : '') + '</p>'
-          + '<p class="kvh-txt">Bấm 3 nhịp vào nút tròn để xem <b>bản ghi</b> của trang này.</p>';
+    /* Cửa vào bản ghi (`data-ls`) dựng ĐÚNG LÚC MỞ, không dựng sẵn trong DOM:
+       đây là cửa hậu, bày sẵn thì ai soi mã trang cũng thấy. */
+    /* ═══ KHÔNG CHỈ ĐƯỜNG ═══════════════════════════════════════════════════
+       Dòng "Bấm 3 nhịp vào chữ Khối vận hành để xem bản ghi" đã BỎ. Nó biến
+       một cửa hậu thành một cái nút có hướng dẫn dán bên cạnh — mò ra Khối vận
+       hành xong thì tầng thứ hai coi như cho không.
+
+       Nhưng cũng không để hộp trống trơ một dòng tiêu đề: thay bằng một dòng
+       TRẠNG THÁI, đúng khuôn Khối vận hành bên Zoey's Castle ("Tiến độ: 3/6")
+       và Secret Chamber ("Trạng thái: đã mở khoá"). Nó nói về màn chơi, không
+       nói gì về cửa hậu — ai mò ra thì mò, không thì kệ. */
+    const r = Store.get();
+    const tt = xong ? 'đã phá đảo'
+             : (r.g2Xong ? 'đã giải xong hai vòng'
+             : (r.g2Vao  ? 'đang giải mã' : 'chưa vào màn chơi'));
+    let h = '<p class="kvh-lab"><span '
+          + (window.LichSu ? LichSu.chu('DAD-B') : '') + '>Khối vận hành</span></p>'
+          + '<p class="kvh-txt">Trạng thái: <b>' + tt + '</b></p>';
     if(man === 'gate' && !xong)
       h += '<button class="kvh-go" id="kvhSkip" type="button">⏭ Bỏ qua · vào thẳng màn cuối</button>';
     than.innerHTML = h;
@@ -1605,8 +1640,9 @@ const Gate = (function(){
   /* ═══ CỬA HẬU · GÕ 10 NHỊP VÀO TEM "LAST UPDATED" ════════════════════════
      Giống hệt cửa hậu trên bản đồ (10 nhịp vào dòng Last updated ở chân
      trang), để hai nơi cùng một luật chơi — mò ra được ở đây thì ở kia cũng
-     biết đường. Gõ đủ 10 cái thì ra KHỐI VẬN HÀNH — bảng đó chứa nút xem bản
-     ghi và lối đi thẳng màn cuối; xem khối `Kvh` phía trên.
+     biết đường. Gõ đủ 10 cái thì ra KHỐI VẬN HÀNH — trong bảng đó, dòng chữ
+     "Khối vận hành" chính là cửa vào bản ghi, cạnh nó là lối đi thẳng màn
+     cuối; xem khối `Kvh` phía trên.
      Ngưng gõ 0,9 giây là đếm lại từ đầu — y như bên bản đồ.
      Cố ý KHÔNG đếm hộ còn mấy nhịp: biết trước thì hết thú mò ra. Chỉ nháy màu
      tem cho biết đang gõ đúng chỗ. */
@@ -2270,6 +2306,26 @@ async function urlDaSach(vong){
   if(!daSach[key]) console.log('[GATE2] chưa có ảnh đá sạch ' + ten + ' — dùng cách nhoè cũ');
   return daSach[key] || null;
 }
+
+/* ═══ CLIP NỔ — BẢN SẠCH TRƯỚC, BẢN CŨ SAU ════════════════════════════════
+   `anim_unlock_clean.webp` là đúng clip nổ sập lab đó nhưng đã xoá sẵn hai
+   bảng tên khắc trên bệ đá. Có nó thì chuyển cảnh chạy TRẦN: không lớp che,
+   không khói, không hạ sáng — vì trong clip chẳng còn chữ nào để mà giấu.
+   Không tải được thì lùi về clip cũ và bật lại lớp khói y như đời trước.
+   Dò MỘT LẦN rồi nhớ: `sach` = true/false sau khi dò xong.                 */
+const clipNo = { src:null, sach:false };
+async function urlClipNo(){
+  if(clipNo.src) return clipNo.src;
+  const ten = C.assets.anim_unlock_clean;
+  if(ten){
+    const src = C.assets_base + ten;
+    if(await load(src)){ clipNo.src = src; clipNo.sach = true; return src; }
+    console.log('[GATE2] chưa có clip sạch ' + ten + ' — lùi về clip cũ, bật lại khói');
+  }
+  clipNo.src = A('anim_unlock'); clipNo.sach = false;
+  await load(clipNo.src);
+  return clipNo.src;
+}
 /* ═══ DÙNG ĐÁ SẠCH LÀM NỀN LUÔN, KHÔNG PHẢI DÁN MIẾNG VÁ ══════════════════
    Bản đầu chỉ thay mỗi LỚP CHE bằng mẩu đá sạch, tức vẫn là dán một miếng vá
    lên trên ảnh CÓ chữ. Miếng vá thì kiểu gì cũng có mép, và mép đó lại tán
@@ -2289,6 +2345,7 @@ async function apDungAnh(slab, vong, urlCoChu, nen){
   /* Đặt bản CÓ CHỮ + bộ lọc nhoè NGAY, để trong lúc còn đang dò file sạch
      không có khung hình nào hở chữ ra. */
   if(veil){
+    veil.style.display = '';
     veil.style.backgroundImage = urlCoChu;
     slab.style.setProperty('--veil-f', (vong === 2 ? C.round2 : C.round1).veil_filter);
   }
@@ -2298,6 +2355,18 @@ async function apDungAnh(slab, vong, urlCoChu, nen){
   const urlSach = 'url("' + sach + '")';
   (nen || []).forEach(n=>{ if(n) n.style.backgroundImage = urlSach; });
   if(veil){
+    /* ═══ CÓ ĐÁ SẠCH THÌ TẮT HẲN LỚP CHE ══════════════════════════════════
+       Nền vừa đổi sang chính tấm đá sạch ở dòng trên — dưới lớp nền không còn
+       nét khắc nào để mà giấu. Giữ lớp che lại thì nó thành một mảng đá dán
+       lên một mảng đá y hệt: không giấu thêm được gì, mà mặt nạ tán mềm của
+       nó vẫn để lại một vệt chuyển tông mờ mờ quanh bệ đá — đúng cái "bệ đá
+       nhìn không tự nhiên".
+       Lý do duy nhất còn giữ nó tới đời trước là clip nổ có VẼ SẴN NUY OAHZ
+       nên cần một mảng đá phủ lên clip. Nay clip cũng đã có bản sạch
+       (`anim_unlock_clean`), nên lý do đó cũng hết. Tắt hẳn.
+       Còn `veil_filter`, `--veil-blur` và cả nhánh nhoè cũ thì GIỮ NGUYÊN cho
+       đường lùi: thiếu file đá sạch là hàm này đã `return` từ trên rồi. */
+    veil.style.display = 'none';
     veil.style.backgroundImage = urlSach;
     slab.style.setProperty('--veil-f', 'none');
     /* `.sach` để fitSlabs() nới rộng vùng che. Dán đá thật thì rộng bao nhiêu
@@ -2516,7 +2585,7 @@ async function startRound1(){
 
   await sayAll(C.dialogues.boot, 'sys');
   await sayAll(C.dialogues.round1_intro);
-  load(A('anim_unlock')); load(A('bg_r2'));
+  urlClipNo(); load(A('bg_r2'));
   if(resumeLock(1)) return;             /* hạn khoá cũ còn hiệu lực */
   showCtrl(true); setInput(true, C.round1.placeholder);
   S.busy = false;
@@ -2537,7 +2606,7 @@ async function win1(){
   await wait(revealSolved(el.slab1, el.row1));
   await wait(flipSolved(el.slab1, el.row1));     /* xếp REZAR → RAZER tại chỗ */
   await wait(T.glow_hold);
-  await load(A('anim_unlock'));
+  await urlClipNo();          /* chốt xong dùng clip sạch hay clip cũ */
   say(C.dialogues.round1_boom, 'warn');
 
   /* Đáp án RAZER KHÔNG tắt ngay. Nó nằm nguyên trên bệ đá trong lúc clip nổ
@@ -2552,64 +2621,69 @@ async function win1(){
     }, 520);
   }, T.anim_unlock * (T.slab1_out_at || 0.42));
 
-  /* ═══ CHẶN LỘ ĐÁP ÁN TRONG CLIP ═══════════════════════════════════════════
-     Clip nổ sập lab tự nó VẼ SẴN bảng đá vòng 2 với "NUY OAHZ" sáng rõ từ
-     khoảng 44% về sau — không phải lỗi thứ tự dựng cảnh, mà là ảnh gốc.
-     Đã đo: khung hình cuối của clip trùng KHÍT bg_r2 (lệch 0px cả hai chiều),
-     nên cứ dựng sẵn cảnh vòng 2 sau lưng clip rồi thả lớp che xuống đúng chỗ
-     bảng đá — lớp che nằm z-6, clip nằm z-5, che vừa vặn. Nền cũng đổi sẵn
-     luôn nên lúc clip tắt là cắt thẳng sang cảnh tĩnh, không chớp nhịp nào. */
+  /* ═══ CHUYỂN CẢNH CHẠY TRẦN ═══════════════════════════════════════════════
+     Cảnh vòng 2 dựng sẵn NGAY sau lưng clip (khung cuối clip trùng khít bg_r2,
+     lệch 0px cả hai chiều) nên lúc clip tắt là cắt thẳng sang cảnh tĩnh, không
+     chớp một nhịp nào. Nền cũng đã đổi sẵn từ trước.
+
+     KHÔNG CÒN LỚP ĐẮP NÀO NỮA. Năm đời trước đều phải đắp một thứ gì đó lên
+     khung chuyển cảnh — miếng đá dán, vệt mờ bầu dục, dải đáy mất nét, ba bờ
+     khói — chỉ để giấu mấy chữ VẼ SẴN TRONG chính clip. Nay clip đã là bản
+     sạch: không còn chữ thì không còn việc gì phải giấu, nên chuyển cảnh chạy
+     trần đúng như clip gốc, mắt không phải giải thích cho một vùng mờ hay một
+     mảng khói vô cớ nào.
+     Chỉ khi clip sạch không tải được mới lùi về clip cũ — lúc đó (và chỉ lúc
+     đó) lớp khói `.khoi` mới bật lên, theo đúng nhịp đo cũ trong config. */
   prepRound2();
-  const veil2 = el.slab2.querySelector('.veil');
-  veil2.style.transition = 'none'; veil2.style.opacity = '0';
+  const clip   = await urlClipNo();
+  const chuaSach = !clipNo.sach;
+  const veil2  = el.slab2.querySelector('.veil');
 
-  /* ── TRONG CLIP THÌ MẤT NÉT TIỀN CẢNH, RA KHỎI CLIP MỚI DÁN ĐÁ ───────────
-     Suốt lúc clip chạy, lớp che đá NẰM YÊN Ở OPACITY 0 — không dán gì lên một
-     cảnh đang động. Việc giấu chữ giao hết cho lớp KHÓI `.khoi` (xem CSS):
-     nó là một vật thể trong chính câu chuyện — phòng lab vừa nổ xong — nên
-     mắt không đi tìm lời giải thích như với một vùng nhoè giữa trời.
-     Bật từ mốc 26% — đo trên 241 khung thì từ 26% tới 40% cả khung trắng xoá
-     vì khói THẬT. Khói giả nở ra ngay trong lòng khói thật rồi ở lại, không
-     ai bắt được khoảnh khắc nó xuất hiện.
-     `chu_lo_at` (đo được 40,8%) là CHỐT CHẶN: lỡ máy lag quá mà tới mốc đó
-     vẫn chưa bật thì bật tức thì, không nhoà dần nữa.
-     Tới khi clip tắt mới đổi vai: tắt dải mất nét, thả lớp che đá xuống. Lúc
-     đó cảnh đã là ảnh tĩnh khớp từng pixel với ảnh đá sạch nên dán vào không
-     hở một mép nào — và cả khung nét lại, đọc như một cú lấy nét về. */
-  const VAO_AT    = T.che_vao_at != null ? T.che_vao_at : 0.26;
-  const bat_dau   = T.anim_unlock * VAO_AT;
-  const kin_luc   = T.anim_unlock * (T.chu_lo_at || 0.40);  /* hạn chót */
+  /* Lớp che đá chỉ còn nghĩa lý ở ĐƯỜNG LÙI: clip cũ có vẽ sẵn NUY OAHZ nên
+     ra khỏi clip phải có một mảng đá sạch dán lên. Dùng clip sạch thì nền đã
+     là ảnh đá sạch rồi, `apDungAnh()` đã tắt hẳn lớp này. */
+  if(veil2 && chuaSach){ veil2.style.transition = 'none'; veil2.style.opacity = '0'; }
 
-  /* Bám ĐỒNG HỒ THẬT bằng rAF thay vì một setTimeout duy nhất: main thread bận
-     thì timer bắn trễ, còn clip webp vẫn chạy theo giờ của nó — lệch nhau là
-     lộ chữ. Vòng rAF đo lại mỗi khung nên trễ bao nhiêu cũng tự bắt kịp. */
-  let t0 = 0, daMo = false;
-  const batMo = tuc_thi =>{
-    if(daMo) return;
-    daMo = true;
-    if(el.khoi) el.khoi.style.transition = tuc_thi ? 'none' : '';
-    el.world.classList.add('khoi-on');
-  };
-  const canhMo = ()=>{
-    if(daMo) return;
-    const qua = performance.now() - t0;
-    if(qua >= kin_luc){ batMo(true);  return; }   /* trễ mất rồi → mờ ngay */
-    if(qua >= bat_dau){ batMo(false); return; }
-    requestAnimationFrame(canhMo);
-  };
+  let batMo = null;
+  if(chuaSach){
+    /* ── ĐƯỜNG LÙI · vẫn thả khói theo nhịp đo trên 241 khung clip cũ ──────
+       Bật từ mốc 26% — quãng đó cả khung còn trắng xoá vì khói THẬT, nên khói
+       giả nở ra ngay trong lòng khói thật rồi ở lại, không ai bắt được khoảnh
+       khắc nó xuất hiện. `chu_lo_at` (đo được 40,8%) là chốt chặn: máy lag quá
+       mà tới mốc đó vẫn chưa bật thì bật tức thì, không nhoà dần nữa.
+       Bám ĐỒNG HỒ THẬT bằng rAF thay vì một setTimeout duy nhất: main thread
+       bận thì timer bắn trễ, còn clip webp vẫn chạy theo giờ của nó. */
+    const VAO_AT  = T.che_vao_at != null ? T.che_vao_at : 0.26;
+    const bat_dau = T.anim_unlock * VAO_AT;
+    const kin_luc = T.anim_unlock * (T.chu_lo_at || 0.40);
+    let t0 = 0, daMo = false;
+    const mo = tuc_thi =>{
+      if(daMo) return;
+      daMo = true;
+      if(el.khoi) el.khoi.style.transition = tuc_thi ? 'none' : '';
+      el.world.classList.add('khoi-on');
+    };
+    const canhMo = ()=>{
+      if(daMo) return;
+      const qua = performance.now() - t0;
+      if(qua >= kin_luc){ mo(true);  return; }   /* trễ mất rồi → mờ ngay */
+      if(qua >= bat_dau){ mo(false); return; }
+      requestAnimationFrame(canhMo);
+    };
+    /* Chạy ĐÚNG lúc clip bắt đầu, không phải lúc gọi hàm: mọi mốc đều là %
+       độ dài clip nên lệch mốc gốc bao nhiêu là lệch hết bấy nhiêu. */
+    batMo = ()=>{ t0 = performance.now(); canhMo(); };
+  }
 
-  await playClip(A('anim_unlock'), T.anim_unlock, ()=>{
-    /* Chạy ĐÚNG lúc clip bắt đầu, không phải lúc gọi hàm: mọi mốc dưới đây đều
-       là % độ dài clip nên lệch mốc gốc bao nhiêu là lệch hết bấy nhiêu. */
-    t0 = performance.now();
-    canhMo();
-  });
-  /* Clip tắt = cắt thẳng sang cảnh tĩnh. Đổi vai đúng khoảnh khắc này: lớp che
-     đá đục 100% (khớp từng pixel với nền), dải mất nét tắt hẳn. */
-  veil2.style.transition = 'none';
-  veil2.style.opacity = '1';
-  if(el.khoi) el.khoi.style.transition = '';
-  el.world.classList.remove('khoi-on');
+  await playClip(clip, T.anim_unlock, batMo);
+
+  if(chuaSach){
+    /* Clip tắt = cắt thẳng sang cảnh tĩnh. Đổi vai đúng khoảnh khắc này: lớp
+       che đá đục 100% (khớp từng pixel với nền), khói tắt hẳn. */
+    if(veil2){ veil2.style.transition = 'none'; veil2.style.opacity = '1'; }
+    if(el.khoi) el.khoi.style.transition = '';
+    el.world.classList.remove('khoi-on');
+  }
   await startRound2();
 }
 
@@ -3254,7 +3328,7 @@ function reset(){
   [el.slab1, el.slab2].forEach(sl=>{
     sl.className = 'slab';
     const v = sl.querySelector('.veil');
-    if(v){ v.style.opacity = ''; v.style.transition = ''; }
+    if(v){ v.style.opacity = ''; v.style.transition = ''; v.style.display = ''; }
   });
   S.revMap2 = null;
   el.ctrl.classList.remove('nobtn');
@@ -3304,7 +3378,7 @@ return {
       ()=> load(A('anim_wrong')),   /* gõ trật phát đầu là cần tới        */
       ()=> load(A('bg_r2')),        /* dựng sẵn cảnh vòng 2 sau lưng clip */
       ()=> urlDaSach(2),            /* lớp che vòng 2                     */
-      ()=> load(A('anim_unlock'))   /* nặng nhất, nhưng cần muộn nhất     */
+      ()=> urlClipNo()              /* nặng nhất, nhưng cần muộn nhất     */
     ];
     for(const b of thuTu){ try{ await b(); }catch(e){} }
   },

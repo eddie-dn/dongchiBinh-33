@@ -1,4 +1,332 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 7 — dọn gợi ý ở cửa hậu + soát lại UX. Chép đè theo đúng cây thư mục.
+════════════════════════════════════════════════════════════════════════════
+9 file sửa, không có file mới. Đi kèm ngay sau đợt 6 (đọc đợt 6 bên dưới).
+
+Số tem sau đợt này:
+    /                 V18.01        /han/961030-a     V3.02
+    /dad/950901-a     V22.05        /han/961030-b     V2.03
+    /dad/950901-b     V04.08        /phao-hoa         V3.03 (không đụng)
+
+
+① CỬA HẬU KHÔNG CÒN NÓI MỘT CHỮ NÀO
+────────────────────────────────────────────────────────────────────────────
+Anh chỉ đúng hai chỗ đang cho không cái mã:
+
+  · "Năm sinh Bác Hồ — soi gương mà đọc."  hiện sau 3 lần gõ sai.
+    Nghe thì kín, nhưng nó cho biết ĐỦ CẢ BA thứ cần biết: mã là một cái NĂM,
+    năm NÀO, và phải ĐỌC NGƯỢC. Đọc xong là ra mã trong ba giây.
+  · "Bấm 3 nhịp vào chữ Khối vận hành để xem bản ghi của trang này."
+    Mò ra được Khối vận hành rồi mà tầng thứ hai lại chỉ sẵn đường thì mất
+    luôn tầng đó.
+
+Cửa hậu có hướng dẫn thì không còn là cửa hậu — nó thành cái khoá dán sẵn tờ
+giấy ghi mã bên cạnh. Nay bỏ hết:
+
+    · KHÔNG gợi ý, sai bao nhiêu lần cũng vậy
+    · KHÔNG báo sai, KHÔNG đếm hộ còn mấy lần
+    · KHÔNG cả nhãn "4 chữ số" — bốn cái ô đã nói đúng bấy nhiêu rồi
+    · KHÔNG dòng chỉ đường ở Khối vận hành
+
+Phản hồi duy nhất khi gõ sai: một cú RUNG. Đủ để biết máy nhận cú gõ, không đủ
+để suy ra gì. Ai mò ra thì mò, không thì kệ.
+
+Bỏ luôn cả thẻ thông báo `.ls-msg`: nó không bao giờ có chữ nữa, giữ lại chỉ
+tổ chừa một mảng trống cao 1.5em nằm chết dưới đáy hộp.
+
+KHỐI VẬN HÀNH GATE 2 KHÔNG ĐỂ TRỐNG TRƠ. Bỏ dòng chỉ đường nhưng không để hộp
+còn mỗi cái tiêu đề — thay bằng một dòng TRẠNG THÁI, đúng khuôn Khối vận hành
+bên Zoey's Castle ("Tiến độ: 3/6") và Secret Chamber ("Trạng thái: đã mở
+khoá"). Nó nói về màn chơi, không nói gì về cửa hậu:
+
+    Trạng thái: chưa vào màn chơi / đang giải mã /
+                đã giải xong hai vòng / đã phá đảo
+
+Đã chốt thành luật trong DESIGN-SYSTEM.md §5.1 để đời sau khỏi viết lại.
+
+
+② SOÁT UX — TÌM RA ĐÚNG MỘT LỖI THẬT
+────────────────────────────────────────────────────────────────────────────
+Quét cả 6 trang × 3 cỡ máy (320 / 390 / 1280 px), đo bằng máy chứ không nhìn:
+
+  TRÀN NGANG      0 px ở cả 18 lượt — không trang nào đẻ thanh cuộn ngang.
+  LỖI JS          không trang nào.
+  VÙNG CHẠM       ← đây là chỗ có lỗi thật.
+
+Mấy nút ĐÓNG đều quá nhỏ so với đầu ngón tay:
+
+        .cx-close  (Box Tổng tư lệnh)  21×23 px   ← nhỏ nhất bộ
+        .hh-x      (hộp chào)          28×28 px
+        .ls-x      (sổ bản ghi)        28×28 px
+        .ovp .x                        30×30 px
+        .kvh-x                         30×30 px
+        .msn-x                         32×32 px
+
+Ngưỡng dễ bấm là ~44px. Đang bấm ba lần trượt một, mà đây lại là nút thoát —
+bấm trượt là chọc vào nội dung phía sau.
+
+CÁCH XỬ THEO ĐÚNG LỐI ĐÃ CÓ SẴN TRONG BỘ: `.grip` ở sheet mật thư từ lâu đã
+làm y hệt — "vạch nhìn thì mảnh 4px, nhưng vùng bấm phải đủ dày". Nay chép
+sang: giữ nguyên NÉT NHÌN, chỉ nới VÙNG BẤM bằng một `::before` phủ ra ngoài.
+
+    .cx-close::before{content:"";position:absolute;inset:-10px}   → 41×43
+    .hh-x::before    {content:"";position:absolute;inset:-8px}    → 44×44
+    .ls-x::before    {content:"";position:absolute;inset:-8px}    → 44×44
+    .ovp .x / .kvh-x / .msn-x ::before{...inset:-7px}             → 44×46
+
+KHÔNG tăng padding: mấy nút này đều neo tuyệt đối vào góc phải trên, tăng
+padding là dấu ✕ tự dịch vào trong, lệch khỏi chỗ mắt đã quen.
+
+Đo lại sau khi sửa: bấm lệch 6-7px ra ngoài vòng ✕ vẫn trúng nút, vẫn đóng
+được hộp.
+
+> Hai thứ máy báo mà KHÔNG phải lỗi, ghi ra cho khỏi đi sửa nhầm:
+> `#cam` ngoài bản đồ và `#deck` bên Gate 1 đều "thò ra khỏi mép phải". Đúng
+> vậy: một cái là khung bản đồ lia/phóng bên trong vùng đã cắt, một cái là
+> hàng thẻ xếp cạnh nhau trượt bằng transform. Cả hai đều cố ý, và tràn ngang
+> thật sự vẫn bằng 0.
+
+
+③ ĐÃ KIỂM THỬ NHỮNG GÌ — 63 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+Chạy thật trên trình duyệt, không đọc mã suông:
+
+CỬA MÃ IM LẶNG        chụp nguyên văn chữ trong hộp trước khi gõ, gõ sai 5
+                      lần liên tiếp, so lại: không đổi một nét. Không còn
+                      chuỗi "Năm sinh Bác Hồ" trong cả trang. Gõ đúng vẫn vào.
+
+KHỐI VẬN HÀNH GATE 2  10 nhịp vào tem → mở; không còn chữ "nhịp" nào trong
+                      hộp; có dòng trạng thái; nút Bỏ qua vẫn đúng chỗ.
+
+BỐN CỬA VÀO BẢN GHI   bản đồ · Gate 1 · Gate 2 · Zoey's Castle · Secret
+                      Chamber — 3 nhịp vào CHỮ → cửa mã → đúng sổ riêng của
+                      từng trang. Gate 1 vào bằng dòng tiêu đề hộp Phá đảo.
+
+BA KHUNG CHÀO         thử 6 mốc giờ: 06:30 · 09:00 · 11:45 · 15:00 · 18:10 ·
+                      21:00 — trong khung thì chào, ngoài khung thì ra Daily
+                      Quote, đúng cả 6. Biên khung đúng cả 14 mốc.
+
+MỘT LẦN / KHUNG       chào lúc 06:30 xong, mở lại lúc 07:10 cùng ngày: im.
+
+GIÃN CÁCH QUOTE       vừa chào 20 phút → chưa tới lượt · chào xong 90 phút →
+                      được · quote trước cách 1 tiếng → chưa đủ · cách 3
+                      tiếng → được. Đúng cả 4.
+
+GATE 2 CHƠI THẬT      vào màn, gõ RAZER, xem chuyển cảnh: clip đang phát đúng
+                      là bản sạch, khói KHÔNG bật, lớp che cả hai vòng tắt
+                      hẳn, vào vòng 2 gọn. Clip cũ 24MB không được nạp lần
+                      nào — nhẹ hẳn 10MB.
+
+THANH CUỘN            đầu bảng chỉ nhoà mép dưới · giữa bảng nhoà cả hai ·
+                      đáy bảng chỉ nhoà mép trên · không sinh cuộn ngang.
+
+HỘP CHÀO              câu 68 ký tự gói gọn 2 dòng ở cả máy 320px lẫn 390px,
+                      chữ chạy hết bề ngang, không cắt cụt.
+
+VÙNG CHẠM             ba nút đóng đều ≥40px sau khi sửa; bấm lệch ra ngoài
+                      vòng ✕ vẫn trúng.
+
+QUÉT 6 TRANG × 3 CỠ   tràn ngang 0px, không trang nào lỗi JS.
+
+
+════════════════════════════════════════════════════════════════════════════
+ĐỢT 6 — 6 việc. Chép đè theo đúng cây thư mục.
+════════════════════════════════════════════════════════════════════════════
+9 file sửa. KHÔNG có file mới nào cần tạo — `anim_unlock_clean.webp` anh đã
+thả sẵn vào /dad/950901-b/assets/ rồi.
+
+Số tem sau đợt này:
+    /                 V18.00  ← V17 hết nấc .09, phải mở dòng V18
+    /dad/950901-a     V22.04        /han/961030-a     V3.01
+    /dad/950901-b     V04.07        /han/961030-b     V2.02
+                                    /phao-hoa         V3.03 (không đụng)
+
+
+① GATE 2 — CHUYỂN CẢNH CHẠY TRẦN, BỎ SẠCH LỚP ĐẮP
+────────────────────────────────────────────────────────────────────────────
+Anh đưa `anim_unlock_clean.webp` — đúng clip nổ sập lab đó nhưng đã xoá hai
+bảng tên khắc trên bệ đá (REZAR ở đầu, NUY OAHZ từ mốc 40% về sau).
+
+Đây là chỗ gỡ được cả một đống vá. Năm đời trước — miếng đá dán, vệt mờ bầu
+dục, dải đáy mất nét, rồi ba bờ khói — đều chỉ để giấu mấy chữ VẼ SẴN TRONG
+CLIP. Chữ không còn thì cũng chẳng còn gì phải giấu.
+
+Nay:
+  · clip chuyển cảnh dùng bản sạch
+  · lớp KHÓI `.khoi` KHÔNG bật nữa
+  · lớp che đá `.veil` TẮT HẲN ở cả hai vòng (mục ② ngay dưới)
+  · nhẹ thêm 10 MB: clip sạch 14 MB, clip cũ 24 MB — và bản cũ nay không còn
+    được nạp lần nào nữa
+
+THIẾU FILE CŨNG KHÔNG VỠ: không tải được clip sạch thì game tự lùi về clip cũ
+và bật lại khói y như trước. Mọi mốc đo cũ (`che_vao_at`, `chu_lo_at`) giữ
+nguyên trong config cho đường lùi đó.
+
+
+② BỆ ĐÁ — TẬN DỤNG NỐT HAI TẤM _clean, BỎ LUÔN MIẾNG VÁ
+────────────────────────────────────────────────────────────────────────────
+Anh hỏi có tận dụng được `bg_r1_clean` / `bg_r2_clean` cho bệ đá nhìn tự
+nhiên hơn không — CÓ, và còn hơn thế.
+
+Hai tấm đó vốn ĐÃ được dùng làm NỀN từ đợt trước (nền là ảnh sạch thì dưới
+lớp nền không còn chữ nào để giấu). Nhưng lớp che `.veil` vẫn được giữ, vì
+một lý do duy nhất: clip nổ có vẽ sẵn NUY OAHZ nên cần một mảng đá phủ lên
+clip.
+
+Nay clip cũng sạch → lý do đó hết → tắt hẳn lớp che. Được thêm một cái:
+mặt nạ tán mềm của lớp che vẫn để lại một vệt chuyển tông mờ mờ quanh bệ đá,
+soi kỹ thì thấy. Bỏ nó đi là bệ đá còn đúng mặt đá thật, không mép, không vệt.
+
+Đo tại chỗ khi chạy thử: trong lúc clip chạy, `khoi-on` = false, `.veil` của
+cả hai vòng = `display:none`, và clip đang phát đúng là `anim_unlock_clean`.
+
+
+③ HỘP CHÀO — CHỮ XUỐNG DÒNG GIỮA BLOCK
+────────────────────────────────────────────────────────────────────────────
+Thủ phạm là `text-wrap:balance`: nó CHIA ĐỀU số chữ cho các dòng. Nghe thì
+hay, nhưng đúng nó đã bẻ "Đồng chí làm việc đến đâu rồi, nhớ đứng dậy ăn chút
+gì nha" thành hai dòng ngắn tũn nằm giữa khung, chừa hẳn một mảng trống bên
+phải.
+
+Nay `text-wrap:pretty` — đổ ĐẦY dòng trên rồi mới xuống dòng, dùng trọn bề
+ngang hộp; nó chỉ can thiệp đúng một việc là không để MỘT chữ rơi trơ ở dòng
+cuối. Cùng cách xử đã dùng cho câu hỏi bên Zoey's Castle.
+
+Và lấy câu dài hơn thật:
+  · trần ký tự     lời chào 120 → 150   ·   quote 130 → 168
+  · lời dặn Gemini "tối đa 14 từ" → "16-26 từ", cho phép một dấu phẩy hai vế
+  · bộ câu sẵn viết lại dài hơn ở cả ba buổi
+Đo trên khung 340px, cỡ chữ 12,5px: một dòng chứa ~44 ký tự.
+
+
+④ LÚC NÀO THÌ HIỆN POP-UP — ĐÚNG, ĐANG CÓ 2 RULE GHI ĐÈ
+────────────────────────────────────────────────────────────────────────────
+Anh đoán trúng. `hhBuoi()` có chia sáng/trưa/tối, nhưng nó CHỈ chọn chữ, không
+quyết định lúc nào chào. Việc "lúc nào" nằm ở hai chỗ khác, và hai chỗ đó đè
+mất cả ba buổi:
+
+  rule 1  `if(hhNgay !== hnay)` — chào ở PHIÊN ĐẦU TIÊN của ngày rồi đóng dấu
+          ngày. Mở lúc nào cũng tính là "lời chào của hôm nay", nên cả ngày
+          chỉ có ĐÚNG MỘT lời chào. Mở lúc 2h sáng thì lời chào duy nhất của
+          ngày đó là câu buổi tối, tới 7h sáng thật thì im.
+
+  rule 2  `if(!quoteRoi)` — quote bắn NGAY ở lượt kế tiếp, không cách lời chào
+          một phút nào, cũng không cách quote trước: `quoteRoi` là biến
+          thường, F5 là mất sạch. Mở đi mở lại năm lần là năm câu liền tay.
+
+LUẬT MỚI, đúng như anh đặt:
+
+    KHUNG CHÀO       06:00 – 07:30  |  11:00 – 12:30  |  17:30 – 19:00
+                     mỗi khung tối đa MỘT lần trong ngày
+
+    DAILY QUOTE      ngoài ba khung đó, và phải đủ CẢ HAI mốc:
+                       ≥ 1 tiếng kể từ lúc XEM lời chào gần nhất
+                       ≥ 2 tiếng kể từ câu quote trước
+                     mỗi lần một câu khác
+
+Ba điểm đáng nói:
+
+  · Hai mốc giờ đóng dấu ĐÚNG LÚC HỘP LÊN HÌNH, không phải lúc gửi yêu cầu.
+    Lượt chào có thể bị bỏ giữa chừng (đang có hộp khác đè, hoặc chờ quá hạn)
+    — ghi dấu sớm là mất trắng một khung chào mà không ai được xem.
+  · Cả hai nằm trong localStorage nên F5 không lách được (đây chính là chỗ
+    rule 2 cũ hỏng).
+  · Thêm một nhịp ngó lại mỗi 5 phút. Cần thật: hai luật trên đều là luật GIỜ,
+    mà trang này người ta mở rồi để đó cả buổi — không có nhịp này thì mở lúc
+    5h50 là cả ngày không thấy khung 06:00 đâu.
+
+"Mỗi lần một câu khác": nhớ 24 câu gần nhất ở localStorage, nhớ chung cho cả
+câu của máy chủ lẫn câu tại chỗ — máy chủ trả trúng câu vừa đọc thì trang tự
+đổi sang một câu chưa dùng. Bản cũ nhớ ở sessionStorage nên đóng tab là quên.
+
+Khung tối bắt đầu 17:30, sớm hơn ranh giới 18:00 của máy chủ nửa tiếng, nên
+trang nay gửi thẳng MÃ KHUNG (`buoi=toi`) thay vì gửi giờ máy — gửi giờ thì
+17:45 ra câu buổi trưa.
+
+
+⑤ DAILY QUOTE — THÊM BỐN ĐẦU MỤC, THÊM 46 TÊN TÁC GIẢ
+────────────────────────────────────────────────────────────────────────────
+Khối `## quote` trong `api/_lib/loichao.md` nay có ruột rõ ràng, không còn là
+danh ngôn động viên chung chung. Bốn đầu mục:
+
+    tự biết mình (self-awareness) · tự trọng (self-esteem)
+    tự soi lại (self-reflection)  · khiêm nhường (humility)
+
+Danh sách tác giả mở rộng theo đúng mạch Seneca / Marcus Aurelius — cổ nhân
+khắc kỷ, thiền sư, nhà tâm lý chiều sâu, người thực hành tự vấn: Epictetus,
+Socrates, Montaigne, Pascal, Kierkegaard, Simone Weil, Viktor Frankl,
+Carl Rogers, Erich Fromm, Brené Brown, Krishnamurti, Rumi, Trang Tử, Mạnh Tử,
+Trần Nhân Tông, Nguyễn Bỉnh Khiêm, Tolstoy, Dostoevsky, Feynman, Munger,
+Maya Angelou, Toni Morrison… 46 tên.
+
+Kho câu sẵn: 12 → 34 câu, xếp theo bốn đầu mục.
+
+⚠ MỘT BẪY, ghi lại cho khỏi vấp: mấy dòng tiêu đề bốn nhóm trong file .md phải
+viết `#### Tự biết mình`, KHÔNG được viết `**Tự biết mình**`. Bộ nạp cắt dấu
+gạch đầu dòng bằng `^[-*]`, mà dấu sao cũng dính — thế là bốn cái tiêu đề
+in đậm lọt thẳng vào kho câu chào. Đã vấp đúng lỗi này lúc làm.
+
+
+⑥ THANH KÉO BẢNG BẢN GHI + MÀU + CỬA VÀO
+────────────────────────────────────────────────────────────────────────────
+THANH KÉO. Anh nói đúng, đó là thứ xấu nhất trong hộp: thanh cuộn mặc định
+của trình duyệt, trên Windows là một máng xám dày 17px có hai nút mũi tên hai
+đầu, dán vào mép phải một cái hộp bo góc 14px — và nó mang màu của hệ điều
+hành chứ không mang màu của trang.
+
+Bộ này đã có sẵn một lối cuộn đẹp: mấy khung đọc THƯ. Không máng, không nút,
+chỉ có chữ trôi và mép nhoà dần. Nay chép sang, thêm một nấc:
+  · thanh mảnh 4px, máng trong suốt hẳn
+  · tay kéo mượn màu nhấn của trang, đục 34%, bo tròn — như một nét bút
+  · hai mép nhoà CÓ ĐIỀU KIỆN: mép trên chỉ nhoà khi đã cuộn xuống, mép dưới
+    chỉ nhoà khi còn chữ phía dưới. Nhoà sẵn cả hai là dòng tiêu đề mờ tịt
+    ngay từ lúc mở, trông như bị cắt cụt chứ không phải như "còn nữa ở dưới"
+  · không bao giờ cuộn ngang
+Chốt thành mục §5.3 trong DESIGN-SYSTEM.md để mọi vùng cuộn về sau dùng chung.
+
+MÀU BẢNG GATE 2. Bảng bản ghi ở đó đang lấy màu amber của màn cổng, trong khi
+nó chỉ mở được TỪ Khối vận hành — mà Khối vận hành thì xanh lá. Bấm vào một
+dòng chữ xanh lá bật ra một cái bảng vàng cam: hai bảng chồng nhau ngay trên
+màn hình, mỗi bảng một màu. Nay cả sáu biến `--ls-*` khớp đúng bảng màu Khối
+vận hành.
+
+CỬA VÀO — BỎ ICON, DÙNG CHỮ. Nút tròn `.ls-key` bỏ hẳn. Nó sai hai chỗ: bảng
+nào cũng đã có sẵn một dòng chữ nói đúng tên chỗ đó, thêm một nút cạnh nó là
+hai thứ cùng trỏ một việc mà cái nút thì phải bấm thử mới biết làm gì; và một
+nút tròn viền sáng đứng chình ình thì hết còn là cửa hậu.
+
+    bảng CÓ Khối vận hành      →  chính chữ "Khối vận hành"
+    bảng KHÔNG có              →  tiêu đề của chính hộp đó
+                                  (dad/950901-a: dòng "Mission 3 · Phá đảo")
+    không có bảng nào          →  thứ đã có sẵn (mặt cười ngoài bản đồ) — giữ
+
+CÁCH VÀO KHÔNG ĐỔI MỘT NÉT: vẫn 3 nhịp rồi gõ mã. Dấu hiệu duy nhất là lúc
+TRỎ VÀO — chữ ăn màu nhấn của trang, lên một quầng sáng mỏng rồi nháy chậm.
+Đứng yên thì không viền, không nền, không con trỏ bàn tay.
+
+Dòng nhắc trong Khối vận hành Gate 2 cũng sửa theo: "Bấm 3 nhịp vào chữ Khối
+vận hành…" — không thì nó chỉ người ta đi tìm một cái nút không còn tồn tại.
+
+
+ĐÃ CHẠY THỬ NHỮNG GÌ
+────────────────────────────────────────────────────────────────────────────
+Mở thật bằng trình duyệt, không phải đọc mã suông:
+  · Gate 2 giải xong vòng 1 → xem chuyển cảnh: clip đang phát đúng là bản
+    sạch, khói không bật, hai lớp che tắt, vòng 2 dựng ra không lộ chữ
+  · bốn cửa vào bản ghi (bản đồ · Gate 1 · Gate 2 · Zoey's Castle · Secret
+    Chamber): 3 nhịp vào chữ → cửa mã → đúng sổ của riêng trang đó
+  · dad/950901-a: mở hộp khác thì `data-ls` tự gỡ khỏi dòng tiêu đề, cửa hậu
+    không mọc sang hộp không nên có
+  · thanh cuộn: đầu bảng chỉ nhoà mép dưới, giữa bảng nhoà cả hai, đáy bảng
+    chỉ nhoà mép trên; không sinh thanh cuộn ngang
+  · hộp chào và Daily Quote: chữ chạy hết bề ngang khung, không cắt cụt
+  · biên ba khung giờ (05:59 / 06:00 / 07:29 / 07:30 …): đúng cả 14 mốc
+  · bốc 40 câu quote liên tiếp: không lặp trong cửa sổ 24 câu, không có hai
+    câu liền nhau trùng nhau
+  · không trang nào sinh lỗi JavaScript
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 5 (bản gộp, đã sửa 8 mục mới) — chép đè theo đúng cây thư mục.
 ════════════════════════════════════════════════════════════════════════════
 16 file. 5 file MỚI: assets/lichsu.js · DESIGN-SYSTEM.md · docs/GOOGLE-SHEETS.md

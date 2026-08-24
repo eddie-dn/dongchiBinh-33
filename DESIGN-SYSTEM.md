@@ -167,25 +167,59 @@ bao giờ hiện chung một bảng.
 | Trang | Cửa ẩn nằm ở | Mã trang |
 |---|---|---|
 | Bản đồ mật thư | **mặt cười** cạnh "Chọn chiến dịch" trong Box Tổng tư lệnh | `MAP` |
-| Easter Egg · Gate 1 | nút tròn trong thẻ *Mission 3 · Phá đảo* | `DAD-A` |
-| Easter Egg · Gate 2 · màn cổng | nút tròn cạnh nút *Bỏ qua* | `DAD-B` |
-| Easter Egg · Gate 2 · màn phát mã | **dòng tem** ở chân màn hình | `DAD-B` |
-| Zoey's Castle · Secret Chamber | nút tròn trong Khối vận hành | `HAN-A` · `HAN-B` |
+| Easter Egg · Gate 1 | **dòng tiêu đề** *Mission 3 · Phá đảo* của chính hộp đó | `DAD-A` |
+| Easter Egg · Gate 2 · cả hai màn | chữ **"Khối vận hành"** trong bảng Khối vận hành | `DAD-B` |
+| Zoey's Castle · Secret Chamber | chữ **"Khối vận hành"** trong Khối vận hành | `HAN-A` · `HAN-B` |
 | Màn pháo hoa | *chưa có bảng nào* → chưa gắn | `FX` |
 
-**CÓ HÌNH HAY KHÔNG CÓ HÌNH — chọn theo chỗ đặt:**
+Gate 2 gộp hai màn làm một dòng vì cả màn cổng lẫn màn phát mã nay cùng đi qua
+một bảng Khối vận hành duy nhất (10 nhịp vào tem ở chân màn hình mới ra bảng).
 
-- Chỗ nào bảng còn rộng, thêm một nút tròn không phá bố cục → dùng `.ls-key`
-  (nút tròn 28px, mượn màu chữ của bảng).
-- Chỗ nào thêm nút vào là hỏng bố cục → **giấu hẳn**, chỉ gắn `data-ls` lên một
-  thứ đã có sẵn ở đó (mặt cười, dòng tem). Không viền, không con trỏ, không gì
-  cả — đúng tinh thần cửa hậu.
+**CỬA LÀ CHỮ, KHÔNG BAO GIỜ LÀ ICON.** Nút tròn `.ls-key` của đời trước đã bỏ
+hẳn. Nó sai ở hai chỗ: bảng nào cũng đã có sẵn một dòng chữ nói đúng tên chỗ
+đó, đẻ thêm một nút cạnh nó là hai thứ cùng trỏ một việc — mà cái nút thì không
+nói được nó làm gì, phải bấm thử mới biết; và một nút tròn viền sáng đứng chình
+ình thì hết còn là cửa hậu.
 
-Sai mã 3 lần thì được **một** gợi ý, và chỉ một.
+**Chọn chữ nào làm cửa — theo đúng thứ tự này:**
 
-**Nút tròn đặt bên TRÁI hàng nhãn**, không phải bên phải: góc phải trên của mọi
-bảng trong bộ này đều là chỗ của nút đóng `✕`, để bên phải là hai nút đè lên
-nhau. Đã vấp đúng lỗi này.
+| Chỗ đặt | Lấy chữ nào | Ví dụ |
+|---|---|---|
+| Bảng có **Khối vận hành** | chính chữ **"Khối vận hành"** | `han/961030-a` · `-b` · Gate 2 |
+| Bảng không có Khối vận hành | **tiêu đề của chính hộp đó** | `dad/950901-a` — dòng *Mission 3 · Phá đảo* |
+| Không có bảng nào để đặt | một thứ **đã có sẵn** ở đó (mặt cười, dòng tem) | bản đồ — mặt cười cạnh *Chọn chiến dịch* |
+
+Tuyệt đối **không vẽ thêm một cái icon mới** cho việc này. Mỗi trang một kiểu
+thì mò ra được ở chỗ này cũng chẳng giúp gì cho việc mò ra chỗ kia.
+
+**Cách gắn:** `LichSu.chu('MAP')` trả về mẩu thuộc tính `class="ls-chu"
+data-ls="MAP"` — nhét vào thẻ chữ đang có, không đẻ thêm thẻ nào:
+
+```html
+<p class="ov-lab"><span class="ls-chu" data-ls="HAN-A">Khối vận hành</span></p>
+```
+
+Chỗ nào dòng chữ đã có thẻ riêng (như `#msnLab`) thì gắn thẳng bằng JS:
+`el.classList.add('ls-chu'); el.setAttribute('data-ls','DAD-A')`.
+
+**Dấu hiệu duy nhất là lúc TRỎ VÀO:** chữ ăn `--ls-acc` của trang, lên một
+quầng sáng mỏng rồi **nháy chậm** (1,15s, `opacity` 1 ↔ .42). Đứng yên thì
+không có gì cả — không viền, không nền, **không con trỏ bàn tay**. Bấm trúng
+một nhịp thì chữ sáng đứng 200ms cho biết cú bấm ăn, nhưng **không đếm hộ còn
+mấy nhịp**. `prefers-reduced-motion` thì tắt nháy, chỉ còn đổi màu.
+
+**Cửa mã KHÔNG nói một chữ nào.** Không nhãn "4 chữ số", không báo sai, không
+đếm hộ còn mấy lần, và **không có gợi ý** — kể cả gõ sai mười lần. Phản hồi duy
+nhất là một cú rung: đủ để biết máy có nhận cú gõ, không đủ để suy ra gì.
+
+Đời trước sai 3 lần thì hiện một câu gợi ý. Nghe thì có vẻ kín, nhưng nó cho
+biết cả ba thứ cần biết — mã là một cái năm, năm nào, và phải đọc ngược — nên
+đọc xong là ra mã trong ba giây. Cửa hậu có hướng dẫn thì không còn là cửa hậu.
+
+Cũng đừng viết dòng "bấm 3 nhịp vào… để xem bản ghi" ở bảng chứa cửa. Mò ra
+được bảng rồi mà tầng thứ hai lại chỉ sẵn đường thì mất luôn tầng đó. Bảng cần
+một dòng cho đỡ trống thì viết **trạng thái của màn chơi** (*"Tiến độ: 3/6"* ·
+*"Trạng thái: đã phá đảo"*) — nói về game, không nói về cửa.
 
 ### 5.2 · Hộp sổ mượn màu của trang đang đứng
 
@@ -212,7 +246,51 @@ trang. Hộp bung ra to hơn cả khung màn hình là lỗi đã báo.
 **Ảnh cô AI vắt lên trên mép hộp thì hộp KHÔNG được `overflow`** — cuộn giao
 cho một lớp con. Để `overflow` ở hộp là đầu cô bị xén ngang.
 
-### 5.3 · Cột "#" đếm gì
+### 5.3 · THANH KÉO — mọi vùng cuộn trong bộ này dùng chung một kiểu
+
+**Đừng để thanh cuộn mặc định của trình duyệt.** Trên Windows nó là một máng
+xám dày 17px có hai nút mũi tên hai đầu, dán thẳng vào mép phải một cái hộp bo
+góc — và nó mang màu của hệ điều hành chứ không mang màu của trang, nên cùng
+một hộp mà ở khu pastel thì nó xám, ở khu tối thì nó sáng. Nhìn ra ngay là một
+mẩu trình duyệt lọt vào giữa một khung vẽ tay.
+
+**Bản gốc là mấy khung đọc THƯ** (`.letterbox` bên Gate 2, `.wrap` bên Zoey's
+Castle): không máng, không nút, chỉ có chữ trôi và mép nhoà dần. Mọi vùng cuộn
+khác chép theo, thêm một nấc — xem `.ls-than` trong `/assets/lichsu.js`:
+
+```css
+.vung-cuon{
+  overflow-y:auto; overflow-x:hidden;          /* KHÔNG bao giờ cuộn ngang */
+  scrollbar-width:thin;                         /* Firefox */
+  scrollbar-color:var(--acc) transparent;
+  padding-right:6px; margin-right:-6px;         /* chừa chỗ cho thanh, không đội chữ */
+  -webkit-mask-image:linear-gradient(to bottom,
+    transparent 0, #000 var(--tren,0px),
+    #000 calc(100% - var(--duoi,0px)), transparent 100%);
+}
+.vung-cuon::-webkit-scrollbar{width:4px}
+.vung-cuon::-webkit-scrollbar-track{background:transparent}
+.vung-cuon::-webkit-scrollbar-thumb{
+  border-radius:999px;
+  background:color-mix(in srgb, var(--acc) 34%, transparent)}
+.vung-cuon:hover::-webkit-scrollbar-thumb{
+  background:color-mix(in srgb, var(--acc) 62%, transparent)}
+```
+
+Bốn điều bắt buộc:
+
+1. **Thanh mảnh 4px, KHÔNG máng.** Máng để trong suốt hẳn — nền hộp chạy liền
+   một mạch tới mép.
+2. **Tay kéo mượn màu nhấn của khu**, đục 34%, bo tròn hết cỡ nên đọc ra là một
+   nét bút chứ không phải một cái nút. Trỏ vào thì đậm lên 62%.
+3. **Hai mép nhoà CÓ ĐIỀU KIỆN.** Mép trên chỉ nhoà khi đã cuộn xuống, mép dưới
+   chỉ nhoà khi còn chữ phía dưới. Nhoà sẵn cả hai là dòng tiêu đề mờ tịt ngay
+   từ lúc mở — trông như bị cắt cụt chứ không phải như "còn nữa ở dưới". Hai
+   biến `--tren` / `--duoi` do JS bật tắt theo `scrollTop`.
+4. **Không bao giờ cuộn NGANG.** Bảng nhiều cột thì bó cột cho vừa bề ngang
+   hộp, đừng đẩy sang thanh cuộn ngang.
+
+### 5.4 · Cột "#" đếm gì
 
 Mỗi dòng trong sổ là **MỘT BUILD LỚN** (V9, V10, V15…), không phải một bản vá.
 Cột `#` là **số bản vá ghi lại được trong build đó** — `V10.08` nghĩa là 09 bản.

@@ -1,0 +1,59 @@
+════════════════════════════════════════════════════════════════════════════
+GÓI ĐỢT 6 + ĐỢT 7 — 12 FILE. CHÉP ĐÈ THEO ĐÚNG CÂY THƯ MỤC.
+════════════════════════════════════════════════════════════════════════════
+
+CÁCH UP: giải nén ra, kéo cả 12 file lên GitHub theo đúng đường dẫn dưới đây
+(GitHub tự hỏi "commit changes" thì cứ commit). Không có file nào MỚI cần tạo,
+tất cả đều là chép đè lên file đã có.
+
+    DESIGN-SYSTEM.md
+    DOC-CAI-NAY-TRUOC.txt
+    README.md
+    index.html
+    api/quote.js
+    api/_lib/loichao.md
+    assets/lichsu.js
+    dad/950901-a/index.html
+    dad/950901-b/config.js
+    dad/950901-b/index.html
+    han/961030-a/index.html
+    han/961030-b/index.html
+
+KHÔNG CẦN UP LẠI ẢNH/CLIP. `anim_unlock_clean.webp` anh đã thả sẵn vào
+/dad/950901-b/assets/ rồi — gói này không đụng tới file nặng nào.
+
+SAU KHI UP: vào Vercel bấm REDEPLOY. Máy chủ đọc thẳng `api/_lib/loichao.md`
+mỗi lần trang xin một câu, nên không redeploy thì lời chào vẫn là bộ cũ.
+
+
+SỐ TEM SAU HAI ĐỢT
+────────────────────────────────────────────────────────────────────────────
+    /                 V18.01   (V17 hết nấc .09 nên phải mở dòng V18)
+    /dad/950901-a     V22.05
+    /dad/950901-b     V04.08
+    /han/961030-a     V3.02
+    /han/961030-b     V2.03
+    /phao-hoa         V3.03    (không đụng đợt này)
+
+
+LÀM ĐƯỢC NHỮNG GÌ
+────────────────────────────────────────────────────────────────────────────
+ĐỢT 6  · Gate 2 chuyển cảnh chạy trần: dùng clip sạch, bỏ hẳn khói và lớp che
+       · Hộp chào hết xuống dòng giữa block, lấy câu dài hơn
+       · Pop-up: 3 khung chào 06:00-07:30 / 11:00-12:30 / 17:30-19:00,
+         Daily Quote cách chào ≥1h và cách nhau ≥2h, mỗi lần một câu khác
+       · Kho quote thêm 4 đầu mục + 46 tác giả, 12 → 34 câu
+       · Thanh kéo bảng bản ghi làm lại theo kiểu lá thư
+       · Bảng bản ghi Gate 2 đổi sang xanh lá cho khớp Khối vận hành
+       · Cửa vào bản ghi bỏ icon, dùng chữ
+
+ĐỢT 7  · Cửa hậu im lặng hoàn toàn: bỏ câu gợi ý và dòng chỉ đường
+       · Khối vận hành Gate 2 thay bằng dòng trạng thái màn chơi
+       · Nới vùng chạm mấy nút đóng (đang 21×23 và 28×28, quá nhỏ)
+
+Chi tiết từng mục: mở DOC-CAI-NAY-TRUOC.txt, hai đợt nằm trên cùng.
+
+
+ĐÃ KIỂM THỬ: 63 phép trên trình duyệt thật, 0 hỏng. Quét 6 trang × 3 cỡ máy
+(320 / 390 / 1280 px): tràn ngang 0px, không trang nào lỗi JavaScript.
+Bảng đầy đủ ở mục ③ của ĐỢT 7 trong DOC-CAI-NAY-TRUOC.txt.

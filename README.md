@@ -499,29 +499,47 @@ mở bảng điều khiển của trang (cửa hậu cũ, KHÔNG đổi gì)
   → hiện sổ CỦA RIÊNG TRANG ĐÓ
 ```
 
-Sai **3 lần** thì hiện **đúng một** câu gợi ý: *"Năm sinh Bác Hồ — soi gương mà đọc."*
-Từ lần sai thứ tư trở đi vẫn đúng câu đó, **không có gợi ý thứ hai**.
+**Cửa mã không nói một chữ nào.** Không nhãn *"4 chữ số"*, không báo sai, không đếm
+hộ còn mấy lần, **không gợi ý** — gõ sai mười lần cũng vậy. Phản hồi duy nhất là một
+cú rung: đủ để biết máy nhận cú gõ, không đủ để suy ra gì.
+
+> Đời trước sai 3 lần thì hiện câu *"Năm sinh Bác Hồ — soi gương mà đọc."* Nghe kín,
+> nhưng nó cho biết đủ cả ba thứ cần biết — mã là một cái NĂM, năm NÀO, và phải ĐỌC
+> NGƯỢC — nên đọc xong là ra mã trong ba giây. Cửa hậu có hướng dẫn thì không còn là
+> cửa hậu. Đã bỏ hẳn.
+
+Bảng chứa cửa cũng **không được chỉ đường** ("bấm 3 nhịp vào… để xem bản ghi"). Cần một
+dòng cho đỡ trống thì viết **trạng thái màn chơi** — *"Tiến độ: 3/6"*, *"Trạng thái: đã
+phá đảo"* — nói về game, không nói về cửa.
 
 ### Nút nằm ở đâu trên từng trang
 
 | Trang | Cửa ẩn nằm ở | Vào chỗ đó bằng | Mã trang |
 |---|---|---|---|
 | Bản đồ mật thư | **mặt cười** cạnh "Chọn chiến dịch" trong Box Tổng tư lệnh | 5 nhịp vào dòng bản quyền | `MAP` |
-| Easter Egg · Gate 1 | nút tròn trong thẻ *Mission 3 · Phá đảo* | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
-| Easter Egg · Gate 2 · màn cổng | nút tròn cạnh nút *Bỏ qua* | 10 nhịp vào tem | `DAD-B` |
-| Easter Egg · Gate 2 · màn phát mã | **dòng tem** ở chân màn hình | tới thẳng màn đó | `DAD-B` |
-| Zoey's Castle | nút tròn trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-A` |
-| HongHan's Secret Chamber | nút tròn trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-B` |
+| Easter Egg · Gate 1 | **dòng tiêu đề** *Mission 3 · Phá đảo* của chính hộp đó | bấm nấc **✓M3** trên dòng Mission | `DAD-A` |
+| Easter Egg · Gate 2 · cả hai màn | chữ **"Khối vận hành"** trong bảng Khối vận hành | 10 nhịp vào tem | `DAD-B` |
+| Zoey's Castle | chữ **"Khối vận hành"** trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-A` |
+| HongHan's Secret Chamber | chữ **"Khối vận hành"** trong Khối vận hành | 5 nhịp vào cụm hoa + tem | `HAN-B` |
 | Màn pháo hoa | **chưa có bảng nào** | — | `FX` |
 
-**Có hình hay không có hình — chọn theo chỗ đặt.** Bảng còn rộng thì dùng nút tròn
-`.ls-key`; chỗ nào thêm nút vào là hỏng bố cục thì **giấu hẳn**, chỉ gắn `data-ls`
-lên một thứ đã có sẵn ở đó (mặt cười, dòng tem). Xem `DESIGN-SYSTEM.md` §5.1.
+**CỬA LÀ CHỮ, KHÔNG BAO GIỜ LÀ ICON.** Nút tròn `.ls-key` của đời trước đã bỏ hẳn —
+bảng nào cũng đã có sẵn một dòng chữ nói đúng tên chỗ đó, đẻ thêm một nút cạnh nó là
+hai thứ cùng trỏ một việc mà cái nút thì phải bấm thử mới biết nó làm gì; và một nút
+tròn viền sáng đứng chình ình thì cũng hết còn là cửa hậu.
+
+Chọn chữ nào làm cửa, theo đúng thứ tự: **(1)** bảng có Khối vận hành thì lấy chính chữ
+*"Khối vận hành"* · **(2)** không có thì lấy **tiêu đề của chính hộp đó** · **(3)** không
+có bảng nào thì gắn lên một thứ **đã có sẵn** ở đó (mặt cười, dòng tem). Tuyệt đối không
+vẽ thêm icon mới. Xem `DESIGN-SYSTEM.md` §5.1.
+
+Dấu hiệu duy nhất là lúc **trỏ vào**: chữ ăn màu nhấn của trang, lên một quầng sáng mỏng
+rồi nháy chậm. Đứng yên thì không viền, không nền, không con trỏ bàn tay.
 
 > **Màn pháo hoa là trang duy nhất chưa gắn.** Nó không có cửa hậu, không có hộp lệnh,
-> chỉ có một nút đóng — không có chỗ nào đặt nút mà không phải đẻ ra một cửa hậu mới.
+> chỉ có một nút đóng — không có chỗ nào đặt cửa mà không phải đẻ ra một cửa hậu mới.
 > Dữ liệu vẫn giữ sẵn trong `SO.FX`: hôm nào trang đó có bảng điều khiển thì chỉ việc
-> nạp file và nhét `LichSu.nut('FX')` vào.
+> nạp file và rắc `LichSu.chu('FX')` lên dòng tiêu đề của bảng.
 
 ### KHÔNG BAO GIỜ hiện chung
 
@@ -568,22 +586,24 @@ toàn bộ chúng qua từng lượt push thì ra thêm:
 <script src="/assets/lichsu.js"></script>
 ```
 
-rồi **một trong hai cách**:
+rồi **một trong hai cách**, cả hai đều gắn lên CHỮ, không đẻ thêm thẻ nào:
 
+```js
+// dựng bằng chuỗi: rắc mẩu thuộc tính vào đúng dòng chữ muốn làm cửa
+'<p class="ov-lab"><span ' + LichSu.chu('HAN-A') + '>Khối vận hành</span></p>'
+```
 ```html
-<!-- cửa ẩn: gắn thẳng lên thứ đã có sẵn ở đó -->
+<!-- hoặc gắn thẳng lên thứ đã có sẵn ở đó -->
 <span class="kao" data-ls="MAP">ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧</span>
 ```
-```js
-// hoặc nút tròn thật, nhét chuỗi HTML vào chỗ muốn đặt
-LichSu.nut('MAP')
-```
+
+Chỗ nào dòng chữ đã có thẻ riêng thì gắn bằng JS:
+`el.classList.add('ls-chu'); el.setAttribute('data-ls','DAD-A')` — nhớ **gỡ ra** khi thẻ
+đó được dùng lại cho một hộp khác (xem `openOv` bên `dad/950901-a`), không thì cửa hậu
+mọc ở cả những hộp không nên có.
 
 Không phải gắn sự kiện gì cả — file tự nghe ở cấp tài liệu, nên cửa dựng ra lúc nào cũng
 chạy, kể cả bảng được dựng lại bằng `innerHTML` sau đó.
-
-**Nút tròn đặt bên TRÁI hàng nhãn.** Góc phải trên của mọi bảng trong bộ này đều là chỗ
-của nút đóng `✕`; để bên phải là hai nút đè lên nhau — đã vấp đúng lỗi này rồi.
 
 **Muốn hộp mang màu trang** thì khai sáu biến `--ls-*` trong `:root` của trang đó —
 xem `DESIGN-SYSTEM.md` §5.2.
@@ -1447,11 +1467,67 @@ phải học lại. `.hh.zoey` chuyển sang bảng pastel của Map 3.
 |---|---|---|---|---|
 | 1 | `gate2` | `HH_3_excited` | Lần đầu quay ra bản đồ sau khi xong Gate 2 | `hhG2` |
 | 2 | `hanwin` | `HH_2_happy` | Lần đầu quay ra sau khi giải hết Zoey's Castle | `hhHan` |
-| 3 | `daily` | `HH_1_welcome` (lần đầu đời) / `HH_2_welcome_back` | Phiên đầu trong ngày, kèm một câu hỏi han | `hhNgay` |
+| 3 | `chào` | `HH_1_welcome` (lần đầu đời) / `HH_2_welcome_back` | Đang trong một **khung chào**, khung đó hôm nay chưa chào | `hhKhungDa` |
 | 4 | `idle` | `HH_5_idle_afk` | Rời máy ≥ `IDLE_PHUT` (12 phút) rồi quay lại | `sessionStorage.hhAfk` |
+| 5 | `quote` | `HH_2_welcome_back` | Ngoài khung chào, và đủ giãn cách | `hhChaoAt` · `hhQuoteAt` |
 
 **Mỗi lần mở trang chỉ hiện MỘT hộp** — dồn ba bốn lời chào vào một lượt là phiền, không
 phải chăm sóc. Hộp tự rút sau 12 giây.
+
+### Ba khung chào trong ngày — và luật giãn cách của Daily Quote
+
+**Hai rule cũ đã ghi đè mất cả ba buổi.** `hhBuoi()` chia sáng / trưa / tối, nhưng nó chỉ
+chọn CHỮ, không quyết định LÚC NÀO chào. Việc "lúc nào" nằm ở hai chỗ khác:
+
+- `if(hhNgay !== hnay)` — chào ở **phiên đầu tiên của ngày** rồi đóng dấu ngày. Mở lúc
+  nào cũng tính là "lời chào của hôm nay", nên cả ngày chỉ có **đúng một** lời chào; mở
+  lúc 2h sáng thì lời chào duy nhất của ngày đó là câu buổi tối, tới 7h sáng thật thì im.
+- `if(!quoteRoi)` — quote bắn **ngay** ở lượt kế tiếp, không cách lời chào một phút nào,
+  cũng không cách quote trước: `quoteRoi` là biến thường, F5 là mất sạch. Mở đi mở lại
+  năm lần là năm câu quote liền tay.
+
+**Luật mới.** Chào theo đúng ba khung giờ, mỗi khung tối đa một lần trong ngày:
+
+| Khung | Giờ máy người chơi | Mã gửi lên `/api/quote` |
+|---|---|---|
+| Sáng | **06:00 – 07:30** | `buoi=sang` |
+| Trưa | **11:00 – 12:30** | `buoi=trua` |
+| Tối | **17:30 – 19:00** | `buoi=toi` |
+
+Trang gửi thẳng **mã khung**, không gửi `gio` nữa: khung tối bắt đầu 17:30, sớm hơn ranh
+giới 18:00 của máy chủ nửa tiếng — gửi giờ thì 17:45 ra câu buổi trưa.
+
+Ngoài ba khung đó, hộp đổi sang **Daily Quote**, với hai mốc giãn cách:
+
+- **≥ 1 tiếng** kể từ lúc xem lời chào gần nhất (`HH_QUOTE_SAU_CHAO`). Chào xong mấy phút
+  đã bồi ngay một câu danh ngôn thì hai hộp dính vào nhau, đọc như một cái thông báo dài
+  chứ không phải hai lần ghé thăm.
+- **≥ 2 tiếng** giữa hai câu quote (`HH_QUOTE_CACH`).
+
+Cả hai mốc **đóng dấu đúng lúc hộp lên hình**, không phải lúc gửi yêu cầu — lượt chào có
+thể bị bỏ giữa chừng (đang có hộp khác đè, hoặc chờ quá hạn), ghi dấu sớm là mất trắng
+một khung chào hoặc một câu quote mà không ai được xem. Cả hai nằm trong `localStorage`
+(`hhChaoAt` / `hhQuoteAt`) nên F5 không lách được.
+
+`setInterval(hhChon, 5 phút)` ngó lại theo nhịp: hai luật trên đều là luật GIỜ, mà trang
+này người ta mở rồi để đó cả buổi — không có nhịp này thì mở lúc 5h50 là cả ngày không
+thấy khung 06:00 đâu.
+
+**Mỗi lần một câu khác.** Câu quote đã hiện được nhớ ở `localStorage.hhQuoteDa` (24 câu
+gần nhất), nhớ chung cho cả câu của máy chủ lẫn câu tại chỗ: máy chủ trả trúng câu vừa
+đọc thì trang tự đổi sang một câu chưa dùng.
+
+### Chữ trong hộp chào — đổ ĐẦY dòng, không chia đều
+
+Bản trước để `text-wrap:balance`, tức chia đều số chữ cho các dòng. Nó chính là thứ đã bẻ
+*"Đồng chí làm việc đến đâu rồi, nhớ đứng dậy ăn chút gì nha"* thành hai dòng ngắn tũn
+nằm giữa khung, chừa hẳn một khoảng trống bên phải. Nay dùng `text-wrap:pretty` — đổ đầy
+dòng trên rồi mới xuống dòng, chỉ can thiệp đúng một việc là không để một chữ rơi trơ ở
+dòng cuối. Cùng cách xử với câu hỏi bên Zoey's Castle (§21 phần `khit()`).
+
+Trần ký tự phía máy chủ nới theo: lời chào **150**, câu quote **168** (cũ: 120 / 130).
+Lời dặn gửi Gemini cũng đổi từ *"tối đa 14 từ"* sang **16-26 từ**, và bộ câu sẵn viết lại
+cho đủ dài. Đo trên khung 340 px, cỡ chữ 12,5-13 px: một dòng chứa ~44 ký tự.
 
 `HH_4_hello_easter.webp` dùng riêng cho **khung ảnh trong Collected: Easter Egg**
 — khung đó đổi từ **tròn 112 px sang chữ nhật 16:9** kèm zoom rất chậm: ảnh vẽ cả người

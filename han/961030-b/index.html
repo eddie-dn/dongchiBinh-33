@@ -219,18 +219,17 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
 .ovp{position:relative;width:min(340px,94%);padding:22px 20px;border-radius:18px;
   border:1px solid var(--line);background:rgba(38,26,66,.96);
   box-shadow:0 26px 60px rgba(10,4,25,.6)}
+/* Vùng bấm nới ra ~44px bằng `::before`, nét nhìn giữ nguyên — cùng cách đã
+   dùng cho `.grip` và `.cx-close` ngoài bản đồ. Không tăng padding vì nút neo
+   tuyệt đối vào góc phải trên, tăng padding là dấu ✕ tự dịch vào trong. */
 .ovp .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border:none;
   background:none;cursor:pointer;color:var(--ink2);font-size:14px}
+.ovp .x::before{content:"";position:absolute;inset:-7px}
 .ov-lab{font-family:"Oswald";font-size:9px;font-weight:600;letter-spacing:.26em;
   text-transform:uppercase;color:var(--orchid);margin:0 0 8px}
-/* Hàng nhãn có kèm nút sổ phiên bản. Nút mượn màu chữ của bảng
-   (`currentColor`) nên không phải khai màu riêng.
-   `order:-1` đẩy nút sang TRÁI dù trong HTML nó đứng sau chữ: góc phải trên là
-   chỗ của nút đóng ✕ (`.ovp .x` ở top:8 right:8), để bên phải là hai nút đè
-   lên nhau — đã vấp đúng lỗi này. */
-.ov-lab.ls-lab{display:flex;align-items:center;justify-content:flex-start;gap:10px;
-  min-height:28px}
-.ov-lab.ls-lab .ls-key{order:-1}
+/* Dòng nhãn nay KIÊM LUÔN cửa vào sổ phiên bản (class `.ls-chu` do
+   /assets/lichsu.js cấp) — không còn nút tròn nào đứng cạnh, nên bỏ luôn
+   `display:flex` + `order:-1` vốn chỉ để né nút đóng ✕ ở góc phải trên. */
 .ov-tit{font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;font-weight:600;
   font-style:italic;margin:0 0 6px;color:var(--paper)}
 .ov-txt{font-size:12.5px;line-height:1.65;color:var(--ink2);margin:0}
@@ -259,7 +258,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V2.01<br>Last updated 19-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V2.03<br>Last updated 24-Aug-2026"></span>
     </span>
   </div>
 
@@ -649,11 +648,11 @@ ctrl.addEventListener('click', function(e){ if(e.target === ctrl) ctrlClose(); }
 
 function bangDieuPhoi(){
   ctrlOpen(
-    /* Nhãn + NÚT SỔ PHIÊN BẢN đi chung một hàng. Bấm 3 nhịp vào nút rồi gõ
-       mã là ra sổ CỦA RIÊNG TRANG NÀY — xem /assets/lichsu.js. Cửa hậu vào
-       Khối vận hành (5 nhịp vào cụm hoa + tem) GIỮ NGUYÊN, không đụng gì. */
-    '<p class="ov-lab ls-lab">Khối vận hành'
-    +   (window.LichSu ? LichSu.nut('HAN-B') : '') + '</p>'
+    /* CHÍNH DÒNG CHỮ "Khối vận hành" LÀ CỬA VÀO SỔ PHIÊN BẢN — bấm 3 nhịp
+       vào chữ rồi gõ mã (xem /assets/lichsu.js và ghi chú bên 961030-a).
+       Cửa hậu vào Khối vận hành (5 nhịp vào cụm hoa + tem) GIỮ NGUYÊN. */
+    '<p class="ov-lab"><span '
+    +   (window.LichSu ? LichSu.chu('HAN-B') : '') + '>Khối vận hành</span></p>'
     + '<p class="ov-txt">Trạng thái: <b>' + (st.bOpen ? 'đã mở khoá' : 'còn cửa mã') + '</b>'
     + (st.reset ? ' · R' + st.reset : '') + '</p>'
     + '<div class="ov-row">'

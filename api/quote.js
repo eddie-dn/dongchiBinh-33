@@ -6,12 +6,18 @@
  * File đó TÁCH HẲN khỏi `tinhcach.md` (giọng nhân vật trong khu Open World).
  *
  * Gọi thế nào:
- *     GET /api/quote?gio=<0..23>             lời chào theo buổi
- *     GET /api/quote?buoi=sang|trua|toi      ép cứng buổi, để thử cho nhanh
+ *     GET /api/quote?buoi=sang|trua|toi      lời chào của một KHUNG CHÀO
  *     GET /api/quote?buoi=quote              DAILY QUOTE (câu nói người nổi tiếng)
+ *     GET /api/quote?gio=<0..23>             tự suy ra buổi từ giờ máy (đường lùi)
  *
- * Trang xin `buoi=quote` khi các mốc chào của ngày đã xong: từ đó F5 hay quay
- * lại thì hộp hiện một câu quote thay vì chào lại lần nữa.
+ * Trang gửi thẳng `buoi` = mã khung nó vừa rơi vào, KHÔNG gửi giờ nữa. Lý do:
+ * khung chào buổi tối bắt đầu từ 17:30, sớm hơn ranh giới 18:00 ở đây nửa
+ * tiếng — gửi giờ thì 17:45 ra câu buổi trưa. Tham số `gio` vẫn giữ cho ai gọi
+ * tay và làm đường lùi.
+ *
+ * Trang xin `buoi=quote` khi đang ở NGOÀI ba khung chào và đã đủ giãn cách
+ * (cách lời chào ≥ 1 tiếng, cách câu quote trước ≥ 2 tiếng — luật nằm bên
+ * trang, xem `HH_QUOTE_SAU_CHAO` / `HH_QUOTE_CACH` trong index.html).
  *
  * `gio` là GIỜ MÁY NGƯỜI CHƠI, do trang gửi lên. Bắt buộc phải vậy: hàm
  * serverless chạy ở máy chủ nào thì mang giờ máy đó, chào "buổi sáng" lúc
@@ -50,10 +56,17 @@ const HET_GIO_MS = 2200;
    Open World), lùi tiếp nữa là bộ câu sẵn — không bao giờ để hộp trống. */
 const MODEL_QUOTE = process.env.GEMINI_MODEL_QUOTE || 'gemini-flash-lite-latest';
 
-/* Trần ký tự. Hộp chào chỉ vừa 2-3 dòng: câu nói tối đa ~120 ký tự (2 dòng)
-   cộng một dòng tên tác giả là đủ đẹp. Lời chào thì ngắn hơn nhiều. */
-const TRAN_QUOTE = 130;
-const TRAN_CHAO  = 120;
+/* ═══ TRẦN KÝ TỰ ═════════════════════════════════════════════════════════
+   Đã NỚI so với bản trước (130 / 120). Lý do: hộp chào bỏ `text-wrap:balance`
+   nên chữ đổ đầy dòng, dùng trọn bề ngang khung — câu cũ ngắn quá thì mới
+   được một dòng rưỡi đã hết, nhìn trống hoác bên phải. Đo trên khung 340px,
+   cỡ chữ 12,5-13px: một dòng chứa ~44 ký tự, nên
+     · lời chào 150 ký tự  ≈ 3 dòng đầy
+     · câu quote 168 ký tự ≈ 3 dòng đầy + 1 dòng tên tác giả
+   Vẫn là trần, không phải đích: câu ngắn hay dài đều dùng được, đây chỉ là
+   chỗ chặn câu lê thê tràn ra ngoài hộp. */
+const TRAN_QUOTE = 168;
+const TRAN_CHAO  = 150;
 
 module.exports = async (req, res) => {
   res.setHeader('content-type', 'application/json; charset=utf-8');
@@ -99,7 +112,7 @@ module.exports = async (req, res) => {
           /* temperature 1 cho mỗi lần một câu khác hẳn — đây là chỗ DUY NHẤT
              cần ngẫu nhiên thật, chào giống hệt hôm qua thì thà lấy câu sẵn.
              Quote cần chỗ hơn lời chào một chút vì còn tên tác giả. */
-          generationConfig: { temperature: 1, maxOutputTokens: laQuote ? 200 : 80 }
+          generationConfig: { temperature: 1, maxOutputTokens: laQuote ? 260 : 130 }
         })
       }
     ).finally(() => clearTimeout(hen));
