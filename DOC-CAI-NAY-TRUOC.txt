@@ -87,6 +87,70 @@ padding là dấu ✕ tự dịch vào trong, lệch khỏi chỗ mắt đã que
 > thật sự vẫn bằng 0.
 
 
+④ .vercelignore — VIỆC ĐỢT 5 GHI LÀ "CÒN LÀM TAY", NAY XONG HẲN
+────────────────────────────────────────────────────────────────────────────
+Soát lại thì thấy việc này CHƯA BAO GIỜ XONG. Đợt 5 ghi:
+
+    "⚠ VẪN CÒN MỘT VIỆC LÀM TAY: xoá file `vercelignore` cũ trên GitHub
+     (thiếu dấu chấm nên Vercel không đọc → /README.md đang tải công khai
+     được, trong đó có sẵn đáp án cả bốn mật thư và mọi mã PIN)."
+
+File cũ ĐÃ xoá (commit "Delete vercelignore"). Nhưng bản `.vercelignore` ĐÚNG
+TÊN mà đợt 5 nói là "kèm theo" thì không hề có trong repo. Tức là suốt từ đó
+tới giờ vẫn chưa chặn gì cả.
+
+Đếm ra 17 file tài liệu đang được phục vụ như file tĩnh, trong đó 8 file có
+đáp án hoặc mã:
+
+    README.md ............... 11 chỗ    DOC-CAI-NAY-TRUOC.txt ..... 9 chỗ
+    dad/950901-b/DIALOGUES.md 11 chỗ    dad/950901-b/OW-LOI-DAN.md  1 chỗ
+    DESIGN-SYSTEM.md ......... 1 chỗ    docs/BAN-GHI.md ............ 1 chỗ
+    docs/GOOGLE-SHEETS.md .... 1 chỗ    (mã bảo vệ Apps Script)
+
+Mở /README.md trên bản chạy thật là xong cả trò chơi trong ba phút.
+
+NAY ĐÃ CÓ `.vercelignore` ĐÚNG TÊN, chặn đủ 17 file.
+
+⚠ MỘT CÁI BẪY PHẢI NÉ — GHI LẠI CHO ĐỜI SAU KHỎI VẤP:
+Viết gọn `*.md` là HỎNG NGẦM. Nó khớp luôn `api/_lib/loichao.md` và
+`api/_lib/tinhcach.md` — hai file đó là RUỘT của hàm chạy trên máy chủ (kho
+lời chào, và giọng nhân vật khu Open World). Máy chủ đọc thẳng chúng mỗi lần
+trang xin một câu.
+
+Chặn nhầm thì KHÔNG BÁO LỖI GÌ HẾT: hộp chào lặng lẽ tụt xuống bộ dự phòng ba
+câu cụt, Open World mất giọng nhân vật, mà nhìn ngoài vẫn "chạy bình thường".
+Đúng loại hỏng không ai phát hiện ra.
+
+(`vercel.json` có khai `includeFiles: api/_lib/**`, nhưng file đã bị
+.vercelignore chặn thì không còn trong nguồn nữa — includeFiles cũng chẳng
+còn gì mà gói.)
+
+Nên file viết LIỆT KÊ ĐÍCH DANH từng cái, không dùng glob. Dài dòng hơn nhưng
+không bao giờ chặn nhầm. Thêm tài liệu mới thì thêm một dòng vào đó.
+
+KIỂM TRA SAU KHI DEPLOY:  mở https://<tên-miền>/README.md  →  phải ra 404.
+
+
+⑤ SOÁT LẠI ĐƯỜNG ỐNG GOOGLE SHEETS — 19 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+Chạy CHÍNH file docs/apps-script/Code.gs trong Node (giả lập SpreadsheetApp và
+ContentService) rồi bắn gói thật từ api/ping.js và api/chat.js vào. Tức là test
+đúng đoạn mã sẽ dán vào Apps Script, không phải bản chép tay.
+
+    Code.gs        doGet báo đang chạy · sai mã bảo vệ thì vứt gói, không ghi
+    tab Tiến độ    tự tạo · 8 cột khớp đúng gói /api/ping gửi · nhãn dịch sẵn ·
+                   solved trải phẳng thành "A, B, C" · so_giai đếm đúng
+    sự kiện lạ     chưa khai nhãn VẪN vào sổ, cột nhan để trống (sổ thì phải
+                   đủ, Telegram mới là chuông cần lọc)
+    tab Chat       tự tạo · 16 cột · 3 cột token trải phẳng đúng
+    riêng tư       chưa bật CHAT_LOG_NOI_DUNG thì hai cột hoi/dap trống thật
+    sổ chết        Sheets sập → /api/ping vẫn trả 204 sau 1ms, không ai phải chờ
+
+KẾT LUẬN: phần mã đã đủ và đúng, không thiếu gì. Việc còn lại HOÀN TOÀN nằm
+ngoài repo — dựng Sheet, deploy Apps Script, khai hai biến trên Vercel. Sáu
+bước ở docs/GOOGLE-SHEETS.md.
+
+
 ③ ĐÃ KIỂM THỬ NHỮNG GÌ — 63 phép, 0 hỏng
 ────────────────────────────────────────────────────────────────────────────
 Chạy thật trên trình duyệt, không đọc mã suông:
