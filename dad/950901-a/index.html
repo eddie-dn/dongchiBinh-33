@@ -927,6 +927,16 @@ render();
   border-bottom:2px solid rgba(242,180,65,.75)}
 .msn-cell.gap{margin-left:10px}
 .msn-cell.on{border-bottom-color:var(--amber)}
+/* Ký tự VỪA GÕ hiện nguyên hình một nhịp rồi mới thành chấm. Che ngay từ phím
+   đầu thì gõ nhầm một chữ là phải xoá cả dòng mò lại, vì không biết nhầm ở ô
+   nào. Chỉ ô cuối hiện rõ, mấy ô trước vẫn là chấm. */
+.msn-cell.ro{color:var(--amber)}
+/* Dấu Enter cuối hàng: mờ sẵn để biết cửa này mở bằng Enter chứ không tự chấm
+   khi gõ đủ chữ; đủ chữ thì sáng lên thành lời mời bấm. */
+.msn-ent{width:20px;height:34px;display:flex;align-items:center;justify-content:center;
+  margin-left:6px;font-size:14px;line-height:1;color:var(--paper);
+  opacity:.3;transition:opacity .2s,color .2s}
+.msn-ent.san{opacity:1;color:var(--amber)}
 .msn-in{position:absolute;inset:0;width:100%;height:100%;opacity:.01;border:none;
   background:none;color:transparent;caret-color:transparent;font-size:16px;outline:none}
 .msn-msg{min-height:20px;font-size:12.5px;line-height:1.6;text-align:center;
@@ -1418,14 +1428,16 @@ render();
       + 'Hết cửa sổ ' + Math.round((which===2?W2:W3)/DAY) + ' ngày rồi ⏳<br>'
       + 'Liên hệ <b>Hội đồng MeowMeow</b> để nhận chi viện ✦'
       + '</div>';
+    /* GỢI Ý NẰM TRÊN Ô NHẬP, không phải dưới. Đặt dưới thì hộp thành ba tầng
+       rời rạc (chữ dẫn → ô nhập → gợi ý), mắt phải nhảy qua ô nhập mới đọc
+       được lời mách. Đưa lên trên thì đọc một mạch từ trên xuống: dẫn chuyện →
+       gợi ý → chỗ gõ, cân đối đúng như mấy hộp có gợi ý bên Mission 3. */
+    if(which === 2 && st.m2goi)
+      body += '<ul class="msn-hints"><li>' + M2_GOI_Y + '</li></ul>';
     body += '<div class="msn-cells" id="msnCells">'
       + '<input class="msn-in" id="msnIn" type="text" autocomplete="one-time-code" '
       + 'autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Ô nhập mã truy cập"></div>'
-      + '<div class="msn-msg" id="msnMsg"></div>'
-      /* Đã mở gợi ý Mission 2 từ trước → in sẵn ngay lúc dựng hộp. Dùng cùng
-         khuôn `.msn-hints` với gợi ý Mission 3 cho hai cửa nhìn như một. */
-      + (which === 2 && st.m2goi
-          ? '<ul class="msn-hints"><li>' + M2_GOI_Y + '</li></ul>' : '');
+      + '<div class="msn-msg" id="msnMsg"></div>';
     if(chuaForm)
       body += '<button class="navbtn wide" id="msnToForm" style="margin-top:16px;justify-content:center">Điền Form ngay ✈</button>';
     if(hetGio)
@@ -1447,11 +1459,24 @@ render();
       c.className = 'msn-cell' + (which === 3 && i === 4 ? ' gap' : '');   /* PHAM | TUAN */
       cellsBox.insertBefore(c, input); cells.push(c);
     }
-    function paint(){
+    var entKy = document.createElement('span');
+    entKy.className = 'msn-ent'; entKy.textContent = '↵';
+    cellsBox.insertBefore(entKy, input);
+    /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm — xem ghi chú ở .msn-cell.ro */
+    var HIEN_MS = 800, henChe = null;
+    function paint(iRo){
       for(var i = 0; i < len; i++){
-        cells[i].textContent = i < buf.length ? '•' : '';
+        cells[i].textContent = i < buf.length ? (i === iRo ? buf[i] : '•') : '';
         cells[i].classList.toggle('on', i === buf.length);
+        cells[i].classList.toggle('ro', i === iRo && i < buf.length);
       }
+      entKy.classList.toggle('san', buf.length === len);
+    }
+    function veRoiChe(){
+      var i = buf.length - 1;
+      if(henChe){ clearTimeout(henChe); henChe = null; }
+      paint(i);
+      if(i >= 0) henChe = setTimeout(function(){ henChe = null; paint(-1); }, HIEN_MS);
     }
     function msg(t, ok){ var m = byId('msnMsg'); if(m){ m.innerHTML = t; m.classList.toggle('ok', !!ok); } }
     /* Chèn dòng gợi ý Mission 2 vào ngay dưới ô nhập. Dùng chung khuôn
@@ -1460,11 +1485,13 @@ render();
     function veGoiYM2(){
       var box = ov.querySelector('.msn-card');
       if(!box || box.querySelector('.msn-hints')) return;
-      var m = byId('msnMsg'); if(!m) return;
+      var o = byId('msnCells'); if(!o) return;
       var ul = document.createElement('ul');
       ul.className = 'msn-hints';
       ul.innerHTML = '<li>' + M2_GOI_Y + '</li>';
-      m.insertAdjacentElement('afterend', ul);
+      /* Chèn NGAY TRƯỚC hàng ô nhập — cùng chỗ với lúc dựng sẵn ở trên, để
+         gợi ý hiện giữa chừng và gợi ý in sẵn nằm đúng một vị trí. */
+      o.insertAdjacentElement('beforebegin', ul);
     }
     function hintsPaint(){
       var ul = byId('msnHints'); if(!ul) return;
@@ -1498,7 +1525,7 @@ render();
         input.disabled = false; wset(0); quotaPaint(); msg('');
       }
     }
-    quotaPaint(); hintsPaint(); paint();
+    quotaPaint(); hintsPaint(); paint(-1);
     if(which === 3){ autoHint(); cdPaint(); }
     clearInterval(cdTimer);
     cdTimer = setInterval(tick, 1000);
@@ -1550,7 +1577,7 @@ render();
         + ' phiên · ' + st.dayN + '/' + TRY_D + ' ngày');
       if(hasNew) hintsPaint();
       cdPaint(); quotaPaint();
-      buf = ''; input.value = ''; paint();
+      buf = ''; input.value = ''; paint(-1);
       if(dayOut() || w >= TRY_S){
         st.lockUntil = dayOut() ? nuaDem() : Date.now() + 30*6e4; save();
         ping('khoa_pin', 'Mission ' + which + (dayOut() ? ' · hết 12 lượt ngày' : ' · khoá 30 phút'));
@@ -1567,11 +1594,14 @@ render();
       }
     }
     input.addEventListener('input', function(){
-      buf = norm(input.value).slice(0, len); paint();
-      if(buf.length === len) setTimeout(check, 120);
+      buf = norm(input.value).slice(0, len); veRoiChe();
     });
+    /* CHỈ Enter mới tính là gửi. Bản trước gõ đủ chữ là tự chấm sau 120ms —
+       bấm nhầm phím cuối là mất luôn một lượt sai mà chưa kịp nhìn lại hàng
+       ô. Nay gõ xong còn đọc lại được, ưng thì mới Enter. */
     input.addEventListener('keydown', function(e){
       if(e.key === 'Enter'){
+        e.preventDefault();
         if(buf.length === len) check();
         else msg('Nhập đủ ' + len + ' ký tự đã nha');
       }
@@ -2146,7 +2176,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V03.08<br>Last updated 24-Aug-2026</span>
+<span class="vstamp" id="vstamp">V03.09<br>Last updated 24-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

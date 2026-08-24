@@ -602,7 +602,7 @@ Không biết thì ghi `thiếu info` và **giữ nguyên số build**.
 - **Trang chưa bao giờ có tem thì ĐẾM BẢN, đừng bịa số.** Hồ sơ Phi đoàn từng mang số
   `V22` đặt đại. Nay đếm số bản khác nhau của chính file trang trên mọi nhánh — 18 bản
   thời kỳ đầu, 9 bản thời kỳ hiện tại — rồi chia theo luật 10 bản nhỏ một build, ra
-  `V1` · `V2` · `V3`. Số đếm được thì sửa; số không có căn cứ thì đừng giữ.
+  `V01` · `V02` · `V03`. Số đếm được thì sửa; số không có căn cứ thì đừng giữ.
 - **`no info` vẫn GIỮ NGUYÊN số phiên bản.** Không biết sửa gì là một chuyện, số tem là
   chuyện khác — xoá số đi thì mất luôn cái mốc.
 

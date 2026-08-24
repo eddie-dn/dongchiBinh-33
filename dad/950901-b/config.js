@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 24-Aug-2026 · V04.09'
+    version       : 'Last updated 24-Aug-2026 · V05.00'
   }
 };
 
@@ -196,42 +196,45 @@ const GAME_CONFIG = {
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
     glow_hold     : 3000,   /* giữ chữ RAZER sáng rực trước khi nổ */
     /* ═══ RAZER TẮT LÚC NÀO — ĐO THẲNG TRÊN 201 KHUNG CLIP SẠCH ═════════
-       BỆNH ĐÃ SỬA: "chữ RAZER lúc xong xuôi chuyển cảnh bị bay lên trời".
+       BỆNH ĐANG SỬA: "chữ RAZER lúc xong xuôi chuyển cảnh bị bay lên trời".
 
-       Đáp án RAZER là một lớp ĐÈ, dán cứng vào khung trang (đo được: `top`
-       của nó đứng im tuyệt đối ở một chỗ suốt cả đoạn chuyển cảnh). Còn CẢNH
-       BÊN TRONG CLIP thì có máy quay riêng. Đo từng khung:
+       CÓ HAI NGUYÊN NHÂN CHỒNG NHAU, PHẢI SỬA CẢ HAI:
 
-           0%  →  42%   cảnh ĐỖ YÊN, thấp hơn vị trí cuối đúng 36px
-          42%  →  56%   cảnh TRƯỢT LÊN, 36px → 0
-          56%  →        đứng hẳn, khớp bg_r2
+       ① KHUNG CLIP ĐẶT SAI (đã sửa ở .anim-layer bên index.html — đây mới là
+          thủ phạm chính). Clip sạch chỉ quay 78% GIỮA thế giới, mà lớp clip
+          lại kéo căng ra cả khung bằng `object-fit`. Cảnh trong clip vì thế to
+          hơn và lệch so với cảnh tĩnh nằm dưới, nên lớp chữ RAZER — vốn dán
+          theo cảnh tĩnh — trông như rời khỏi bệ đá ngay từ khung đầu tiên,
+          chưa cần cảnh chạy. Nay thẻ clip đặt đúng 78% giữa, khung đầu clip
+          khớp bg_r1 từng pixel.
 
-       36px trên khung cao 720px = 5% chiều cao, mà ô chữ chỉ cao 3,2% — tức
-       là bệ đá đi một quãng bằng 1,6 LẦN CHIỀU CAO DÒNG CHỮ. Lớp đè đứng im,
-       bệ đá tụt xuống dưới nó → mắt đọc ra "chữ bay lên trời". Chuẩn xác.
+       ② NHỊP TẮT ĐẶT MUỘN. Đo lại từng khung (dò độ trượt dọc + độ sáng trung
+          bình của cả khung) trên chính file đang dùng:
 
-       BẢN CŨ ĐẶT ĐÚNG 0.42 — tức là bắt đầu mờ ĐÚNG GIÂY cảnh bắt đầu chạy,
-       rồi còn mờ thêm 500ms nữa (hơn 6% clip). Thành ra suốt quãng bay đó chữ
-       vẫn còn nhìn thấy, chỉ mờ đi. Sai chỗ đó.
+            0%  → 10,5%   cảnh ĐỨNG YÊN, độ sáng phẳng lì (~70/255)
+           12%           CHỚP NỔ bắt đầu — độ sáng vọt 70 → 95 → 106
+           15% → 36%     cả khung trắng xoá, cảnh vừa rung vừa trượt
+           42%           mở ra cảnh mới, tối hẳn (~41/255)
 
-       NAY TẮT XONG TRƯỚC KHI CẢNH KỊP NHÚC NHÍCH:
-           0.22 × 8000ms = 1760ms  bắt đầu mờ
-           + 380ms fade  = 2140ms  tắt hẳn  = 26,8% clip
-       Còn dư hơn 15% (1220ms) trước mốc 42%. Cả quãng chữ còn hiện thì cảnh
-       đứng yên tuyệt đối, không có một pixel xê dịch nào.
+          Bản trước tắt xong ở 26,8% — tức là suốt quãng 12% → 26,8% lớp chữ
+          vẫn nằm đó trong khi phía dưới đang nổ và xê dịch. Đúng cái "có một
+          đoạn chữ RAZER bay lên".
 
-       VÌ SAO CHỪA DƯ NHIỀU THẾ, KHÔNG BÁM SÁT 42%: đo trên máy thật thì nhịp
-       tắt luôn bắn TRỄ hơn tính toán 450-570ms — lúc đó trình duyệt đang giải
-       mã clip 14MB nên cả rAF lẫn setTimeout đều bị đói. Bản đặt 0.30 tính ra
-       34,8% nhưng đo được 41,9%, tức sát mép 42% đúng một gang tay. Máy yếu
-       hơn là lấn qua. Nay hạ xuống 0.22 để trễ cỡ nào cũng còn kịp.
-       RAZER vẫn hiện trọn 2,1 giây đầu clip — thừa để ngắm.
+       NAY TẮT XONG TRƯỚC KHI CHỚP NỔ KỊP LOÉ:
+           0.05 × 8000ms =  400ms  bắt đầu mờ
+           + 380ms fade  =  780ms  tắt hẳn  = 9,75% clip
+       Chốt chặn là mốc 12%, còn dư 2,25% (180ms). Nghe thì sát, nhưng nhịp
+       này chạy bằng CSS animation trên compositor (xem `.slab.tat`) nên không
+       ăn theo main thread: máy có nghẹn vì giải mã clip 14MB thì nó vẫn đúng
+       giờ. Hai đời timer trước bắn trễ 450-570ms chính là vì chạy trên main
+       thread — nay không còn cửa đó nữa.
 
        KHÔNG MẤT GÌ: trước đó người chơi đã ngắm RAZER sáng rực suốt màn bới
        chữ, màn xếp lại chữ, rồi `glow_hold` 3 giây trên cảnh tĩnh, cộng thêm
-       2,7 giây đầu clip nữa. Thừa thời gian.
-       ĐỔI CLIP KHÁC thì phải ĐO LẠI mốc cảnh bắt đầu trượt rồi trừ lùi. */
-    slab1_out_at  : 0.22,
+       nửa giây đầu clip nữa — lúc này khung đầu clip đã khớp bg_r1 từng pixel
+       nên chữ nằm đúng trên bệ đá, không còn lệch một ly.
+       ĐỔI CLIP KHÁC thì phải ĐO LẠI mốc chớp nổ rồi trừ lùi. */
+    slab1_out_at  : 0.05,
     slab1_fade_ms : 380,
     anim_unlock   : 8000,   /* độ dài clip nổ sập lab              */
     type_speed    : 24,     /* ms / ký tự — hộp thoại              */
@@ -342,13 +345,31 @@ const GAME_CONFIG = {
        tranh gốc vòng 2 tối và nhạt hơn hẳn — xem ghi chú dài ở
        `.slab.solved .cell` trong index.html. b = độ sáng · s = độ tươi ·
        c = độ tương phản (chính c mới làm nét chữ sắc lại, không phải b). */
-    /* ĐO BẰNG PIXEL, không ước lượng — xem ghi chú dài ở `.slab.solved .cell`
-       trong index.html. Tóm tắt: ZHAO YUN không tối, nó BẠC MÀU (bão hoà 67 so
-       với 80-89 của hai biển hai bên). Nhuộm hổ phách TRƯỚC rồi mới nâng sáng
-       thì đo lại được 137/81 — trùng khít biển MIDNIGHT bên cạnh.
-       Khai `f` là ghi đè cả chuỗi; bỏ `f` đi thì quay về bộ b/s/c bên dưới. */
-    solved_glow: { f: 'sepia(1) saturate(2.6) brightness(1.55) contrast(1.7)',
-                   b: 3.35, s: 1.9, c: 1.32 },
+    /* ═══ ĐO LẠI BẰNG PIXEL — BỎ `sepia`, NÓ CHÍNH LÀ THỦ PHẠM LỆCH TÔNG ═══
+       Đời trước tin rằng ZHAO YUN "bạc màu" nên nhuộm hổ phách bằng sepia(1).
+       Nay đo lại đàng hoàng: quét cả dải ngang ngang tầm bệ đá, gom riêng
+       những điểm VỪA SÁNG VỪA TƯƠI (chính là nét chữ đang phát sáng), rồi so
+       ba cụm với nhau trên ảnh gốc bg_r2:
+
+           biển TRÁI  (EIMIMRE)    màu 28,5°   tươi 51%   sáng 154
+           ô chữ ZHAO YUN          màu 30,3°   tươi 49%   sáng 157
+           biển PHẢI  (MIDNIGHT)   màu 28,6°   tươi 51%   sáng 155
+
+       BA CÁI ĐÃ CÙNG MỘT TÔNG SẴN, lệch nhau chưa tới 2°. Không hề "bạc màu".
+       Thứ làm nó lệch chính là bộ lọc: chạy thử `sepia(1) saturate(2.6)
+       brightness(1.55) contrast(1.7)` lên đúng mấy pixel đó thì ra
+
+           màu 49,7°   tươi 72%   sáng 255 (chạm trần, cháy trắng)
+
+       tức đẩy màu đi 21° sang vàng và bơm sáng tới mức clip. Đó là cái "khác
+       tone so với độ sáng của các chữ xung quanh".
+
+       NAY CHỈ NÂNG NHẸ, KHÔNG NHUỘM. Đo lại bộ mới: màu 34,2° · tươi 65% ·
+       sáng 200 — vẫn sáng bật hẳn lên để biết là đã giải, mà tông chỉ lệch
+       ~6° so với hai biển bên cạnh thay vì 21°.
+       ĐỔI SỐ thì đo lại bằng cách trên, đừng ước lượng bằng mắt. */
+    solved_glow: { f: 'saturate(1.4) brightness(1.22) contrast(1.12)',
+                   b: 1.22, s: 1.4, c: 1.12 },
     /* Y HỆT vòng 1 — xem ghi chú đầy đủ ở round1.veil_filter. Hai bên phải
        cùng một công thức, nếu không người chơi nhìn ra ngay bên nào dễ hơn. */
     veil_filter: 'contrast(.55) brightness(.46) saturate(.05) blur(var(--veil-blur,3.2px))',

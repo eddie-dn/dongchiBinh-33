@@ -467,6 +467,10 @@ a.file:active{background:rgba(242,180,65,.07)}
   display:flex;align-items:center;justify-content:center;
   font-family:"Oswald";font-size:26px;font-weight:600;color:#8BE0FF}
 .pin span.on{border-bottom-color:var(--amber)}
+/* Ký tự VỪA GÕ ở ô PIN hiện nguyên hình một nhịp rồi mới thành chấm. Che ngay
+   từ phím đầu thì gõ nhầm một số là phải xoá cả dòng mò lại, vì chẳng biết
+   nhầm ô nào. Mấy ô trước vẫn là chấm. */
+.pin span.ro{color:var(--amber)}
 .pin-in{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
 
 /* ---------- takeoff ---------- */
@@ -1022,7 +1026,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 24-Aug-2026 · V18.06">Last updated 24-Aug-2026 · V18.06</span>
+        <span class="stamp" id="stamp" data-base="Last updated 24-Aug-2026 · V18.07">Last updated 24-Aug-2026 · V18.07</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1418,7 +1422,7 @@ const NODES = [
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026 | V22', pin:'file' },
+        meta:'Published date: 27-Jul 2026 | V03.09', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
         openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V1',
         unlockAt: BIRTHDAY, eggGate:true }
@@ -1814,7 +1818,12 @@ function render(code){
         '</span><span class="file-go">&rarr;</span></a>';
     }
     if(isOpen(s)){
-      const needPin = s.pin && !pinFiles[s.id];
+      /* ═══ CỬA MÃ HỎI LẠI MỖI LẦN VÀO ══════════════════════════════════
+         Trước đây `pinFiles[id]` nhớ vĩnh viễn: gõ đúng mã một lần là từ đó
+         hồ sơ mở thẳng, cái ô mã thành trang trí. Nay hồ sơ nào có khoá thì
+         lần nào vào cũng gõ. `pinFiles` vẫn ghi để thống kê biết ai từng mở,
+         nhưng không còn quyền mở cửa hộ. */
+      const needPin = !!s.pin;
       if(needPin){
         return '<div class="file" data-askpin="'+s.id+'">'+
           '<span class="file-body"><span class="file-id">'+lock()+s.id+'</span>'+
@@ -4229,16 +4238,30 @@ function lockLeft(){
   return m > 60 ? Math.ceil(m/60) + ' giờ' : m + ' phút';
 }
 
-function drawPin(){
+/* Ký tự vừa gõ hiện rõ PIN_HIEN_MS rồi mới thành chấm — xem ghi chú ở .pin span.ro */
+const PIN_HIEN_MS = 800;
+let pinHenChe = null;
+function drawPin(iRo){
   const cfg = CODES[pinMode], need = codeNorm(cfg.code).length;
   /* Chỉ giữ chữ và số. Dấu gạch trong mã gốc là để nhìn cho dễ, người dùng
      không cần gõ — nhờ vậy không còn cảnh "không gõ được dấu -". */
   const v = codeNorm($('pinIn').value).slice(0, need);
   $('pinIn').value = v;
+  const che = cfg.kind === 'PIN';
   [...$('pinDash').children].forEach((s,i)=>{
-    s.textContent = v[i] ? (cfg.kind === 'PIN' ? '•' : v[i]) : '';
+    s.textContent = v[i] ? ((che && i !== iRo) ? '•' : v[i]) : '';
     s.classList.toggle('on', i < v.length);
+    s.classList.toggle('ro', che && i === iRo && i < v.length);
   });
+}
+function pinRoiChe(){
+  /* Cắt theo đúng số ô: dán một chuỗi dài hơn mã thì `drawPin` đã xén bớt,
+     mà chỉ số ô được hiện rõ vẫn phải nằm trong hàng ô. */
+  const need = codeNorm(CODES[pinMode].code).length;
+  const i = Math.min(codeNorm($('pinIn').value).length, need) - 1;
+  if(pinHenChe){ clearTimeout(pinHenChe); pinHenChe = null; }
+  drawPin(i);
+  if(i >= 0) pinHenChe = setTimeout(()=>{ pinHenChe = null; drawPin(-1); }, PIN_HIEN_MS);
 }
 function openPin(mode, arg){
   pinMode = CODES[mode] ? mode : 'hack';
@@ -4250,7 +4273,7 @@ function openPin(mode, arg){
   showHint();
   $('pinIn').maxLength = need;
   $('pinDash').innerHTML = Array.from({length: need}, ()=>'<span></span>').join('');
-  $('pinIn').value = ''; drawPin();
+  $('pinIn').value = ''; drawPin(-1);
   $('pinMsg').className = 'cx-hint';
   $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự') + ' rồi Enter'
     + (pinMode === 'file' && pinFail > 0 ? ' · đã sai ' + pinFail + '/' + CODES.file.lockAfter : '');
@@ -4266,13 +4289,13 @@ function openPin(mode, arg){
 }
 function closePin(){
   pinw.classList.remove('on'); pinw.setAttribute('aria-hidden','true');
-  $('pinIn').value = ''; drawPin();
+  $('pinIn').value = ''; drawPin(-1);
   /* Gõ Enter sai mã xong đóng hộp: nếu giữ tiêu điểm thì vòng viền amber của
      :focus-visible còn dính lại trên bản đồ, nhìn như lỗi. Bỏ tiêu điểm và
      coi như thao tác chuột để lần đóng bảng hồ sơ sau cũng không vẽ viền. */
   blurNow(); kbdNav = false;
 }
-$('pinIn').addEventListener('input', drawPin);
+$('pinIn').addEventListener('input', pinRoiChe);
 $('pinDash').addEventListener('click', ()=>$('pinIn').focus());
 pinw.addEventListener('click', e=>{ if(e.target === pinw) closePin(); });
 $('pinIn').addEventListener('keydown', e=>{ if(e.key === 'Enter') hackTry(); });
@@ -4314,7 +4337,7 @@ function hackTry(){
     msg.className = 'cx-hint bad';
     msg.textContent = 'Chưa đúng · Sai ' + pinFail + '/' + max + ' — gợi ý đã đổi' +
       (pinFail === max ? ' · sai thêm lần nữa là khoá 60 phút' : '');
-    $('pinIn').value = ''; drawPin(); $('pinIn').focus();
+    $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
     return;
   }
   /* Hai cửa Hack Map dùng CHUNG một nhánh: cùng mã, khác việc làm sau khi mở.
@@ -4352,7 +4375,7 @@ function hackTry(){
   }
   msg.className = 'cx-hint bad';
   msg.textContent = 'Sai rồi, còn ' + left + ' lượt';
-  $('pinIn').value = ''; drawPin();
+  $('pinIn').value = ''; drawPin(-1);
   $('pinIn').focus();
 }
 

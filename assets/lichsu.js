@@ -156,19 +156,30 @@
         { ngay:'no info', ver:'V08',  so:null, chinh:'Vá tên lửa đen, thêm gõ đúp cho điện thoại' },
         { ngay:'2026-08-04', ver:'V09',  so:null, chinh:'Bỏ rồi ghim lại mã morse, câu trêu xoay vòng, toạ độ mở khoá sáng lên' },
         { ngay:'2026-08-04', ver:'V10', so:'09', chinh:'Huy hiệu tên lửa có vòng đời đầy đủ, lockup cờ' },
-        { ngay:'no info', ver:'V11 · V12', so:null,
-          chinh:'Nối luồng người chơi từ trang hồ sơ về bản đồ',
+        /* Dò được tem thật cho quãng này (xem NGUỒN SỐ LIỆU ở đầu file):
+           V11.06 và V12.02 cùng nằm trong bản ngày 05-08, V12.05 ngày 06-08. */
+        { ngay:'2026-08-06', ver:'V11 · V12', so:'06',
+          chinh:'Nối luồng người chơi từ trang hồ sơ về bản đồ, dựng cửa hậu ở dòng bản quyền',
           chi:[
-            { ver:'V12', chinh:'Nối luồng và đưa người chơi từ trang hồ sơ về bản đồ chính' }
+            { ver:'V11.06', chinh:'Nối luồng và đưa người chơi từ trang hồ sơ về bản đồ chính' },
+            { ver:'V12.02 → V12.05', chinh:'Dòng bản quyền có lá cờ thành vùng bấm cửa hậu, kèm ô nhập mã của Box Tổng tư lệnh' }
           ] },
-        { ngay:'2026-08-12', ver:'V15', so:'06',
-          chinh:'Tách hẳn hai khu chơi, trạng thái GAME ON, cửa hai tầng của hồ sơ niêm phong',
+        /* V15 dò được năm nấc: .00 (07-08) · .03 và .04 (12-08) · .07 (13-08)
+           · .09 (14-08). Diff giữa các nấc cho biết đúng cái gì vừa thêm. */
+        { ngay:'2026-08-14', ver:'V15', so:'10',
+          chinh:'Tách hẳn hai khu chơi, dựng khung Collected và đường sang màn pháo hoa',
           chi:[
             { ver:'V15.00', chinh:'Tách trang thành hai khu chơi rời nhau: bản đồ tác chiến và khu Easter Egg' },
-            { ver:'V15.05', chinh:'Khu Easter Egg chỉ mở khi khu bản đồ xong và đồng hồ về 0; thêm băng chúc mừng nhấp nháy dẫn sang' }
+            { ver:'V15.03', chinh:'Dựng cả mạch khu Easter Egg: màn mở đầu, lối vào, bộ câu sẵn và đường chơi lại' },
+            { ver:'V15.04', chinh:'Thêm khung Collected kèm lời nhắn, và hộp thoại đóng mở của khung' },
+            { ver:'V15.05', chinh:'Khu Easter Egg chỉ mở khi khu bản đồ xong và đồng hồ về 0; thêm băng chúc mừng nhấp nháy dẫn sang' },
+            { ver:'V15.09', chinh:'Nút trong khung Collected dẫn thẳng sang màn pháo hoa; nối tiếp sang phần lâu đài' }
           ] },
-        { ngay:'2026-08-14', ver:'V16', so:null,
-          chinh:'Trạng thái GAME ON, chỉnh hiệu ứng pháo hoa và hiệu ứng Gate 1' },
+        { ngay:'2026-08-16', ver:'V16', so:'09',
+          chinh:'Trạng thái GAME ON, máy bay kéo băng rôn, chỉnh hiệu ứng pháo hoa và hiệu ứng Gate 1',
+          chi:[
+            { ver:'V16.08', chinh:'Máy bay kéo băng rôn bay ngang bản đồ, dòng dẫn đường nhấp nháy mời sang khu Easter Egg' }
+          ] },
         /* V17 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau đã mở dòng V18 ngay
            bên dưới, không ghi V17.10 — xem luật ở đầu file. */
         /* ── V17.04 → V17.09 DÒ ĐƯỢC ĐỦ SÁU NẤC ─────────────────────────────
@@ -187,7 +198,7 @@
             { ver:'V17.08', chinh:'Dời cửa vào bản ghi từ dòng tem sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua lá cờ giữ nguyên' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', ver:'V18', so:'07',
+        { ngay:'2026-08-24', ver:'V18', so:'08',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
@@ -196,7 +207,8 @@
             { ver:'V18.03', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm và đếm cộng dồn theo phiên; khu Easter Egg có bản ghi riêng' },
             { ver:'V18.04', chinh:'Soát lại toàn bộ tên sổ và mốc thời gian theo nhánh dựng riêng trên kho mã; đồng bộ lại tài liệu' },
             { ver:'V18.05', chinh:'Viết lại nội dung sổ khu Easter Egg và màn pháo hoa theo lịch sử dò được; đánh lại số build của Hồ sơ Phi đoàn' },
-            { ver:'V18.06', chinh:'Chốt khuôn số phiên bản Vxx.xx cho cả sáu trang; ghi đủ các nấc V17 và lịch sử riêng của khung Collected' }
+            { ver:'V18.06', chinh:'Chốt khuôn số phiên bản Vxx.xx cho cả sáu trang; ghi đủ các nấc V17 và lịch sử riêng của khung Collected' },
+            { ver:'V18.07', chinh:'Chốt ba luật chung cho mọi cửa mã: phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm, và cửa đã khoá thì lần nào vào cũng hỏi lại; ghi thêm các nấc V11, V12, V15, V16 vào sổ' }
           ] }
       ]
     },
@@ -264,7 +276,8 @@
           chi:[
             { ver:'V18.01', chinh:'Nới vùng bấm của nút đóng khung Collected cho vừa đầu ngón tay' },
             { ver:'V18.03', chinh:'Chính dòng tiêu đề khung thành cửa vào bản ghi, trỏ vào thì chữ đổi màu' },
-            { ver:'V18.05', chinh:'Viết lại nội dung sổ theo lịch sử dò được của khung và của màn pháo hoa' }
+            { ver:'V18.05', chinh:'Viết lại nội dung sổ theo lịch sử dò được của khung và của màn pháo hoa' },
+            { ver:'V18.07', chinh:'Cửa mã của sổ đi theo ba luật chung mới: phải Enter mới gửi, ký tự vừa gõ hiện rõ rồi mới thành chấm, mỗi lần vào đều hỏi lại' }
           ] }
       ]
     },
@@ -297,7 +310,7 @@
           chinh:'Dựng trang Hồ sơ Phi đoàn. Chưa đánh số phiên bản nên không còn mốc build nào' },
         { ngay:'2026-08-07', ver:'V02', so:'08',
           chinh:'Hoàn thiện hồ sơ trước khi gộp vào site chung. Vẫn chưa có tem' },
-        { ngay:'2026-08-24', ver:'V03', so:'09',
+        { ngay:'2026-08-24', ver:'V03', so:'10',
           chinh:'Hồ sơ 3 Mission, dòng nhiệm vụ và thanh tiến độ ngoài trang bìa, gom cửa mã về một khuôn, thêm bản ghi, chỉnh luật gợi ý',
           chi:[
             { ver:'V03.00 → V03.01', chinh:'Hồ sơ 3 Mission, đồng hồ Mission 2, thêm bản ghi' },
@@ -307,7 +320,8 @@
             { ver:'V03.05', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
             { ver:'V03.06', chinh:'Cửa mã Mission 2 cho một gợi ý sau ba lần sai và nhớ luôn cho những lần sau' },
             { ver:'V03.07', chinh:'Dời mốc gợi ý Mission 2 sang lần bị khoá thứ hai, bộ đếm sai tính theo phiên' },
-            { ver:'V03.08', chinh:'Đặt lại đúng tên trang trong bản ghi, đánh lại số build theo bản đếm được; gom hai tấm nền dùng chung về một chỗ' }
+            { ver:'V03.08', chinh:'Đặt lại đúng tên trang trong bản ghi, đánh lại số build theo bản đếm được; gom hai tấm nền dùng chung về một chỗ' },
+            { ver:'V03.09', chinh:'Gợi ý Mission 2 dời lên trên hàng ô nhập cho cân với mấy hộp khác; cửa mã theo ba luật chung mới: phải Enter mới gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' }
           ] }
       ]
     },
@@ -348,6 +362,11 @@
             { ver:'V04.07', chinh:'Chuyển cảnh dùng bản clip đã dọn sạch bảng tên nên bỏ hẳn lớp che và lớp khói; bảng bản ghi lấy đúng màu Khối vận hành; cửa vào bản ghi đổi từ nút hình sang chữ' },
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
+          ] },
+        { ngay:'2026-08-24', ver:'V05', so:'01',
+          chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
+          chi:[
+            { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' }
           ] }
       ]
     },
@@ -356,14 +375,15 @@
       doi: [
         { ngay:'no info', ver:'V01', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V02', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', ver:'V03', so:'05',
+        { ngay:'2026-08-24', ver:'V03', so:'06',
           chinh:'Thêm bản ghi (V02 đã hết nấc đuôi nên sang dòng V03), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V03.00', chinh:'Thêm bản ghi cho trang này' },
             { ver:'V03.01', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
             { ver:'V03.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
             { ver:'V03.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
-            { ver:'V03.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
+            { ver:'V03.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' },
+            { ver:'V03.05', chinh:'Cửa vào lâu đài lần nào cũng hỏi mã chứ không nhớ lần trước nữa; mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' }
           ] }
       ]
     },
@@ -371,14 +391,15 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V01', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V02' },
-        { ngay:'2026-08-24', ver:'V02', so:'06',
+        { ngay:'2026-08-24', ver:'V02', so:'07',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V02.00 → V02.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
             { ver:'V02.02', chinh:'Cửa vào bản ghi đổi từ nút hình sang chính dòng chữ Khối vận hành, trỏ vào thì chữ đổi màu' },
             { ver:'V02.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
             { ver:'V02.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
-            { ver:'V02.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' }
+            { ver:'V02.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' },
+            { ver:'V02.06', chinh:'Mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' }
           ] }
       ]
     },
@@ -555,6 +576,16 @@
       'font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-size:19px;',
       'color:var(--ls-acc,#8CE1B4)}',
     '.ls-o i.co{border-color:var(--ls-acc,#8CE1B4)}',
+    /* Chữ vừa gõ hiện NGUYÊN HÌNH một nhịp rồi mới thành chấm — người gõ phải
+       thấy mình vừa bấm đúng phím chưa. Che ngay từ ký tự đầu thì gõ nhầm một
+       số là mò lại từ đầu mà không biết nhầm chỗ nào. */
+    '.ls-o i.ro{font-size:20px}',
+    /* Dấu Enter. Mờ sẵn ở đó cho biết cửa này mở bằng Enter chứ không tự mở
+       khi gõ đủ số; đủ bốn số thì sáng lên thành lời mời bấm. */
+    '.ls-o b.ls-ent{width:26px;height:40px;display:flex;align-items:center;',
+      'justify-content:center;font-weight:400;font-size:15px;line-height:1;',
+      'color:var(--ls-mo,rgba(234,240,247,.5));opacity:.3;transition:opacity .2s,color .2s}',
+    '.ls-o b.ls-ent.san{opacity:1;color:var(--ls-acc,#8CE1B4)}',
     '.ls-hop.rung{animation:lsRung .38s}',
     '@keyframes lsRung{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}',
       '40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}',
@@ -699,14 +730,12 @@
     setTimeout(do_, 120);
   }
 
-  /* Mở mã rồi thì trong PHIÊN này khỏi hỏi lại — nhưng nhớ RIÊNG TỪNG TRANG,
-     mở sổ bên này không mở hộ sổ bên kia. Đóng trình duyệt là quên sạch. */
-  function daMo(ma) {
-    try { return sessionStorage.getItem('ls_ok_' + ma) === '1'; } catch (e) { return false; }
-  }
-  function ghiMo(ma) {
-    try { sessionStorage.setItem('ls_ok_' + ma, '1'); } catch (e) {}
-  }
+  /* ═══ CỬA ĐÃ KHOÁ THÌ LẦN NÀO VÀO CŨNG HỎI ═════════════════════
+     Bản trước nhớ cờ `ls_ok_<mã>` trong sessionStorage: mở một lần rồi thì
+     suốt phiên đó bấm vào là vào thẳng. Bỏ hẳn. Cửa nào đã dựng ra để hỏi mã
+     thì lần sau quay lại vẫn phải gõ mã — không có cửa nào tự mở sẵn vì
+     "vừa nãy mới vào". Luật này áp cho MỌI cửa pin/pass trong bộ, không riêng
+     sổ bản ghi. */
 
   /* Gợi ý nhớ trong localStorage (KHÔNG phải sessionStorage như cờ mở mã):
      đóng trình duyệt rồi mở lại vẫn còn. Và nhớ CHUNG cho cả bộ, không tách
@@ -734,12 +763,13 @@
     khung(
         '<h2 class="ls-tit">Bản ghi</h2>'
       + '<p class="ls-sub">' + t.ten + '</p>'
-      + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
+      + '<div class="ls-o"><i></i><i></i><i></i><i></i><b class="ls-ent">↵</b></div>'
       + '<p class="ls-msg" id="lsMsg"></p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
       +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
+    var ent = hop.querySelector('.ls-ent');
     var msg = hop.querySelector('#lsMsg');
     var inp = hop.querySelector('#lsIn');
 
@@ -751,33 +781,47 @@
        gõ sai lại ba lần nữa: người ta trả giá một lần là đủ. */
     if (daThayGoiY()) hienGoiY();
 
-    function ve() {
+    /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm. Ô nào không phải ô vừa
+       gõ thì che luôn — nhìn xuống hàng ô chỉ đọc được đúng một số cuối, người
+       đứng sau lưng không kịp đọc cả mã. */
+    var HIEN_MS = 800;
+    var henChe = null;
+    function ve(iRo) {
       for (var i = 0; i < o.length; i++) {
-        o[i].textContent = go[i] ? '•' : '';
-        o[i].className = go[i] ? 'co' : '';
+        var c = go[i];
+        o[i].textContent = c ? ((i === iRo) ? c : '•') : '';
+        o[i].className = c ? (i === iRo ? 'co ro' : 'co') : '';
       }
+      if (ent) ent.className = 'ls-ent' + (go.length === 4 ? ' san' : '');
+    }
+    function veRoiChe() {
+      var i = go.length - 1;
+      if (henChe) { clearTimeout(henChe); henChe = null; }
+      ve(i);
+      if (i >= 0) henChe = setTimeout(function () { henChe = null; ve(-1); }, HIEN_MS);
     }
     /* GÕ SAI THÌ IM — không báo lỗi, không đếm hộ còn mấy lần. Phản hồi duy
        nhất là một cú rung: đủ để biết máy có nhận cú gõ, không đủ để suy ra gì.
        Đủ SAI_TOI_DA lần mới mở gợi ý, và từ đó nhớ luôn. */
     function cham() {
-      if (go === MA) { ghiMo(ma); veSo(ma); return; }
-      go = ''; inp.value = ''; ve();
+      if (go === MA) { veSo(ma); return; }
+      go = ''; inp.value = ''; ve(-1);
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
       if (demSai() >= SAI_TOI_DA) { ghiThayGoiY(); hienGoiY(); }
     }
     inp.addEventListener('input', function () {
       go = inp.value.replace(/\D/g, '').slice(0, 4);
       inp.value = go;
-      ve();
-      if (go.length === 4) setTimeout(cham, 140);
+      veRoiChe();
     });
+    /* CHỈ Enter mới tính là gửi. Bản trước gõ đủ bốn số là tự chấm sau 140ms:
+       bấm nhầm một phím cuối là mất luôn một lượt sai mà chưa kịp nhìn lại. */
     inp.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && go.length === 4) { e.preventDefault(); cham(); }
+      if (e.key === 'Enter') { e.preventDefault(); if (go.length === 4) cham(); }
     });
     hop.addEventListener('click', function () { inp.focus(); });
     setTimeout(function () { try { inp.focus(); } catch (e) {} }, 120);
-    ve();
+    ve(-1);
   }
 
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số
@@ -865,7 +909,7 @@
     dungHop();
     nen.classList.add('on');
     nen.setAttribute('aria-hidden', 'false');
-    if (daMo(ma)) veSo(ma); else veCuaMa(ma);
+    veCuaMa(ma);          /* luôn hỏi mã — xem ghi chú ở phần cửa mã */
   }
 
   /* ═══ ĐẾM NHỊP ════════════════════════════════════════════════════════

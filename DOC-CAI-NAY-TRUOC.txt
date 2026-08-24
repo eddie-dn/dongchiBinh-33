@@ -1,4 +1,175 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 13 — ba luật chung cho mọi ô pin/pass, và dọn nốt màn chuyển cảnh Gate 2.
+════════════════════════════════════════════════════════════════════════════
+12 file sửa (có 1 file ẢNH), không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/index.html
+    assets/lichsu.js                      dad/950901-b/config.js
+    dad/950901-a/index.html               dad/950901-b/assets/bg_r1_clean.png  ← ẢNH
+    han/961030-a/index.html               han/961030-b/index.html
+
+    DESIGN-SYSTEM.md  ← luật mới ở §6      docs/BAN-GHI.md
+    README.md                             DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này:
+    /                 V18.07  ← ĐỔI   /han/961030-a     V03.05  ← ĐỔI
+    /dad/950901-a     V03.09  ← ĐỔI   /han/961030-b     V02.06  ← ĐỔI
+    /dad/950901-b     V05.00  ← ĐỔI   /phao-hoa         V03.03 (không đụng)
+
+
+① BA LUẬT CHUNG CHO MỌI Ô PIN / PASS
+────────────────────────────────────────────────────────────────────────────
+Cả bộ có BẢY cửa mã, trước nay mỗi chỗ một nết. Nay đi chung ba luật — chép
+đủ vào DESIGN-SYSTEM.md §6 để cửa sau khỏi lệch tiếp.
+
+  ⑴ PHẢI ENTER MỚI TÍNH LÀ GỬI
+     Gõ đủ ký tự không phải là gửi. Bản cũ tự chấm sau 120-140ms kể từ phím
+     cuối — bấm nhầm đúng phím đó là CHÁY LUÔN MỘT LƯỢT SAI mà chưa kịp nhìn
+     lại hàng ô. Mà mấy cửa này lượt sai đều có giá: khoá 30 phút, hết lượt
+     ngày, mở gợi ý.
+     Kèm theo là dấu ↵ cuối hàng ô — mờ sẵn để biết cửa mở bằng Enter, đủ ký
+     tự thì sáng lên. Không có nó thì người chơi gõ xong ngồi chờ, tưởng treo.
+     (Ô PIN ngoài bản đồ không có hàng ô riêng nên nói thẳng trong dòng nhắc:
+      "Gõ 4 số rồi Enter" — dòng này vốn đã có sẵn.)
+
+  ⑵ THẤY MÌNH GÕ GÌ RỒI MỚI THÀNH CHẤM
+     Ký tự VỪA GÕ hiện nguyên hình 800ms rồi mới thành •. Mấy ô trước che
+     luôn. Che ngay từ phím đầu thì gõ nhầm một ký tự là phải xoá cả dòng mò
+     lại, vì chẳng biết nhầm ở ô nào. Nhìn xuống hàng ô cũng chỉ đọc được đúng
+     một ký tự cuối nên người đứng sau lưng không kịp đọc cả mã.
+     NGOẠI LỆ: phần câu hỏi bên Zoey's Castle không che gì cả — đó là đáp án
+     đang soạn, màn xem lại còn phải in ra đọc được. Luật ⑴ vẫn áp.
+
+  ⑶ CỬA ĐÃ KHOÁ THÌ LẦN NÀO VÀO CŨNG HỎI
+     Gỡ ba cái cờ từng cho đi thẳng:
+         ls_ok_<mã>     sổ bản ghi   mở một lần → cả phiên khỏi hỏi
+         pinFiles[id]   hồ sơ bản đồ mở một lần → MÃI MÃI khỏi hỏi
+         st.aOpen/bOpen Zoey / Chamber  gõ đúng một lần → MÃI MÃI khỏi hỏi
+     Ba cờ vẫn ghi (bảng điều phối và thống kê còn đọc) nhưng hết quyền mở cửa
+     hộ. Tệ nhất trong ba: trang Zoey's Castle từng BẬT SẴN bOpen ngay lúc bấm
+     nút "Vào Secret Chamber" — đi đường đó thì chưa bao giờ phải gõ mã.
+     Cái KHÔNG phải cửa thì đừng đem luật này vào: mốc đã phá đảo (st.m2,
+     st.m3, eggWin…) là thành tích, xong rồi thì thôi.
+
+
+② GỢI Ý JUNGLE DỜI LÊN TRÊN Ô NHẬP
+────────────────────────────────────────────────────────────────────────────
+Đặt dưới thì hộp thành ba tầng rời rạc: chữ dẫn → ô nhập → gợi ý, mắt phải
+nhảy qua ô nhập mới đọc được lời mách. Đưa lên trên thì đọc một mạch từ trên
+xuống, cân đúng như mấy hộp gợi ý bên Mission 3. Cả hai đường (in sẵn lúc mở
+hộp, và hiện giữa chừng lúc vừa đủ lượt sai) nay đều chèn vào cùng một chỗ.
+
+
+③ CHUYỂN CẢNH GATE 2 — GỐC RỄ LÀ KHUNG CLIP ĐẶT SAI
+────────────────────────────────────────────────────────────────────────────
+Ba lỗi báo về ("RAZER bay lên trời", "tự dưng zoom cận mất 2 chú rắn giữa
+khung") hoá ra CÙNG MỘT NGUYÊN NHÂN.
+
+Ba clip trong bộ không cùng khuôn hình:
+
+        anim_wrong          1280×561   2,282:1   = đúng tỷ lệ cảnh → phủ trọn
+        anim_unlock (cũ)     800×350   2,286:1   = đúng tỷ lệ cảnh → phủ trọn
+        anim_unlock_clean   1280×720   1,778:1   = CHỈ quay 78% GIỮA cảnh
+
+Khớp khung ĐẦU clip với ảnh nền vòng 1 và khung CUỐI với ảnh nền vòng 2 đều
+ra cùng một cửa sổ: rộng 78%, cao 100%, nằm giữa.
+
+Mà lớp clip lại kéo căng ra cả khung bằng `object-fit`:
+    cover   → phóng to 1,28 lần rồi cắt 14% trên và 14% dưới. Cảnh trong clip
+              to hơn và lệch so với cảnh tĩnh nằm dưới → lớp chữ RAZER (dán
+              theo cảnh tĩnh) trông như rời khỏi bệ đá NGAY TỪ KHUNG ĐẦU,
+              chưa cần cảnh chạy. Hai chú rắn giữa khung cũng bị cắt.
+    contain → hết cắt, nhưng cả cảnh thu nhỏ giữa hai dải nền → clip vừa chạy
+              là cảnh "thụt" một cái, tệ hơn.
+
+NAY đặt thẻ clip đúng vào phần cảnh mà nó quay rồi kéo căng. Bề ngang do JS
+tính từ tỷ lệ thật của chính file clip (`khungClip()`), nên thả clip khác vào
+cũng tự khớp, không phải khai báo gì. Mặc định phủ trọn — hụt thì vẫn chạy y
+như đời cũ.
+
+    Chạy thử trong trình duyệt: thẻ clip nằm đúng left 11,00% · rộng 78,00% ·
+    trên 0,00% · cao 100,00%. Khung đầu clip khớp cảnh tĩnh, không còn nhịp
+    phóng to nào, hai chú rắn còn nguyên.
+
+NHỊP TẮT RAZER cũng đặt lại. Rà từng khung của chính file đang dùng (độ trượt
+dọc + độ sáng trung bình cả khung):
+
+        0% → 10,5%   cảnh đứng yên, độ sáng phẳng lì (~70/255)
+       12%           CHỚP NỔ bắt đầu — độ sáng vọt 70 → 95 → 106
+       15% → 36%     cả khung trắng xoá, vừa rung vừa trượt
+       42%           mở ra cảnh mới, tối hẳn (~41/255)
+
+Chốt chặn thật là 12%, không phải 42% như bản trước tưởng. Bản trước tắt xong
+ở 26,8% — tức suốt quãng 12% → 26,8% lớp chữ vẫn nằm đó trong khi phía dưới
+đang nổ. Nay 0.05 × 8000ms = 400ms bắt đầu mờ, +380ms là tắt hẳn ở 9,75%.
+Chạy thử: mờ hẳn ở 7,7% — dư hơn 4 điểm.
+
+
+④ BỆ ĐÁ RAZER — DỰNG LẠI TỪ ĐẦU, KHÔNG VÁ NỮA
+────────────────────────────────────────────────────────────────────────────
+Bản trước nâng sáng từng kênh đúng mấy pixel nét chữ rồi tán mép. Kết quả:
+nét chữ mờ đi nhưng để lại một VỆT CHỮ NHẬT sẫm hơn nằm giữa tấm biển — đúng
+cái "thấy nguyên cục chữ nhật" đã báo.
+
+Nay làm khác hẳn: dựng lại TOÀN BỘ lòng biển.
+    · khoanh đúng lòng biển hình lục giác (chỗ ám hổ phách, 13.516 điểm ảnh)
+    · lấy riêng phần đá THUẦN — không nét chữ, không quầng sáng quanh nét
+    · dựng một mặt phẳng màu trơn từ phần đá thuần đó, rồi phủ kín cả lòng
+      biển bằng chính mặt phẳng ấy + hạt mịn cùng biên độ với đá gốc
+    · vành 1px ngoài cùng pha 50% để giữ răng cưa của mép lục giác
+
+Vì phủ KÍN nên không còn chỗ nào cho nét chữ cũ lòi ra: quét lại lòng biển,
+KHÔNG còn một điểm ảnh nào sáng hơn nền. Ngoài lòng biển không đụng một pixel
+(chênh lệch tối đa = 0). Kích thước ảnh giữ nguyên 3136×1376.
+
+
+⑤ HAI VIỆC NHỎ CÒN LẠI
+────────────────────────────────────────────────────────────────────────────
+ZHAO YUN GIẢI XONG    Bộ lọc cũ `sepia(1) saturate(2.6) brightness(1.55)
+                      contrast(1.7)` đẩy sáng tới mức CHÁY TRẮNG (chạm trần
+                      255). Nay `saturate(1.4) brightness(1.22) contrast(1.12)`.
+                      Chụp lại màn thật rồi so ba cụm chữ trên bệ đá:
+                          EIMMIRE   28,1° · 50,0% · sáng 141
+                          ZHAO YUN  35,9° · 68,4% · sáng 136
+                          MIDNIGHT  28,4° · 52,9% · sáng 141
+                      Độ sáng nay bằng hai biển bên cạnh; còn tươi hơn một
+                      chút là CỐ Ý, để biết cụm này vừa được thắp lên.
+
+BA CHẤM OPEN WORLD    Lúc chờ trả lời, ba chấm đứng im như bị lag. Nay nảy
+                      lần lượt như ô "đang soạn tin": nhịp 1,25s, mỗi chấm
+                      lệch pha 0,16s, nhích 2px. Máy bật chế độ giảm chuyển
+                      động thì thôi nảy, chuyển sang mờ-tỏ.
+
+
+⑥ ĐÃ KIỂM THỬ — 171 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+BA LUẬT MỚI  chạy thẳng trong trình duyệt trên đủ SÁU cửa: sổ bản ghi (bản đồ
+             + khung Collected + bốn trang con), ô PIN bản đồ, cửa Mission 2,
+             cửa Zoey's Castle, cửa Secret Chamber, hai bảng điều phối.
+             Mỗi cửa soi đủ bốn thứ: dấu ↵ có mặt và sáng đúng lúc · ký tự vừa
+             gõ hiện rõ rồi 800ms sau mới thành chấm · gõ đủ ký tự mà chưa
+             Enter thì KHÔNG trừ lượt, KHÔNG mở cửa · vào lại vẫn hỏi mã.
+GỢI Ý M2     nằm trên ô nhập ở cả hai đường (in sẵn lúc mở hộp, và hiện giữa
+             chừng lúc vừa đủ lượt sai).
+CHUYỂN CẢNH  khung clip đo trong trình duyệt đúng 11%/78%/0%/100% · RAZER mờ
+             hẳn ở 7,7% clip (chốt chặn 12%) · không bật lớp khói · không nạp
+             clip cũ 24MB · không lỗi JS suốt màn chơi.
+BỆ ĐÁ        vòng 1 và vòng 2 đều dùng ảnh đá sạch, lớp che thủ công tắt hẳn;
+             lòng biển vòng 1 không còn điểm ảnh nào sáng hơn nền.
+BA CHẤM      trình duyệt thật sự chạy animation (bắt được lúc chấm đang ở
+             -1,95px giữa nhịp nảy), ba chấm lệch pha 0s / 0,16s / 0,32s.
+Cùng toàn bộ bộ cũ chạy lại: bảy cuốn sổ, khuôn số Vxx.xx (102 số), tem sáu
+trang, gợi ý hai cửa mã, bộ đếm theo phiên, cổng Hồ sơ Phi đoàn chỉ mở sau
+khi thắng M3, hộp chào ba khung giờ, thanh cuộn, vùng chạm.
+
+    Mấy phép báo đỏ lúc chạy lại đều là KỲ VỌNG CŨ: bộ kiểm đang gõ đủ ký tự
+    rồi chờ tự chấm (nay phải Enter), và đang mượn cờ ls_ok_MAP để vào thẳng
+    sổ (nay đã gỡ). Đã sửa bộ kiểm theo luật mới, không phải sửa mã trang.
+    Riêng phép "RAZER tắt trước 42%" đã siết lại thành "trước 12%" — 42% là
+    mốc cảnh mở ra khung mới, còn chớp nổ mới là thứ thật sự làm lộ.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 12 — chốt khuôn số Vxx.xx, ghi đủ lịch sử khung Collected và đường cửa hậu.
 ════════════════════════════════════════════════════════════════════════════
 7 file sửa, không có file mới. Chép đè theo đúng cây thư mục.

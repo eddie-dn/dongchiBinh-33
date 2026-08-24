@@ -352,7 +352,93 @@ môi trường hay tên endpoint.
 
 ---
 
-## 6. KHÔNG CHO BÔI ĐEN CHỮ
+## 6. Ô NHẬP PIN / PASS — BA LUẬT CHUNG
+
+Cả bộ có **bảy cửa mã**: bảy cuốn sổ bản ghi (dùng chung `assets/lichsu.js`),
+ô PIN hồ sơ ngoài bản đồ, cửa Mission 2 và Mission 3 bên Hồ sơ Phi đoàn, cửa
+vào Zoey's Castle, cửa vào Secret Chamber, và hai bảng điều phối. Trước đây mỗi
+chỗ một nết. Nay cả bảy đi theo đúng ba luật dưới đây — thêm cửa mới thì chép
+đủ ba, đừng bịa luật thứ tư.
+
+### 6.1 · Phải Enter mới tính là GỬI
+
+Gõ đủ ký tự **không** phải là gửi. Người chơi còn phải bấm `Enter`.
+
+Bản cũ tự chấm sau 120-140ms kể từ ký tự cuối. Hỏng ở chỗ: bấm nhầm đúng phím
+cuối là **cháy luôn một lượt sai** mà chưa kịp nhìn lại hàng ô — mà mấy cửa
+này lượt sai đều có giá (khoá 30 phút, hết lượt ngày, mở gợi ý). Gõ xong còn
+đọc lại được, ưng thì mới Enter.
+
+Cách làm: bỏ hẳn nhánh `if(buf.length === len) setTimeout(check, …)` trong
+`input`, dồn hết vào `keydown`:
+
+```js
+inp.addEventListener('input', function(){ buf = …; veRoiChe(); });
+inp.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  e.preventDefault();                    /* đừng để form nào cuốn mất phím */
+  if(buf.length === len) check();
+});
+```
+
+**Phải có dấu `↵` ở cuối hàng ô** — không thì người chơi gõ đủ số rồi ngồi
+chờ, tưởng trang treo. Mờ sẵn (`opacity:.3`) để biết cửa mở bằng Enter; đủ ký
+tự thì sáng lên thành lời mời bấm (`.san`). Ô PIN ngoài bản đồ không có hàng ô
+riêng thì nói thẳng trong dòng nhắc: *"Gõ 4 số rồi Enter"*.
+
+### 6.2 · Thấy mình gõ gì rồi mới thành chấm
+
+Ký tự **vừa gõ** hiện nguyên hình `800ms` rồi mới thành `•`. Mấy ô trước đó
+che luôn.
+
+Che ngay từ phím đầu thì gõ nhầm một ký tự là phải xoá cả dòng mò lại, vì
+chẳng biết nhầm ở ô nào. Mà nhìn xuống hàng ô cũng chỉ đọc được đúng một ký tự
+cuối, người đứng sau lưng không kịp đọc cả mã.
+
+```js
+var HIEN_MS = 800, henChe = null;
+function ve(iRo){                        /* iRo = ô được hiện rõ, -1 là che hết */
+  for(var i = 0; i < o.length; i++)
+    o[i].textContent = go[i] ? (i === iRo ? go[i] : '•') : '';
+}
+function veRoiChe(){
+  var i = go.length - 1;
+  if(henChe) clearTimeout(henChe);
+  ve(i);
+  if(i >= 0) henChe = setTimeout(function(){ ve(-1); }, HIEN_MS);
+}
+```
+
+Gõ sai xoá sạch thì gọi `ve(-1)`, đừng gọi `ve()` trống — hàm nay có tham số.
+
+**Ngoại lệ · phần câu hỏi bên Zoey's Castle**: đó là *đáp án đang soạn*, không
+phải mật mã, và màn xem lại còn phải in ra đọc được. Chỗ đó không che gì cả.
+Luật 6.1 thì vẫn áp.
+
+### 6.3 · Cửa đã khoá thì lần nào vào cũng hỏi
+
+Không có cửa nào tự mở sẵn vì *"vừa nãy mới vào"*. Đã dựng ra để hỏi mã thì lần
+sau quay lại vẫn phải gõ.
+
+Ba cái cờ nhớ đã gỡ, ghi lại đây cho khỏi ai dựng lại:
+
+| Cờ cũ | Ở đâu | Từng cho đi thẳng |
+|---|---|---|
+| `ls_ok_<mã>` (sessionStorage) | `assets/lichsu.js` | mở sổ một lần → cả phiên khỏi hỏi |
+| `pinFiles[id]` (localStorage) | `index.html` | mở hồ sơ một lần → mãi mãi khỏi hỏi |
+| `st.aOpen` / `st.bOpen` | `han/961030-a`, `han/961030-b` | gõ đúng một lần → mãi mãi khỏi hỏi |
+
+Ba cờ đó **vẫn ghi** (bảng điều phối và thống kê còn đọc), chỉ là không còn
+quyền mở cửa hộ. Tệ nhất trong ba: trang Zoey's Castle từng bật sẵn `bOpen`
+ngay lúc bấm nút "Vào Secret Chamber" — đi đường đó thì **chưa bao giờ** phải
+gõ mã, ô mã thành ra chỉ để trang trí.
+
+Cái KHÔNG phải cửa, đừng đem luật này vào: **mốc đã phá đảo** (`st.m2`,
+`st.m3`, `eggWin`…) là thành tích, xong rồi thì thôi, không bắt làm lại.
+
+---
+
+## 7. KHÔNG CHO BÔI ĐEN CHỮ
 
 Màn nào **toàn chữ trang trí và nút bấm** thì đặt `user-select:none` cho cả
 màn: màn cổng và màn phát mã của Gate 2 (`.gate-look`), các bảng cửa hậu,

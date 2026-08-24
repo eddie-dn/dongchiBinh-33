@@ -381,9 +381,9 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 #scene-game .slab{position:absolute;display:none;pointer-events:none;z-index:6}
 #scene-game .slab.vis{display:block}
 /* ═══ RAZER TẮT DẦN — CHẠY BẰNG CSS ANIMATION, KHÔNG PHẢI TIMER ═══════════
-   Đáp án vòng 1 phải tắt xong TRƯỚC lúc máy quay trong clip nổ bắt đầu trượt
-   (mốc 42% — xem `slab1_out_at` trong config.js). Nếu không thì lớp chữ đứng
-   im trong khi bệ đá tụt xuống dưới nó → "chữ bay lên trời".
+   Đáp án vòng 1 phải tắt xong TRƯỚC lúc chớp nổ trong clip loé lên (đo được
+   mốc 12% — xem `slab1_out_at` trong config.js). Nếu không thì lớp chữ đứng
+   im trong khi cả khung phía dưới vừa nổ vừa trượt → "chữ bay lên trời".
 
    ĐÃ THỬ HAI ĐỜI TIMER, CẢ HAI ĐỀU TRỄ:
      · setTimeout đặt trước lúc gọi clip  → trễ, đo được chữ còn tới 46%
@@ -887,9 +887,30 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   inset:auto 3% 0 auto;width:auto;height:var(--ow-cao,72%);object-fit:contain;
 }
 
-#scene-game .anim-layer{position:absolute;inset:0;z-index:5;display:none;background:#05080d}
+/* ═══ KHUNG CLIP · ĐẶT ĐÚNG PHẦN THẾ GIỚI MÀ CLIP QUAY ════════════════════
+   Ba clip trong bộ KHÔNG cùng khuôn hình, và đó là gốc của mọi rắc rối cũ:
+     · anim_wrong        1280×561 → 2,282:1 = đúng tỷ lệ thế giới → phủ trọn
+     · anim_unlock (cũ)   800×350 → 2,286:1 = đúng tỷ lệ thế giới → phủ trọn
+     · anim_unlock_clean 1280×720 → 1,778:1 = CHỈ quay 78% GIỮA thế giới
+   Số 78% không phải đoán: khớp khung đầu clip với bg_r1 và khung cuối với
+   bg_r2 đều ra cùng một cửa sổ — rộng 78%, cao 100%, nằm giữa (lệch trung
+   bình 2,3/255 mỗi kênh).
+
+   VÌ SAO object-fit KHÔNG CỨU ĐƯỢC:
+     · cover  → clip 16:9 nhét vào khung 2,28:1 phải phóng to 1,28 lần rồi cắt
+                14% trên và 14% dưới. Cảnh trong clip to hơn và tụt xuống so
+                với cảnh tĩnh nằm dưới → lớp chữ RAZER đứng nguyên chỗ cũ hoá
+                ra "bay lên trời", và hai chú rắn giữa khung bị cắt mất.
+     · contain→ hết cắt, nhưng cả cảnh thu nhỏ lại giữa hai dải nền → clip vừa
+                chạy là cảnh "thụt" một cái, còn tệ hơn.
+   Cách đúng: đặt thẻ ảnh ĐÚNG vào phần thế giới mà clip quay, rồi kéo căng
+   (`fill`). Bề ngang do JS tính từ tỷ lệ thật của chính file clip
+   (`khungClip()`), nên thả clip khác vào cũng tự khớp, không phải khai báo gì.
+   Mặc định để phủ trọn: đo hụt thì vẫn chạy y như đời cũ. */
+#scene-game .anim-layer{position:absolute;inset:0;z-index:5;display:none}
 #scene-game .anim-layer.on{display:block}
-#scene-game .anim-layer img{width:100%;height:100%;object-fit:cover;display:block}
+#scene-game .anim-layer img{position:absolute;top:0;left:0;width:100%;height:100%;
+  object-fit:fill;display:block}
 
 #scene-game .scan{
   position:absolute;inset:0;z-index:6;pointer-events:none;
@@ -978,7 +999,28 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Câu của người chơi trong hộp thoại — thụt vào, tông khác lời dẫn truyện */
 #scene-game .narr .line.me{color:#ffd98a;padding-left:14px}
 #scene-game .narr .line.npc{color:#bfeeff}
-#scene-game .narr .line.wait{color:rgba(190,238,255,.45)}
+/* ═══ ĐANG SOẠN CÂU TRẢ LỜI — BA CHẤM PHẢI ĐỘNG ══════════════════════════
+   Trước đây chỗ này là chữ "..." đứng im. Người chơi hỏi xong, nhìn ba dấu
+   chấm bất động vài giây thì đọc ra là TRANG BỊ ĐƠ, chứ không đọc ra là nhân
+   vật đang nghĩ — đúng cái đã báo.
+   Nay ba chấm nảy lần lượt như ô "đang soạn tin" của mọi app nhắn tin: cùng
+   một nhịp 1,25s, mỗi chấm lệch pha 0,16s. Chuyển động rất nhỏ (2px) nên
+   không cướp sự chú ý, nhưng đủ để mắt biết máy vẫn đang chạy.
+   Máy nào bật chế độ giảm chuyển động thì thôi nảy, chuyển sang mờ-tỏ. */
+#scene-game .narr .line.wait{color:rgba(190,238,255,.45);
+  display:flex;align-items:center;gap:5px;min-height:1.4em}
+#scene-game .narr .line.wait i{width:5px;height:5px;border-radius:50%;
+  background:currentColor;display:block;animation:owGo 1.25s ease-in-out infinite}
+#scene-game .narr .line.wait i:nth-child(2){animation-delay:.16s}
+#scene-game .narr .line.wait i:nth-child(3){animation-delay:.32s}
+@keyframes owGo{
+  0%,60%,100%{transform:translateY(0);opacity:.35}
+  30%{transform:translateY(-2px);opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  #scene-game .narr .line.wait i{animation:owMo 1.25s ease-in-out infinite}
+  @keyframes owMo{0%,100%{opacity:.35}50%{opacity:1}}
+}
 #scene-game .ctrl{flex:0 0 auto;display:flex;gap:8px;align-items:stretch}
 #scene-game .ctrl[hidden]{display:none}
 /* Vòng 2 gõ ký tự nào là chấm ký tự đó — không còn gì để "nộp" nữa */
@@ -2403,6 +2445,17 @@ async function apDungAnh(slab, vong, urlCoChu, nen){
 /* `khiChay` được gọi ĐÚNG lúc thẻ ảnh vừa vào DOM, tức lúc clip thật sự bắt
    đầu chạy. Cần cái mốc đó vì mọi nhịp che đều tính theo % độ dài clip: đo từ
    trước khi `load()` xong là lệch mất một quãng, mà quãng đó dài ngắn tuỳ máy. */
+/* Đặt thẻ clip đúng vào phần thế giới mà nó quay — xem ghi chú ở .anim-layer.
+   Bề ngang = tỷ lệ clip ÷ tỷ lệ thế giới, căn giữa ngang, cao trọn khung.
+   Chưa đo được (ảnh chưa giải mã xong) thì để nguyên mặc định phủ trọn. */
+function khungClip(im){
+  const r  = im.naturalWidth / im.naturalHeight;
+  const wr = C.frame.world_ratio;
+  if(!r || !isFinite(r) || !wr) return;
+  const w = Math.min(1, r / wr);
+  im.style.width = (w * 100).toFixed(3) + '%';
+  im.style.left  = ((1 - w) / 2 * 100).toFixed(3) + '%';
+}
 async function playClip(src, ms, khiChay){
   /* Hỏng file / mất mạng giữa chừng thì ĐỪNG bật lớp clip lên: lớp đó nền đen
      kịt, bật lên mà không có ảnh là người chơi ngồi nhìn một khung đen suốt
@@ -2414,8 +2467,11 @@ async function playClip(src, ms, khiChay){
     return;
   }
   el.animLayer.innerHTML = '';
-  const im = new Image(); im.src = src;
+  const im = new Image();
+  im.onload = ()=> khungClip(im);
+  im.src = src;
   el.animLayer.appendChild(im);
+  khungClip(im);                 /* file đã nằm sẵn trong cache thì đo được ngay */
   el.animLayer.classList.add('on');
   if(khiChay) khiChay();
   await wait(ms);
@@ -2631,12 +2687,13 @@ async function win1(){
   await urlClipNo();          /* chốt xong dùng clip sạch hay clip cũ */
   say(C.dialogues.round1_boom, 'warn');
 
-  /* ═══ RAZER TẮT TRƯỚC KHI MÁY QUAY TRONG CLIP NHÚC NHÍCH ══════════════════
-     Đáp án vẫn nằm nguyên trên bệ đá một quãng đầu clip cho người chơi ngắm,
-     nhưng phải TẮT HẲN trước mốc cảnh trong clip bắt đầu trượt lên — nếu
-     không thì lớp đè đứng im trong khi bệ đá tụt xuống dưới nó, đọc ra thành
-     "chữ bay lên trời". Số đo nằm ở `slab1_out_at` trong config.js; ĐỔI CLIP
-     thì phải đo lại chỗ đó.
+  /* ═══ RAZER TẮT TRƯỚC KHI CHỚP NỔ TRONG CLIP LOÉ LÊN ═════════════════════
+     Đáp án vẫn nằm nguyên trên bệ đá một quãng đầu clip cho người chơi ngắm —
+     và từ đời này khung đầu clip khớp bg_r1 từng pixel (xem `khungClip()`)
+     nên chữ nằm đúng trên bệ, không lệch một ly. Nhưng phải TẮT HẲN trước mốc
+     chớp nổ, vì từ đó cả khung vừa nổ vừa trượt trong khi lớp đè đứng im, đọc
+     ra thành "chữ bay lên trời". Số đo nằm ở `slab1_out_at` trong config.js;
+     ĐỔI CLIP thì phải đo lại chỗ đó.
 
      ═══ BẪY ĐÃ VẤP · HẸN GIỜ TỪ ĐÂY THÌ LUÔN TRỄ ═══════════════════════════
      Bản đầu đặt `setTimeout` ngay tại chỗ này. Hỏng: từ đây tới lúc clip THẬT
@@ -3286,7 +3343,16 @@ async function owGui(){
   owMat('nghi');                          /* gửi xong là robot đăm chiêu */
   const nghiTu = Date.now();
   const cho = document.createElement('p');
-  cho.className = 'line wait'; cho.textContent = OW.dang_nghi || '...';
+  cho.className = 'line wait';
+  /* Ba chấm dựng bằng thẻ để CSS cho nảy được — xem `.line.wait` trong CSS.
+     `dang_nghi` trong config nếu khai chữ khác "..." thì in chữ đó ra trước,
+     rồi vẫn kèm ba chấm động phía sau. */
+  const chuCho = (OW.dang_nghi || '...').trim();
+  if(chuCho && chuCho !== '...'){
+    const t = document.createElement('span');
+    t.textContent = chuCho; cho.appendChild(t);
+  }
+  for(let i = 0; i < 3; i++) cho.appendChild(document.createElement('i'));
   el.narr.appendChild(cho); el.narr.scrollTop = el.narr.scrollHeight;
 
   let dap = null, loi = null;

@@ -107,6 +107,15 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   border-bottom:2px solid rgba(227,170,221,.5);transition:border-color .25s}
 .cell.on{border-bottom-color:var(--orchid)}
 .cell.fill{border-bottom-color:var(--violet)}
+/* Ký tự VỪA GÕ hiện nguyên hình một nhịp rồi mới thành chấm. Che ngay từ phím
+   đầu thì gõ nhầm một số là phải xoá cả dòng mò lại, vì chẳng biết nhầm ô nào. */
+.cell.ro{color:var(--orchid)}
+/* Dấu Enter: mờ sẵn cho biết cửa mở bằng Enter chứ không tự chấm khi gõ đủ số;
+   đủ số thì sáng lên thành lời mời bấm. */
+.ent{width:20px;height:36px;display:flex;align-items:center;justify-content:center;
+  margin-left:6px;font-size:14px;line-height:1;color:var(--paper);opacity:.3;
+  transition:opacity .2s,color .2s}
+.ent.san{opacity:1;color:var(--orchid)}
 .inp{position:absolute;inset:0;width:100%;height:100%;opacity:.01;border:none;
   background:none;color:transparent;caret-color:transparent;font-size:16px;outline:none}
 .msg{min-height:19px;margin:13px 2px 0;font-size:12.5px;line-height:1.6;text-align:center;
@@ -258,7 +267,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V02.05<br>Last updated 24-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V02.06<br>Last updated 24-Aug-2026"></span>
     </span>
   </div>
 
@@ -447,14 +456,27 @@ function drawGate(){
     var c = document.createElement('span'); c.className = 'cell';
     box.insertBefore(c, inp); o.push(c);
   }
-  function paint(){
+  var entKy = document.createElement('span');
+  entKy.className = 'ent'; entKy.textContent = '↵';
+  box.insertBefore(entKy, inp);
+  /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm — xem ghi chú ở .cell.ro */
+  var HIEN_MS = 800, henChe = null;
+  function paint(iRo){
     for(var k = 0; k < len; k++){
-      o[k].textContent = buf[k] ? '•' : '';
+      o[k].textContent = buf[k] ? (k === iRo ? buf[k] : '•') : '';
       o[k].classList.toggle('on', k === buf.length);
       o[k].classList.toggle('fill', k < buf.length);
+      o[k].classList.toggle('ro', k === iRo && k < buf.length);
     }
+    entKy.classList.toggle('san', buf.length === len);
   }
-  paint();
+  function veRoiChe(){
+    var i = buf.length - 1;
+    if(henChe){ clearTimeout(henChe); henChe = null; }
+    paint(i);
+    if(i >= 0) henChe = setTimeout(function(){ henChe = null; paint(-1); }, HIEN_MS);
+  }
+  paint(-1);
   setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 120);
   box.addEventListener('click', function(){ try{ inp.focus(); }catch(e){} });
 
@@ -486,7 +508,13 @@ function drawGate(){
     }
   });
   inp.addEventListener('input', function(){
-    buf = (inp.value||'').replace(/\D/g,'').slice(0, len); paint();
+    buf = (inp.value||'').replace(/\D/g,'').slice(0, len); veRoiChe();
+  });
+  /* CHỈ Enter mới tính là gửi. Bản trước gõ đủ số là chấm ngay — bấm nhầm phím
+     cuối là cháy một lượt mà chưa kịp đọc lại hàng ô. */
+  inp.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+    e.preventDefault();
     if(buf.length === len){
       if(buf === PIN){
         st.bOpen = true; save();
@@ -501,7 +529,7 @@ function drawGate(){
           : 'Chưa đúng mã rồi ✦';
         $('msg').classList.remove('ok');
         if(st.bSai >= SAI_SOS) hienSos();
-        buf = ''; inp.value = ''; paint();
+        buf = ''; inp.value = ''; paint(-1);
       }
     }
   });
@@ -695,17 +723,35 @@ function hopPin(){
     var c = document.createElement('span'); c.className = 'cell';
     box.insertBefore(c, inp); o.push(c);
   }
-  function paint(){
+  var entKy = document.createElement('span');
+  entKy.className = 'ent'; entKy.textContent = '↵';
+  box.insertBefore(entKy, inp);
+  /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm — xem ghi chú ở .cell.ro */
+  var HIEN_MS = 800, henChe = null;
+  function paint(iRo){
     for(var k = 0; k < len; k++){
-      o[k].textContent = buf[k] ? '•' : '';
+      o[k].textContent = buf[k] ? (k === iRo ? buf[k] : '•') : '';
       o[k].classList.toggle('on', k === buf.length);
+      o[k].classList.toggle('ro', k === iRo && k < buf.length);
     }
+    entKy.classList.toggle('san', buf.length === len);
   }
-  paint();
+  function veRoiChe(){
+    var i = buf.length - 1;
+    if(henChe){ clearTimeout(henChe); henChe = null; }
+    paint(i);
+    if(i >= 0) henChe = setTimeout(function(){ henChe = null; paint(-1); }, HIEN_MS);
+  }
+  paint(-1);
   setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 90);
   box.addEventListener('click', function(){ try{ inp.focus(); }catch(e){} });
   inp.addEventListener('input', function(){
-    buf = (inp.value||'').replace(/\D/g,'').slice(0, len); paint();
+    buf = (inp.value||'').replace(/\D/g,'').slice(0, len); veRoiChe();
+  });
+  /* CHỈ Enter mới tính là gửi — cùng luật với mọi cửa pin/pass trong bộ */
+  inp.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+    e.preventDefault();
     if(buf.length === len){
       if(buf === PIN_CTRL){
         st.bOpen = true; save();
@@ -713,7 +759,7 @@ function hopPin(){
         ctrlClose(); drawBox();
       }else{
         $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg';
-        buf = ''; inp.value = ''; paint();
+        buf = ''; inp.value = ''; paint(-1);
       }
     }
   });

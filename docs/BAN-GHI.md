@@ -149,8 +149,17 @@ Luật chung của cả bộ: **mở bảng vận hành của trang → bấm 3 
 | Easter Egg · Gate 2 | **10 nhịp vào tem ở chân màn hình** → Khối vận hành. Chạy ở **cả màn cổng lẫn màn cuối** |
 | Màn pháo hoa | Chưa có bảng nào để giấu cửa — dữ liệu đã sẵn ở khoá `FX`, hôm nào trang đó có bảng thì gắn `LichSu.nut('FX')` là xong |
 
-Mã vào: `0981`. Sai 3 lần được **đúng một** câu gợi ý. Mở được rồi thì trong phiên đó
-khỏi hỏi lại, nhưng **nhớ riêng từng trang** — mở sổ bên này không mở hộ sổ bên kia.
+Mã vào: `0981`. Sai **5 lần** được **đúng một** câu gợi ý (bộ đếm tính theo phiên; thấy
+gợi ý rồi thì lần sau hiện sẵn).
+
+Cửa mã đi theo **ba luật chung của mọi ô pin/pass** — luật đầy đủ ở `DESIGN-SYSTEM.md`
+§6, tóm lại:
+
+1. **Phải Enter mới tính là gửi.** Gõ đủ 4 số chưa phải là gửi; dấu `↵` cuối hàng ô sáng
+   lên khi đủ số.
+2. **Ký tự vừa gõ hiện rõ 800ms rồi mới thành `•`.** Mấy ô trước che luôn.
+3. **Lần nào vào cũng hỏi mã.** Cờ `ls_ok_<mã>` cho đi thẳng trong phiên đã gỡ hẳn —
+   mở sổ bên này hay bên kia, lần trước hay lần này, đều phải gõ.
 
 ---
 
