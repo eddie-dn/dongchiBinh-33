@@ -163,7 +163,12 @@ ai qua cửa 2 bằng mã mà chưa điền thì form vẫn mở để điền n
   **12 lượt mỗi ngày**.
 - Đầu hộp có dòng nhắc ngắn `LƯỢT NHẬP · 3/3 PHIÊN · 12/12 HÔM NAY`, trừ dần theo từng
   lần sai.
-- Hết **3 lượt phiên** → **khoá 30 phút**. Hết **12 lượt ngày** → **khoá tới nửa đêm**.
+- Hết **3 lượt phiên** → khoá một lúc: **Mission 2 · 15 phút**, **Mission 3 · 5 phút**
+  (hằng số `NGHI` trong `index.html`). Hết **12 lượt ngày** → **khoá tới nửa đêm**.
+
+  > Trước đây cả hai cửa dùng chung 30 phút. Quá dài — đang đà mò mà bị chặn nửa
+  > tiếng thì quay lại là quên hết mạch. Mission 3 đoán chữ thuần tuý nên cần thử
+  > nhiều nhịp, để ngắn nhất; Mission 2 chờ xin mã nên 15 phút là vừa.
   Thông báo là một đồng hồ đếm ngược sống: *"Hết **3 lượt** của phiên này ⏳ / Quay lại
   sau **00:29:41**"*. Hết giờ thì ô nhập tự mở lại và lượt phiên được cấp lại ngay trong
   hộp, không phải tải lại trang.
@@ -229,7 +234,7 @@ Mỗi lần dùng đều bắn sự kiện `test_unlock` về Telegram.
 | `mo_khoa_m2_cua` | Xong Mission 1 → mở cửa sổ Mission 2 |
 | `ve_trang_bia` | Bấm CTA quay về bìa từ màn Hoàn tất |
 | `sai_pin` | Nhập sai mã (kèm mission + lượt phiên + lượt ngày) |
-| `khoa_pin` | Vừa bị khoá (30 phút hoặc hết 12 lượt ngày) |
+| `khoa_pin` | Vừa bị khoá (15 phút ở M2 / 5 phút ở M3, hoặc hết 12 lượt ngày) |
 | `mo_khoa_m2` | Nhập đúng `JUNGLE` |
 | `gia_han_m2` | Bấm gia hạn 10 nhịp — nạp lại 5 ngày cho M2 |
 | `giai_m3` | Giải đúng `PHAM TUAN` |

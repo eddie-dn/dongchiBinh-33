@@ -1,4 +1,105 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 17 — mốc ngày trong sổ tính theo bản .00, rút ngắn hạn nghỉ hai Mission.
+════════════════════════════════════════════════════════════════════════════
+10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/config.js
+    assets/lichsu.js                      han/961030-a/index.html
+    dad/950901-a/index.html               han/961030-b/index.html
+
+    dad/950901-a/MISSIONS.md              docs/BAN-GHI.md
+    DESIGN-SYSTEM.md                      DOC-CAI-NAY-TRUOC.txt (file này)
+
+    (dad/950901-b/index.html KHÔNG đụng tới đợt này — Gate 2 chỉ sửa config.)
+
+Số tem sau đợt này:
+    /                 V19.01  ← ĐỔI   /han/961030-a     V03.09  ← ĐỔI
+    /dad/950901-a     V04.03  ← ĐỔI   /han/961030-b     V03.00  ← ĐỔI
+    /dad/950901-b     V05.04  ← ĐỔI   /phao-hoa         V03.03 (không đụng)
+
+    (Secret Chamber nhảy V02.09 → V03.00 vì V02 đã dùng hết nấc đuôi.)
+
+
+① MỐC NGÀY TRONG SỔ: LẤY BẢN .00 ĐẦU TIÊN
+────────────────────────────────────────────────────────────────────────────
+Trước đây cột `ngay` đi theo NGÀY HOẠT ĐỘNG CUỐI của build. Một build lớn kéo
+dài nhiều ngày, ghi ngày cuối thì đọc bảng tưởng cả build làm gọn trong hôm đó
+— mất luôn thông tin nó khởi đi từ bao giờ. Nay lấy ngày MỞ MÀN.
+
+NHƯNG TEM "LAST UPDATED" THÌ VẪN PHẢI LÀ NGÀY SỬA CUỐI. Hai thứ khác nhau nên
+tách hẳn hai cột:
+
+        ngay   MỐC GHI NHẬN — ngày bản đuôi .00 đầu tiên. BẢNG in ra cột này.
+        sua    NGÀY SỬA CUỐI — TEM ngoài trang in ra cột này. Bỏ trống thì
+               coi như build gọn trong một ngày, tem lấy luôn `ngay`.
+
+Nhờ vậy đọc sổ Hồ sơ Phi đoàn thấy mốc 24-Aug (build mở màn) trong khi tem
+ngoài trang là 25-Aug (vừa sờ tới hôm nay) — đúng cả hai, không cái nào nói dối.
+
+DÒ LẠI NGÀY MỞ MÀN Ở ĐÂU CÓ CĂN CỨ, chứ không đoán. Cột `ngay` cũ đang là
+ngày CUỐI, nay tách ra thành hai đầu MỞ MÀN → SỬA CUỐI:
+
+        dòng            ngay (mở màn)   sua (sửa cuối)   căn cứ
+        ─────────────────────────────────────────────────────────────────────
+        MAP  V11·V12      05-08            06-08         chú thích cũ ghi rõ
+                                                         hai nhịp 05-08, 06-08
+        MAP  V15          07-08            14-08         chú thích cũ liệt kê
+                                                         đủ năm nấc: .00 (07-08)
+                                                         .03/.04 (12-08)
+                                                         .07 (13-08) .09 (14-08)
+        DAD-B V03         17-08            18-08         chú thích cũ nói thẳng
+                                                         "18-08 là nhịp CUỐI,
+                                                         không phải 17-08"
+        FX   V03          16-08            19-08         ba nấc dò được:
+                                                         .01 16-08 · .02 18-08
+                                                         · .03 19-08
+        năm dòng đang chạy 24-08           25-08         theo ngày commit thật
+
+Trước đây cả bốn dòng trên chỉ mang MỘT ngày — chính là ngày ở cột `sua` bây
+giờ. Không dòng nào bị đẩy lùi cả; chỉ là mốc mở màn trước nay không có chỗ
+để ghi, nay có.
+
+Dòng nào CHỈ lụm được đúng một ngày thì GIỮ NGUYÊN `ngay` và bỏ trống `sua`
+— không bịa thêm một mốc mở màn cho đủ bộ.
+
+
+② HẠN NGHỈ KHI CHÁY LƯỢT: 30 PHÚT → 15 / 5
+────────────────────────────────────────────────────────────────────────────
+Cả hai cửa Mission trước nay dùng CHUNG một hằng số 30 phút. Quá dài: đang đà
+mò mà bị chặn nửa tiếng thì quay lại là quên hết mạch.
+
+        Mission 2   15 phút   mã do Hội đồng cấp — sai là do chưa xin được mã,
+                              nghỉ vừa đủ để đi hỏi rồi quay lại
+        Mission 3    5 phút   đoán chữ thuần tuý, cần thử nhiều nhịp; chặn lâu
+                              là giết luôn mạch chơi
+
+Cháy hết lượt CỦA NGÀY thì vẫn nghỉ tới nửa đêm — đó là hạn khác, không đụng.
+
+    ⚠ GHI CHÚ VỀ ĐƯỜNG DẪN: yêu cầu ghi "mission 3 dad-950901-b", nhưng cả
+    hai cửa Mission đều nằm ở dad/950901-A. Bên dad/950901-B (Gate 2) không
+    có hạn nghỉ 30 phút nào — chỗ đó chỉ khoá ô nhập 2 giây sau mỗi lần sai.
+    Đã sửa đúng chỗ có mức 30 phút.
+
+
+③ BỘ KIỂM
+────────────────────────────────────────────────────────────────────────────
+tem16.mjs thêm mục ⑤ — 3 phép mới:
+    · không sổ nào có mốc ghi nhận đi SAU ngày sửa cuối (soi cả bảy sổ)
+    · phải có sổ chứng minh hai cột thật sự tách nhau, không thì luật chỉ
+      nằm trên giấy
+    · bảng bản ghi in MỐC, tem in NGÀY SỬA CUỐI, và hai số đó khác nhau
+
+nghi16.mjs — 6 phép mới: chơi thật cho cháy lượt ở từng Mission rồi đo hạn
+nghỉ còn lại (đo được 15 và 5 phút), cộng hai phép soi mã nguồn để chắc không
+ai lặng lẽ gộp lại thành một hằng số chung.
+
+
+④ ĐÃ KIỂM THỬ — 329 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+Chín phép mới của đợt này, cộng toàn bộ bộ cũ chạy lại. Không phép nào đỏ.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 16 — tem lấy thẳng từ sổ, hết cảnh bump số mà quên ngày.
 ════════════════════════════════════════════════════════════════════════════
 10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
@@ -85,9 +186,18 @@ lấy từ đâu) và §4.2 (bốn bước khi ra phiên bản mới, trong đó
 đầu mục quy trình.
 
 
-④ ĐÃ KIỂM THỬ — {TONG} phép, 0 hỏng
+④ ĐÃ KIỂM THỬ — 320 phép, 0 hỏng
 ────────────────────────────────────────────────────────────────────────────
-Bộ mới tem16.mjs 13 phép, cộng toàn bộ bộ cũ chạy lại.
+Bộ mới tem16.mjs 13 phép, cộng toàn bộ bộ cũ chạy lại:
+
+    kt      8    kt5    13    kt9    15    pin13    6    zq13    4    tem16  13
+    kt2    13    kt7     9    kt10   18    pin13b  10    ow13    6    resp14 91
+    kt3    15    kt8    17    kt11   12    pin13c   6    cre14  22    resp14b 16
+    kt4     5                              msn13   10    kt15   11
+
+    Hai phép đỏ ở lượt chạy đầu là KỲ VỌNG CŨ của bộ kiểm, không phải lỗi
+    trang: sổ khu Easter Egg nay có 5 dòng và chạy V19 thay vì 4 dòng/V18 —
+    đúng như đợt này vừa thêm. Sửa bộ kiểm rồi chạy lại kt8: 17/0.
 
 
 ════════════════════════════════════════════════════════════════════════════

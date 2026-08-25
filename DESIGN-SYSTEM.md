@@ -164,7 +164,15 @@ trang đó trong `assets/lichsu.js`.**
 
 - **Số hiệu** = nấc đuôi mới nhất của dòng mới nhất (`doi[cuối].chi[cuối].ver`,
   không có `chi` thì lấy `doi[cuối].ver`).
-- **Ngày** = cột `ngay` của chính dòng đó, đổi sang `DD-Mon-YYYY`.
+- **Ngày** = cột **`sua`** (ngày sửa cuối) của chính dòng đó, đổi sang
+  `DD-Mon-YYYY`. Không có `sua` thì lấy `ngay`.
+
+> **⚠ HAI CỘT NGÀY, ĐỪNG LẪN.**
+> `ngay` = **mốc ghi nhận** — ngày của bản `.00` đầu tiên, tức lúc build bắt
+> đầu. Đây là thứ **bảng bản ghi in ra**.
+> `sua` = **ngày sửa cuối** — thứ **tem "Last updated" in ra**.
+> Một build lớn kéo dài nhiều ngày nên hai cột này khác nhau là bình thường:
+> sổ Hồ sơ Phi đoàn hiện ghi mốc `24-Aug` trong khi tem là `25-Aug`.
 
 `LichSu.tem('<mã sổ>')` trả về `{ ver, ngay, iso }`. Tem ngoài trang và thẻ toạ
 độ ngoài bản đồ **đều gọi hàm này**.
@@ -198,7 +206,9 @@ trang đó trong `assets/lichsu.js`.**
 
 1. Thêm nấc đuôi vào `chi` của dòng mới nhất trong sổ của trang đó.
    Hết nấc `.09` thì mở dòng lớn kế tiếp (bỏ qua 13, 14, 23).
-2. **Sửa `ngay` của dòng đó sang ngày sửa thật.** Đây chính là bước hay quên.
+2. **Sửa `sua` của dòng đó sang hôm nay.** Đây chính là bước hay quên.
+   `ngay` thì **giữ nguyên** — đó là mốc build mở màn, không đổi theo.
+   Mở dòng lớn MỚI thì `ngay` = hôm nay (vì `.00` chính là hôm nay).
 3. Nắn lại chuỗi cứng bản lùi cho khớp (tem + thẻ toạ độ).
 4. Chạy `tem16.mjs` — 13 phép, lệch một chỗ là đỏ.
 

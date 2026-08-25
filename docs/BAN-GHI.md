@@ -36,13 +36,17 @@ Ba bước, **làm đủ cả ba** thì bản ghi mới khớp với thứ đang
 > **⚠ TEM NAY LẤY TỪ SỔ, KHÔNG GÕ TAY NỮA.**
 > Số hiệu và ngày của một trang chỉ khai **một nơi**: chính cuốn sổ này.
 > `LichSu.tem('<mã sổ>')` trả `{ver, ngay}` — số là nấc đuôi mới nhất của dòng
-> mới nhất, ngày là cột `ngay` của dòng đó. Tem ngoài trang và thẻ toạ độ ngoài
+> mới nhất, ngày là cột `sua` của dòng đó. Tem ngoài trang và thẻ toạ độ ngoài
 > bản đồ đều gọi hàm đó.
 > Chuỗi cứng trong HTML vẫn còn nhưng chỉ là **bản lùi**, và phải khớp sổ —
 > có bộ kiểm (`tem16.mjs`) bắt lệch. Luật đầy đủ ở `DESIGN-SYSTEM.md` §4.1.
 >
-> **Bước hay quên nhất: sửa cột `ngay`.** Ba đợt liền số được bump mà ngày đứng
+> **Bước hay quên nhất: sửa cột `sua`.** Ba đợt liền số được bump mà ngày đứng
 > im vì ngày nằm ở chỗ khác. Nay cùng một dòng — nhưng vẫn phải tự tay sửa.
+>
+> **Hai cột ngày, đừng lẫn:** `ngay` là **mốc ghi nhận** (ngày bản `.00` đầu
+> tiên, tức lúc build mở màn) — đây là thứ **bảng in ra**, và **không đổi** khi
+> sửa tiếp. `sua` là **ngày sửa cuối** — thứ **tem in ra**.
 
 ### Bước 1 — Bump tem "Last updated" ngoài trang
 

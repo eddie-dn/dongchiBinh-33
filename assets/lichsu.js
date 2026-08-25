@@ -94,7 +94,17 @@
      Dòng gộp thì đệm cả hai đầu: `V01 → V21`, `V11 · V12`. */
   /* ═══ BẢNG DỮ LIỆU ═══════════════════════════════════════════════════
      MỖI DÒNG LÀ MỘT BUILD LỚN, không phải một bản vá. Cũ nhất nằm trên.
-       ngay  — YYYY-MM-DD của build đó, hoặc 'no info' (bảng tự đổi thành N/A)
+       ngay  — MỐC GHI NHẬN: ngày của bản `.00` ĐẦU TIÊN, tức lúc build BẮT
+               ĐẦU. Không biết thì 'no info' (bảng tự đổi thành N/A).
+               ⚠ ĐỔI TỪ ĐỢT NÀY: trước đây cột này lấy NGÀY HOẠT ĐỘNG CUỐI.
+               Một build lớn kéo dài nhiều ngày, ghi ngày cuối thì đọc bảng
+               tưởng cả build làm gọn trong hôm đó — mất luôn thông tin nó
+               khởi đi từ bao giờ. Nay lấy ngày mở màn.
+       sua   — (tuỳ chọn) ngày SỬA CUỐI của build. CHỈ tem "Last updated"
+               ngoài trang đọc cột này (xem `tem()`), bảng không in ra.
+               Bỏ trống = build gọn trong một ngày, tem lấy luôn `ngay`.
+               Dòng MỚI NHẤT của mỗi sổ gần như luôn cần khai `sua`, vì đó
+               chính là dòng đang chạy và tem phải nhích theo mỗi lần sửa.
        ver   — số build, LUÔN GIỮ kể cả khi không biết nó sửa gì
        so    — SỐ BẢN NHỎ ghi lại được trong build đó (V10.08 → '09').
                Không biết thì để `null`, bảng tự ghi N/A.
@@ -157,8 +167,9 @@
         { ngay:'2026-08-04', ver:'V09',  so:null, chinh:'Bỏ rồi ghim lại mã morse, câu trêu xoay vòng, toạ độ mở khoá sáng lên' },
         { ngay:'2026-08-04', ver:'V10', so:'09', chinh:'Huy hiệu tên lửa có vòng đời đầy đủ, lockup cờ' },
         /* Dò được tem thật cho quãng này (xem NGUỒN SỐ LIỆU ở đầu file):
-           V11.06 và V12.02 cùng nằm trong bản ngày 05-08, V12.05 ngày 06-08. */
-        { ngay:'2026-08-06', ver:'V11 · V12', so:'06',
+           V11.06 và V12.02 cùng nằm trong bản ngày 05-08, V12.05 ngày 06-08.
+           Mốc ghi nhận lấy nhịp ĐẦU (05-08); 06-08 vào `sua`. */
+        { ngay:'2026-08-05', sua:'2026-08-06', ver:'V11 · V12', so:'06',
           chinh:'Nối luồng người chơi từ trang hồ sơ về bản đồ, dựng cửa hậu ở dòng bản quyền',
           chi:[
             { ver:'V11.06', chinh:'Nối luồng và đưa người chơi từ trang hồ sơ về bản đồ chính' },
@@ -166,7 +177,7 @@
           ] },
         /* V15 dò được năm nấc: .00 (07-08) · .03 và .04 (12-08) · .07 (13-08)
            · .09 (14-08). Diff giữa các nấc cho biết đúng cái gì vừa thêm. */
-        { ngay:'2026-08-14', ver:'V15', so:'10',
+        { ngay:'2026-08-07', sua:'2026-08-14', ver:'V15', so:'10',
           chinh:'Tách hẳn hai khu chơi, dựng khung Collected và đường sang màn pháo hoa',
           chi:[
             { ver:'V15.00', chinh:'Tách trang thành hai khu chơi rời nhau: bản đồ tác chiến và khu Easter Egg' },
@@ -198,7 +209,7 @@
             { ver:'V17.08', chinh:'Dời cửa vào bản ghi từ dòng tem sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua lá cờ giữ nguyên' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-25', ver:'V18', so:'10',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V18', so:'10',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
@@ -214,10 +225,11 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', ver:'V19', so:'01',
+        { ngay:'2026-08-25', ver:'V19', so:'02',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ',
           chi:[
-            { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
+            { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
+            { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
           ] }
       ]
     },
@@ -280,7 +292,7 @@
             { ver:'V17.04', chinh:'Nối liền ba khu thành một mạch: bản đồ → Easter Egg → lâu đài' },
             { ver:'V17.05', chinh:'Khung Collected có ảnh mồi tĩnh nằm dưới clip nặng nên không còn khoảng trống lúc chờ; khung cũng được xếp vào nhóm hộp ưu tiên để hộp chào biết nhường' }
           ] },
-        { ngay:'2026-08-25', ver:'V18', so:null,
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V18', so:null,
           chinh:'Khung Collected thành cửa vào bản ghi riêng của khu',
           chi:[
             { ver:'V18.01', chinh:'Nới vùng bấm của nút đóng khung Collected cho vừa đầu ngón tay' },
@@ -293,7 +305,8 @@
         { ngay:'2026-08-25', ver:'V19', so:null,
           chinh:'Số hiệu của khu lấy chung một nguồn với tem ngoài trang',
           chi:[
-            { ver:'V19.00', chinh:'Số hiệu và ngày của khu lấy thẳng từ sổ, khai một chỗ thay vì hai' }
+            { ver:'V19.00', chinh:'Số hiệu và ngày của khu lấy thẳng từ sổ, khai một chỗ thay vì hai' },
+            { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
           ] }
       ]
     },
@@ -341,12 +354,13 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', ver:'V04', so:'03',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'04',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
             { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
             { ver:'V04.01', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm ngay khi ký tự cuối vừa thành chấm' },
-            { ver:'V04.02', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
+            { ver:'V04.02', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
+            { ver:'V04.03', chinh:'Cháy lượt thì nghỉ ngắn lại và chia theo từng cửa thay vì chung một mức: Mission 2 mười lăm phút, Mission 3 năm phút; cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn' }
           ] }
       ]
     },
@@ -376,9 +390,9 @@
             { ver:'V02.04 → V02.09', chinh:'Chỉnh luật chơi, thiết kế cách người chơi tương tác, thêm đồng hồ, gợi ý và mạch màn chơi' }
           ] },
         /* V03.06 tự khai 18-Aug-2026 — đó là nhịp cuối của build này dò được,
-           nên lấy 18-08 chứ không phải 17-08 như bản trước (cột `ngay` của cả
-           bảng đang đi theo NGÀY HOẠT ĐỘNG CUỐI của build, xem dòng V04). */
-        { ngay:'2026-08-18', ver:'V03', so:'07', chinh:'Nắn lại số cho đúng luật, thêm khu Open World, dựng ảnh nền sạch' },
+           nhưng đó là nhịp CUỐI của build. Cột `ngay` nay là MỐC GHI NHẬN =
+           ngày build bắt đầu, nên dòng này lấy 17-08 và ghi 18-08 vào `sua`. */
+        { ngay:'2026-08-17', sua:'2026-08-18', ver:'V03', so:'07', chinh:'Nắn lại số cho đúng luật, thêm khu Open World, dựng ảnh nền sạch' },
         { ngay:'2026-08-24', ver:'V04', so:'10',
           chinh:'Làm lại chuyển cảnh, chỉnh luật chơi và luật gợi ý, chỉnh hiệu ứng đáp án, gom cửa hậu vào Khối vận hành, đồng bộ màu bảng ghi',
           chi:[
@@ -388,13 +402,14 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-25', ver:'V05', so:'04',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'05',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
             { ver:'V05.01', chinh:'Clip lúc gõ sai không còn để lộ chữ khắc trên bệ đá; mắt rồng lúc chớp đỏ dịu hẳn, đậm ở lõi rồi tan dần ra mép thay vì thành một đĩa đỏ có viền; dấu ba chấm khu Open World đổi sang ô vuông và nhảy theo nấc cho đúng chất màn hình pixel; lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' },
             { ver:'V05.02', chinh:'Clip nổ sập lab chạy trọn 10 giây đúng độ dài file thật, hết cảnh bị cắt ngang ở giây thứ 8; ô nhập tự nhận con trỏ mỗi lần mở lại nên gõ tiếp được ngay, khỏi bấm thêm một cái; bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm' },
-            { ver:'V05.03', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
+            { ver:'V05.03', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
+            { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
           ] }
       ]
     },
@@ -403,7 +418,7 @@
       doi: [
         { ngay:'no info', ver:'V01', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V02', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-25', ver:'V03', so:'09',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V03', so:'10',
           chinh:'Thêm bản ghi (V02 đã hết nấc đuôi nên sang dòng V03), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V03.00', chinh:'Thêm bản ghi cho trang này' },
@@ -414,7 +429,8 @@
             { ver:'V03.05', chinh:'Cửa vào lâu đài lần nào cũng hỏi mã chứ không nhớ lần trước nữa; mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' },
             { ver:'V03.06', chinh:'Lời nhắc gõ Enter thành một dòng chữ, đặt dưới hàng ô nên hàng ô có xuống hai dòng cũng không lệch; bản ghi có thêm trang Credit riêng' },
             { ver:'V03.07', chinh:'Bỏ dòng nhắc gõ Enter — gõ đủ ký tự là tự chấm, cả ở cửa mã lẫn ô trả lời câu hỏi' },
-            { ver:'V03.08', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
+            { ver:'V03.08', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
+            { ver:'V03.09', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
           ] }
       ]
     },
@@ -422,7 +438,7 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V01', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V02' },
-        { ngay:'2026-08-25', ver:'V02', so:'10',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V02', so:'10',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V02.00 → V02.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
@@ -434,6 +450,12 @@
             { ver:'V02.07', chinh:'Lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' },
             { ver:'V02.08', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ số là tự chấm' },
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
+          ] },
+        /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
+        { ngay:'2026-08-25', ver:'V03', so:'01',
+          chinh:'Đổi cách ghi mốc ngày trong sổ',
+          chi:[
+            { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
           ] }
       ]
     },
@@ -455,7 +477,7 @@
           chinh:'Màn pháo hoa đầu tiên: bắn tự động, lời chúc hiện dần, thêm chế độ chạm-để-bắn' },
         { ngay:'2026-08-15', ver:'V02', so:null,
           chinh:'Quả trứng và vụ nổ vẽ tay trên canvas, thêm nút bắn lại và lối vào khu Easter Egg' },
-        { ngay:'2026-08-19', ver:'V03', so:'04',
+        { ngay:'2026-08-16', sua:'2026-08-19', ver:'V03', so:'04',
           chinh:'Chỉnh khung màn và chỗ đứng của tem phiên bản',
           chi:[
             { ver:'V03.01', chinh:'Màn pháo hoa có tem phiên bản riêng' },
@@ -1246,7 +1268,14 @@
        nấc đang chạy. Không có dạng Vxx.yy thì lấy nguyên cụm Vxx cuối cùng. */
     var ds = ver.match(/V\d+\.\d+/g) || ver.match(/V\d+/g);
     if (ds && ds.length) ver = ds[ds.length - 1];
-    return { ver: ver, ngay: ngayDep(r.ngay), iso: r.ngay || '' };
+    /* ⚠ TEM lấy `sua` (ngày sửa cuối), KHÔNG lấy `ngay`. Từ đợt này cột `ngay`
+       trong sổ là MỐC GHI NHẬN — ngày của bản `.00` đầu tiên, tức lúc build
+       BẮT ĐẦU. Tem ngoài trang thì phải là "Last updated", tức lúc build được
+       SỜ tới lần cuối. Hai thứ khác nhau nên tách hai cột; dòng nào chưa khai
+       `sua` thì coi như build gọn trong một ngày, lấy luôn `ngay`. */
+    var iso = r.sua || r.ngay || '';
+    return { ver: ver, ngay: ngayDep(iso), iso: iso,
+             moc: ngayDep(r.ngay), mocIso: r.ngay || '' };
   }
 
   window.LichSu = { chu: chu, mo: mo, so: SO, tem: tem };

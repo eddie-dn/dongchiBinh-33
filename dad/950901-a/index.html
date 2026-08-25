@@ -1081,10 +1081,11 @@ render();
      của một gợi ý, không phải giải hộ.
 
      ── MỐC: LẦN BỊ KHOÁ THỨ HAI ────────────────────────────────────────
-     Mỗi phiên được `TRY_S` lượt; hết lượt là khoá ô nhập 30 phút. Luật:
+     Mỗi phiên được `TRY_S` lượt; hết lượt là khoá ô nhập (Mission 2: 15 phút,
+     Mission 3: 5 phút — xem `NGHI`). Luật:
 
          sai 1-2      im, chỉ câu trêu
-         sai lần 3    HẾT LƯỢT → khoá 30 phút. VẪN CHƯA CÓ GỢI Ý.
+         sai lần 3    HẾT LƯỢT → khoá (15 phút ở M2, 5 phút ở M3). VẪN CHƯA CÓ GỢI Ý.
          hết khoá, sai tiếp 4-5   im
          sai lần 6    khoá lần hai → MỚI hiện gợi ý
 
@@ -1107,6 +1108,17 @@ render();
                 'Nah nah nah — cố lên anh oyyyy 💪', 'Very earth very skyyy o_O 😩💦'];
   var DAY = 864e5, HOUR = 36e5, KEY = 'msn1';
   var HINTW = 30*6e4;             /* chờ giữa hai gợi ý Mission 3 */
+  /* ═══ CHÁY LƯỢT THÌ NGHỈ BAO LÂU — MỖI MISSION MỘT MỨC ═══════════════════
+     Trước đây cả hai cửa dùng chung 30 phút. Quá dài: người chơi đang đà mò
+     thì bị chặn nửa tiếng, quay lại thì quên hết mạch. Nay chia theo độ khó:
+       Mission 2  15 phút — mã do Hội đồng cấp, sai là do chưa xin được mã,
+                            nghỉ vừa đủ để đi hỏi rồi quay lại
+       Mission 3   5 phút — đoán chữ thuần tuý, cần thử nhiều nhịp; chặn lâu
+                            là giết luôn mạch chơi
+     Cháy hết lượt CỦA NGÀY thì vẫn nghỉ tới nửa đêm — đó là hạn khác, không
+     đụng tới ở đây. */
+  var NGHI = { 2: 15*6e4, 3: 5*6e4 };
+  function nghiMs(which){ return NGHI[which] || NGHI[3]; }
   var W2 = 5*DAY;                 /* CỬA SỔ giải Mission 2: 5 ngày kể từ lúc xong M1 */
   var W3 = 5*DAY;                 /* CỬA SỔ giải Mission 3: 5 ngày kể từ lúc xong M2 */
   var DIFF = ['Noob', 'Easy Cheesy', 'Hit the rock'];
@@ -1529,7 +1541,7 @@ render();
     if(which === 3){ autoHint(); cdPaint(); }
     clearInterval(cdTimer);
     cdTimer = setInterval(tick, 1000);
-    /* Đang khoá 30 phút: giữ nguyên hộp cho đọc gợi ý, chỉ khoá ô nhập */
+    /* Đang trong hạn nghỉ: giữ nguyên hộp cho đọc gợi ý, chỉ khoá ô nhập */
     if(locked()){ input.disabled = true; msgLock(); }
     else setTimeout(function(){ try{ input.focus(); }catch(e){} }, 80);
     function msgLock(){ var m = byId('msnMsg'); if(m){ m.innerHTML = lockNote(); m.classList.remove('ok'); } }
@@ -1579,8 +1591,10 @@ render();
       cdPaint(); quotaPaint();
       buf = ''; input.value = ''; paint(-1);
       if(dayOut() || w >= TRY_S){
-        st.lockUntil = dayOut() ? nuaDem() : Date.now() + 30*6e4; save();
-        ping('khoa_pin', 'Mission ' + which + (dayOut() ? ' · hết 12 lượt ngày' : ' · khoá 30 phút'));
+        var ms = nghiMs(which);
+        st.lockUntil = dayOut() ? nuaDem() : Date.now() + ms; save();
+        ping('khoa_pin', 'Mission ' + which
+          + (dayOut() ? ' · hết 12 lượt ngày' : ' · khoá ' + Math.round(ms/6e4) + ' phút'));
         /* Giữ nguyên hộp cho đọc gợi ý — biết sai ở đâu còn sửa */
         msg(lockNote());
         input.disabled = true; try{ input.blur(); }catch(e){}
@@ -2173,7 +2187,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.02<br>Last updated 25-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.03<br>Last updated 25-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
