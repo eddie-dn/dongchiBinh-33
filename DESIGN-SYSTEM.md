@@ -381,10 +381,26 @@ inp.addEventListener('keydown', function(e){
 });
 ```
 
-**Phải có dấu `↵` ở cuối hàng ô** — không thì người chơi gõ đủ số rồi ngồi
-chờ, tưởng trang treo. Mờ sẵn (`opacity:.3`) để biết cửa mở bằng Enter; đủ ký
-tự thì sáng lên thành lời mời bấm (`.san`). Ô PIN ngoài bản đồ không có hàng ô
-riêng thì nói thẳng trong dòng nhắc: *"Gõ 4 số rồi Enter"*.
+**Phải có DÒNG CHỮ dưới hàng ô** — không thì người chơi gõ đủ số rồi ngồi chờ,
+tưởng trang treo.
+
+| Chỗ | Chữ |
+|---|---|
+| Cửa vào (sổ bản ghi · ô PIN hồ sơ · Mission · Zoey's Castle · Secret Chamber · bảng điều phối) | **Nhấn Enter để vào** |
+| Ô trả lời câu hỏi (bộ câu hỏi Zoey's Castle) | **Nhấn Enter để trả lời** |
+
+Mờ sẵn (`opacity:.4`–`.45`) để biết luật; đủ ký tự thì thêm class `.san` cho
+sáng lên thành lời mời bấm.
+
+> **⚠ ĐỪNG QUAY LẠI DẤU `↵` CẠNH HÀNG Ô.** Đời trước làm vậy, hỏng hai đường:
+> ký hiệu trần thì phải ĐOÁN mới hiểu, mà nhét thêm một ô vào hàng thì hàng ô
+> lệch tâm — bên Zoey's Castle hàng ô còn tự xuống hai dòng nên dấu đó có lúc
+> rơi lạc một mình. Một dòng chữ đặt DƯỚI hàng ô: đọc là hiểu, không đụng gì
+> tới bố cục hàng ô, và ở cỡ màn nào cũng gọn trong một dòng.
+
+Dòng này **phải đứng riêng**, đừng trộn vào dòng báo trạng thái (`#pinMsg`,
+`.msn-msg`, `.ls-msg`) — chỗ đó còn phải báo sai mấy lần, còn khoá bao lâu, còn
+gợi ý; nhồi thêm luật gõ vào là đọc rối.
 
 ### 6.2 · Thấy mình gõ gì rồi mới thành chấm
 
@@ -438,7 +454,37 @@ Cái KHÔNG phải cửa, đừng đem luật này vào: **mốc đã phá đả
 
 ---
 
-## 7. KHÔNG CHO BÔI ĐEN CHỮ
+## 7. TRANG CREDIT — GHI LẠI ĐỒ ĐI MƯỢN
+
+**Cửa vào:** chữ `@Credit` nằm cuối dòng *"ĐANG CHẠY Vxx"* trong chính bảng bản
+ghi, căn phải. Cùng lối với mọi cửa vào bản ghi: **chữ thường, trỏ vào thì đổi
+màu** — không icon, không viền, không nút.
+
+Mỗi trang một trang credit riêng, dựng từ hai mảng trong `assets/lichsu.js`:
+
+- `CRE_CHUNG` — thứ cả bộ đều xài (viết mã, phông chữ, chỗ chạy, ảnh động).
+  In ở **mọi** trang.
+- `CRE[<mã sổ>].rieng` — thứ riêng của trang đó, in **trước** phần chung vì đó
+  mới là cái người ta mở ra để xem.
+
+Chỉ `MAP` bật cờ `tien: true` → thêm bảng chi phí ở cuối. Đó là trang gốc, coi
+như bảng tổng của cả bộ; sáu trang kia không lặp lại con số.
+
+### Luật viết — GIỐNG HỆT luật của sổ bản ghi
+
+- **Ghi đúng thứ đã dùng thật.** Không đoán tên công cụ, không kê thêm cho dài.
+  Không nhớ chắc là dùng bản nào thì viết chung chung (*"mấy game nhập vai pixel
+  đời cũ"*), đừng bịa một cái tên cụ thể.
+- **KHÔNG một chữ nào** về đo đạc · theo dõi · ghi nhận · lưu trữ. Người chơi mở
+  ra đọc là để biết ơn, không phải đọc tài liệu hạ tầng.
+- **Không ghi** khoá, mã, tên biến môi trường, tên endpoint.
+
+Thêm trang mới thì thêm một khoá vào `CRE`; không có khoá thì dòng `@Credit`
+tự không hiện, bảng bản ghi vẫn chạy như thường.
+
+---
+
+## 8. KHÔNG CHO BÔI ĐEN CHỮ
 
 Màn nào **toàn chữ trang trí và nút bấm** thì đặt `user-select:none` cho cả
 màn: màn cổng và màn phát mã của Gate 2 (`.gate-look`), các bảng cửa hậu,

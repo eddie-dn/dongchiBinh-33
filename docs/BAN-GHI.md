@@ -155,15 +155,30 @@ gợi ý rồi thì lần sau hiện sẵn).
 Cửa mã đi theo **ba luật chung của mọi ô pin/pass** — luật đầy đủ ở `DESIGN-SYSTEM.md`
 §6, tóm lại:
 
-1. **Phải Enter mới tính là gửi.** Gõ đủ 4 số chưa phải là gửi; dấu `↵` cuối hàng ô sáng
-   lên khi đủ số.
+1. **Phải Enter mới tính là gửi.** Gõ đủ 4 số chưa phải là gửi; dòng **"Nhấn Enter để
+   vào"** dưới hàng ô sáng lên khi đủ số.
 2. **Ký tự vừa gõ hiện rõ 800ms rồi mới thành `•`.** Mấy ô trước che luôn.
 3. **Lần nào vào cũng hỏi mã.** Cờ `ls_ok_<mã>` cho đi thẳng trong phiên đã gỡ hẳn —
    mở sổ bên này hay bên kia, lần trước hay lần này, đều phải gõ.
 
 ---
 
-## 6. Riêng Gate 2 — Khối vận hành
+## 6. Trang Credit
+
+Dòng *"ĐANG CHẠY Vxx"* trong bảng bản ghi nay có chữ **`@Credit`** căn phải. Bấm vào là
+sang trang credit của đúng trang đó: phần riêng trước, phần chung sau, và riêng Bản đồ mật
+thư có thêm bảng chi phí ở cuối.
+
+Nội dung nằm ở `assets/lichsu.js` — `CRE_CHUNG` (dùng chung), `CRE[<mã sổ>]` (riêng từng
+trang), `CRE_TIEN` (bảng chi phí). Luật viết đầy đủ ở `DESIGN-SYSTEM.md` §7; tóm tắt: ghi
+đúng thứ đã dùng thật, không bịa tên công cụ, và **không một chữ nào** về đo đạc / theo
+dõi / lưu trữ — y như luật của chính cuốn sổ.
+
+Sổ nào không có khoá trong `CRE` thì dòng `@Credit` tự không hiện.
+
+---
+
+## 7. Riêng Gate 2 — Khối vận hành
 
 Gõ 10 nhịp vào tem `@Designed by … · Last updated` ở chân màn hình thì ra một bảng nhỏ
 gom mọi lối vận hành:

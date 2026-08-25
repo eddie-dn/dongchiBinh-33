@@ -198,7 +198,7 @@
             { ver:'V17.08', chinh:'Dời cửa vào bản ghi từ dòng tem sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua lá cờ giữ nguyên' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', ver:'V18', so:'08',
+        { ngay:'2026-08-24', ver:'V18', so:'09',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
@@ -208,7 +208,8 @@
             { ver:'V18.04', chinh:'Soát lại toàn bộ tên sổ và mốc thời gian theo nhánh dựng riêng trên kho mã; đồng bộ lại tài liệu' },
             { ver:'V18.05', chinh:'Viết lại nội dung sổ khu Easter Egg và màn pháo hoa theo lịch sử dò được; đánh lại số build của Hồ sơ Phi đoàn' },
             { ver:'V18.06', chinh:'Chốt khuôn số phiên bản Vxx.xx cho cả sáu trang; ghi đủ các nấc V17 và lịch sử riêng của khung Collected' },
-            { ver:'V18.07', chinh:'Chốt ba luật chung cho mọi cửa mã: phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm, và cửa đã khoá thì lần nào vào cũng hỏi lại; ghi thêm các nấc V11, V12, V15, V16 vào sổ' }
+            { ver:'V18.07', chinh:'Chốt ba luật chung cho mọi cửa mã: phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm, và cửa đã khoá thì lần nào vào cũng hỏi lại; ghi thêm các nấc V11, V12, V15, V16 vào sổ' },
+            { ver:'V18.08', chinh:'Lời nhắc gõ Enter đổi từ ký hiệu sang một dòng chữ đọc là hiểu; mỗi bản ghi có thêm trang Credit riêng, mở từ chính dòng đang chạy — trang này còn kèm bảng chi phí của cả bộ' }
           ] }
       ]
     },
@@ -277,7 +278,8 @@
             { ver:'V18.01', chinh:'Nới vùng bấm của nút đóng khung Collected cho vừa đầu ngón tay' },
             { ver:'V18.03', chinh:'Chính dòng tiêu đề khung thành cửa vào bản ghi, trỏ vào thì chữ đổi màu' },
             { ver:'V18.05', chinh:'Viết lại nội dung sổ theo lịch sử dò được của khung và của màn pháo hoa' },
-            { ver:'V18.07', chinh:'Cửa mã của sổ đi theo ba luật chung mới: phải Enter mới gửi, ký tự vừa gõ hiện rõ rồi mới thành chấm, mỗi lần vào đều hỏi lại' }
+            { ver:'V18.07', chinh:'Cửa mã của sổ đi theo ba luật chung mới: phải Enter mới gửi, ký tự vừa gõ hiện rõ rồi mới thành chấm, mỗi lần vào đều hỏi lại' },
+            { ver:'V18.08', chinh:'Lời nhắc gõ Enter thành một dòng chữ; sổ của khu có thêm trang Credit riêng' }
           ] }
       ]
     },
@@ -322,6 +324,13 @@
             { ver:'V03.07', chinh:'Dời mốc gợi ý Mission 2 sang lần bị khoá thứ hai, bộ đếm sai tính theo phiên' },
             { ver:'V03.08', chinh:'Đặt lại đúng tên trang trong bản ghi, đánh lại số build theo bản đếm được; gom hai tấm nền dùng chung về một chỗ' },
             { ver:'V03.09', chinh:'Gợi ý Mission 2 dời lên trên hàng ô nhập cho cân với mấy hộp khác; cửa mã theo ba luật chung mới: phải Enter mới gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' }
+          ] },
+        /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
+           không ghi V03.10 — xem luật ở đầu file. */
+        { ngay:'2026-08-24', ver:'V04', so:'01',
+          chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
+          chi:[
+            { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' }
           ] }
       ]
     },
@@ -363,10 +372,11 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', ver:'V05', so:'01',
+        { ngay:'2026-08-24', ver:'V05', so:'02',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
-            { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' }
+            { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
+            { ver:'V05.01', chinh:'Clip lúc gõ sai không còn để lộ chữ khắc trên bệ đá; mắt rồng lúc chớp đỏ dịu hẳn, đậm ở lõi rồi tan dần ra mép thay vì thành một đĩa đỏ có viền; dấu ba chấm khu Open World đổi sang ô vuông và nhảy theo nấc cho đúng chất màn hình pixel; lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' }
           ] }
       ]
     },
@@ -375,7 +385,7 @@
       doi: [
         { ngay:'no info', ver:'V01', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V02', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', ver:'V03', so:'06',
+        { ngay:'2026-08-24', ver:'V03', so:'07',
           chinh:'Thêm bản ghi (V02 đã hết nấc đuôi nên sang dòng V03), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V03.00', chinh:'Thêm bản ghi cho trang này' },
@@ -383,7 +393,8 @@
             { ver:'V03.02', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
             { ver:'V03.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
             { ver:'V03.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' },
-            { ver:'V03.05', chinh:'Cửa vào lâu đài lần nào cũng hỏi mã chứ không nhớ lần trước nữa; mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' }
+            { ver:'V03.05', chinh:'Cửa vào lâu đài lần nào cũng hỏi mã chứ không nhớ lần trước nữa; mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' },
+            { ver:'V03.06', chinh:'Lời nhắc gõ Enter thành một dòng chữ, đặt dưới hàng ô nên hàng ô có xuống hai dòng cũng không lệch; bản ghi có thêm trang Credit riêng' }
           ] }
       ]
     },
@@ -391,7 +402,7 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V01', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V02' },
-        { ngay:'2026-08-24', ver:'V02', so:'07',
+        { ngay:'2026-08-24', ver:'V02', so:'08',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V02.00 → V02.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
@@ -399,7 +410,8 @@
             { ver:'V02.03', chinh:'Cửa vào bản ghi im lặng hoàn toàn, bỏ mọi lời chỉ đường; nới vùng chạm của nút đóng' },
             { ver:'V02.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
             { ver:'V02.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' },
-            { ver:'V02.06', chinh:'Mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' }
+            { ver:'V02.06', chinh:'Mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' },
+            { ver:'V02.07', chinh:'Lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' }
           ] }
       ]
     },
@@ -580,12 +592,16 @@
        thấy mình vừa bấm đúng phím chưa. Che ngay từ ký tự đầu thì gõ nhầm một
        số là mò lại từ đầu mà không biết nhầm chỗ nào. */
     '.ls-o i.ro{font-size:20px}',
-    /* Dấu Enter. Mờ sẵn ở đó cho biết cửa này mở bằng Enter chứ không tự mở
-       khi gõ đủ số; đủ bốn số thì sáng lên thành lời mời bấm. */
-    '.ls-o b.ls-ent{width:26px;height:40px;display:flex;align-items:center;',
-      'justify-content:center;font-weight:400;font-size:15px;line-height:1;',
-      'color:var(--ls-mo,rgba(234,240,247,.5));opacity:.3;transition:opacity .2s,color .2s}',
-    '.ls-o b.ls-ent.san{opacity:1;color:var(--ls-acc,#8CE1B4)}',
+    /* ── DÒNG "NHẤN ENTER ĐỂ VÀO" ────────────────────────────────────────
+       Đời trước để một dấu ↵ nhỏ nằm cạnh hàng ô. Hỏng hai đường: ký hiệu
+       trần thì phải ĐOÁN mới hiểu, mà nhét thêm một ô vào hàng thì hàng ô
+       lệch tâm, có chỗ còn đội xuống dòng. Nay là một DÒNG CHỮ đặt dưới hàng
+       ô — đọc là hiểu, không đụng vào bố cục hàng ô.
+       Mờ sẵn cho biết luật; đủ số thì sáng lên thành lời mời bấm. */
+    '.ls-enter{margin:8px 0 0;text-align:center;font-size:10.5px;line-height:1.4;',
+      'letter-spacing:.04em;color:var(--ls-mo,rgba(234,240,247,.5));opacity:.45;',
+      'transition:opacity .2s,color .2s}',
+    '.ls-enter.san{opacity:1;color:var(--ls-acc,#8CE1B4)}',
     '.ls-hop.rung{animation:lsRung .38s}',
     '@keyframes lsRung{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}',
       '40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}',
@@ -609,14 +625,45 @@
        qua nhảy lại. Nay mọi thứ trong khối bảng đều bám mép trái, chỉ tiêu đề
        hộp và ảnh là còn ở giữa. */
     '.ls-nhom{text-align:left}',
+    /* Dòng "ĐANG CHẠY Vxx" nay chia hai đầu: số hiệu bên trái, cửa vào trang
+       credit bên phải. Dùng flex chứ không float — float thì dòng này tụt
+       chiều cao về 0 và bảng bên dưới dính lên. */
     '.ls-nhom p.d{margin:0 0 8px;font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;',
-      'font-size:9px;letter-spacing:.12em;color:var(--ls-mo,rgba(234,240,247,.5));text-align:left}',
+      'font-size:9px;letter-spacing:.12em;color:var(--ls-mo,rgba(234,240,247,.5));text-align:left;',
+      'display:flex;align-items:baseline;justify-content:space-between;gap:10px}',
+    /* @Credit — cùng lối với mấy cửa vào bản ghi: chữ thường, trỏ vào thì đổi
+       màu. Không icon, không viền, không nút. */
+    '.ls-cre{cursor:pointer;letter-spacing:.06em;white-space:nowrap;',
+      'color:var(--ls-mo,rgba(234,240,247,.5));transition:color .18s;',
+      '-webkit-tap-highlight-color:transparent}',
+    '.ls-cre:hover,.ls-cre:focus-visible{color:var(--ls-acc,#8CE1B4);outline:none}',
     /* Build đứng TRƯỚC, ngày theo sau: số build là thứ người ta dò, ngày chỉ
        để đối chiếu. Cột nào cũng căn trái. */
     '.ls-doi{display:grid;grid-template-columns:46px 58px 30px 1fr;gap:5px 6px;',
       'padding:6px 0;border-top:1px dashed var(--ls-line,rgba(234,240,247,.12));font-size:10.5px;line-height:1.45;',
       'text-align:left}',
     '.ls-doi:first-of-type{border-top:0}',
+    /* ── TRANG CREDIT ──────────────────────────────────────────────────── */
+    '.ls-cnhom{padding:9px 0;border-top:1px dashed var(--ls-line,rgba(234,240,247,.12))}',
+    '.ls-cnhom:first-of-type{border-top:0;padding-top:2px}',
+    '.ls-cnhom>b{display:block;margin:0 0 5px;font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;',
+      'font-weight:500;font-size:9px;letter-spacing:.1em;text-transform:uppercase;',
+      'color:var(--ls-acc,#8CE1B4)}',
+    '.ls-cnhom p{margin:0 0 4px;font-size:10.5px;line-height:1.55;',
+      'color:var(--ls-fg,#EAF0F7);opacity:.85;text-wrap:pretty}',
+    '.ls-cnhom p:last-child{margin-bottom:0}',
+    '.ls-cnhom p b{font-weight:600;opacity:1}',
+    '.ls-cnhom p em{font-style:normal;opacity:.62}',
+    /* Bảng chi phí — chỉ có ở trang Bản đồ mật thư */
+    '.ls-tien{margin:10px 0 0;padding-top:9px;border-top:1px dashed var(--ls-line,rgba(234,240,247,.12))}',
+    '.ls-tien .h{margin:0 0 6px;font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;',
+      'font-weight:500;font-size:9px;letter-spacing:.1em;text-transform:uppercase;',
+      'color:var(--ls-acc,#8CE1B4)}',
+    '.ls-tien .r{display:flex;justify-content:space-between;gap:10px;',
+      'font-size:10.5px;line-height:1.7;color:var(--ls-fg,#EAF0F7);opacity:.85}',
+    '.ls-tien .r.tong{margin-top:5px;padding-top:5px;opacity:1;font-weight:600;',
+      'border-top:1px dashed var(--ls-line,rgba(234,240,247,.12))}',
+    '.ls-tien .r b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500}',
     '.ls-doi b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500;',
       'font-size:9px;letter-spacing:.02em;white-space:nowrap;color:var(--ls-mo,rgba(234,240,247,.5))}',
     '.ls-doi b.v{color:var(--ls-acc,#8CE1B4)}',
@@ -763,13 +810,14 @@
     khung(
         '<h2 class="ls-tit">Bản ghi</h2>'
       + '<p class="ls-sub">' + t.ten + '</p>'
-      + '<div class="ls-o"><i></i><i></i><i></i><i></i><b class="ls-ent">↵</b></div>'
+      + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
+      + '<p class="ls-enter" id="lsEnter">Nhấn Enter để vào</p>'
       + '<p class="ls-msg" id="lsMsg"></p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
       +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
-    var ent = hop.querySelector('.ls-ent');
+    var ent = hop.querySelector('#lsEnter');
     var msg = hop.querySelector('#lsMsg');
     var inp = hop.querySelector('#lsIn');
 
@@ -792,7 +840,7 @@
         o[i].textContent = c ? ((i === iRo) ? c : '•') : '';
         o[i].className = c ? (i === iRo ? 'co ro' : 'co') : '';
       }
-      if (ent) ent.className = 'ls-ent' + (go.length === 4 ? ' san' : '');
+      if (ent) ent.className = 'ls-enter' + (go.length === 4 ? ' san' : '');
     }
     function veRoiChe() {
       var i = go.length - 1;
@@ -824,6 +872,155 @@
     ve(-1);
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     TRANG CREDIT — GHI LẠI ĐỒ ĐI MƯỢN
+
+     Cửa vào: chữ "@Credit" nằm cuối dòng "ĐANG CHẠY Vxx" trong chính bảng
+     bản ghi. Mỗi trang một trang credit riêng: phần CHUNG (thứ cả bộ đều
+     xài) cộng phần RIÊNG của trang đó.
+
+     ⚠ LUẬT VIẾT Ở ĐÂY — GIỐNG HỆT LUẬT CỦA SỔ BẢN GHI:
+       · Ghi ĐÚNG thứ đã dùng thật. Không đoán tên công cụ, không kê thêm cho
+         dài. Không nhớ chắc thì viết chung chung, đừng bịa một cái tên.
+       · KHÔNG một chữ nào về đo đạc · theo dõi · ghi nhận · lưu trữ. Người
+         chơi mở ra đọc là để biết ơn, không phải đọc tài liệu hạ tầng.
+       · Không ghi khoá, mã, tên biến môi trường, tên endpoint.
+     ⚠ PHẦN CHUNG NẰM Ở ĐÂU: bản ĐẦY ĐỦ chỉ in ở Bản đồ mật thư (MAP) — đó là
+     trang gốc, trang tổng của cả bộ, và cũng là chỗ đặt bảng chi phí. Sáu
+     trang kia in bản GỌN hai dòng rồi trỏ về đấy. Lý do: in đủ ở cả bảy chỗ
+     thì đọc trang nào cũng gặp lại y một khối, mà phần riêng — thứ người ta
+     thật sự mở ra để xem — lại bị đẩy xuống dưới. */
+  var CRE_CHUNG = [
+    { t: 'Viết mã', d: [
+      'Claude Code · Anthropic — dựng màn, viết mã, soát lỗi, đo lại từng nhịp hiệu ứng',
+      'Claude Code chạy qua MCP để nối tay với mấy công cụ bên ngoài'
+    ] },
+    { t: 'Phông chữ', d: [
+      'Google Fonts — <b>Be Vietnam Pro</b> (chữ Việt) và <b>Oswald</b> (số hiệu, tem, tiêu đề)',
+      'Cả hai đều giấy phép mở, dùng thoải mái, xin cảm ơn'
+    ] },
+    { t: 'Chỗ chạy', d: [
+      'Vercel — dựng trang tĩnh và mấy hàm nhỏ chạy phía máy chủ, gói miễn phí'
+    ] },
+    { t: 'Ảnh động', d: [
+      'EZGIF — đổi video sang <b>.webp</b> cho mấy khung nhân vật và hiệu ứng động'
+    ] }
+  ];
+
+  /* Bản GỌN cho sáu trang còn lại — đủ để không ai bị bỏ sót công, rồi trỏ
+     về Bản đồ mật thư cho ai muốn đọc đủ. */
+  var CRE_CHUNG_GON = [
+    { t: 'Dùng chung cả bộ', d: [
+      'Claude Code · Anthropic (viết mã) — Google Fonts (Be Vietnam Pro, Oswald) — Vercel (chỗ chạy) — EZGIF (đổi video sang .webp)',
+      '<em>Ghi đủ ở trang Credit của bản ghi <b>Bản đồ mật thư</b>.</em>'
+    ] }
+  ];
+
+  var CRE = {
+    'MAP': {
+      ten: 'Bản đồ mật thư',
+      rieng: [
+        { t: 'Câu chào và Daily Quote', d: [
+          'Google AI Studio · Gemini — viết lời chào theo buổi và kho câu trích mỗi ngày',
+          'Kho câu do Gemini soạn rồi lọc tay lại, giữ đúng mấy đầu mục đã chọn'
+        ] },
+        { t: 'Bản đồ và mật thư', d: [
+          'Đường bờ biển và bốn toạ độ vẽ tay thẳng bằng SVG, không mượn thư viện bản đồ nào',
+          'Bảng mã Morse dùng bảng chuẩn quốc tế'
+        ] }
+      ],
+      tien: true
+    },
+    'EGG': {
+      ten: 'Easter Egg · Gate 1',
+      rieng: [
+        { t: 'Màn pháo hoa', d: [
+          'Pháo hoa vẽ thẳng bằng SVG và canvas, không mượn thư viện hiệu ứng nào',
+          'Quả trứng và vụ nổ cũng vẽ tay trên canvas'
+        ] },
+        { t: 'Khung Collected', d: [
+          'Ảnh động trong khung đổi từ video sang .webp bằng EZGIF'
+        ] }
+      ]
+    },
+    'DAD-A': {
+      ten: 'Hồ sơ Phi đoàn',
+      rieng: [
+        { t: 'Xuất ảnh hồ sơ', d: [
+          '<b>html2canvas</b> · Niklas von Hertzen — chụp lại tấm hồ sơ thành ảnh tải về',
+          'Thư viện mã nguồn mở, giấy phép MIT'
+        ] },
+        { t: 'Gửi form', d: [
+          '<b>FormSubmit</b> — nhận form của phi đoàn, gói miễn phí'
+        ] },
+        { t: 'Phông chữ riêng', d: [
+          'Google Fonts — <b>Saira Stencil One</b> cho mấy dòng dấu mộc quân đội'
+        ] }
+      ]
+    },
+    'DAD-B': {
+      ten: 'Easter Egg · Gate 2',
+      rieng: [
+        { t: 'Đoạn phim chuyển cảnh', d: [
+          '<b>Kling AI</b> — dựng clip nổ sập phòng lab và clip gõ sai',
+          '<b>Adobe Firefly</b> — dựng và chỉnh khung hình cho mấy đoạn phim đó',
+          'Xuất ra .webp bằng EZGIF cho nhẹ'
+        ] },
+        { t: 'Tranh nền và nhân vật', d: [
+          'Google AI Studio · Gemini — viết prompt rồi tạo ảnh hai màn chơi, con rồng, mấy chú rắn',
+          'Ảnh sinh ra xong còn chỉnh tay: xoá chữ khắc trên bệ đá, nắn lại tông, dựng lại tấm biển'
+        ] },
+        { t: 'Khu Open World', d: [
+          'Google AI Studio · Gemini — nhân vật trả lời câu hỏi trong khu Open World',
+          'Giọng nhân vật viết tay, đưa cho máy đóng vai'
+        ] },
+        { t: 'Cảm hứng', d: [
+          'Khung chữ, bảng đá và mạch giải đố lấy cảm hứng từ mấy game nhập vai pixel đời cũ',
+          'Google Fonts — <b>Press Start 2P</b> và <b>Roboto Mono</b> cho đúng chất màn hình máy cũ'
+        ] }
+      ]
+    },
+    'HAN-A': {
+      ten: 'Zoey’s Castle',
+      rieng: [
+        { t: 'Chủ đề', d: [
+          'Bảng màu và khí chất lấy cảm hứng từ mùa <b>hoa anh đào</b> — hồng phấn, tím oải hương, nền giấy sáng'
+        ] },
+        { t: 'Phông chữ riêng', d: [
+          'Google Fonts — <b>Cormorant Garamond</b> cho mấy dòng tiêu đề nghiêng'
+        ] }
+      ]
+    },
+    'HAN-B': {
+      ten: 'HongHan’s Secret Chamber',
+      rieng: [
+        { t: 'Chủ đề', d: [
+          'Bảng màu và khí chất lấy cảm hứng từ <b>dải ngân hà</b> — nền tím than, sao li ti, quầng sáng lạnh'
+        ] },
+        { t: 'Phông chữ riêng', d: [
+          'Google Fonts — <b>Cormorant Garamond</b> cho mấy dòng tiêu đề nghiêng'
+        ] }
+      ]
+    },
+    'FX': {
+      ten: 'Màn pháo hoa',
+      rieng: [
+        { t: 'Pháo hoa', d: [
+          'Vẽ thẳng bằng SVG và canvas, không mượn thư viện hiệu ứng nào',
+          'Quả trứng, vụ nổ và mấy tia sáng đều vẽ tay'
+        ] }
+      ]
+    }
+  };
+
+  /* Chi phí — chỉ hiện ở trang Bản đồ mật thư, coi như bảng tổng của cả bộ. */
+  var CRE_TIEN = [
+    ['Claude',            324],
+    ['Google AI Studio',   20],
+    ['Gemini',             20],
+    ['Kling + Adobe',      10]
+  ];
+
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số
      lẫn cột chữ. Trước đây hai chỗ hai kiểu ("thiếu info" / "no info"), đọc
      xuống tưởng là hai nghĩa khác nhau trong khi cùng nghĩa "không biết". */
@@ -847,7 +1044,9 @@
     }
     var h = '<h2 class="ls-tit">' + t.ten + '</h2>'
           + '<p class="ls-sub">Đơn vị điều phối: Zoeyzuize</p>'
-          + '<div class="ls-nhom"><p class="d">ĐANG CHẠY ' + cuoi.ver + '</p>'
+          + '<div class="ls-nhom"><p class="d"><span>ĐANG CHẠY ' + cuoi.ver + '</span>'
+          +   (CRE[ma] ? '<span class="ls-cre" id="lsCre" role="button" tabindex="0">@Credit</span>' : '')
+          +   '</p>'
           + '<div class="ls-dau"><i>Build</i><i>Ngày</i><i>#</i><i>Sửa chính</i></div>';
     for (var k = 0; k < d.length; k++) {
       var r = d[k];
@@ -884,6 +1083,48 @@
         });
       })(ds[j]);
     }
+    var cre = hop.querySelector('#lsCre');
+    if (cre) {
+      cre.addEventListener('click', function () { veCredit(ma); });
+      cre.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); veCredit(ma); }
+      });
+    }
+  }
+
+  /* ═══ TRANG CREDIT ═══════════════════════════════════════════════════════
+     Phần CHUNG trước (thứ cả bộ đều xài), phần RIÊNG của trang sau. Riêng
+     Bản đồ mật thư có thêm bảng chi phí ở cuối — xem ghi chú ở `CRE`. */
+  function veCredit(ma) {
+    var t = SO[ma], c = CRE[ma];
+    if (!c) return;
+    function nhom(g) {
+      var x = '<div class="ls-cnhom"><b>' + g.t + '</b>';
+      for (var i = 0; i < g.d.length; i++) x += '<p>' + g.d[i] + '</p>';
+      return x + '</div>';
+    }
+    var h = '<h2 class="ls-tit">Credit</h2>'
+          + '<p class="ls-sub">' + c.ten + '</p>'
+          + '<div class="ls-nhom"><button class="ls-lui" id="lsLui" type="button">‹ Bản ghi</button>';
+    for (var i = 0; i < c.rieng.length; i++) h += nhom(c.rieng[i]);
+    /* Trang gốc in phần chung ĐẦY ĐỦ; sáu trang kia in bản gọn — xem ghi chú
+       ở `CRE_CHUNG_GON`. */
+    var chung = c.tien ? CRE_CHUNG : CRE_CHUNG_GON;
+    for (var j = 0; j < chung.length; j++) h += nhom(chung[j]);
+    if (c.tien) {
+      var tong = 0, r = '';
+      for (var k = 0; k < CRE_TIEN.length; k++) {
+        tong += CRE_TIEN[k][1];
+        r += '<div class="r"><span>' + CRE_TIEN[k][0] + '</span><b>$'
+           + CRE_TIEN[k][1] + '</b></div>';
+      }
+      h += '<div class="ls-tien"><p class="h">Đã tiêu hết bao nhiêu</p>' + r
+         + '<div class="r tong"><span>Tổng cộng</span><b>$' + tong + '</b></div></div>';
+    }
+    h += '</div><p class="ls-chan">Cảm ơn mọi công cụ, thư viện và phông chữ đã cho '
+       + 'xài chùa — không có mấy thứ này thì trang chỉ nằm trong đầu.</p>';
+    khung(h);
+    hop.querySelector('#lsLui').addEventListener('click', function () { veSo(ma); });
   }
 
   /* ═══ BẢNG CHI TIẾT MỘT BUILD ═══════════════════════════════════════════

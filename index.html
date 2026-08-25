@@ -472,6 +472,14 @@ a.file:active{background:rgba(242,180,65,.07)}
    nhầm ô nào. Mấy ô trước vẫn là chấm. */
 .pin span.ro{color:var(--amber)}
 .pin-in{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+/* ── DÒNG "NHẤN ENTER ĐỂ VÀO" ─────────────────────────────────────────────
+   Dòng riêng, không trộn vào `#pinMsg` — chỗ đó còn phải báo sai mấy lần và
+   còn khoá bao lâu, nhồi thêm luật gõ vào là đọc rối. Mờ sẵn cho biết luật;
+   đủ ký tự thì sáng lên thành lời mời bấm. */
+.pin-enter{margin:9px 0 0;text-align:center;font-size:11px;line-height:1.4;
+  letter-spacing:.04em;color:#8fa3bd;opacity:.45;
+  transition:opacity .2s,color .2s}
+.pin-enter.san{opacity:1;color:var(--amber)}
 
 /* ---------- takeoff ---------- */
 .takeoff{position:absolute;inset:0;z-index:20;display:flex;align-items:center;
@@ -1026,7 +1034,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 24-Aug-2026 · V18.07">Last updated 24-Aug-2026 · V18.07</span>
+        <span class="stamp" id="stamp" data-base="Last updated 24-Aug-2026 · V18.08">Last updated 24-Aug-2026 · V18.08</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1092,6 +1100,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       <div class="pin" id="pinDash"></div>
       <input class="pin-in" id="pinIn" type="text" inputmode="text" maxlength="6"
              autocomplete="off" aria-label="Mã PIN">
+      <p class="pin-enter" id="pinEnter">Nhấn Enter để vào</p>
       <p class="cx-hint" id="pinMsg"></p>
     </div>
   </div>
@@ -1422,7 +1431,7 @@ const NODES = [
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026 | V03.09', pin:'file' },
+        meta:'Published date: 27-Jul 2026 | V04.00', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
         openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V1',
         unlockAt: BIRTHDAY, eggGate:true }
@@ -4253,6 +4262,8 @@ function drawPin(iRo){
     s.classList.toggle('on', i < v.length);
     s.classList.toggle('ro', che && i === iRo && i < v.length);
   });
+  const ent = $('pinEnter');
+  if(ent) ent.classList.toggle('san', v.length === need);
 }
 function pinRoiChe(){
   /* Cắt theo đúng số ô: dán một chuỗi dài hơn mã thì `drawPin` đã xén bớt,
@@ -4275,7 +4286,7 @@ function openPin(mode, arg){
   $('pinDash').innerHTML = Array.from({length: need}, ()=>'<span></span>').join('');
   $('pinIn').value = ''; drawPin(-1);
   $('pinMsg').className = 'cx-hint';
-  $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự') + ' rồi Enter'
+  $('pinMsg').textContent = 'Gõ ' + need + (cfg.kind === 'PIN' ? ' số' : ' ký tự')
     + (pinMode === 'file' && pinFail > 0 ? ' · đã sai ' + pinFail + '/' + CODES.file.lockAfter : '');
   if(pinMode === 'file' && pinLocked()){
     $('pinMsg').className = 'cx-hint bad';

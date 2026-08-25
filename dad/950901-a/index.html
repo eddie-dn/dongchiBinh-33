@@ -931,12 +931,14 @@ render();
    đầu thì gõ nhầm một chữ là phải xoá cả dòng mò lại, vì không biết nhầm ở ô
    nào. Chỉ ô cuối hiện rõ, mấy ô trước vẫn là chấm. */
 .msn-cell.ro{color:var(--amber)}
-/* Dấu Enter cuối hàng: mờ sẵn để biết cửa này mở bằng Enter chứ không tự chấm
-   khi gõ đủ chữ; đủ chữ thì sáng lên thành lời mời bấm. */
-.msn-ent{width:20px;height:34px;display:flex;align-items:center;justify-content:center;
-  margin-left:6px;font-size:14px;line-height:1;color:var(--paper);
-  opacity:.3;transition:opacity .2s,color .2s}
-.msn-ent.san{opacity:1;color:var(--amber)}
+/* ── DÒNG "NHẤN ENTER ĐỂ VÀO" ──────────────────────────────────────────────
+   Đời trước để một dấu ↵ nhỏ cạnh hàng ô: ký hiệu trần phải đoán mới hiểu, mà
+   nhét thêm ô vào hàng thì hàng ô lệch tâm. Nay là DÒNG CHỮ dưới hàng ô.
+   Mờ sẵn cho biết luật; đủ ký tự thì sáng lên thành lời mời bấm. */
+.msn-enter{margin:7px 0 0;text-align:center;font-size:11px;line-height:1.4;
+  letter-spacing:.04em;color:var(--paper);opacity:.4;
+  transition:opacity .2s,color .2s}
+.msn-enter.san{opacity:1;color:var(--amber)}
 .msn-in{position:absolute;inset:0;width:100%;height:100%;opacity:.01;border:none;
   background:none;color:transparent;caret-color:transparent;font-size:16px;outline:none}
 .msn-msg{min-height:20px;font-size:12.5px;line-height:1.6;text-align:center;
@@ -1437,6 +1439,7 @@ render();
     body += '<div class="msn-cells" id="msnCells">'
       + '<input class="msn-in" id="msnIn" type="text" autocomplete="one-time-code" '
       + 'autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Ô nhập mã truy cập"></div>'
+      + '<div class="msn-enter" id="msnEnter">Nhấn Enter để vào</div>'
       + '<div class="msn-msg" id="msnMsg"></div>';
     if(chuaForm)
       body += '<button class="navbtn wide" id="msnToForm" style="margin-top:16px;justify-content:center">Điền Form ngay ✈</button>';
@@ -1459,9 +1462,7 @@ render();
       c.className = 'msn-cell' + (which === 3 && i === 4 ? ' gap' : '');   /* PHAM | TUAN */
       cellsBox.insertBefore(c, input); cells.push(c);
     }
-    var entKy = document.createElement('span');
-    entKy.className = 'msn-ent'; entKy.textContent = '↵';
-    cellsBox.insertBefore(entKy, input);
+    var entKy = byId('msnEnter');
     /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm — xem ghi chú ở .msn-cell.ro */
     var HIEN_MS = 800, henChe = null;
     function paint(iRo){
@@ -1470,7 +1471,7 @@ render();
         cells[i].classList.toggle('on', i === buf.length);
         cells[i].classList.toggle('ro', i === iRo && i < buf.length);
       }
-      entKy.classList.toggle('san', buf.length === len);
+      if(entKy) entKy.classList.toggle('san', buf.length === len);
     }
     function veRoiChe(){
       var i = buf.length - 1;
@@ -2176,7 +2177,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V03.09<br>Last updated 24-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.00<br>Last updated 24-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

@@ -1,4 +1,140 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 14 — dòng chữ Enter, trang Credit, và dọn nốt ba lỗi nhìn ở Gate 2.
+════════════════════════════════════════════════════════════════════════════
+10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/index.html
+    assets/lichsu.js                      dad/950901-b/config.js
+    dad/950901-a/index.html               han/961030-a/index.html
+    han/961030-b/index.html
+
+    DESIGN-SYSTEM.md  ← §6 sửa, §7 mới    docs/BAN-GHI.md
+    DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này:
+    /                 V18.08  ← ĐỔI   /han/961030-a     V03.06  ← ĐỔI
+    /dad/950901-a     V04.00  ← ĐỔI   /han/961030-b     V02.07  ← ĐỔI
+    /dad/950901-b     V05.01  ← ĐỔI   /phao-hoa         V03.03 (không đụng)
+
+    (Hồ sơ Phi đoàn nhảy V03.09 → V04.00 vì V03 đã dùng hết nấc đuôi .09 —
+     đúng luật đánh số, không phải nhảy cóc.)
+
+
+① LỜI NHẮC ENTER: BỎ DẤU ↵, DÙNG MỘT DÒNG CHỮ
+────────────────────────────────────────────────────────────────────────────
+Đợt trước đặt một dấu ↵ nhỏ cạnh hàng ô. Hỏng hai đường:
+  · ký hiệu trần thì phải ĐOÁN mới hiểu;
+  · nhét thêm một ô vào hàng thì hàng ô lệch tâm — bên Zoey's Castle hàng ô
+    còn tự xuống hai dòng khi màn hẹp, nên dấu đó có lúc rơi lạc một mình.
+
+Nay là một DÒNG CHỮ đặt DƯỚI hàng ô:
+
+    Cửa vào (sổ bản ghi · ô PIN hồ sơ · Mission · Zoey's Castle ·
+             Secret Chamber · hai bảng điều phối)  →  "Nhấn Enter để vào"
+    Ô trả lời câu hỏi (bộ câu hỏi Zoey's Castle)   →  "Nhấn Enter để trả lời"
+
+Mờ sẵn cho biết luật, đủ ký tự thì sáng lên thành lời mời bấm. Dòng này đứng
+RIÊNG, không trộn vào dòng báo trạng thái — chỗ đó còn phải báo sai mấy lần,
+còn khoá bao lâu, còn gợi ý. Luật chốt ở DESIGN-SYSTEM.md §6.1.
+
+
+② TRANG CREDIT — MỘT TRANG CHO MỖI BẢN GHI
+────────────────────────────────────────────────────────────────────────────
+Cửa vào: chữ @Credit nằm cuối dòng "ĐANG CHẠY Vxx", căn phải. Cùng lối với
+mọi cửa vào bản ghi — chữ thường, trỏ vào thì đổi màu, không icon.
+
+Mỗi trang in phần RIÊNG trước rồi mới tới phần CHUNG:
+
+    CHUNG (cả bảy trang)   Claude Code · Anthropic (viết mã, chạy qua MCP) ·
+                           Google Fonts (Be Vietnam Pro, Oswald) ·
+                           Vercel (chỗ chạy) · EZGIF (đổi video sang .webp)
+
+    Bản đồ mật thư         Google AI Studio · Gemini cho lời chào và Daily
+                           Quote · bản đồ và bảng Morse vẽ tay bằng SVG
+    Easter Egg · Gate 1    pháo hoa vẽ thẳng bằng SVG và canvas
+    Hồ sơ Phi đoàn         html2canvas (MIT) · FormSubmit · Saira Stencil One
+    Easter Egg · Gate 2    Kling AI + Adobe Firefly (clip chuyển cảnh) ·
+                           Gemini (prompt + tạo tranh nền, rồng, rắn) ·
+                           Google AI Studio (khu Open World) ·
+                           Press Start 2P + Roboto Mono · cảm hứng từ mấy
+                           game nhập vai pixel đời cũ
+    Zoey's Castle          chủ đề hoa anh đào · Cormorant Garamond
+    Secret Chamber         chủ đề dải ngân hà · Cormorant Garamond
+    Màn pháo hoa           pháo hoa, quả trứng, vụ nổ đều vẽ tay
+
+RIÊNG Bản đồ mật thư có thêm bảng chi phí ở cuối — trang gốc, coi như bảng
+tổng của cả bộ, sáu trang kia không lặp lại con số:
+
+    Claude $324 · Google AI Studio $20 · Gemini $20 · Kling + Adobe $10
+    ────────────────────────────────────────────────────────────────
+    Tổng cộng $374
+
+Luật viết y hệt luật của sổ bản ghi: ghi đúng thứ đã dùng thật, không bịa tên
+công cụ, và KHÔNG một chữ nào về đo đạc / theo dõi / lưu trữ. Chỗ nào không
+nhớ chắc thì viết chung chung ("mấy game nhập vai pixel đời cũ") chứ không
+đặt bừa một cái tên. Đầy đủ ở DESIGN-SYSTEM.md §7.
+
+
+③ GATE 2 — BA LỖI NHÌN
+────────────────────────────────────────────────────────────────────────────
+CHỮ REZAR LỘ RA LÚC GÕ SAI
+    Thủ phạm không phải bệ đá mà là CHÍNH CLIP. `anim_wrong.webp` quay trên
+    cảnh CŨ, trong đó chữ khắc REZAR còn nguyên và sáng rực — soi cả 121
+    khung thì khung nào cũng có chừng 630 điểm ảnh nét vàng ở đúng ô bảng đá.
+    Nền vòng 1 nay dùng ảnh đá SẠCH nên lớp che đã tắt hẳn; clip vừa bật lên
+    là chữ hiện ra, hệt như kéo tấm màn xuống.
+    Chữa: bật lại đúng mẩu đá sạch nằm sẵn ở lớp che, chỉ trong lúc clip
+    chạy. Nó vốn là ảnh đá sạch cắt đúng ô bảng đá nên dán khít từng pixel;
+    lớp bảng đá lại nằm TRÊN lớp clip nên che được. Cảnh trong clip đứng yên
+    tuyệt đối (dò cả 121 khung: lệch 0px) nên mẩu dán tĩnh khớp suốt clip.
+    Ký tự người chơi đã bới ra vẫn nổi lên trên.
+
+MẮT RỒNG ĐỎ QUÁ GẮT
+    Bản trước giữ gần như nguyên độ đục tới 52% bán kính rồi mới hạ — hai
+    phần ba con ngươi đỏ đều một mực rồi rơi trong một quãng ngắn, mắt đọc ra
+    một CÁI ĐĨA có viền. Nay hạ ngay từ lõi (còn nửa ở 46%, còn một phần năm
+    ở 72%, tắt hẳn ở mép), thêm một nhịp nhoè buộc vào chiều cao con ngươi,
+    và hạ đỉnh chớp từ .9 xuống .74. Chụp lại màn thật: đỏ đọng ở giữa mắt
+    rồi tan dần, màu xanh của tròng vẫn thấy ở mép — đọc ra là mắt ĐANG
+    SÁNG ĐỎ chứ không phải bị dán một miếng đỏ lên.
+
+BA CHẤM OPEN WORLD TRÒN QUÁ HIỆN ĐẠI
+    Cả màn là pixel-art, một chấm tròn mượt nằm giữa đám chữ răng cưa đọc ra
+    ngay là "thứ của web hiện đại lạc vào". Nay là ô VUÔNG 6px, nhảy theo NẤC
+    (steps) chứ không trượt mượt, nhích đúng 3px = nửa cạnh ô.
+
+
+④ ĐÃ RÀ RESPONSIVE — 6 CỠ MÀN × 6 TRANG
+────────────────────────────────────────────────────────────────────────────
+Cỡ soi: 320 (SE) · 360 · 390 (14) · 430 (plus) · 768 (tablet) · 1280 (PC).
+
+    TRÀN NGANG    sáu trang × sáu cỡ: thân trang không đẻ thanh cuộn ngang,
+                  không trang nào lỗi JS
+    CỬA MÃ        hộp nằm trọn trong màn · hàng ô nằm trọn trong hộp · dòng
+                  "Nhấn Enter" gọn trong MỘT dòng và nằm dưới hàng ô
+    BẢNG BẢN GHI  không cuộn ngang · chữ @Credit đứng CÙNG HÀNG với dòng
+                  "ĐANG CHẠY", không rớt xuống, không tràn ra ngoài
+    TRANG CREDIT  không cuộn ngang · không dòng nào lòi ra khỏi khung
+    VÙNG CHẠM     nút đóng sổ vẫn ≥40px ở cỡ nhỏ nhất (320px)
+
+Bốn cửa mã còn soi riêng ở bốn cỡ: Zoey's Castle (hàng ô có thể xuống hai
+dòng), Secret Chamber, Mission 2, ô PIN bản đồ — cửa nào dòng Enter cũng nằm
+dưới hàng ô và gọn trong một dòng.
+
+
+⑤ ĐÃ KIỂM THỬ — 302 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+Bộ kiểm mới thêm ba bài: trang Credit (7 trang, có soi cả luật cấm nhắc đo
+đạc / lưu trữ), rà responsive toàn trang, rà responsive bốn cửa mã.
+Bộ cũ chạy lại đủ: ba luật ô pin/pass, gợi ý hai cửa mã, bộ đếm theo phiên,
+bảy cuốn sổ, khuôn số Vxx.xx, tem sáu trang, chuyển cảnh Gate 2, bệ đá hai
+vòng, hộp chào ba khung giờ, thanh cuộn, vùng chạm.
+
+    Bộ kiểm cũ soi dấu ↵ đã đổi sang soi dòng chữ — đó là kỳ vọng cũ, không
+    phải lỗi trang.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 13 — ba luật chung cho mọi ô pin/pass, và dọn nốt màn chuyển cảnh Gate 2.
 ════════════════════════════════════════════════════════════════════════════
 12 file sửa (có 1 file ẢNH), không có file mới. Chép đè theo đúng cây thư mục.

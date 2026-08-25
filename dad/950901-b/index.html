@@ -684,11 +684,23 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Con ngươi đổi màu. `color` lấy SẮC của lớp này, giữ nguyên ĐỘ SÁNG và nét vẽ
    bên dưới — highlight, viền mí, vảy quanh mắt vẫn nguyên vẹn. Khung đã dò cho
    khít con ngươi, xem round2.eyes trong config. */
+/* ═══ ĐỎ Ở LÕI, TAN DẦN RA MÉP ═══════════════════════════════════════════
+   BỆNH ĐÃ SỬA: "viền đỏ mắt còn rõ và to quá, nhìn hơi giả".
+   Bản trước giữ gần như NGUYÊN độ đục tới 52% bán kính rồi mới bắt đầu hạ —
+   tức là hai phần ba con ngươi đỏ đều một mực rồi rơi xuống trong một quãng
+   ngắn. Mắt đọc ra một CÁI ĐĨA có viền, không phải một điểm sáng.
+   Nay hạ ngay từ lõi: đặc nhất ở tâm, còn nửa ở 46%, còn một phần năm ở 72%,
+   tắt hẳn ở mép. Thêm một nhịp nhoè bằng `filter` — bán kính buộc vào CHIỀU
+   CAO con ngươi (`--iris-blur`, đặt trong fitSlabs) chứ không để số px cố
+   định, nếu không màn to thì mép lại sắc trở lại. Đỉnh cũng hạ từ .9 xuống
+   .74 ở nhịp chớp. */
 #scene-game .eye .iris{
   position:absolute;inset:0;border-radius:50%;opacity:0;
   background:radial-gradient(ellipse at 50% 50%,
-             rgba(255,32,28,1) 0%,rgba(255,26,22,.96) 52%,
-             rgba(230,20,16,.6) 78%,transparent 100%);
+             rgba(255,36,30,.96) 0%,rgba(255,30,24,.72) 26%,
+             rgba(244,26,20,.44) 46%,rgba(226,22,16,.19) 72%,
+             rgba(210,20,14,.06) 88%,transparent 100%);
+  filter:blur(var(--iris-blur,1.2px));
   mix-blend-mode:color;
 }
 
@@ -728,7 +740,7 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 /* Lên/xuống mượt, đỉnh KHÔNG chạm 1 — mắt hơi rực lên rồi dịu, không giật cục */
 @keyframes eyeFlash{
   0%,100%{opacity:0}
-  30%{opacity:.9}
+  30%{opacity:.74}
   50%{opacity:.55}
   72%{opacity:.9}
 }
@@ -1009,13 +1021,20 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    Máy nào bật chế độ giảm chuyển động thì thôi nảy, chuyển sang mờ-tỏ. */
 #scene-game .narr .line.wait{color:rgba(190,238,255,.45);
   display:flex;align-items:center;gap:5px;min-height:1.4em}
-#scene-game .narr .line.wait i{width:5px;height:5px;border-radius:50%;
-  background:currentColor;display:block;animation:owGo 1.25s ease-in-out infinite}
+/* Ô VUÔNG, không bo tròn: cả màn này là pixel-art, một chấm tròn mượt nằm
+   giữa đám chữ răng cưa đọc ra ngay là "thứ của web hiện đại lạc vào". */
+#scene-game .narr .line.wait i{width:6px;height:6px;border-radius:0;
+  background:currentColor;display:block;animation:owGo 1.25s steps(1,end) infinite}
 #scene-game .narr .line.wait i:nth-child(2){animation-delay:.16s}
 #scene-game .narr .line.wait i:nth-child(3){animation-delay:.32s}
+/* `steps(1,end)` = GIỮ NGUYÊN giá trị của mỗi mốc rồi NHẢY PHỰT sang mốc kế —
+   ba vị trí dứt khoát 0 → -3px → 0, không có điểm nào ở giữa. Đúng kiểu con
+   trỏ trong game pixel: nó không bao giờ đi nửa ô.
+   (Thử `steps(2,end)` trước đó thì mỗi quãng chia đôi, hoá ra vẫn ghé qua
+    -1,5px — tức là nửa ô, đúng cái đang muốn tránh.) */
 @keyframes owGo{
   0%,60%,100%{transform:translateY(0);opacity:.35}
-  30%{transform:translateY(-2px);opacity:1}
+  30%{transform:translateY(-3px);opacity:1}
 }
 @media (prefers-reduced-motion:reduce){
   #scene-game .narr .line.wait i{animation:owMo 1.25s ease-in-out infinite}
@@ -1874,6 +1893,9 @@ const VEIL_PAD_X = 0.14, VEIL_PAD_Y = 0.34;
 const VEIL_PAD_X_SACH = 0.30, VEIL_PAD_Y_SACH = 0.85;
 /* Bán kính nhoè = bấy nhiêu lần CHIỀU CAO bảng đá (xem ghi chú ở fitSlabs) */
 const VEIL_BLUR_K = 0.27;
+/* Nhoè con ngươi = 22% chiều cao con ngươi. Đủ để mép tan hẳn vào tròng mắt
+   mà lõi vẫn còn ra hình. Xem ghi chú ở `.eye .iris`. */
+const IRIS_BLUR_K = 0.22;
 function cutOut(node, W, H, L, T2, w, h){
   node.style.width  = w.toFixed(2) + 'px';
   node.style.height = h.toFixed(2) + 'px';
@@ -1940,8 +1962,11 @@ function fitSlabs(){
     const n = el.eyes[i]; if(!n) return;
     n.style.left   = (W*pc(e.left)).toFixed(2)+'px';
     n.style.top    = (H*pc(e.top)).toFixed(2)+'px';
+    const eh = H*pc(e.h);
     n.style.width  = (W*pc(e.w)).toFixed(2)+'px';
-    n.style.height = (H*pc(e.h)).toFixed(2)+'px';
+    n.style.height = eh.toFixed(2)+'px';
+    /* Nhoè theo CHIỀU CAO con ngươi — xem ghi chú ở `.eye .iris` */
+    n.style.setProperty('--iris-blur', (eh * IRIS_BLUR_K).toFixed(2)+'px');
   });
 }
 /* Cuộn thư: vùng chạm nới rộng cho vừa ngón tay, mẩu ảnh giữ đúng cỡ thật */
@@ -2334,6 +2359,31 @@ function armIdle(){
    trả về bình thường. Bỏ class ra rồi ép trình duyệt đọc lại kích thước
    (`offsetWidth`) mới gắn vào — không thì sai liên tiếp hai lần, animation
    đang chạy dở sẽ không khởi động lại từ đầu. */
+/* ═══ CHE BỆ ĐÁ TRONG LÚC CHẠY CLIP "GÕ SAI" ══════════════════════════════
+   BỆNH ĐÃ SỬA: "khi hiệu ứng làm sai thì bệ đá không che được chữ REZAR —
+   rắn rung phát là nhìn rõ chữ luôn".
+
+   Thủ phạm không phải bệ đá mà là CHÍNH CLIP. `anim_wrong.webp` là bản quay
+   trên cảnh CŨ, trong đó chữ khắc REZAR còn nguyên và sáng rực — soi cả 121
+   khung thì khung nào cũng có chừng 630 điểm ảnh nét vàng ở đúng ô bảng đá.
+   Nền vòng 1 nay dùng ảnh đá SẠCH, lớp che đã tắt hẳn (xem `apDungAnh`), nên
+   clip vừa bật lên là chữ hiện ra — hệt như kéo tấm màn xuống.
+
+   Cách chữa: bật lại đúng mẩu đá sạch nằm sẵn ở `.veil`.
+     · Nó vốn là ảnh `bg_r1_clean` cắt đúng ô bảng đá, không nhoè, không hạ
+       sáng — dán lên là khít từng pixel.
+     · `.slab` nằm ở z-index 6, trên lớp clip (z-index 5), nên che được.
+     · Cảnh trong clip ĐỨNG YÊN tuyệt đối (dò cả 121 khung: lệch 0px), nên
+       một mẩu dán tĩnh khớp suốt clip, không trôi.
+     · Ký tự người chơi đã bới ra vẫn nổi lên trên, vì `.cells` nằm SAU
+       `.veil` trong DOM.
+   Chưa có ảnh đá sạch (`.sach` chưa bật) thì KHÔNG đụng: lúc đó nền cũng là
+   ảnh cũ có chữ, lớp che nhoè vẫn đang bật và vẫn đang làm việc của nó. */
+function chePhachClip(slab, on){
+  const veil = slab && slab.querySelector('.veil');
+  if(!veil || !slab.classList.contains('sach')) return;
+  veil.style.display = on ? '' : 'none';
+}
 function flashEyes(){
   el.eyes.forEach(e=>{
     e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash');
@@ -2615,7 +2665,12 @@ async function fail(le){
   if(cho > 1 && C.dialogues.le_het_luot) await say(C.dialogues.le_het_luot, 'warn');
 
   if(S.round === 1){
-    playClip(A('anim_wrong'), T.anim_wrong);      /* chạy song song với log */
+    /* Che bệ đá TRƯỚC khi clip vào DOM, gỡ SAU khi clip tắt — xem ghi chú dài
+       ở `chePhachClip`. Clip chạy song song với dòng thoại nên bám vào lời hứa
+       của chính nó, đừng hẹn giờ riêng kẻo lệch. */
+    chePhachClip(el.slab1, true);
+    playClip(A('anim_wrong'), T.anim_wrong)
+      .then(()=> chePhachClip(el.slab1, false));
     await say(le ? C.dialogues.round1_wrong : C.dialogues.round1_wrong, 'err');
   }else{
     el.narr.classList.remove('shake'); void el.narr.offsetWidth;
