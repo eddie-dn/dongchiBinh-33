@@ -1443,6 +1443,53 @@ const wait = ms => new Promise(r=>setTimeout(r,ms));
    hỏng cũng không được làm phiền người chơi.
    `chiMotLan` cho mấy mốc chỉ có ý nghĩa lần đầu (vào cổng, phá đảo…), khỏi
    thổi phồng số liệu khi người ta F5 mấy lượt. */
+/* Đang ở màn nào của Gate 2, người chơi tới đâu — chuông báo phải nói đúng
+   chỗ, xem ghi chú ở `tieuDe()` trong api/ping.js.
+
+   ⚠ ĐỌC QUA DOM VÀ Ổ NHỚ, ĐỪNG ĐỌC THẲNG `S` / `owOn` / `Store`.
+   BẪY ĐÃ VẤP: ba cái đó khai bằng `const`/`let` Ở DƯỚI hàm này. Cú ping đầu
+   tiên (vào cổng) chạy trước lúc chúng được khởi tạo, nên đọc tên là rơi vào
+   vùng chết — ReferenceError, `catch` nuốt, hai dòng lặng lẽ rỗng. `typeof`
+   cũng không cứu được: với `let`/`const` chưa khởi tạo thì `typeof` cũng ném.
+   Màn hiện tại thì nhìn lớp `.on` trên `<main class="scene">`, số vòng nhìn
+   bảng HUD, còn cờ phá đảo đọc thẳng ổ nhớ. */
+function manG2(){
+  const m = document.querySelector('main.scene.on');
+  return m ? m.id : '';
+}
+function noiG2(){
+  try{
+    if(document.querySelector('.ls-nen.on')) return 'Bản ghi';
+    const bar = document.getElementById('owbar');
+    if(bar && !bar.hidden) return 'Khu Open World';
+    const id = manG2();
+    const m = id === 'scene-game' ? 'Màn chơi'
+            : id === 'scene-code' ? 'Màn phát mã' : 'Màn cổng';
+    const v = vongG2();
+    return v ? m + ' · vòng ' + v : m;
+  }catch(e){ return ''; }
+}
+/* Số vòng đọc từ bảng HUD — nhưng CHỈ khi đang thật sự ở màn chơi: chữ
+   "ROUND 01/02" nằm sẵn trong HTML ngay từ lúc tải, đọc lúc còn ở cổng thì
+   báo "vòng 1" cho một người chưa bấm vào game bao giờ. */
+function vongG2(){
+  try{
+    if(manG2() !== 'scene-game') return 0;
+    const r = document.getElementById('hudRound');
+    const n = r ? (r.textContent.match(/\d+/) || [])[0] : null;
+    return n ? +n : 0;
+  }catch(e){ return 0; }
+}
+function ttG2(){
+  try{
+    let m = {};
+    try{ m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {}; }catch(e){}
+    const id = manG2();
+    if(m.g2Done || id === 'scene-code') return 'Đã phá đảo Gate 2';
+    const v = vongG2();
+    return v ? 'Đang ở vòng ' + v : 'Chưa vào game';
+  }catch(e){ return ''; }
+}
 function ping(ev, detail, chiMotLan){
   try{
     if(chiMotLan){
@@ -1455,7 +1502,7 @@ function ping(ev, detail, chiMotLan){
     }
     const body = JSON.stringify({
       ev: ev, detail: detail || '', at: new Date().toISOString(),
-      man: 'dad-950901-b', solved: [],
+      man: 'dad-950901-b', trang: 'dad-b', noi: noiG2(), tt: ttG2(), solved: [],
       ua: navigator.userAgent.slice(0, 120)
     });
     if(navigator.sendBeacon &&

@@ -1036,7 +1036,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.01">Last updated 25-Aug-2026 · V19.01</span>
+        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.02">Last updated 25-Aug-2026 · V19.02</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1101,7 +1101,9 @@ a.file:active{background:rgba(242,180,65,.07)}
       <p class="pin-hint" id="pinHint"></p>
       <div class="pin" id="pinDash"></div>
       <input class="pin-in" id="pinIn" type="text" inputmode="text" maxlength="6"
-             autocomplete="off" aria-label="Mã PIN">
+             autocomplete="off" autocorrect="off" spellcheck="false"
+             data-lpignore="true" data-form-type="other" data-1p-ignore
+             aria-label="Mã PIN">
       <p class="cx-hint" id="pinMsg"></p>
     </div>
   </div>
@@ -1421,20 +1423,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V03.09' },
+        credGate:true, pub:'16-Aug 2026', ver:'V04.00' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.00' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.01' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026 | V04.03', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V04.04', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.04',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.05',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -1554,12 +1556,13 @@ function verCua(s){
   const goc = temGoc(SO_CUA[s.id], t => t.ver);
   return goc || s.ver || '';
 }
-/* Hồ sơ có cửa mã khai `meta` thành một chuỗi liền "Published date: … | Vxx.yy".
-   Thay đúng phần số hiệu bằng số lấy từ sổ, giữ nguyên phần ngày phát hành. */
+/* Hồ sơ có cửa mã khai `meta` là RIÊNG phần ngày phát hành, số hiệu nối vào
+   sau. Trước đây chuỗi cứng ôm luôn cả số hiệu rồi mới thay bằng số của sổ —
+   nghĩa là số đó nằm ở hai nơi, và cái nằm trong `meta` lặng lẽ mốc dần qua
+   từng đợt. Nay `meta` không giữ số nào cả, chỉ còn đúng một chỗ để sai. */
 function metaKhoa(s){
   const v = verCua(s);
-  if(!v) return s.meta || '';
-  return String(s.meta || '').replace(/\|\s*V[\d.]+\s*$/, '| ' + v);
+  return String(s.meta || '') + (v ? ' | ' + v : '');
 }
 function metaMo(s){
   if(!s.pub) return s.meta || '';
@@ -2049,6 +2052,32 @@ function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unl
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
+/* Đang mở hộp toạ độ nào / bảng nào — để chuông báo nói đúng CHỖ chứ không chỉ
+   đúng trang. Không mở gì thì để trống, máy chủ tự bỏ phần này.
+   Mấy biến đọc ở đây (`pinArg`, `current`, `solved`, `eggWin`…) đều khai TRƯỚC
+   cú ping đầu tiên, hoặc chỉ đọc tới khi hộp tương ứng đã mở — xem cái bẫy
+   vùng chết đã vấp ở `noiG2()` trong dad/950901-b. */
+function noiHienTai(){
+  try{
+    if(document.getElementById('pinw')?.classList.contains('on'))  return 'Ô mã' + (pinArg ? ' · ' + pinArg : '');
+    if(document.querySelector('.ls-nen.on'))                        return 'Bản ghi';
+    if(document.getElementById('credw')?.classList.contains('on'))  return 'Box Tổng tư lệnh';
+    if(document.getElementById('hhw')?.classList.contains('on'))    return 'Hộp chào';
+    if(current)                                                     return 'Toạ độ ' + current;
+  }catch(e){}
+  return '';
+}
+/* Trạng thái THẬT của người chơi trên trang này, không phải một con số đặt sẵn */
+function ttHienTai(){
+  try{
+    const ds = Object.keys(solved);
+    let t = 'Toạ độ: ' + (ds.length ? ds.join(', ') : 'chưa giải cái nào') + ' (' + ds.length + '/4)';
+    if(eggWin) t += ' · phá đảo Easter Egg';
+    else if(eggDone) t += ' · đã mở Easter Egg';
+    if(resetCount > 0) t += ' · chơi lại R' + resetCount;
+    return t;
+  }catch(e){ return ''; }
+}
 function ping(ev, detail, onlyOnce){
   try{
     const tag = ev+':'+(detail||'');
@@ -2058,8 +2087,12 @@ function ping(ev, detail, onlyOnce){
       s.push(tag);
       try{ localStorage.setItem('mtping', JSON.stringify(s)); }catch(e){}
     }
+    /* Khai rõ MÌNH LÀ TRANG NÀO, ĐANG Ở HỘP NÀO và TRẠNG THÁI THẬT — trước
+       đây máy chủ đặt cứng tiêu đề "BẢN ĐỒ TÁC CHIẾN" cho mọi tín hiệu của cả
+       sáu trang, kèm luôn tiến độ bốn toạ độ vốn chỉ đúng với trang này. */
     const body = JSON.stringify({
       ev: ev, detail: detail||'', at: new Date().toISOString(),
+      trang: 'ban-do', noi: noiHienTai(), tt: ttHienTai(),
       solved: Object.keys(solved), ua: navigator.userAgent.slice(0,120)
     });
     if(navigator.sendBeacon &&
@@ -4294,18 +4327,30 @@ function drawPin(iRo){
    chấm (`PIN_HIEN_MS`), chứ không chấm ngay lúc phím vừa xuống — nhờ vậy bao
    giờ cũng kịp nhìn thấy mình vừa gõ số gì rồi cửa mới phản ứng.
    Phím Enter vẫn ăn cho ai quen bấm. */
+/* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js:
+   ① chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự (tự điền / dán nhảy cả cụm)
+   ② vừa chấm sai thì đường tự chấm nghỉ PIN_NGUOI_MS — HOÃN cú gõ tới lúc hết
+     nghỉ, không bỏ, để người gõ nhanh không bị kẹt trước một cửa im re */
+const PIN_NGUOI_MS = 900;
+let pinChanToi = 0, pinDaiTruoc = 0;
 function pinRoiChe(){
   /* Cắt theo đúng số ô: dán một chuỗi dài hơn mã thì `drawPin` đã xén bớt,
      mà chỉ số ô được hiện rõ vẫn phải nằm trong hàng ô. */
   const need = codeNorm(CODES[pinMode].code).length;
-  const i = Math.min(codeNorm($('pinIn').value).length, need) - 1;
+  const dai = Math.min(codeNorm($('pinIn').value).length, need);
+  const truoc = pinDaiTruoc; pinDaiTruoc = dai;
+  const i = dai - 1;
   if(pinHenChe){ clearTimeout(pinHenChe); pinHenChe = null; }
   drawPin(i);
   if(i < 0) return;
-  const du = i === need - 1;
+  const du = dai === need && dai === truoc + 1;            /* chốt 1 */
+  const day = ()=> codeNorm($('pinIn').value).length === need;
   pinHenChe = setTimeout(()=>{
     pinHenChe = null; drawPin(-1);
-    if(du && codeNorm($('pinIn').value).length === need) hackTry();
+    if(!du || !day()) return;
+    const con = pinChanToi - Date.now();                   /* chốt 2 */
+    if(con > 0){ pinHenChe = setTimeout(()=>{ pinHenChe = null; if(day()) hackTry(); }, con); return; }
+    hackTry();
   }, PIN_HIEN_MS);
 }
 function openPin(mode, arg){
@@ -4334,6 +4379,8 @@ function openPin(mode, arg){
 }
 function closePin(){
   pinw.classList.remove('on'); pinw.setAttribute('aria-hidden','true');
+  pinChanToi = 0; pinDaiTruoc = 0;      /* mở hộp mới thì mở lại rào */
+  if(pinHenChe){ clearTimeout(pinHenChe); pinHenChe = null; }
   $('pinIn').value = ''; drawPin(-1);
   /* Gõ Enter sai mã xong đóng hộp: nếu giữ tiêu điểm thì vòng viền amber của
      :focus-visible còn dính lại trên bản đồ, nhìn như lỗi. Bỏ tiêu điểm và
@@ -4386,6 +4433,7 @@ function hackTry(){
     msg.className = 'cx-hint bad';
     msg.textContent = 'Chưa đúng · Sai ' + pinFail + '/' + max + ' — gợi ý đã đổi' +
       (pinFail === max ? ' · sai thêm lần nữa là khoá 60 phút' : '');
+    pinChanToi = Date.now() + PIN_NGUOI_MS; pinDaiTruoc = 0;   /* chốt 2 */
     $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
     return;
   }
@@ -4424,6 +4472,7 @@ function hackTry(){
   }
   msg.className = 'cx-hint bad';
   msg.textContent = 'Sai rồi, còn ' + left + ' lượt';
+  pinChanToi = Date.now() + PIN_NGUOI_MS; pinDaiTruoc = 0;   /* chốt 2 */
   $('pinIn').value = ''; drawPin(-1);
   $('pinIn').focus();
 }

@@ -1,4 +1,145 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 18 — chặn cú tự điền của trình duyệt nuốt lượt; chuông báo nói đúng trang.
+════════════════════════════════════════════════════════════════════════════
+13 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/config.js
+    assets/lichsu.js                      han/961030-a/index.html
+    api/ping.js                           han/961030-b/index.html
+    dad/950901-a/index.html               phao-hoa/index.html
+    dad/950901-b/index.html
+
+    DESIGN-SYSTEM.md                      docs/GOOGLE-SHEETS.md
+    docs/BAN-GHI.md                       DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này — CẢ BẢY đều đổi:
+    /                 V19.01 → V19.02     /han/961030-a     V03.09 → V04.00
+    /dad/950901-a     V04.03 → V04.04     /han/961030-b     V03.00 → V03.01
+    /dad/950901-b     V05.04 → V05.05     /phao-hoa         V03.03 → V03.04
+    (khu Easter Egg trong sổ bản đồ      V19.01 → V19.02)
+
+    (Zoey's Castle nhảy V03.09 → V04.00 vì V03 đã dùng hết nấc đuôi.)
+
+
+① NHẬP SAI XONG, CHẠM LẠI LÀ MẤT MỘT LÈO BA LƯỢT
+────────────────────────────────────────────────────────────────────────────
+BỆNH: "lỗi khi nhập pass/pin sai nhấn lại thêm 1 lần pin/pass tự điền luôn,
+ko kịp sửa, xảy ra trong tíc tắc khi users nhấn lại pass sau khi sai, mất 1
+lèo 3 lượt + mất 1 lượt nữa."
+
+THỦ PHẠM là TRÌNH DUYỆT TỰ ĐIỀN, không phải mã game. Gõ sai xong ô được dọn
+sạch; chạm vào ô là trình duyệt (hoặc trình quản lý mật khẩu) nhét lại nguyên
+cụm mã vừa gõ. Ô đầy ngay lập tức → luật "gõ đủ ký tự là tự chấm" (đợt 15 mới
+chốt) nổ liền → sai tiếp → dọn ô → chạm lại → nổ tiếp. Ba lượt bay trong tích
+tắc mà tay người chơi chưa kịp làm gì.
+
+HAI CHỐT CHẶN, ĐẶT Ở CẢ TÁM Ô NHẬP CỦA CẢ BỘ:
+
+  CHỐT 1 · CHỈ TỰ CHẤM KHI Ô DÀI THÊM ĐÚNG MỘT KÝ TỰ.
+  Người gõ tay thì mỗi nhịp thêm một: 3 → 4. Tự điền và dán thì nhảy một phát
+  0 → 4. Nhảy hơn một là KHÔNG tự chấm. Đây là chốt chặn thật.
+
+  CHỐT 2 · VỪA CHẤM SAI THÌ NGHỈ 900ms — HOÃN, KHÔNG BỎ.
+  Trong quãng nghỉ mà ô lại đầy thì cú gõ bị đẩy lùi tới lúc hết nghỉ, không
+  bị vứt. Nhanh nhất cũng chỉ một lượt mỗi 900ms: nhìn thấy được, chặn được.
+
+  CỐ Ý KHÔNG BỎ HẲN Ở CHỐT 2. Nghe thì chặt hơn, nhưng người gõ nhanh thật có
+  thể đập lại bốn số trong chưa đầy một giây; bỏ cú đó thì họ ngồi nhìn ô đầy
+  mà cửa im re, không hiểu vì sao — hỏng còn nặng hơn cái bệnh đang chữa.
+
+ĐƯỜNG THOÁT VẪN CÒN NGUYÊN: ai dán mã vào rồi bấm Enter thì vẫn gửi được.
+
+MỌI Ô MÃ NAY CHỐI BỘ NHỚ MẬT KHẨU CỦA TRÌNH DUYỆT:
+    autocomplete="off"  data-lpignore="true"
+    data-form-type="other"  data-1p-ignore
+
+    Ô mã Mission trước đây khai autocomplete="one-time-code" — nghe đúng nghĩa
+    mà lại là thứ khiến iOS tự điền hăng nhất, nó bật hẳn gợi ý mã lên bàn
+    phím. Đó chính là chỗ bệnh nặng nhất. Đã bỏ.
+
+TÁM Ô ĐƯỢC VÁ: cửa mã bản ghi (dùng chung cho cả bảy sổ), ô PIN hồ sơ ngoài
+bản đồ, ô mã Mission bên Hồ sơ Phi đoàn, cửa vào và bảng điều phối của Zoey's
+Castle, cửa vào và bảng điều phối của Secret Chamber, và Ô TRẢ LỜI CÂU HỎI bên
+Zoey's Castle — ô đó dùng chung #inp với cửa mã của chính trang nên trình
+duyệt rất sẵn lòng nhét mã cửa vào, mà cháy lượt ở đó thì bị gác câu 30 phút.
+
+    (Ô nhập của Gate 2 KHÔNG cần vá: nó chỉ nhận thêm đúng một ký tự mỗi lần,
+     phần đã lộ bị khoá cứng ở đầu ô — cú tự điền bị cắt còn một ký tự, và ô
+     tự điền lại phần đã lộ nên không có đường nổ dây chuyền.)
+
+
+② CHUÔNG BÁO LUÔN ĐỀ "BẢN ĐỒ TÁC CHIẾN" DÙ TÍN HIỆU ĐẾN TỪ ĐÂU
+────────────────────────────────────────────────────────────────────────────
+BỆNH: tiêu đề bị đặt CỨNG trong api/ping.js cho mọi tín hiệu của cả sáu trang,
+kèm luôn dòng "Đã giải: … (n/4)" — tiến độ bốn toạ độ vốn chỉ đúng với bản đồ.
+Đọc lên không biết chuyện xảy ra ở đâu, mà con số thì vô nghĩa với năm trang
+còn lại.
+
+NAY MỖI TRANG TỰ KHAI BA THỨ:
+
+    trang   mã trang, cố định trong mã nguồn
+            ban-do · dad-a · dad-b · han-a · han-b · phao-hoa
+    noi     đang mở HỘP NÀO trong trang đó
+            "Ô mã · DAD-950901-A" · "Bản ghi" · "Khu Open World"
+    tt      MỘT DÒNG trạng thái thật của người chơi trên trang đó
+            "Mission: M1 ✓ · M2 — · M3 —"
+
+Máy chủ tra `trang` ra tiêu đề, nối `noi` sau dấu ·, rồi in `tt` nguyên văn.
+Trang cũ chưa khai `trang` thì đoán theo tiền tố tên sự kiện (g2_ · han_ ·
+phao_hoa_ …) — đường lùi, không phải đường chính.
+
+KHÔNG KHAI `tt` THÌ ĐỂ TRỐNG. Chỉ bản đồ mới có dòng mặc định bốn toạ độ; năm
+trang kia thà bỏ trống còn hơn in một con số không phải của mình.
+
+HAI CÁI BẪY ĐÃ VẤP KHI VIẾT PHẦN NÀY, cả hai đều IM LẶNG vì hàm nằm trong
+try/catch — chuông vẫn kêu, chỉ trống trơn đúng phần vừa thêm:
+
+  · Hồ sơ Phi đoàn: hai hàm nằm trong khối đo đạc, còn `st`, `ov`, kể cả hàm
+    rút gọn `byId` đều thuộc khối Mission — một IIFE khác. Gọi thẳng tên là
+    ReferenceError. Nay đọc qua DOM và ổ nhớ.
+  · Gate 2: `S`, `owOn`, `Store` khai bằng const/let Ở DƯỚI hàm ping(). Cú
+    ping đầu tiên chạy trước lúc chúng khởi tạo → rơi vào vùng chết. `typeof`
+    cũng không cứu được: với let/const chưa khởi tạo thì `typeof` cũng ném.
+
+Sổ Google Sheets nhận thêm ba cột cùng tên. Sheet cũ vẫn chạy: cột mới nối vào
+cuối, dòng cũ để trống ở đó.
+
+
+③ SỐ HIỆU THÔI NẰM Ở HAI CHỖ TRONG THẺ TOẠ ĐỘ
+────────────────────────────────────────────────────────────────────────────
+Thẻ hồ sơ Phi đoàn khai meta:'Published date: 27-Jul 2026 | V04.03' — ôm cả số
+hiệu vào chuỗi rồi mới bị thay bằng số của sổ lúc dựng thẻ. Thẻ hiện ra thì
+đúng, nhưng chuỗi trong NODES lặng lẽ mốc lại từng đợt, mà chính nó là bản lùi
+khi lichsu.js không tải nổi.
+
+Nay `meta` chỉ giữ phần ngày, số hiệu để ở `ver:` như ba thẻ kia, `metaKhoa()`
+nối vào. Một số hiệu, một chỗ khai.
+
+
+④ BỘ KIỂM
+────────────────────────────────────────────────────────────────────────────
+Thêm hai bộ mới:
+    tudien18.mjs   36 phép — năm cửa mã, mỗi cửa bốn phép: tự điền cả cụm
+                   KHÔNG nuốt lượt; Enter sau khi tự điền VẪN gửi được; gõ tay
+                   vẫn tự chấm; sai xong bị tự điền hai phát không mất lượt
+                   nào. Cộng phép "gõ tay thật nhanh thì lượt bị hoãn chứ
+                   không mất", và phép soi thuộc tính chối tự điền.
+    bao18.mjs      44 phép — máy chủ dựng đúng tiêu đề cho sáu trang, đoán
+                   đúng khi trang chưa khai, không mượn con số của bản đồ; sáu
+                   trang tự khai đúng mã; hai người chơi khác nhau phải ra hai
+                   dòng trạng thái khác nhau.
+
+Sáu bộ cũ phải sửa lại cách GÕ: chúng dùng fill() — nhét cả cụm một phát, đúng
+hình dạng cú tự điền — nên nay không còn tính là gõ. Đổi sang gõ tuần tự từng
+ký tự. Sửa bộ kiểm, KHÔNG nới luật.
+
+Hai bộ nữa (kt10, kt11) thôi ghi cứng số phiên bản, hỏi thẳng sổ. Ghi cứng thì
+mỗi đợt bump là chúng đỏ oan, phải đi sửa tay — mà sửa tay thì chẳng canh được
+gì nữa. Việc canh chuỗi cứng bản lùi có khớp sổ không đã có tem16.mjs lo.
+
+TỔNG: 409 phép, 0 hỏng.
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 17 — mốc ngày trong sổ tính theo bản .00, rút ngắn hạn nghỉ hai Mission.
 ════════════════════════════════════════════════════════════════════════════
 10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.

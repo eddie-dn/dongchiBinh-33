@@ -202,6 +202,12 @@ trang đó trong `assets/lichsu.js`.**
 **Thẻ toạ độ**: `pub` là **ngày phát hành**, một sự thật khác — giữ nguyên,
 đừng đổi theo. Chỉ phần `| Vxx.yy` mới lấy từ sổ.
 
+> **⚠ `meta:` KHÔNG ĐƯỢC ÔM SỐ HIỆU.** Thẻ còn khoá khai `meta:'Published
+> date: …'` — **chỉ phần ngày**, số hiệu nằm ở `ver:` và do `metaKhoa()` nối
+> vào. Trước đây `meta` ôm luôn cả `| V04.03` rồi mới bị thay bằng số của sổ:
+> thẻ hiện ra thì đúng, nhưng chuỗi trong `NODES` lặng lẽ mốc lại từng đợt, và
+> chính nó là bản lùi khi `lichsu.js` không tải nổi. Một số hiệu, một chỗ khai.
+
 ### 4.2 · Ra một phiên bản mới thì làm gì
 
 1. Thêm nấc đuôi vào `chi` của dòng mới nhất trong sổ của trang đó.
@@ -209,8 +215,12 @@ trang đó trong `assets/lichsu.js`.**
 2. **Sửa `sua` của dòng đó sang hôm nay.** Đây chính là bước hay quên.
    `ngay` thì **giữ nguyên** — đó là mốc build mở màn, không đổi theo.
    Mở dòng lớn MỚI thì `ngay` = hôm nay (vì `.00` chính là hôm nay).
-3. Nắn lại chuỗi cứng bản lùi cho khớp (tem + thẻ toạ độ).
-4. Chạy `tem16.mjs` — 13 phép, lệch một chỗ là đỏ.
+3. Nắn lại chuỗi cứng bản lùi cho khớp (tem + thẻ toạ độ). Đủ **bảy** chỗ:
+   `index.html` (`#stamp[data-base]` và `ver:` của bốn thẻ trong `NODES`),
+   `dad/950901-a` (`#vstamp`), `dad/950901-b/config.js` (`text.version`),
+   `han/961030-a` và `han/961030-b` (`#stamp[data-base]`), `phao-hoa`
+   (`.vstamp` — trang này **không** nạp `lichsu.js`).
+4. Chạy `tem16.mjs` — 16 phép, lệch một chỗ là đỏ.
 
 ---
 
@@ -432,16 +442,36 @@ Không bắt bấm `Enter`. Gõ xong ký tự cuối là hệ thống tự chấ
 vừa thành chấm — tức là dùng chung một cái hẹn giờ với luật §6.2:
 
 ```js
+var NGUOI_MS = 900;                        /* nhịp nghỉ sau mỗi lần chấm sai */
+var chanTuChamToi = 0, daiTruoc = 0;
+
 function veRoiChe(){
+  var truoc = daiTruoc; daiTruoc = go.length;
   var i = go.length - 1;
   if(henChe){ clearTimeout(henChe); henChe = null; }
   ve(i);                                   /* hiện rõ ký tự vừa gõ */
   if(i < 0) return;
-  var du = go.length === len;
+  var du = go.length === len && go.length === truoc + 1;      /* chốt 1 */
   henChe = setTimeout(function(){
     henChe = null; ve(-1);                 /* thành chấm */
-    if(du && go.length === len) cham();    /* …rồi mới chấm */
+    if(!du || go.length !== len) return;
+    var con = chanTuChamToi - Date.now();                     /* chốt 2 */
+    if(con > 0){                           /* …chưa hết nhịp nghỉ thì HOÃN */
+      henChe = setTimeout(function(){
+        henChe = null;
+        if(go.length === len && inp.isConnected) cham();
+      }, con);
+      return;
+    }
+    cham();                                /* …rồi mới chấm */
   }, HIEN_MS);
+}
+
+/* Nhánh CHẤM SAI phải đóng rào lại, nếu không thì chốt 2 vô nghĩa */
+function cham(){
+  if(go === MA){ moCua(); return; }
+  chanTuChamToi = Date.now() + NGUOI_MS;
+  go = ''; inp.value = ''; daiTruoc = 0; ve(-1);
 }
 ```
 
@@ -454,7 +484,51 @@ chấm luôn, khỏi phải chờ hết nhịp.
 
 Chỗ **không che chữ** (ô trả lời câu hỏi bên Zoey's Castle) thì không có nhịp
 hiện-rồi-che để bám vào, nên dùng một hẹn giờ riêng (`CHO_CHAM`, 620ms) — vẫn
-là chờ một nhịp cho mắt đọc lại cả hàng ô trước khi chấm.
+là chờ một nhịp cho mắt đọc lại cả hàng ô trước khi chấm. **Hai chốt dưới đây
+vẫn phải có ở đó**: ô đó dùng chung `#inp` với cửa mã của chính trang, nên
+trình duyệt rất sẵn lòng nhét mã cửa vào ô trả lời.
+
+#### Hai chốt chặn TỰ CHẤM OAN
+
+> **⚠ BỆNH ĐÃ SỬA — ĐỌC TRƯỚC KHI ĐỘNG VÀO `veRoiChe`.**
+> *"Nhập sai, bấm lại thêm một lần là pin tự điền luôn, không kịp sửa, mất một
+> lèo ba lượt rồi mất thêm một lượt nữa."*
+> Thủ phạm là **trình duyệt tự điền**: gõ sai xong ô được dọn sạch, chạm vào ô
+> là trình duyệt (hoặc trình quản lý mật khẩu) nhét lại nguyên cụm mã vừa gõ.
+> Ô đầy ngay lập tức → luật "gõ đủ là tự chấm" nổ liền → sai tiếp → dọn ô →
+> chạm lại → nổ tiếp. Ba lượt bay trong tích tắc mà tay người chơi chưa kịp
+> làm gì.
+
+**CHỐT 1 · chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự.**
+Người gõ tay thì mỗi nhịp thêm một: `3 → 4`. Tự điền và dán thì nhảy một phát
+`0 → 4`. Nhảy hơn một là **không** tự chấm — muốn gửi thì bấm `Enter`, đường đó
+còn nguyên. Đây mới là chốt chặn thật.
+
+**CHỐT 2 · vừa chấm sai thì nghỉ `NGUOI_MS` (900ms) — HOÃN, KHÔNG BỎ.**
+Trong quãng nghỉ mà ô lại đầy thì cú gõ bị **đẩy lùi** tới lúc hết nghỉ, không
+bị vứt. Nhờ vậy nhanh nhất cũng chỉ một lượt mỗi 900ms — nhìn thấy được, chặn
+được — thay vì ba lượt trong tích tắc.
+
+> **⚠ ĐỪNG ĐỔI CHỐT 2 THÀNH "BỎ HẲN".** Nghe thì chặt hơn, nhưng người gõ
+> nhanh thật có thể đập lại bốn số trong chưa đầy một giây; bỏ cú đó thì họ
+> ngồi nhìn ô đầy mà cửa im re, không hiểu vì sao — hỏng còn nặng hơn cái bệnh
+> đang chữa. Chốt 1 lo phần chặn, chốt 2 chỉ ghìm nhịp.
+
+**Cú hoãn phải kiểm lại `inp.isConnected`** trước khi chấm: hộp có thể đã bị
+dựng lại hoặc đóng trong quãng chờ.
+
+#### Ô nhập phải chối bộ nhớ mật khẩu của trình duyệt
+
+Mọi ô mã khai đủ bốn thứ này — thiếu cái nào `tudien18.mjs` báo đỏ:
+
+```html
+<input autocomplete="off" data-lpignore="true"
+       data-form-type="other" data-1p-ignore ...>
+```
+
+> **⚠ ĐỪNG DÙNG `autocomplete="one-time-code"`.** Nghe đúng nghĩa mà lại là
+> thứ khiến iOS tự điền hăng nhất — nó bật hẳn gợi ý mã trên bàn phím. Cửa
+> Mission từng khai vậy và chính là chỗ bệnh nặng nhất.
 
 ### 6.2 · Thấy mình gõ gì rồi mới thành chấm
 
@@ -548,3 +622,51 @@ màn hình máy.
 
 **Đừng** đặt cho: nội dung người chơi có thể muốn chép (thư, mã PIN dạng chữ,
 câu trả lời trong Open World).
+
+---
+
+## 9. TÍN HIỆU BẮN VỀ PHẢI TỰ KHAI MÌNH LÀ AI
+
+Sáu trang đều gọi `/api/ping`. Trang nào cũng phải kèm **ba trường tự khai**:
+
+| Trường | Là gì | Ví dụ |
+|---|---|---|
+| `trang` | mã trang, cố định trong mã nguồn | `ban-do` · `dad-a` · `dad-b` · `han-a` · `han-b` · `phao-hoa` |
+| `noi` | đang mở **hộp nào** trong trang đó | `Ô mã · DAD-950901-A` · `Bản ghi` · `Khu Open World` |
+| `tt` | **một dòng** trạng thái thật của người chơi | `Mission: M1 ✓ · M2 — · M3 —` |
+
+Máy chủ tra `trang` ra tiêu đề trong bảng `TEN_TRANG` (`api/ping.js`), nối `noi`
+vào sau dấu `·`, rồi in `tt` nguyên văn.
+
+> **⚠ BỆNH ĐÃ SỬA.** Trước đây máy chủ đặt **cứng** tiêu đề `BẢN ĐỒ TÁC CHIẾN`
+> cho **mọi** tín hiệu của cả sáu trang, kèm luôn dòng `Đã giải: … (n/4)` —
+> tiến độ bốn toạ độ vốn chỉ đúng với bản đồ. Đọc chuông báo không biết chuyện
+> xảy ra ở đâu, mà con số thì vô nghĩa với năm trang còn lại.
+
+**Luật khi thêm trang mới**
+
+1. Thêm một khoá vào `TEN_TRANG`, và thêm tiền tố tên sự kiện vào `doanTrang()`.
+2. Trang tự khai `trang` / `noi` / `tt` trong `ping()`.
+3. **Không khai `tt` thì để trống.** Chỉ bản đồ mới có dòng mặc định bốn toạ
+   độ — trang khác thà bỏ trống còn hơn in một con số không phải của mình
+   (`dong.filter(Boolean)` tự bỏ dòng rỗng, không để lại chỗ hở).
+4. `doanTrang()` là **đường lùi** cho trang cũ chưa khai `trang`, không phải
+   đường chính. Thêm trang mới thì khai thẳng, đừng dựa vào việc đoán.
+
+> **⚠ `noi` VÀ `tt` PHẢI ĐỌC QUA DOM HOẶC Ổ NHỚ, ĐỪNG ĐỌC BIẾN CỦA KHỐI KHÁC.**
+> Hai cái bẫy đã vấp, cả hai đều **im lặng** vì hàm nằm trong `try/catch`:
+> - **Hồ sơ Phi đoàn**: `noiHS()`/`ttHS()` nằm trong khối đo đạc, còn `st`,
+>   `ov`, kể cả hàm rút gọn `byId` đều thuộc khối Mission — một IIFE khác.
+>   Gọi thẳng tên là `ReferenceError`.
+> - **Gate 2**: `S`, `owOn`, `Store` khai bằng `const`/`let` **ở dưới** hàm
+>   `ping()`. Cú ping đầu tiên chạy trước lúc chúng khởi tạo → rơi vào vùng
+>   chết. `typeof` cũng **không** cứu được: với `let`/`const` chưa khởi tạo thì
+>   `typeof` cũng ném.
+>
+> Cả hai lần chuông vẫn kêu, chỉ là trống trơn đúng phần vừa thêm. Bộ kiểm
+> `bao18.mjs` mục ⑥ bắt đúng chuyện này: mỗi trang phải ra `noi` và `tt` **khác
+> rỗng**, và mục ⑦ soi thêm rằng hai người chơi khác nhau phải ra hai dòng khác
+> nhau — chuỗi đặt cứng thì không qua được.
+
+Sổ Google Sheets nhận thêm ba cột cùng tên; trang cũ chưa khai `trang` thì cột
+đó điền bằng chỗ `doanTrang()` đoán ra — xem `docs/GOOGLE-SHEETS.md`.

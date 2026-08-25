@@ -377,7 +377,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V03.09<br>Last updated 25-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V04.00<br>Last updated 25-Aug-2026"></span>
     </span>
   </div>
 
@@ -570,9 +570,16 @@ function mocMoLai(){
 }
 
 /* ═══════════ 3. ĐO ĐẠC ═══════════ */
+/* Trang tự khai mình là ai, đang ở đâu, người chơi đang ở trạng thái nào —
+   xem ghi chú ở `tieuDe()` trong api/ping.js. */
+function noiTr(){ try{ return document.querySelector('.ls-nen.on') ? 'Bản ghi'
+    : (st.aOpen ? 'Bộ câu hỏi' : 'Cửa mã'); }catch(e){ return ''; } }
+function ttTr(){ try{ return 'Đúng ' + soDung() + '/' + TONG + ' câu'
+    + (st.done ? ' · đã xong' : ''); }catch(e){ return ''; } }
 function ping(ev, detail){
   try{
     var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
+      trang:'han-a', noi:noiTr(), tt:ttTr(),
       solved:[], ua:navigator.userAgent.slice(0,120) });
     if(navigator.sendBeacon &&
        navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))) return;
@@ -1049,17 +1056,36 @@ function drawQ(pos){
     }
     var moi = moGoiY(false);
     msg(moi ? 'Gợi ý nè, ngó thử ✦' : treu(), !!moi);
+    chanTuChamToi = Date.now() + NGUOI_MS; daiTruoc = 0;   /* chốt 2 */
     buf = ''; inp.value = ''; paint();
   }
   /* Gõ đủ chữ là TỰ CHẤM (không bắt bấm Enter). Chờ CHO_CHAM một nhịp để mắt
      kịp đọc lại cả hàng ô trước khi chấm — phần này không che chữ nên không có
      nhịp hiện-rồi-che để bám vào như mấy cửa mã. Enter vẫn ăn. */
   var CHO_CHAM = 620, henCham = null;
+  /* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js.
+     Ô này dùng CHUNG id `#inp` với cửa mã của chính trang, nên trình duyệt rất
+     dễ nhét lại mã cửa vào đây: một cú tự điền là bay một lượt của câu hỏi, mà
+     cháy lượt thì câu đó bị gác lại 30 phút. */
+  var NGUOI_MS = 900, chanTuChamToi = 0, daiTruoc = 0;
   inp.addEventListener('input', function(){
+    var truoc = daiTruoc;
     buf = norm(inp.value).slice(0, len); paint();
+    daiTruoc = buf.length;
     if(henCham){ clearTimeout(henCham); henCham = null; }
-    if(buf.length === len)
-      henCham = setTimeout(function(){ henCham = null; if(buf.length === len) check(); }, CHO_CHAM);
+    if(buf.length !== len || buf.length !== truoc + 1) return;     /* chốt 1 */
+    henCham = setTimeout(function(){
+      henCham = null;
+      if(buf.length !== len || !inp.isConnected) return;
+      var con = chanTuChamToi - Date.now();                        /* chốt 2 */
+      if(con > 0){
+        henCham = setTimeout(function(){
+          henCham = null; if(buf.length === len && inp.isConnected) check();
+        }, con);
+        return;
+      }
+      check();
+    }, CHO_CHAM);
   });
   inp.addEventListener('keydown', function(e){
     if(e.key !== 'Enter') return;
@@ -1194,15 +1220,29 @@ function drawGateA(){
   }
   /* Gõ đủ ký tự là TỰ CHẤM, đúng vào nhịp ký tự cuối vừa thành chấm — nhờ vậy
      bao giờ cũng kịp nhìn thấy mình vừa gõ gì. Enter vẫn ăn. */
+  /* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js:
+     ① chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự (tự điền / dán nhảy cả cụm)
+     ② vừa chấm sai thì đường tự chấm nghỉ NGUOI_MS — HOÃN cú gõ tới lúc hết
+       nghỉ, không bỏ, để người gõ nhanh không bị kẹt trước một cửa im re */
+  var NGUOI_MS = 900, chanTuChamToi = 0, daiTruoc = 0;
   function veRoiChe(){
+    var truoc = daiTruoc; daiTruoc = buf.length;
     var i = buf.length - 1;
     if(henChe){ clearTimeout(henChe); henChe = null; }
     paint(i);
     if(i < 0) return;
-    var du = buf.length === len;
+    var du = buf.length === len && buf.length === truoc + 1;   /* chốt 1 */
     henChe = setTimeout(function(){
       henChe = null; paint(-1);
-      if(du && buf.length === len) cham();
+      if(!du || buf.length !== len) return;
+      var con = chanTuChamToi - Date.now();                    /* chốt 2 */
+      if(con > 0){
+        henChe = setTimeout(function(){
+          henChe = null; if(buf.length === len && inp.isConnected) cham();
+        }, con);
+        return;
+      }
+      cham();
     }, HIEN_MS);
   }
   paint(-1);
@@ -1225,6 +1265,7 @@ function drawGateA(){
       var m2 = $('msg');
       m2.textContent = st.aSai >= 3 ? 'Chưa đúng ✦ Mã nằm ở màn Easter Egg · Gate 2 nha' : treu();
       m2.classList.remove('ok');
+      chanTuChamToi = Date.now() + NGUOI_MS; daiTruoc = 0;   /* chốt 2 */
       buf = ''; inp.value = ''; paint(-1);
     }
   }
@@ -1396,15 +1437,29 @@ function hopPin(){
   }
   /* Gõ đủ ký tự là TỰ CHẤM, đúng vào nhịp ký tự cuối vừa thành chấm — nhờ vậy
      bao giờ cũng kịp nhìn thấy mình vừa gõ gì. Enter vẫn ăn. */
+  /* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js:
+     ① chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự (tự điền / dán nhảy cả cụm)
+     ② vừa chấm sai thì đường tự chấm nghỉ NGUOI_MS — HOÃN cú gõ tới lúc hết
+       nghỉ, không bỏ, để người gõ nhanh không bị kẹt trước một cửa im re */
+  var NGUOI_MS = 900, chanTuChamToi = 0, daiTruoc = 0;
   function veRoiChe(){
+    var truoc = daiTruoc; daiTruoc = buf.length;
     var i = buf.length - 1;
     if(henChe){ clearTimeout(henChe); henChe = null; }
     paint(i);
     if(i < 0) return;
-    var du = buf.length === len;
+    var du = buf.length === len && buf.length === truoc + 1;   /* chốt 1 */
     henChe = setTimeout(function(){
       henChe = null; paint(-1);
-      if(du && buf.length === len) cham();
+      if(!du || buf.length !== len) return;
+      var con = chanTuChamToi - Date.now();                    /* chốt 2 */
+      if(con > 0){
+        henChe = setTimeout(function(){
+          henChe = null; if(buf.length === len && inp.isConnected) cham();
+        }, con);
+        return;
+      }
+      cham();
     }, HIEN_MS);
   }
   paint(-1);
@@ -1422,6 +1477,7 @@ function hopPin(){
       ctrlClose(); xong(true);
     }else{
       $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg'; $('cMsg').classList.remove('ok');
+      chanTuChamToi = Date.now() + NGUOI_MS; daiTruoc = 0;   /* chốt 2 */
       buf = ''; inp.value = ''; paint(-1);
     }
   }

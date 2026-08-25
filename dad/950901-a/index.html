@@ -737,10 +737,40 @@ render();
         '&detail=' + encodeURIComponent((detail||'').slice(0,80)) + '&t=' + Date.now();
     }catch(e){ formPing(ev, detail); }
   }
+  /* Đang mở hộp nào, người chơi tới đâu — chuông báo phải nói đúng chỗ, xem
+     ghi chú ở `tieuDe()` trong api/ping.js. Trước đây mọi tín hiệu đều mang
+     một tiêu đề cố định, đọc lên không biết chuyện xảy ra ở trang nào.
+
+     ⚠ ĐỌC QUA DOM VÀ Ổ NHỚ, KHÔNG ĐỌC BIẾN CỦA KHỐI MISSION.
+     BẪY ĐÃ VẤP: hai hàm này nằm trong khối đo đạc (IIFE ở trên), còn `st` và
+     `ov` nằm trong khối Mission (IIFE khác) — gọi thẳng tên biến là
+     ReferenceError, rơi vào `catch`, và cả hai dòng lặng lẽ trả về chuỗi rỗng.
+     Chuông vẫn kêu, chỉ là trống trơn đúng phần vừa thêm. Kể cả hàm rút gọn
+     `byId` cũng là của khối kia — ở đây gọi thẳng `document.getElementById`. */
+  function noiHS(){
+    try{
+      if(document.querySelector('.ls-nen.on')) return 'Bản ghi';
+      var ov = document.getElementById('msnOv'), lab = document.getElementById('msnLab');
+      if(ov && ov.classList.contains('show') && lab && lab.textContent.trim())
+        return lab.textContent.trim().slice(0, 36);
+      return 'Trang bìa';
+    }catch(e){ return ''; }
+  }
+  function ttHS(){
+    try{
+      var v = JSON.parse(localStorage.getItem('msn1') || '{}') || {};
+      return 'Mission: M1 ' + (v.m1 ? '✓' : '—')
+           + ' · M2 ' + (v.m2 ? '✓' : '—')
+           + ' · M3 ' + (v.m3 ? '✓' : '—')
+           + (v.form ? ' · đã gửi form' : '');
+    }catch(e){ return ''; }
+  }
   function ping(ev, detail){
     try{
       if(TRACK.mode === 'telegram' && TRACK.tgToken && TRACK.tgChat){
-        var text = ['HỒ SƠ ' + TAG,
+        var noi = noiHS();
+        var text = ['HỒ SƠ PHI ĐOÀN' + (noi ? ' · ' + noi : ''),
+          ttHS(),
           (NHAN[ev] || ev) + (detail ? ' — ' + detail : ''),
           new Date().toLocaleString('vi-VN', {timeZone:'Asia/Ho_Chi_Minh'}),
           navigator.userAgent.slice(0,110)].join('\n');
@@ -754,6 +784,7 @@ render();
       /* Mốc quan trọng thì đi thêm kênh biểu mẫu — thà trùng còn hơn mất dấu */
       if(TRACK.duplex && QUAN_TRONG[ev]) formPing(ev, detail);
       var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
+        trang:'dad-a', noi:noiHS(), tt:ttHS(),
         solved:[], kenh:'js', ua:navigator.userAgent.slice(0,120) });
       if(navigator.sendBeacon &&
          navigator.sendBeacon(TRACK.endpoint, new Blob([body],{type:'application/json'}))) return;
@@ -1441,7 +1472,8 @@ render();
     if(which === 2 && st.m2goi)
       body += '<ul class="msn-hints"><li>' + M2_GOI_Y + '</li></ul>';
     body += '<div class="msn-cells" id="msnCells">'
-      + '<input class="msn-in" id="msnIn" type="text" autocomplete="one-time-code" '
+      + '<input class="msn-in" id="msnIn" type="text" autocomplete="off" '
+      + 'data-lpignore="true" data-form-type="other" data-1p-ignore '
       + 'autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Ô nhập mã truy cập"></div>'
       + '<div class="msn-msg" id="msnMsg"></div>';
     if(chuaForm)
@@ -1479,15 +1511,29 @@ render();
        chấm đúng vào nhịp ký tự cuối vừa thành chấm, chứ không chấm ngay lúc
        phím vừa xuống — nhờ vậy bao giờ cũng kịp nhìn thấy mình vừa gõ gì.
        Enter vẫn ăn cho ai quen bấm. */
+  /* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js:
+     ① chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự (tự điền / dán nhảy cả cụm)
+     ② vừa chấm sai thì đường tự chấm nghỉ NGUOI_MS — HOÃN cú gõ tới lúc hết
+       nghỉ, không bỏ, để người gõ nhanh không bị kẹt trước một cửa im re */
+    var NGUOI_MS = 900, chanTuChamToi = 0, daiTruoc = 0;
     function veRoiChe(){
+      var truoc = daiTruoc; daiTruoc = buf.length;
       var i = buf.length - 1;
       if(henChe){ clearTimeout(henChe); henChe = null; }
       paint(i);
       if(i < 0) return;
-      var du = buf.length === len;
+      var du = buf.length === len && buf.length === truoc + 1;   /* chốt 1 */
       henChe = setTimeout(function(){
         henChe = null; paint(-1);
-        if(du && buf.length === len) check();
+        if(!du || buf.length !== len) return;
+        var con = chanTuChamToi - Date.now();                    /* chốt 2 */
+        if(con > 0){
+          henChe = setTimeout(function(){
+            henChe = null; if(buf.length === len && input.isConnected) check();
+          }, con);
+          return;
+        }
+        check();
       }, HIEN_MS);
     }
     function msg(t, ok){ var m = byId('msnMsg'); if(m){ m.innerHTML = t; m.classList.toggle('ok', !!ok); } }
@@ -1589,7 +1635,8 @@ render();
         + ' phiên · ' + st.dayN + '/' + TRY_D + ' ngày');
       if(hasNew) hintsPaint();
       cdPaint(); quotaPaint();
-      buf = ''; input.value = ''; paint(-1);
+      chanTuChamToi = Date.now() + NGUOI_MS;   /* chốt 2 */
+      buf = ''; input.value = ''; daiTruoc = 0; paint(-1);
       if(dayOut() || w >= TRY_S){
         var ms = nghiMs(which);
         st.lockUntil = dayOut() ? nuaDem() : Date.now() + ms; save();
@@ -2187,7 +2234,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.03<br>Last updated 25-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.04<br>Last updated 25-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

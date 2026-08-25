@@ -36,6 +36,48 @@ function chepVeSheet(o) {
   } catch (e) {}
 }
 
+/* ═══ TIÊU ĐỀ ĐI THEO ĐÚNG TRANG ĐÃ BẮN ═════════════════════════════════
+   BỆNH ĐÃ SỬA: mọi tín hiệu — dù đến từ Gate 2, Zoey's Castle, Secret
+   Chamber hay màn pháo hoa — đều mang tiêu đề "BẢN ĐỒ TÁC CHIẾN", và đều kèm
+   dòng "Đã giải: … (n/4)" là tiến độ RIÊNG của bản đồ. Đọc chuông báo không
+   biết chuyện xảy ra ở đâu, mà con số thì vô nghĩa với năm trang còn lại.
+
+   NAY trang tự khai `trang` (mã trang), `noi` (hộp / vị trí trong trang) và
+   `tt` (một dòng trạng thái ĐÚNG của trang đó). Trang cũ chưa khai `trang`
+   thì đoán theo tiền tố tên sự kiện — vẫn ra đúng, khỏi phải sửa đồng loạt
+   mới chạy được. */
+const TEN_TRANG = {
+  'ban-do'   : 'BẢN ĐỒ TÁC CHIẾN',
+  'dad-a'    : 'HỒ SƠ PHI ĐOÀN',
+  'dad-b'    : 'EASTER EGG · GATE 2',
+  'han-a'    : "ZOEY'S CASTLE",
+  'han-b'    : "HONGHAN'S SECRET CHAMBER",
+  'phao-hoa' : 'MÀN PHÁO HOA'
+};
+/* Đoán theo tiền tố sự kiện — chỉ dùng khi trang chưa khai `trang`. */
+function doanTrang(ev) {
+  if (/^g2_/.test(ev)) return 'dad-b';
+  if (/^han_b_|wishlist/.test(ev)) return 'han-b';
+  if (/^han_/.test(ev)) return 'han-a';
+  if (/^phao_hoa_/.test(ev)) return 'phao-hoa';
+  if (/^(sai_pin|khoa_pin|mo_khoa_m|gia_han_m|sos_|bam_dong_countdown|luu_profile|ve_trang_bia|trang_ho_so)/.test(ev))
+    return 'dad-a';
+  return 'ban-do';
+}
+function tieuDe(trang, ev) {
+  return TEN_TRANG[trang] || TEN_TRANG[doanTrang(ev)] || 'DONGCHI BÌNH 33';
+}
+/* Dòng trạng thái: ưu tiên chuỗi trang tự khai. Không khai thì CHỈ bản đồ mới
+   có mặc định (bốn toạ độ) — mấy trang kia thà bỏ trống còn hơn in một con số
+   không phải của mình. */
+function trangThai(trang, ev, tt, solved) {
+  if (tt) return tt;
+  const t = trang || doanTrang(ev);
+  if (t !== 'ban-do') return '';
+  return 'Đã giải: ' + (solved.length ? solved.join(', ') : 'chưa cái nào') +
+         ' (' + solved.length + '/4)';
+}
+
 const NHAN = {
   mo_ho_so:      'Mở hồ sơ toạ độ',
   chon_kenh:     'CHỐT KÊNH BẮT SÓNG',
@@ -205,15 +247,17 @@ module.exports = async (req, res) => {
   /* 'bieu-mau' = tín hiệu đi bằng kênh gửi biểu mẫu (form POST vào iframe ẩn),
      dùng khi máy người chơi có bộ chặn quảng cáo hoặc tường lửa. */
   const kenh = String(d.kenh || 'js').slice(0, 16);
+  const trang = String(d.trang || '').slice(0, 24);
+  const noi = String(d.noi || '').slice(0, 40);
+  const tt = String(d.tt || '').slice(0, 90);
 
   const dong = [
-    'BẢN ĐỒ TÁC CHIẾN' + (kenh === 'js' ? '' : ' [' + kenh + ']'),
+    tieuDe(trang, ev) + (noi ? ' · ' + noi : '') + (kenh === 'js' ? '' : ' [' + kenh + ']'),
     (NHAN[ev] || ev) + (detail ? ' — ' + detail : ''),
-    'Đã giải: ' + (solved.length ? solved.join(', ') : 'chưa cái nào') +
-      ' (' + solved.length + '/4)',
+    trangThai(trang, ev, tt, solved),
     gioVN(d.at || new Date().toISOString()),
     may
-  ];
+  ].filter(Boolean);
   const text = dong.join('\n');
 
   console.log('[PING]', JSON.stringify({ ev, detail, solved, kenh, at: d.at }));
@@ -223,7 +267,9 @@ module.exports = async (req, res) => {
      kiện chưa đặt nhãn (chính mấy dòng đó cho biết mình quên khai nhãn nào)
      và cả mấy nhịp bị chặn vì trùng. Chuông thì mới cần lọc cho đỡ ồn. */
   chepVeSheet({ ev, nhan: NHAN[ev] || '', detail, solved: solved.join(', '),
-                so_giai: solved.length, kenh, may, at: d.at || new Date().toISOString() });
+                so_giai: solved.length, kenh, may,
+                trang: trang || doanTrang(ev), noi, tt,
+                at: d.at || new Date().toISOString() });
 
   if (!NHAN[ev]) {                      /* sự kiện lạ → chỉ ghi log, không gửi đi */
     return finish(req, res);

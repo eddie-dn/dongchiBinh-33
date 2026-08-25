@@ -225,11 +225,12 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', ver:'V19', so:'02',
-          chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ',
+        { ngay:'2026-08-25', ver:'V19', so:'03',
+          chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
-            { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
+            { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
+            { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Trước đó gõ sai xong chạm lại vào ô là trình duyệt nhét lại nguyên cụm, cửa chấm liền, ba lượt bay trong tích tắc' }
           ] }
       ]
     },
@@ -306,7 +307,8 @@
           chinh:'Số hiệu của khu lấy chung một nguồn với tem ngoài trang',
           chi:[
             { ver:'V19.00', chinh:'Số hiệu và ngày của khu lấy thẳng từ sổ, khai một chỗ thay vì hai' },
-            { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
+            { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
+            { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp' }
           ] }
       ]
     },
@@ -354,13 +356,14 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'04',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'05',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
             { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
             { ver:'V04.01', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm ngay khi ký tự cuối vừa thành chấm' },
             { ver:'V04.02', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
-            { ver:'V04.03', chinh:'Cháy lượt thì nghỉ ngắn lại và chia theo từng cửa thay vì chung một mức: Mission 2 mười lăm phút, Mission 3 năm phút; cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn' }
+            { ver:'V04.03', chinh:'Cháy lượt thì nghỉ ngắn lại và chia theo từng cửa thay vì chung một mức: Mission 2 mười lăm phút, Mission 3 năm phút; cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn' },
+            { ver:'V04.04', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô mã Mission cũng thôi khai mình là ô mã một lần — thứ khiến trình quản lý mật khẩu hăng nhất' }
           ] }
       ]
     },
@@ -402,14 +405,15 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'05',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'06',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
             { ver:'V05.01', chinh:'Clip lúc gõ sai không còn để lộ chữ khắc trên bệ đá; mắt rồng lúc chớp đỏ dịu hẳn, đậm ở lõi rồi tan dần ra mép thay vì thành một đĩa đỏ có viền; dấu ba chấm khu Open World đổi sang ô vuông và nhảy theo nấc cho đúng chất màn hình pixel; lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' },
             { ver:'V05.02', chinh:'Clip nổ sập lab chạy trọn 10 giây đúng độ dài file thật, hết cảnh bị cắt ngang ở giây thứ 8; ô nhập tự nhận con trỏ mỗi lần mở lại nên gõ tiếp được ngay, khỏi bấm thêm một cái; bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm' },
             { ver:'V05.03', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
-            { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
+            { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
+            { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' }
           ] }
       ]
     },
@@ -431,6 +435,13 @@
             { ver:'V03.07', chinh:'Bỏ dòng nhắc gõ Enter — gõ đủ ký tự là tự chấm, cả ở cửa mã lẫn ô trả lời câu hỏi' },
             { ver:'V03.08', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V03.09', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
+          ] },
+        /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
+           xem luật ở đầu file. */
+        { ngay:'2026-08-25', ver:'V04', so:'01',
+          chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
+          chi:[
+            { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' }
           ] }
       ]
     },
@@ -452,10 +463,11 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', ver:'V03', so:'01',
+        { ngay:'2026-08-25', ver:'V03', so:'02',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
-            { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' }
+            { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
+            { ver:'V03.01', chinh:'Hai cửa mã của trang không còn bị trình duyệt tự điền nuốt lượt' }
           ] }
       ]
     },
@@ -477,12 +489,13 @@
           chinh:'Màn pháo hoa đầu tiên: bắn tự động, lời chúc hiện dần, thêm chế độ chạm-để-bắn' },
         { ngay:'2026-08-15', ver:'V02', so:null,
           chinh:'Quả trứng và vụ nổ vẽ tay trên canvas, thêm nút bắn lại và lối vào khu Easter Egg' },
-        { ngay:'2026-08-16', sua:'2026-08-19', ver:'V03', so:'04',
+        { ngay:'2026-08-16', sua:'2026-08-25', ver:'V03', so:'05',
           chinh:'Chỉnh khung màn và chỗ đứng của tem phiên bản',
           chi:[
             { ver:'V03.01', chinh:'Màn pháo hoa có tem phiên bản riêng' },
             { ver:'V03.02', chinh:'Dời tem lên cao và vào trong, khỏi đè lên mép màn hình' },
-            { ver:'V03.03', chinh:'Chốt số hiệu' }
+            { ver:'V03.03', chinh:'Chốt số hiệu' },
+            { ver:'V03.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' }
           ] }
       ]
     }
@@ -852,7 +865,9 @@
       + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
       + '<p class="ls-msg" id="lsMsg"></p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
-      +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
+      +   'autocomplete="off" autocorrect="off" spellcheck="false" '
+      +   'data-lpignore="true" data-form-type="other" data-1p-ignore '
+      +   'maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
     var msg = hop.querySelector('#lsMsg');
@@ -886,15 +901,52 @@
        cuối vừa thành chấm (`HIEN_MS`). Nhờ vậy bao giờ cũng kịp nhìn thấy
        mình vừa gõ số gì rồi cửa mới phản ứng — thấy chữ, chữ thành chấm, cửa
        trả lời. Vẫn giữ phím Enter cho ai quen bấm. */
+    /* ═══ HAI CHỐT CHẶN TỰ CHẤM OAN ══════════════════════════════════════
+       BỆNH ĐÃ SỬA: "nhập sai, bấm lại một cái là pin tự điền luôn, không kịp
+       sửa, mất một lèo ba lượt rồi mất thêm một lượt nữa."
+
+       Thủ phạm là TRÌNH DUYỆT TỰ ĐIỀN: gõ sai xong ô được dọn sạch, chạm vào
+       ô là trình duyệt (hoặc trình quản lý mật khẩu) nhét lại nguyên cụm mã
+       vừa gõ. Ô đầy ngay lập tức → luật "gõ đủ là tự chấm" nổ liền → sai
+       tiếp → dọn ô → chạm lại → nổ tiếp. Ba lượt bay trong tích tắc mà tay
+       người chơi chưa kịp làm gì.
+
+       CHỐT 1 · CHỈ TỰ CHẤM KHI Ô DÀI THÊM ĐÚNG MỘT KÝ TỰ.
+       Người gõ tay thì mỗi nhịp thêm một ký tự: 3 → 4. Tự điền và dán thì
+       nhảy một phát 0 → 4. Nhảy nhiều hơn một là KHÔNG tự chấm — muốn gửi
+       thì bấm Enter, vẫn còn nguyên đường đó.
+
+       CHỐT 2 · VỪA SAI XONG THÌ NGHỈ MỘT NHỊP — HOÃN, KHÔNG BỎ.
+       Sau mỗi lần chấm sai, đường tự chấm nghỉ `NGUOI_MS`. Trong quãng đó mà
+       ô lại đầy thì KHÔNG bỏ cú gõ, chỉ đẩy nó lùi đến lúc hết nghỉ. Nhờ vậy
+       nhanh nhất cũng chỉ một lượt mỗi `NGUOI_MS` — nhìn thấy được, chặn được
+       — thay vì ba lượt bay trong tích tắc.
+       CỐ Ý KHÔNG BỎ HẲN: người gõ nhanh thật có thể đập lại bốn số trong chưa
+       đầy một giây; bỏ cú đó thì họ ngồi nhìn ô đầy mà cửa im re, không hiểu
+       vì sao — hỏng còn nặng hơn cái bệnh đang chữa. Chốt 1 mới là chốt chặn
+       tự điền, chốt 2 chỉ ghìm nhịp. */
+    var NGUOI_MS = 900;
+    var chanTuChamToi = 0, daiTruoc = 0;
     function veRoiChe() {
+      var truoc = daiTruoc;
+      daiTruoc = go.length;
       var i = go.length - 1;
       if (henChe) { clearTimeout(henChe); henChe = null; }
       ve(i);
       if (i < 0) return;
-      var du = go.length === 4;
+      var du = go.length === 4 && go.length === truoc + 1;   /* chốt 1 */
       henChe = setTimeout(function () {
         henChe = null; ve(-1);
-        if (du && go.length === 4) cham();
+        if (!du || go.length !== 4) return;
+        var con = chanTuChamToi - Date.now();                /* chốt 2 */
+        if (con > 0) {
+          henChe = setTimeout(function () {
+            henChe = null;
+            if (go.length === 4 && inp.isConnected) cham();
+          }, con);
+          return;
+        }
+        cham();
       }, HIEN_MS);
     }
     /* GÕ SAI THÌ IM — không báo lỗi, không đếm hộ còn mấy lần. Phản hồi duy
@@ -902,7 +954,8 @@
        Đủ SAI_TOI_DA lần mới mở gợi ý, và từ đó nhớ luôn. */
     function cham() {
       if (go === MA) { veSo(ma); return; }
-      go = ''; inp.value = ''; ve(-1);
+      chanTuChamToi = Date.now() + NGUOI_MS;   /* chốt 2 — xem ghi chú trên */
+      go = ''; inp.value = ''; daiTruoc = 0; ve(-1);
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
       if (demSai() >= SAI_TOI_DA) { ghiThayGoiY(); hienGoiY(); }
     }

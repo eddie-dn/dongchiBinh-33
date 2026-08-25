@@ -67,7 +67,13 @@ khuôn của trang này sang trang kia là tem hiện sai hoặc mất hẳn:
 | Easter Egg · Gate 2 | `dad/950901-b/config.js` — khoá `version` | `Last updated DD-Mon-YYYY · Vxx.yy` |
 | Zoey's Castle | `han/961030-a/index.html` — `data-base` của `#stamp` | `Vx.yy<br>Last updated DD-Mon-YYYY` |
 | HongHan's Secret Chamber | `han/961030-b/index.html` — `data-base` của `#stamp` | `Vx.yy<br>Last updated DD-Mon-YYYY` |
-| Màn pháo hoa | `phao-hoa/index.html` — chữ giữa thẻ `#vstamp` | chỉ có `Vx.yy` |
+| Màn pháo hoa | `phao-hoa/index.html` — chữ giữa thẻ `.vstamp`. Trang này **không nạp `lichsu.js`**, nên chữ tĩnh ở đây là thứ duy nhất hiện ra | `Vxx.yy<br>Last updated DD-Mon-YYYY` |
+| Thẻ toạ độ ngoài bản đồ | `index.html` — khoá `ver:` của bốn hồ sơ trong `NODES` | chỉ số hiệu, `Vxx.yy` |
+
+> **⚠ `meta:` của thẻ còn khoá KHÔNG được ôm số hiệu.** Chỉ ghi phần ngày
+> (`meta:'Published date: 27-Jul 2026'`); số hiệu để ở `ver:` cho `metaKhoa()`
+> nối vào. Ôm cả hai vào một chuỗi là số hiệu nằm ở hai nơi, và cái nằm trong
+> `meta` mốc dần qua từng đợt mà không ai thấy.
 
 > Vì sao không nắn cho giống nhau hết: mỗi trang có hàm dựng tem riêng, đổi
 > khuôn là phải sửa cả hàm đó — được cái đẹp mà đổi lấy nguy cơ hỏng tem ở năm
@@ -75,6 +81,11 @@ khuôn của trang này sang trang kia là tem hiện sai hoặc mất hẳn:
 
 > **Mẹo kiểm tra bản đồ:** mở `/` là bị đẩy thẳng sang `/dad/950901-a` (luật dẫn người
 > chơi vào hồ sơ trước). Muốn xem bản đồ để đối chiếu tem thì mở `/?stay=1`.
+
+> **Bảy chuỗi này chỉ là BẢN LÙI.** Nguồn sự thật là chính cuốn sổ ở bước 2 —
+> tem hiện ra gọi `LichSu.tem()`, chuỗi cứng chỉ dùng khi `lichsu.js` không tải
+> nổi. Nhưng nó **phải khớp sổ**, và `tem16.mjs` soi đúng chuyện đó: lệch một
+> chỗ là đỏ. Xem §4.1 của `DESIGN-SYSTEM.md`.
 
 ### Bước 2 — Ghi vào `assets/lichsu.js`
 

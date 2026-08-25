@@ -112,7 +112,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
 
   <p class="eggcap" id="eggCap">Oh?</p>
-  <span class="vstamp">V03.03<br>Last updated 19-Aug-2026</span>
+  <span class="vstamp">V03.04<br>Last updated 25-Aug-2026</span>
 
   <div class="top">
     <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
@@ -142,9 +142,19 @@ var $ = function(id){ return document.getElementById(id); };
 var AUTO_MS  = 30*1000;
 var EGG_HREF = '/dad/950901-b';
 
+/* Trang tự khai mình là ai, đang ở đâu, người chơi đang ở trạng thái nào —
+   xem ghi chú ở `tieuDe()` trong api/ping.js. */
+function noiTr(){ return che === 'auto' ? 'Đang bắn' : 'Chờ bấm bắn'; }
+function ttTr(){
+  try{
+    var m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {};
+    return m.eggWin ? 'Đã phá đảo Easter Egg' : 'Chưa đi lối Easter Egg';
+  }catch(e){ return ''; }
+}
 function ping(ev, detail){
   try{
     var body = JSON.stringify({ ev:ev, detail:detail||'', at:new Date().toISOString(),
+      trang:'phao-hoa', noi:noiTr(), tt:ttTr(),
       solved:[], ua:navigator.userAgent.slice(0,120) });
     if(navigator.sendBeacon &&
        navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))) return;

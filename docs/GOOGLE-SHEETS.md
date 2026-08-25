@@ -98,9 +98,17 @@ deploy sau, sửa xong mà không redeploy thì vẫn chạy bản cũ.
 | `ev` | mã sự kiện, ví dụ `g2_giai_dung` |
 | `nhan` | tên tiếng Việt của sự kiện. **Trống = chưa khai nhãn** trong bảng `NHAN` của `api/ping.js` — sự kiện đó sẽ không bao giờ báo về Telegram, sổ này là chỗ duy nhất phát hiện ra |
 | `detail` | chi tiết kèm theo |
-| `solved` / `so_giai` | đã giải được mấy toạ độ |
+| `solved` / `so_giai` | đã giải được mấy toạ độ — **chỉ đúng với bản đồ**, năm trang kia để trống |
+| `trang` | trang nào gửi: `ban-do` · `dad-a` · `dad-b` · `han-a` · `han-b` · `phao-hoa`. Trang cũ chưa tự khai thì điền bằng chỗ `doanTrang()` đoán ra từ tiền tố tên sự kiện |
+| `noi` | đang mở hộp nào trong trang đó, ví dụ `Ô mã · DAD-950901-A`, `Khu Open World` |
+| `tt` | một dòng trạng thái thật của người chơi trên trang đó, ví dụ `Mission: M1 ✓ · M2 — · M3 —` |
 | `kenh` | `js` hay `bieu-mau` (đường vòng khi máy người chơi chặn fetch) |
 | `may` | chuỗi trình duyệt |
+
+Ba cột `trang` / `noi` / `tt` thêm từ đợt 18. Trước đó mọi dòng của cả sáu trang
+đều mang chung một tiêu đề và chung một con số tiến độ của bản đồ — xem luật ở
+`DESIGN-SYSTEM.md` mục 9. Sheet cũ vẫn chạy được: cột mới nối vào cuối, dòng cũ
+để trống ở đó.
 
 Sổ này ghi **đủ mọi tín hiệu**, kể cả sự kiện chưa có nhãn và mấy nhịp bị chặn
 vì trùng. Cố ý vậy: **Sheets là sổ lưu, Telegram là chuông báo.** Sổ thì phải
