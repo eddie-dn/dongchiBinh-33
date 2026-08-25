@@ -1473,7 +1473,15 @@ function temChu(){
      ("Last updated … · V04.03"). Trước đây ngược lại và số phiên bản chiếm hai
      hàng — ba dòng chữ nhỏ chồng nhau ở chân màn hình, đọc rối mà chẳng dòng
      nào nổi lên được. */
-  return (T.designed_by ? '<span class="vby">' + T.designed_by + '</span>' : '') + T.version;
+  /* Số hiệu và ngày lấy từ SỔ (`LichSu.tem`), `T.version` trong config chỉ còn
+     là bản lùi khi lichsu.js không tải nổi. Trước đây khai ở hai chỗ nên bump
+     số mà quên ngày — xem DESIGN-SYSTEM.md §4. */
+  var ver = T.version;
+  try{
+    var t = window.LichSu && LichSu.tem && LichSu.tem('DAD-B');
+    if(t) ver = 'Last updated ' + t.ngay + ' · ' + t.ver;
+  }catch(e){}
+  return (T.designed_by ? '<span class="vby">' + T.designed_by + '</span>' : '') + ver;
 }
 
 /* ── Kho localStorage dùng chung, một chỗ đọc/ghi duy nhất ────────────────── */

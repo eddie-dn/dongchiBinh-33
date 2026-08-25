@@ -2173,12 +2173,23 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.01<br>Last updated 24-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.02<br>Last updated 25-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
 <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 <script src="/assets/lichsu.js"></script>
+<script>
+/* Tem lấy từ SỔ; chữ tĩnh trong thẻ chỉ là bản lùi khi lichsu.js không tải nổi
+   — xem `LichSu.tem` và DESIGN-SYSTEM.md §4. Chạy sau khi nạp sổ. */
+(function(){
+  try{
+    var n = document.getElementById('vstamp');
+    var t = window.LichSu && LichSu.tem && LichSu.tem('DAD-A');
+    if(n && t) n.innerHTML = t.ver + '<br>Last updated ' + t.ngay;
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

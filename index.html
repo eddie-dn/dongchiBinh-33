@@ -1036,7 +1036,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 24-Aug-2026 · V18.09">Last updated 24-Aug-2026 · V18.09</span>
+        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.00">Last updated 25-Aug-2026 · V19.00</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1421,20 +1421,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V2' },
+        credGate:true, pub:'16-Aug 2026', ver:'V03.08' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V1' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V02.09' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026 | V04.01', pin:'file' },
+        meta:'Published date: 27-Jul 2026 | V04.02', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V1',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.03',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -1546,9 +1546,25 @@ const shown = s => (!s.credGate || eggWin) &&
    đừng bịa thêm kiểu dòng meta thứ ba, cả bản đồ phải đọc giống nhau.
    Ngoại lệ DUY NHẤT: mở được trước ngày phát hành thì nối thêm "· Mở sớm",
    giữ nguyên khuôn, chỉ thêm một mẩu. */
+/* Mã sổ của từng hồ sơ con — để thẻ toạ độ lấy đúng số hiệu trang đó đang
+   chạy, thay vì một chuỗi cứng đứng im từ đời nào. */
+const SO_CUA = { 'HAN-961030-A':'HAN-A', 'HAN-961030-B':'HAN-B',
+                 'DAD-950901-A':'DAD-A', 'DAD-950901-B':'DAD-B' };
+function verCua(s){
+  const goc = temGoc(SO_CUA[s.id], t => t.ver);
+  return goc || s.ver || '';
+}
+/* Hồ sơ có cửa mã khai `meta` thành một chuỗi liền "Published date: … | Vxx.yy".
+   Thay đúng phần số hiệu bằng số lấy từ sổ, giữ nguyên phần ngày phát hành. */
+function metaKhoa(s){
+  const v = verCua(s);
+  if(!v) return s.meta || '';
+  return String(s.meta || '').replace(/\|\s*V[\d.]+\s*$/, '| ' + v);
+}
 function metaMo(s){
   if(!s.pub) return s.meta || '';
-  var d = 'Published date: ' + s.pub + (s.ver ? ' | ' + s.ver : '');
+  const v = verCua(s);
+  var d = 'Published date: ' + s.pub + (v ? ' | ' + v : '');
   if(s.unlockAt && Date.now() < new Date(s.unlockAt).getTime()) d += ' · Mở sớm';
   return d;
 }
@@ -1838,7 +1854,7 @@ function render(code){
         return '<div class="file" data-askpin="'+s.id+'">'+
           '<span class="file-body"><span class="file-id">'+lock()+s.id+'</span>'+
           '<span class="file-title">'+s.title+'</span>'+
-          (s.meta ? '<span class="file-meta">'+s.meta+'</span>' : '')+
+          (s.meta ? '<span class="file-meta">'+metaKhoa(s)+'</span>' : '')+
           '</span><span class="file-go">&rarr;</span></div>';
       }
       /* Qua được cửa rồi thì hồ sơ đổi tên thành chặng nó thật sự là:
@@ -2179,9 +2195,18 @@ function eggFlash(why){
      KHÔNG bao giờ có đuôi kiểu .10 hay lớn hơn.
      Các nấc x bị BỎ QUA, không dùng: 13, 14, 23.
      Ví dụ: V12.09 → V15.00 (nhảy qua 13, 14) · V22.09 → V24.00 (nhảy qua 23). */
+/* Tem lấy từ SỔ, chuỗi cứng `data-base` chỉ là bản lùi khi lichsu.js không
+   tải nổi — xem `LichSu.tem` và DESIGN-SYSTEM.md §4. */
+function temGoc(ma, khuon){
+  try{
+    const t = window.LichSu && LichSu.tem && LichSu.tem(ma);
+    return t ? khuon(t) : null;
+  }catch(e){ return null; }
+}
 function stampText(){
   const s = $('stamp'); if(!s) return;
-  s.textContent = s.dataset.base + (resetCount > 0 ? ' · R' + resetCount : '');
+  const goc = temGoc('MAP', t => 'Last updated ' + t.ngay + ' · ' + t.ver);
+  s.textContent = (goc || s.dataset.base) + (resetCount > 0 ? ' · R' + resetCount : '');
 }
 
 /* ---- Băng rôn chiến thắng ---- */

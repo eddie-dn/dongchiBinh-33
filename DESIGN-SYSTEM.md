@@ -157,6 +157,51 @@ sổ**. Dòng gộp đệm cả hai đầu: `V01 → V21`, `V11 · V12`.
 - Tem **không phải** cửa vào sổ phiên bản. Sổ nằm trong **bảng điều khiển** của
   từng trang — xem §5.
 
+### 4.1 · SỔ LÀ NGUỒN SỰ THẬT — ĐỪNG KHAI SỐ Ở HAI CHỖ
+
+**Số hiệu và ngày của một trang chỉ được khai ĐÚNG MỘT NƠI: cuốn sổ của chính
+trang đó trong `assets/lichsu.js`.**
+
+- **Số hiệu** = nấc đuôi mới nhất của dòng mới nhất (`doi[cuối].chi[cuối].ver`,
+  không có `chi` thì lấy `doi[cuối].ver`).
+- **Ngày** = cột `ngay` của chính dòng đó, đổi sang `DD-Mon-YYYY`.
+
+`LichSu.tem('<mã sổ>')` trả về `{ ver, ngay, iso }`. Tem ngoài trang và thẻ toạ
+độ ngoài bản đồ **đều gọi hàm này**.
+
+> **⚠ BỆNH ĐÃ SỬA — ĐỌC TRƯỚC KHI RA PHIÊN BẢN MỚI.**
+> Ba đợt liền số hiệu được bump mà **ngày đứng im ở 24-Aug**, vì hai thứ đó
+> nằm hai chỗ: số sửa ở sổ, ngày nằm trong một chuỗi cứng trong HTML. Sửa một
+> quên một là chuyện sớm muộn — và nó đã xảy ra ba lần liên tiếp mà không ai
+> thấy.
+> Thẻ toạ độ còn tệ hơn: Zoey's Castle hiện `V2` trong khi trang đã chạy
+> `V03.07` — số đó đứng nguyên từ đời V02, lệch năm nấc lớn.
+
+**Chuỗi cứng trong HTML vẫn giữ**, nhưng chỉ là **bản lùi** cho trường hợp
+`lichsu.js` không tải nổi. Nó **phải khớp sổ**, và có bộ kiểm soát đúng chuyện
+đó — lệch là báo đỏ ngay (`tem16.mjs`, mục ② và ④).
+
+| Chỗ | Lấy số từ đâu | Bản lùi |
+|---|---|---|
+| Tem bản đồ | `LichSu.tem('MAP')` trong `stampText()` | `#stamp[data-base]` |
+| Tem Hồ sơ Phi đoàn | `LichSu.tem('DAD-A')`, script cuối trang | chữ tĩnh trong `#vstamp` |
+| Tem Gate 2 | `LichSu.tem('DAD-B')` trong `temChu()` | `config.js` → `text.version` |
+| Tem Zoey's Castle | `LichSu.tem('HAN-A')` trong `stampText()` | `#stamp[data-base]` |
+| Tem Secret Chamber | `LichSu.tem('HAN-B')` trong `stampText()` | `#stamp[data-base]` |
+| Thẻ toạ độ ngoài bản đồ | `verCua()` → `LichSu.tem(...)` | `ver:` / `meta:` trong `NODES` |
+| **Màn pháo hoa** | **không nạp `lichsu.js`** → chữ tĩnh | vẫn phải khớp sổ `FX` |
+
+**Thẻ toạ độ**: `pub` là **ngày phát hành**, một sự thật khác — giữ nguyên,
+đừng đổi theo. Chỉ phần `| Vxx.yy` mới lấy từ sổ.
+
+### 4.2 · Ra một phiên bản mới thì làm gì
+
+1. Thêm nấc đuôi vào `chi` của dòng mới nhất trong sổ của trang đó.
+   Hết nấc `.09` thì mở dòng lớn kế tiếp (bỏ qua 13, 14, 23).
+2. **Sửa `ngay` của dòng đó sang ngày sửa thật.** Đây chính là bước hay quên.
+3. Nắn lại chuỗi cứng bản lùi cho khớp (tem + thẻ toạ độ).
+4. Chạy `tem16.mjs` — 13 phép, lệch một chỗ là đỏ.
+
 ---
 
 ## 5. CỬA HẬU

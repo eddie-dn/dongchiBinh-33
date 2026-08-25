@@ -1,4 +1,96 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 16 — tem lấy thẳng từ sổ, hết cảnh bump số mà quên ngày.
+════════════════════════════════════════════════════════════════════════════
+10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/index.html
+    assets/lichsu.js                      dad/950901-b/config.js
+    dad/950901-a/index.html               han/961030-a/index.html
+    han/961030-b/index.html
+
+    DESIGN-SYSTEM.md  ← §4.1 và §4.2 mới   docs/BAN-GHI.md
+    DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này — TẤT CẢ ĐỀU 25-Aug-2026 (trừ pháo hoa không đụng tới):
+    /                 V19.00  ← ĐỔI   /han/961030-a     V03.08  ← ĐỔI
+    /dad/950901-a     V04.02  ← ĐỔI   /han/961030-b     V02.09  ← ĐỔI
+    /dad/950901-b     V05.03  ← ĐỔI   /phao-hoa         V03.03 · 19-Aug (đúng)
+
+    (Bản đồ nhảy V18.09 → V19.00 vì V18 đã dùng hết nấc đuôi. Nấc 19 không nằm
+     trong danh sách bỏ qua — chỉ 13, 14, 23 mới bỏ.)
+
+
+① BỆNH: NGÀY ĐỨNG IM BA ĐỢT LIỀN
+────────────────────────────────────────────────────────────────────────────
+Đúng như đã báo. Soát lại thì thấy rõ:
+
+    đợt 13   bump số 5 trang   ngày vẫn 24-Aug
+    đợt 14   bump số 5 trang   ngày vẫn 24-Aug
+    đợt 15   bump số 5 trang   ngày vẫn 24-Aug
+
+GỐC RỄ: số hiệu và ngày nằm ở HAI CHỖ KHÁC NHAU. Số thì sửa trong sổ, ngày thì
+nằm trong một chuỗi cứng trong HTML của từng trang. Sửa một quên một là chuyện
+sớm muộn — và nó đã xảy ra ba lần liên tiếp mà không ai bắt được.
+
+Thẻ toạ độ ngoài bản đồ còn tệ hơn, vì chẳng ai nhớ tới nó bao giờ:
+
+    HAN-961030-A   thẻ ghi V2     trang đang chạy V03.07   lệch 5 nấc lớn
+    HAN-961030-B   thẻ ghi V1     trang đang chạy V02.08
+    DAD-950901-B   thẻ ghi V1     trang đang chạy V05.02
+
+
+② CHỮA: SỔ LÀ NGUỒN SỰ THẬT, MỌI CHỖ KHÁC ĐỀU LẤY TỪ ĐÓ
+────────────────────────────────────────────────────────────────────────────
+Thêm `LichSu.tem('<mã sổ>')` trong assets/lichsu.js, trả về:
+
+        ver   nấc đuôi mới nhất của dòng mới nhất trong sổ trang đó
+        ngay  cột `ngay` của chính dòng đó, đổi sang DD-Mon-YYYY
+
+Dòng gộp ("V12.02 → V12.05") thì lấy VẾ SAU — đó mới là nấc đang chạy.
+
+Nay cả sáu chỗ đều gọi hàm này:
+
+        tem bản đồ            stampText()   → LichSu.tem('MAP')
+        tem Hồ sơ Phi đoàn    script cuối trang → LichSu.tem('DAD-A')
+        tem Gate 2            temChu()      → LichSu.tem('DAD-B')
+        tem Zoey's Castle     stampText()   → LichSu.tem('HAN-A')
+        tem Secret Chamber    stampText()   → LichSu.tem('HAN-B')
+        thẻ toạ độ bản đồ     verCua()      → LichSu.tem(...) theo từng hồ sơ
+
+Chuỗi cứng trong HTML VẪN GIỮ làm bản lùi (trang chạy được cả khi lichsu.js
+không tải nổi) nhưng phải khớp sổ, và có bộ kiểm bắt lệch.
+
+MÀN PHÁO HOA là ngoại lệ có chủ ý: trang đó không nạp lichsu.js (không có bảng
+điều khiển nào để giấu cửa vào sổ) nên tem vẫn là chữ tĩnh — nhưng bộ kiểm vẫn
+soi nó với sổ FX. Nhân tiện bổ sung ba nấc đuôi V03.01 → V03.03 vào sổ FX cho
+số khớp với tem trang đó.
+
+THẺ TOẠ ĐỘ: phần `pub` (ngày phát hành) GIỮ NGUYÊN — đó là một sự thật khác,
+không phải ngày sửa cuối. Chỉ phần `| Vxx.yy` mới lấy từ sổ.
+
+
+③ BỘ KIỂM MỚI — tem16.mjs, 13 phép
+────────────────────────────────────────────────────────────────────────────
+Đây mới là thứ ngăn lỗi tái diễn, chứ không phải trí nhớ:
+
+    ①  in ra sổ nói gì cho bảy khoá
+    ②  năm trang: tem HIỆN RA phải có đúng số + ngày của sổ, VÀ chuỗi cứng
+       bản lùi cũng phải khớp — soi cả hai nên quên nắn bản lùi cũng đỏ
+    ③  màn pháo hoa: tem tĩnh phải khớp sổ FX
+    ④  bốn thẻ toạ độ phải mang đúng số hiệu trang đó đang chạy
+
+Luật viết vào DESIGN-SYSTEM.md §4.1 (sổ là nguồn sự thật, bảng chỉ rõ chỗ nào
+lấy từ đâu) và §4.2 (bốn bước khi ra phiên bản mới, trong đó bước 2 — sửa cột
+`ngay` — ghi rõ là bước hay quên nhất). docs/BAN-GHI.md cũng thêm cảnh báo ở
+đầu mục quy trình.
+
+
+④ ĐÃ KIỂM THỬ — {TONG} phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+Bộ mới tem16.mjs 13 phép, cộng toàn bộ bộ cũ chạy lại.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 15 — bỏ luật Enter, trả con trỏ về ô nhập, clip chạy trọn 10 giây.
 ════════════════════════════════════════════════════════════════════════════
 10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
