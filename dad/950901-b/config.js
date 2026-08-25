@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 24-Aug-2026 · V05.01'
+    version       : 'Last updated 24-Aug-2026 · V05.02'
   }
 };
 
@@ -192,7 +192,11 @@ const GAME_CONFIG = {
     chu_lo_at     : 0.40,   /* đo được: chữ bắt đầu đọc được ở đây  */
     veil_in_ms    : 380,    /* lớp che đá hiện dần trong bấy nhiêu  */
     recenter      : 900,    /* thả tay → trôi mượt về giữa         */
-    anim_wrong    : 2000,   /* độ dài clip nhập sai                */
+    /* CỐ Ý NGẮN HƠN FILE: `anim_wrong` dài 5.082ms nhưng là một VÒNG LẶP rung
+       lắc — dò từng khung thì khung nào cũng đang động, không có nhịp lắng
+       xuống để mà chờ. Bắt xem trọn 5 giây cho mỗi lần gõ trật là quá nặng,
+       nên chỉ lấy 2 giây đầu. KHÔNG phải quên sửa. */
+    anim_wrong    : 2000,   /* lấy 2 giây đầu của clip nhập sai     */
     lock_after_bad: 2000,   /* khóa ô nhập sau khi sai             */
     glow_hold     : 3000,   /* giữ chữ RAZER sáng rực trước khi nổ */
     /* ═══ RAZER TẮT LÚC NÀO — ĐO THẲNG TRÊN 201 KHUNG CLIP SẠCH ═════════
@@ -221,9 +225,9 @@ const GAME_CONFIG = {
           đoạn chữ RAZER bay lên".
 
        NAY TẮT XONG TRƯỚC KHI CHỚP NỔ KỊP LOÉ:
-           0.05 × 8000ms =  400ms  bắt đầu mờ
-           + 380ms fade  =  780ms  tắt hẳn  = 9,75% clip
-       Chốt chặn là mốc 12%, còn dư 2,25% (180ms). Nghe thì sát, nhưng nhịp
+           0.04 × 10050ms =  402ms  bắt đầu mờ
+           + 380ms fade   =  782ms  tắt hẳn  = 7,8% clip
+       Chốt chặn là mốc 12% (= 1.206ms), còn dư 424ms. Nghe thì sát, nhưng nhịp
        này chạy bằng CSS animation trên compositor (xem `.slab.tat`) nên không
        ăn theo main thread: máy có nghẹn vì giải mã clip 14MB thì nó vẫn đúng
        giờ. Hai đời timer trước bắn trễ 450-570ms chính là vì chạy trên main
@@ -234,9 +238,28 @@ const GAME_CONFIG = {
        nửa giây đầu clip nữa — lúc này khung đầu clip đã khớp bg_r1 từng pixel
        nên chữ nằm đúng trên bệ đá, không còn lệch một ly.
        ĐỔI CLIP KHÁC thì phải ĐO LẠI mốc chớp nổ rồi trừ lùi. */
-    slab1_out_at  : 0.05,
+    /* ⚠ ĐÂY LÀ PHẦN TRĂM CỦA `anim_unlock` — sửa độ dài clip thì mốc này DỜI
+       THEO. Đợt sửa clip 8000 → 10050 đã phải hạ 0.05 → 0.04 để giữ nguyên
+       mốc tính bằng mili-giây. */
+    slab1_out_at  : 0.04,
     slab1_fade_ms : 380,
-    anim_unlock   : 8000,   /* độ dài clip nổ sập lab              */
+    /* ═══ ĐỘ DÀI CLIP — ĐỌC THẲNG TỪ FILE, ĐỪNG ƯỚC LƯỢNG ══════════════════
+       BỆNH ĐÃ SỬA: "màn chuyển cảnh nổ trứng bị ngắn so với video, cảm giác
+       bị cắt ngang". Đúng vậy — số ở đây là 8000 trong khi file thật dài
+       10.050ms, tức CẮT MẤT 2 GIÂY CUỐI (20% clip). `playClip` chỉ giữ lớp
+       clip đúng `ms` rồi gỡ ra, nên clip bị chặt ngang giữa nhịp.
+
+       Số đọc từ chính file .webp: mỗi khung có một ô `duration` trong chunk
+       ANMF, cộng lại là ra. Đo được:
+           anim_unlock_clean   201 khung × 50ms  = 10.050 ms
+           anim_unlock (cũ)    241 khung × 42ms  = 10.122 ms
+           anim_wrong          121 khung × 42ms  =  5.082 ms
+       Lấy 10050 cho khớp bản sạch đang dùng; bản cũ lệch 72ms, không đáng kể.
+
+       ⚠ MỌI MỐC % ĐỀU ĂN THEO SỐ NÀY (`slab1_out_at`, `che_vao_at`,
+       `chu_lo_at`). Mấy mốc đó vốn đo theo SỐ KHUNG nên tự đúng; sửa số này
+       cho khớp file thật thì chúng mới rơi đúng chỗ đã đo. */
+    anim_unlock   : 10050,  /* độ dài THẬT của clip nổ sập lab      */
     type_speed    : 24,     /* ms / ký tự — hộp thoại              */
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */
     idle_hint     : 20000,  /* không gõ bao lâu thì chữ "thở"      */

@@ -156,14 +156,6 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
    nhầm ô nào. Phần câu hỏi không che gì cả — đó là đáp án đang soạn, còn phải
    xem lại được, không phải mật mã. */
 .cell.ro{color:var(--orchid)}
-/* ── DÒNG "NHẤN ENTER…" ────────────────────────────────────────────────────
-   Đời trước để một dấu ↵ trần: phải đoán mới hiểu, mà hàng ô bên này còn tự
-   xuống dòng khi màn hẹp nên dấu đó có lúc rơi lạc một mình. Nay là DÒNG CHỮ
-   đặt dưới hàng ô. Mờ sẵn cho biết luật; đủ ký tự thì sáng lên. */
-.ent{margin:7px 0 0;text-align:center;font-size:11px;line-height:1.4;
-  letter-spacing:.03em;color:var(--ink);opacity:.42;
-  transition:opacity .2s,color .2s}
-.ent.san{opacity:1;color:var(--orchid)}
 .inp{position:absolute;inset:0;width:100%;height:100%;opacity:.01;border:none;
   background:none;color:transparent;caret-color:transparent;font-size:16px;outline:none}
 
@@ -359,10 +351,6 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
   border-bottom:2px solid rgba(200,168,233,.75)}
 .pin-cell.on{border-bottom-color:var(--orchid)}
 .pin-cell.ro{color:var(--orchid)}
-.pin-ent{margin:7px 0 0;text-align:center;font-size:11px;line-height:1.4;
-  letter-spacing:.03em;color:var(--ink);opacity:.42;
-  transition:opacity .2s,color .2s}
-.pin-ent.san{opacity:1;color:var(--orchid)}
 
 @media (prefers-reduced-motion:reduce){ .step.cur .bar i,.tim i{animation:none} .tim i{opacity:1} }
 </style>
@@ -389,7 +377,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V03.06<br>Last updated 24-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V03.07<br>Last updated 24-Aug-2026"></span>
     </span>
   </div>
 
@@ -930,9 +918,6 @@ function drawQ(pos){
     o = xepO(box, inp, code, q.gap);
     paint();
   };
-  var entKy = document.createElement('p');
-  entKy.className = 'ent'; entKy.textContent = 'Nhấn Enter để trả lời';
-  box.insertAdjacentElement('afterend', entKy);
   function paint(){
     for(var k = 0; k < len; k++){
       o[k].textContent = buf[k] || '';
@@ -941,8 +926,6 @@ function drawQ(pos){
       o[k].classList.toggle('on', !doc && k === buf.length);
       o[k].classList.toggle('fill', k < buf.length);
     }
-    if(entKy) entKy.classList.toggle('san', !doc && buf.length === len);
-    entKy.style.display = doc ? 'none' : '';
   }
   function msg(t, ok){
     var m = $('msg'); if(!m) return;
@@ -1062,16 +1045,22 @@ function drawQ(pos){
     msg(moi ? 'Gợi ý nè, ngó thử ✦' : treu(), !!moi);
     buf = ''; inp.value = ''; paint();
   }
+  /* Gõ đủ chữ là TỰ CHẤM (không bắt bấm Enter). Chờ CHO_CHAM một nhịp để mắt
+     kịp đọc lại cả hàng ô trước khi chấm — phần này không che chữ nên không có
+     nhịp hiện-rồi-che để bám vào như mấy cửa mã. Enter vẫn ăn. */
+  var CHO_CHAM = 620, henCham = null;
   inp.addEventListener('input', function(){
     buf = norm(inp.value).slice(0, len); paint();
+    if(henCham){ clearTimeout(henCham); henCham = null; }
+    if(buf.length === len)
+      henCham = setTimeout(function(){ henCham = null; if(buf.length === len) check(); }, CHO_CHAM);
   });
-  /* CHỈ Enter mới tính là gửi. Bản trước gõ đủ chữ là tự chấm sau 140ms — bấm
-     nhầm phím cuối là cháy một lượt mà chưa kịp đọc lại hàng ô. */
   inp.addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){
-      e.preventDefault();
-      if(buf.length === len) check(); else msg('Nhập đủ ' + len + ' ký tự đã nha');
-    }
+    if(e.key !== 'Enter') return;
+    e.preventDefault();
+    if(buf.length !== len){ msg('Nhập đủ ' + len + ' ký tự đã nha'); return; }
+    if(henCham){ clearTimeout(henCham); henCham = null; }
+    check();
   });
   box.addEventListener('click', function(){ try{ inp.focus(); }catch(e){} });
   /* SOS góc trái — ĐÚNG cơ chế Mission 3: bấm 10 nhịp liên tiếp (mỗi nhịp cách
@@ -1187,9 +1176,6 @@ function drawGateA(){
     o = xepO(box, inp, maA, gapA);
     paint(-1);
   };
-  var entKy = document.createElement('p');
-  entKy.className = 'ent'; entKy.textContent = 'Nhấn Enter để vào';
-  box.insertAdjacentElement('afterend', entKy);
   /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm — xem ghi chú ở .cell.ro */
   var HIEN_MS = 800, henChe = null;
   function paint(iRo){
@@ -1199,13 +1185,19 @@ function drawGateA(){
       o[k].classList.toggle('fill', k < buf.length);
       o[k].classList.toggle('ro', k === iRo && k < buf.length);
     }
-    if(entKy) entKy.classList.toggle('san', buf.length === len);
   }
+  /* Gõ đủ ký tự là TỰ CHẤM, đúng vào nhịp ký tự cuối vừa thành chấm — nhờ vậy
+     bao giờ cũng kịp nhìn thấy mình vừa gõ gì. Enter vẫn ăn. */
   function veRoiChe(){
     var i = buf.length - 1;
     if(henChe){ clearTimeout(henChe); henChe = null; }
     paint(i);
-    if(i >= 0) henChe = setTimeout(function(){ henChe = null; paint(-1); }, HIEN_MS);
+    if(i < 0) return;
+    var du = buf.length === len;
+    henChe = setTimeout(function(){
+      henChe = null; paint(-1);
+      if(du && buf.length === len) cham();
+    }, HIEN_MS);
   }
   paint(-1);
   setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 120);
@@ -1213,10 +1205,7 @@ function drawGateA(){
   inp.addEventListener('input', function(){
     buf = norm(inp.value).slice(0, len); veRoiChe();
   });
-  /* CHỈ Enter mới tính là gửi — xem ghi chú cùng luật ở phần câu hỏi */
-  inp.addEventListener('keydown', function(e){
-    if(e.key !== 'Enter') return;
-    e.preventDefault();
+  function cham(){
     if(buf.length !== len) return;
     if(buf === maA){
       st.aOpen = true; save();
@@ -1232,6 +1221,13 @@ function drawGateA(){
       m2.classList.remove('ok');
       buf = ''; inp.value = ''; paint(-1);
     }
+  }
+  inp.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+    e.preventDefault();
+    if(buf.length !== len) return;
+    if(henChe){ clearTimeout(henChe); henChe = null; }
+    paint(-1); cham();
   });
 }
 
@@ -1383,9 +1379,6 @@ function hopPin(){
     var c = document.createElement('span'); c.className = 'pin-cell';
     box.insertBefore(c, inp); o.push(c);
   }
-  var entKy = document.createElement('p');
-  entKy.className = 'pin-ent'; entKy.textContent = 'Nhấn Enter để vào';
-  box.insertAdjacentElement('afterend', entKy);
   /* Ký tự vừa gõ hiện rõ HIEN_MS rồi mới thành chấm — xem ghi chú ở .cell.ro */
   var HIEN_MS = 800, henChe = null;
   function paint(iRo){
@@ -1394,13 +1387,19 @@ function hopPin(){
       o[k].classList.toggle('on', k === buf.length);
       o[k].classList.toggle('ro', k === iRo && k < buf.length);
     }
-    if(entKy) entKy.classList.toggle('san', buf.length === len);
   }
+  /* Gõ đủ ký tự là TỰ CHẤM, đúng vào nhịp ký tự cuối vừa thành chấm — nhờ vậy
+     bao giờ cũng kịp nhìn thấy mình vừa gõ gì. Enter vẫn ăn. */
   function veRoiChe(){
     var i = buf.length - 1;
     if(henChe){ clearTimeout(henChe); henChe = null; }
     paint(i);
-    if(i >= 0) henChe = setTimeout(function(){ henChe = null; paint(-1); }, HIEN_MS);
+    if(i < 0) return;
+    var du = buf.length === len;
+    henChe = setTimeout(function(){
+      henChe = null; paint(-1);
+      if(du && buf.length === len) cham();
+    }, HIEN_MS);
   }
   paint(-1);
   setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 90);
@@ -1408,21 +1407,24 @@ function hopPin(){
   inp.addEventListener('input', function(){
     buf = (inp.value||'').replace(/\D/g,'').slice(0, len); veRoiChe();
   });
-  /* CHỈ Enter mới tính là gửi — cùng luật với mọi cửa pin/pass trong bộ */
+  function cham(){
+    if(buf.length !== len) return;
+    if(buf === PIN_CTRL){
+      ping('han_dieu_phoi', 'hoàn thành bằng mã');
+      for(var z = 0; z < TONG; z++) st.dung[HOI[z].id] = true;
+      st.done = true; st.doneAt = Date.now(); save();
+      ctrlClose(); xong(true);
+    }else{
+      $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg'; $('cMsg').classList.remove('ok');
+      buf = ''; inp.value = ''; paint(-1);
+    }
+  }
   inp.addEventListener('keydown', function(e){
     if(e.key !== 'Enter') return;
     e.preventDefault();
-    if(buf.length === len){
-      if(buf === PIN_CTRL){
-        ping('han_dieu_phoi', 'hoàn thành bằng mã');
-        for(var z = 0; z < TONG; z++) st.dung[HOI[z].id] = true;
-        st.done = true; st.doneAt = Date.now(); save();
-        ctrlClose(); xong(true);
-      }else{
-        $('cMsg').textContent = 'Sai mã rồi ✦'; $('cMsg').className = 'msg'; $('cMsg').classList.remove('ok');
-        buf = ''; inp.value = ''; paint(-1);
-      }
-    }
+    if(buf.length !== len) return;
+    if(henChe){ clearTimeout(henChe); henChe = null; }
+    paint(-1); cham();
   });
 }
 /* Vùng bấm là CẢ CỤM hoa + dòng tem, y như cửa hậu ngoài bản đồ nhận cả dòng

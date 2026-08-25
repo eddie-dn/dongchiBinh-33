@@ -2613,7 +2613,15 @@ function submit(){
 /* Trả ô nhập về đúng phần chữ đã lộ (vòng 2), hoặc dọn sạch (vòng 1).
    `trao_phim` = trao luôn con trỏ cho người chơi: đặt ở CUỐI chuỗi (không nhảy
    về đầu, dễ gõ chèn nhầm vào giữa) và focus sẵn để gõ được ngay, khỏi phải
-   chạm vào ô một cái nữa. */
+   chạm vào ô một cái nữa.
+
+   ⚠ LUẬT: MỌI chỗ gọi `setInput(true)` đều phải gọi kèm `resetOnhap(true)`.
+   Đã vấp: bốn chỗ mở lại ô nhập mà quên trao con trỏ — vào vòng 1, vào vòng 2
+   (ngay sau khi giải xong vòng 1), vào khu Open World, và trả lời xong một câu
+   Open World. Ô sáng lên nhìn như đã sẵn sàng nhưng con trỏ vẫn nằm ở body,
+   gõ không ăn, phải bấm tay thêm một cái nữa. Đúng cái đã báo: "khi sai xong /
+   khi bấm đúng thì trỏ chuột và khung trả lời không tự về lại".
+   `fail()` và `endLock()` vốn đã làm đúng — bốn chỗ kia nay theo cho đủ. */
 function resetOnhap(trao_phim){
   el.input.value = S.mode === 'progressive' ? chuoiDaLo() : '';
   S.lastLen = S.lastNoSp = el.input.value.length;
@@ -2721,6 +2729,7 @@ async function startRound1(){
   urlClipNo(); load(A('bg_r2'));
   if(resumeLock(1)) return;             /* hạn khoá cũ còn hiệu lực */
   showCtrl(true); setInput(true, C.round1.placeholder);
+  resetOnhap(true);        /* trao luôn con trỏ — xem ghi chú ở resetOnhap */
   S.busy = false;
 }
 
@@ -2898,6 +2907,7 @@ async function startRound2(){
   await sayAll(C.dialogues.round2_hint);
   if(resumeLock(2)) return;
   showCtrl(true); setInput(true, C.round2.placeholder);
+  resetOnhap(true);        /* trao luôn con trỏ — xem ghi chú ở resetOnhap */
   S.busy = false;
 }
 
@@ -3358,6 +3368,7 @@ async function owBat(){
   el.input.style.textTransform = 'none';
   el.ctrl.classList.add('ow');
   el.input.setAttribute('autocapitalize','sentences');
+  if(owConLai() > 0) resetOnhap(true);   /* trao luôn con trỏ */
   fitOw();
   const doi = narrEra;
   await sayAll((OW.chao || []).map(t=> t.replace('{N}', OW.moi_ngay || 10)), 'cy');
@@ -3444,7 +3455,7 @@ async function owGui(){
   }
   owBan = false;
   owHienLuot();
-  if(owConLai() > 0) setInput(true, OW.placeholder || '...');
+  if(owConLai() > 0){ setInput(true, OW.placeholder || '...'); resetOnhap(true); }
 }
 
 /* ═══ THOÁT / KHỞI ĐỘNG ═══════════════════════════════════════════════════ */

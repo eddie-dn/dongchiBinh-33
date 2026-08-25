@@ -155,8 +155,8 @@ gợi ý rồi thì lần sau hiện sẵn).
 Cửa mã đi theo **ba luật chung của mọi ô pin/pass** — luật đầy đủ ở `DESIGN-SYSTEM.md`
 §6, tóm lại:
 
-1. **Phải Enter mới tính là gửi.** Gõ đủ 4 số chưa phải là gửi; dòng **"Nhấn Enter để
-   vào"** dưới hàng ô sáng lên khi đủ số.
+1. **Gõ đủ 4 số là tự chấm.** Không bắt bấm Enter — nhưng chấm đúng vào nhịp số cuối vừa
+   thành chấm, để bao giờ cũng kịp nhìn thấy mình vừa gõ gì. Enter vẫn ăn.
 2. **Ký tự vừa gõ hiện rõ 800ms rồi mới thành `•`.** Mấy ô trước che luôn.
 3. **Lần nào vào cũng hỏi mã.** Cờ `ls_ok_<mã>` cho đi thẳng trong phiên đã gỡ hẳn —
    mở sổ bên này hay bên kia, lần trước hay lần này, đều phải gõ.

@@ -198,7 +198,7 @@
             { ver:'V17.08', chinh:'Dời cửa vào bản ghi từ dòng tem sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua lá cờ giữ nguyên' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', ver:'V18', so:'09',
+        { ngay:'2026-08-24', ver:'V18', so:'10',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
@@ -209,7 +209,8 @@
             { ver:'V18.05', chinh:'Viết lại nội dung sổ khu Easter Egg và màn pháo hoa theo lịch sử dò được; đánh lại số build của Hồ sơ Phi đoàn' },
             { ver:'V18.06', chinh:'Chốt khuôn số phiên bản Vxx.xx cho cả sáu trang; ghi đủ các nấc V17 và lịch sử riêng của khung Collected' },
             { ver:'V18.07', chinh:'Chốt ba luật chung cho mọi cửa mã: phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm, và cửa đã khoá thì lần nào vào cũng hỏi lại; ghi thêm các nấc V11, V12, V15, V16 vào sổ' },
-            { ver:'V18.08', chinh:'Lời nhắc gõ Enter đổi từ ký hiệu sang một dòng chữ đọc là hiểu; mỗi bản ghi có thêm trang Credit riêng, mở từ chính dòng đang chạy — trang này còn kèm bảng chi phí của cả bộ' }
+            { ver:'V18.08', chinh:'Lời nhắc gõ Enter đổi từ ký hiệu sang một dòng chữ đọc là hiểu; mỗi bản ghi có thêm trang Credit riêng, mở từ chính dòng đang chạy — trang này còn kèm bảng chi phí của cả bộ' },
+            { ver:'V18.09', chinh:'Bỏ hẳn dòng nhắc gõ Enter, gõ đủ số là tự chấm ngay khi số cuối vừa thành chấm; mặt cười trong Box Tổng tư lệnh trỏ vào là sáng lên như mọi cửa vào bản ghi khác; trang Credit ghi rõ công của từng bên vẽ ảnh, dựng chuyển động và cho nhân vật giọng nói' }
           ] }
       ]
     },
@@ -279,7 +280,8 @@
             { ver:'V18.03', chinh:'Chính dòng tiêu đề khung thành cửa vào bản ghi, trỏ vào thì chữ đổi màu' },
             { ver:'V18.05', chinh:'Viết lại nội dung sổ theo lịch sử dò được của khung và của màn pháo hoa' },
             { ver:'V18.07', chinh:'Cửa mã của sổ đi theo ba luật chung mới: phải Enter mới gửi, ký tự vừa gõ hiện rõ rồi mới thành chấm, mỗi lần vào đều hỏi lại' },
-            { ver:'V18.08', chinh:'Lời nhắc gõ Enter thành một dòng chữ; sổ của khu có thêm trang Credit riêng' }
+            { ver:'V18.08', chinh:'Lời nhắc gõ Enter thành một dòng chữ; sổ của khu có thêm trang Credit riêng' },
+            { ver:'V18.09', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ số là tự chấm' }
           ] }
       ]
     },
@@ -327,10 +329,11 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-24', ver:'V04', so:'01',
+        { ngay:'2026-08-24', ver:'V04', so:'02',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
-            { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' }
+            { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
+            { ver:'V04.01', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm ngay khi ký tự cuối vừa thành chấm' }
           ] }
       ]
     },
@@ -372,11 +375,12 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', ver:'V05', so:'02',
+        { ngay:'2026-08-24', ver:'V05', so:'03',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
-            { ver:'V05.01', chinh:'Clip lúc gõ sai không còn để lộ chữ khắc trên bệ đá; mắt rồng lúc chớp đỏ dịu hẳn, đậm ở lõi rồi tan dần ra mép thay vì thành một đĩa đỏ có viền; dấu ba chấm khu Open World đổi sang ô vuông và nhảy theo nấc cho đúng chất màn hình pixel; lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' }
+            { ver:'V05.01', chinh:'Clip lúc gõ sai không còn để lộ chữ khắc trên bệ đá; mắt rồng lúc chớp đỏ dịu hẳn, đậm ở lõi rồi tan dần ra mép thay vì thành một đĩa đỏ có viền; dấu ba chấm khu Open World đổi sang ô vuông và nhảy theo nấc cho đúng chất màn hình pixel; lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' },
+            { ver:'V05.02', chinh:'Clip nổ sập lab chạy trọn 10 giây đúng độ dài file thật, hết cảnh bị cắt ngang ở giây thứ 8; ô nhập tự nhận con trỏ mỗi lần mở lại nên gõ tiếp được ngay, khỏi bấm thêm một cái; bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm' }
           ] }
       ]
     },
@@ -385,7 +389,7 @@
       doi: [
         { ngay:'no info', ver:'V01', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V02', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', ver:'V03', so:'07',
+        { ngay:'2026-08-24', ver:'V03', so:'08',
           chinh:'Thêm bản ghi (V02 đã hết nấc đuôi nên sang dòng V03), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V03.00', chinh:'Thêm bản ghi cho trang này' },
@@ -394,7 +398,8 @@
             { ver:'V03.03', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
             { ver:'V03.04', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' },
             { ver:'V03.05', chinh:'Cửa vào lâu đài lần nào cũng hỏi mã chứ không nhớ lần trước nữa; mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' },
-            { ver:'V03.06', chinh:'Lời nhắc gõ Enter thành một dòng chữ, đặt dưới hàng ô nên hàng ô có xuống hai dòng cũng không lệch; bản ghi có thêm trang Credit riêng' }
+            { ver:'V03.06', chinh:'Lời nhắc gõ Enter thành một dòng chữ, đặt dưới hàng ô nên hàng ô có xuống hai dòng cũng không lệch; bản ghi có thêm trang Credit riêng' },
+            { ver:'V03.07', chinh:'Bỏ dòng nhắc gõ Enter — gõ đủ ký tự là tự chấm, cả ở cửa mã lẫn ô trả lời câu hỏi' }
           ] }
       ]
     },
@@ -402,7 +407,7 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V01', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V02' },
-        { ngay:'2026-08-24', ver:'V02', so:'08',
+        { ngay:'2026-08-24', ver:'V02', so:'09',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V02.00 → V02.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
@@ -411,7 +416,8 @@
             { ver:'V02.04', chinh:'Cửa mã bản ghi trả lại gợi ý sau ba lần sai, rút gọn còn một nửa và nhớ luôn' },
             { ver:'V02.05', chinh:'Cửa mã bản ghi nới lượt thử sai lên năm, đếm cộng dồn theo phiên' },
             { ver:'V02.06', chinh:'Mọi ô mã trong trang phải Enter mới tính là gửi, ký tự vừa gõ hiện rõ một nhịp rồi mới thành chấm' },
-            { ver:'V02.07', chinh:'Lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' }
+            { ver:'V02.07', chinh:'Lời nhắc gõ Enter thành một dòng chữ; bản ghi có thêm trang Credit riêng' },
+            { ver:'V02.08', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ số là tự chấm' }
           ] }
       ]
     },
@@ -592,16 +598,6 @@
        thấy mình vừa bấm đúng phím chưa. Che ngay từ ký tự đầu thì gõ nhầm một
        số là mò lại từ đầu mà không biết nhầm chỗ nào. */
     '.ls-o i.ro{font-size:20px}',
-    /* ── DÒNG "NHẤN ENTER ĐỂ VÀO" ────────────────────────────────────────
-       Đời trước để một dấu ↵ nhỏ nằm cạnh hàng ô. Hỏng hai đường: ký hiệu
-       trần thì phải ĐOÁN mới hiểu, mà nhét thêm một ô vào hàng thì hàng ô
-       lệch tâm, có chỗ còn đội xuống dòng. Nay là một DÒNG CHỮ đặt dưới hàng
-       ô — đọc là hiểu, không đụng vào bố cục hàng ô.
-       Mờ sẵn cho biết luật; đủ số thì sáng lên thành lời mời bấm. */
-    '.ls-enter{margin:8px 0 0;text-align:center;font-size:10.5px;line-height:1.4;',
-      'letter-spacing:.04em;color:var(--ls-mo,rgba(234,240,247,.5));opacity:.45;',
-      'transition:opacity .2s,color .2s}',
-    '.ls-enter.san{opacity:1;color:var(--ls-acc,#8CE1B4)}',
     '.ls-hop.rung{animation:lsRung .38s}',
     '@keyframes lsRung{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}',
       '40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}',
@@ -811,13 +807,11 @@
         '<h2 class="ls-tit">Bản ghi</h2>'
       + '<p class="ls-sub">' + t.ten + '</p>'
       + '<div class="ls-o"><i></i><i></i><i></i><i></i></div>'
-      + '<p class="ls-enter" id="lsEnter">Nhấn Enter để vào</p>'
       + '<p class="ls-msg" id="lsMsg"></p>'
       + '<input class="ls-in" id="lsIn" type="text" inputmode="numeric" '
       +   'autocomplete="off" maxlength="4" aria-label="Mã vào bản ghi">'
     );
     var o   = hop.querySelectorAll('.ls-o i');
-    var ent = hop.querySelector('#lsEnter');
     var msg = hop.querySelector('#lsMsg');
     var inp = hop.querySelector('#lsIn');
 
@@ -840,13 +834,25 @@
         o[i].textContent = c ? ((i === iRo) ? c : '•') : '';
         o[i].className = c ? (i === iRo ? 'co ro' : 'co') : '';
       }
-      if (ent) ent.className = 'ls-enter' + (go.length === 4 ? ' san' : '');
     }
+    /* ═══ GÕ ĐỦ SỐ LÀ TỰ CHẤM ════════════════════════════════════════════
+       Không bắt bấm Enter nữa. Đời trước có thêm một dòng "Nhấn Enter để vào"
+       — thừa một dòng chữ chen vào giữa mấy dòng khác, mà cái được thì nhỏ:
+       gõ sai vài lần là người ta tự cẩn thận, khỏi cần luật.
+       Nhưng KHÔNG chấm ngay lúc phím cuối vừa xuống: chấm đúng vào nhịp ký tự
+       cuối vừa thành chấm (`HIEN_MS`). Nhờ vậy bao giờ cũng kịp nhìn thấy
+       mình vừa gõ số gì rồi cửa mới phản ứng — thấy chữ, chữ thành chấm, cửa
+       trả lời. Vẫn giữ phím Enter cho ai quen bấm. */
     function veRoiChe() {
       var i = go.length - 1;
       if (henChe) { clearTimeout(henChe); henChe = null; }
       ve(i);
-      if (i >= 0) henChe = setTimeout(function () { henChe = null; ve(-1); }, HIEN_MS);
+      if (i < 0) return;
+      var du = go.length === 4;
+      henChe = setTimeout(function () {
+        henChe = null; ve(-1);
+        if (du && go.length === 4) cham();
+      }, HIEN_MS);
     }
     /* GÕ SAI THÌ IM — không báo lỗi, không đếm hộ còn mấy lần. Phản hồi duy
        nhất là một cú rung: đủ để biết máy có nhận cú gõ, không đủ để suy ra gì.
@@ -862,10 +868,13 @@
       inp.value = go;
       veRoiChe();
     });
-    /* CHỈ Enter mới tính là gửi. Bản trước gõ đủ bốn số là tự chấm sau 140ms:
-       bấm nhầm một phím cuối là mất luôn một lượt sai mà chưa kịp nhìn lại. */
+    /* Enter vẫn ăn cho ai quen bấm — chấm luôn, khỏi chờ hết nhịp hiện chữ. */
     inp.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); if (go.length === 4) cham(); }
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      if (go.length !== 4) return;
+      if (henChe) { clearTimeout(henChe); henChe = null; }
+      ve(-1); cham();
     });
     hop.addEventListener('click', function () { inp.focus(); });
     setTimeout(function () { try { inp.focus(); } catch (e) {} }, 120);
@@ -892,18 +901,18 @@
      thật sự mở ra để xem — lại bị đẩy xuống dưới. */
   var CRE_CHUNG = [
     { t: 'Viết mã', d: [
-      'Claude Code · Anthropic — dựng màn, viết mã, soát lỗi, đo lại từng nhịp hiệu ứng',
-      'Claude Code chạy qua MCP để nối tay với mấy công cụ bên ngoài'
+      'Claude Code · Anthropic — dựng màn, viết mã, soát lỗi, chỉnh từng nhịp hiệu ứng',
+      'Nối thêm mấy công cụ ngoài qua MCP để đỡ phải làm tay'
     ] },
     { t: 'Phông chữ', d: [
-      'Google Fonts — <b>Be Vietnam Pro</b> (chữ Việt) và <b>Oswald</b> (số hiệu, tem, tiêu đề)',
-      'Cả hai đều giấy phép mở, dùng thoải mái, xin cảm ơn'
+      'Google Fonts — <b>Be Vietnam Pro</b> cho chữ Việt, <b>Oswald</b> cho số hiệu và tem',
+      'Cả hai đều giấy phép mở. Cảm ơn hai bộ chữ đã cho xài không công'
     ] },
     { t: 'Chỗ chạy', d: [
-      'Vercel — dựng trang tĩnh và mấy hàm nhỏ chạy phía máy chủ, gói miễn phí'
+      'Vercel — nơi trang này nằm, kèm mấy hàm nhỏ chạy phía máy chủ. Gói miễn phí'
     ] },
     { t: 'Ảnh động', d: [
-      'EZGIF — đổi video sang <b>.webp</b> cho mấy khung nhân vật và hiệu ứng động'
+      'EZGIF — đổi video sang <b>.webp</b> cho mấy khung nhân vật và hiệu ứng chuyển động'
     ] }
   ];
 
@@ -920,13 +929,18 @@
     'MAP': {
       ten: 'Bản đồ mật thư',
       rieng: [
-        { t: 'Câu chào và Daily Quote', d: [
-          'Google AI Studio · Gemini — viết lời chào theo buổi và kho câu trích mỗi ngày',
-          'Kho câu do Gemini soạn rồi lọc tay lại, giữ đúng mấy đầu mục đã chọn'
+        { t: 'Honghandangiu', d: [
+          'Cô nhân vật trong mấy hộp chào là ảnh do <b>Gemini</b> và <b>Adobe Firefly</b> vẽ, prompt viết tay rồi lọc lại',
+          '<b>Kling AI</b> lo phần cho cô cử động — mấy nét chào, vui, ngồi chờ',
+          'Xuất ra .webp bằng EZGIF cho nhẹ máy'
+        ] },
+        { t: 'Lời chào và Daily Quote', d: [
+          'Google AI Studio · <b>Gemini</b> — viết lời chào theo buổi và kho câu trích mỗi ngày',
+          'Máy soạn xong thì ngồi lọc lại bằng tay, giữ đúng mấy đầu mục đã chọn'
         ] },
         { t: 'Bản đồ và mật thư', d: [
-          'Đường bờ biển và bốn toạ độ vẽ tay thẳng bằng SVG, không mượn thư viện bản đồ nào',
-          'Bảng mã Morse dùng bảng chuẩn quốc tế'
+          'Đường bờ biển và bốn toạ độ vẽ tay bằng SVG, không mượn thư viện bản đồ nào',
+          'Mã Morse dùng bảng chuẩn quốc tế'
         ] }
       ],
       tien: true
@@ -936,7 +950,7 @@
       rieng: [
         { t: 'Màn pháo hoa', d: [
           'Pháo hoa vẽ thẳng bằng SVG và canvas, không mượn thư viện hiệu ứng nào',
-          'Quả trứng và vụ nổ cũng vẽ tay trên canvas'
+          'Quả trứng và vụ nổ cũng vẽ tay nốt'
         ] },
         { t: 'Khung Collected', d: [
           'Ảnh động trong khung đổi từ video sang .webp bằng EZGIF'
@@ -947,8 +961,7 @@
       ten: 'Hồ sơ Phi đoàn',
       rieng: [
         { t: 'Xuất ảnh hồ sơ', d: [
-          '<b>html2canvas</b> · Niklas von Hertzen — chụp lại tấm hồ sơ thành ảnh tải về',
-          'Thư viện mã nguồn mở, giấy phép MIT'
+          '<b>html2canvas</b> của Niklas von Hertzen — chụp tấm hồ sơ thành ảnh tải về. Mã nguồn mở, giấy phép MIT'
         ] },
         { t: 'Gửi form', d: [
           '<b>FormSubmit</b> — nhận form của phi đoàn, gói miễn phí'
@@ -962,17 +975,18 @@
       ten: 'Easter Egg · Gate 2',
       rieng: [
         { t: 'Đoạn phim chuyển cảnh', d: [
-          '<b>Kling AI</b> — dựng clip nổ sập phòng lab và clip gõ sai',
-          '<b>Adobe Firefly</b> — dựng và chỉnh khung hình cho mấy đoạn phim đó',
+          '<b>Kling AI</b> — dựng clip nổ sập phòng lab và clip lúc gõ sai',
+          '<b>Adobe Firefly</b> — dựng và nắn lại khung hình cho mấy đoạn phim đó',
           'Xuất ra .webp bằng EZGIF cho nhẹ'
         ] },
         { t: 'Tranh nền và nhân vật', d: [
-          'Google AI Studio · Gemini — viết prompt rồi tạo ảnh hai màn chơi, con rồng, mấy chú rắn',
-          'Ảnh sinh ra xong còn chỉnh tay: xoá chữ khắc trên bệ đá, nắn lại tông, dựng lại tấm biển'
+          '<b>Gemini</b> và <b>Adobe Firefly</b> — vẽ hai màn chơi, con rồng, mấy chú rắn. Prompt viết tay rồi lọc lại',
+          'Ảnh vẽ xong còn sửa tay: xoá chữ khắc trên bệ đá, nắn tông màu, dựng lại tấm biển'
         ] },
         { t: 'Khu Open World', d: [
-          'Google AI Studio · Gemini — nhân vật trả lời câu hỏi trong khu Open World',
-          'Giọng nhân vật viết tay, đưa cho máy đóng vai'
+          'Google AI Studio · <b>Gemini</b> — cô nhân vật ngồi trả lời câu hỏi trong khu này',
+          'Giọng cô không phải giọng máy: nết nói, cách nghĩ, thói quen dùng từ đều gom từ chữ của người viết rồi dạy lại cho máy. Máy chỉ mượn giọng để đóng vai',
+          'Ảnh nét mặt của cô cũng do <b>Gemini</b> và <b>Adobe Firefly</b> vẽ, <b>Kling AI</b> cho cử động'
         ] },
         { t: 'Cảm hứng', d: [
           'Khung chữ, bảng đá và mạch giải đố lấy cảm hứng từ mấy game nhập vai pixel đời cũ',
@@ -984,7 +998,7 @@
       ten: 'Zoey’s Castle',
       rieng: [
         { t: 'Chủ đề', d: [
-          'Bảng màu và khí chất lấy cảm hứng từ mùa <b>hoa anh đào</b> — hồng phấn, tím oải hương, nền giấy sáng'
+          'Màu và khí chất lấy từ mùa <b>hoa anh đào</b> — hồng phấn, tím oải hương, nền giấy sáng'
         ] },
         { t: 'Phông chữ riêng', d: [
           'Google Fonts — <b>Cormorant Garamond</b> cho mấy dòng tiêu đề nghiêng'
@@ -995,7 +1009,7 @@
       ten: 'HongHan’s Secret Chamber',
       rieng: [
         { t: 'Chủ đề', d: [
-          'Bảng màu và khí chất lấy cảm hứng từ <b>dải ngân hà</b> — nền tím than, sao li ti, quầng sáng lạnh'
+          'Màu và khí chất lấy từ <b>dải ngân hà</b> — nền tím than, sao li ti, quầng sáng lạnh'
         ] },
         { t: 'Phông chữ riêng', d: [
           'Google Fonts — <b>Cormorant Garamond</b> cho mấy dòng tiêu đề nghiêng'
@@ -1122,7 +1136,8 @@
          + '<div class="r tong"><span>Tổng cộng</span><b>$' + tong + '</b></div></div>';
     }
     h += '</div><p class="ls-chan">Cảm ơn mọi công cụ, thư viện và phông chữ đã cho '
-       + 'xài chùa — không có mấy thứ này thì trang chỉ nằm trong đầu.</p>';
+       + 'xài chùa. Không có mấy thứ này thì trang vẫn nằm trong đầu, chưa ra được '
+       + 'tới đây.</p>';
     khung(h);
     hop.querySelector('#lsLui').addEventListener('click', function () { veSo(ma); });
   }

@@ -360,47 +360,46 @@ vào Zoey's Castle, cửa vào Secret Chamber, và hai bảng điều phối. Tr
 chỗ một nết. Nay cả bảy đi theo đúng ba luật dưới đây — thêm cửa mới thì chép
 đủ ba, đừng bịa luật thứ tư.
 
-### 6.1 · Phải Enter mới tính là GỬI
+### 6.1 · Gõ đủ ký tự là TỰ CHẤM
 
-Gõ đủ ký tự **không** phải là gửi. Người chơi còn phải bấm `Enter`.
+Không bắt bấm `Enter`. Gõ xong ký tự cuối là hệ thống tự chấm **một lần**.
 
-Bản cũ tự chấm sau 120-140ms kể từ ký tự cuối. Hỏng ở chỗ: bấm nhầm đúng phím
-cuối là **cháy luôn một lượt sai** mà chưa kịp nhìn lại hàng ô — mà mấy cửa
-này lượt sai đều có giá (khoá 30 phút, hết lượt ngày, mở gợi ý). Gõ xong còn
-đọc lại được, ưng thì mới Enter.
+> **⚠ ĐÃ THỬ BẮT BẤM ENTER, ĐÃ GỠ.** Một đời trước bắt phải Enter mới tính là
+> gửi, kèm một dòng nhắc *"Nhấn Enter để vào"* dưới hàng ô. Cái được thì nhỏ —
+> đỡ một cú bấm nhầm phím cuối — mà cái mất thì thấy ngay: thêm một dòng chữ
+> chen vào giữa mấy dòng đã có (chữ dẫn, gợi ý, dòng báo sai), hộp nào cũng dài
+> ra một nấc. Gõ sai vài lần thì người ta tự cẩn thận, khỏi cần luật.
+> Đừng dựng lại dòng nhắc đó, cũng đừng dựng lại dấu `↵` cạnh hàng ô (đời trước
+> nữa đã thử: ký hiệu trần phải đoán mới hiểu, mà thêm một ô vào hàng thì hàng
+> ô lệch tâm).
 
-Cách làm: bỏ hẳn nhánh `if(buf.length === len) setTimeout(check, …)` trong
-`input`, dồn hết vào `keydown`:
+**Nhưng đừng chấm ngay lúc phím cuối vừa xuống.** Chấm đúng vào nhịp ký tự cuối
+vừa thành chấm — tức là dùng chung một cái hẹn giờ với luật §6.2:
 
 ```js
-inp.addEventListener('input', function(){ buf = …; veRoiChe(); });
-inp.addEventListener('keydown', function(e){
-  if(e.key !== 'Enter') return;
-  e.preventDefault();                    /* đừng để form nào cuốn mất phím */
-  if(buf.length === len) check();
-});
+function veRoiChe(){
+  var i = go.length - 1;
+  if(henChe){ clearTimeout(henChe); henChe = null; }
+  ve(i);                                   /* hiện rõ ký tự vừa gõ */
+  if(i < 0) return;
+  var du = go.length === len;
+  henChe = setTimeout(function(){
+    henChe = null; ve(-1);                 /* thành chấm */
+    if(du && go.length === len) cham();    /* …rồi mới chấm */
+  }, HIEN_MS);
+}
 ```
 
-**Phải có DÒNG CHỮ dưới hàng ô** — không thì người chơi gõ đủ số rồi ngồi chờ,
-tưởng trang treo.
+Nhờ vậy bao giờ cũng đủ một nhịp để nhìn thấy mình vừa gõ gì rồi cửa mới phản
+ứng: **thấy chữ → chữ thành chấm → cửa trả lời**. Chấm ngay lúc phím xuống thì
+mất hẳn nhịp giữa, người gõ không kịp biết mình bấm trúng phím nào.
 
-| Chỗ | Chữ |
-|---|---|
-| Cửa vào (sổ bản ghi · ô PIN hồ sơ · Mission · Zoey's Castle · Secret Chamber · bảng điều phối) | **Nhấn Enter để vào** |
-| Ô trả lời câu hỏi (bộ câu hỏi Zoey's Castle) | **Nhấn Enter để trả lời** |
+**Vẫn nhận phím `Enter`** cho ai quen bấm — bấm là huỷ hẹn giờ, che ngay rồi
+chấm luôn, khỏi phải chờ hết nhịp.
 
-Mờ sẵn (`opacity:.4`–`.45`) để biết luật; đủ ký tự thì thêm class `.san` cho
-sáng lên thành lời mời bấm.
-
-> **⚠ ĐỪNG QUAY LẠI DẤU `↵` CẠNH HÀNG Ô.** Đời trước làm vậy, hỏng hai đường:
-> ký hiệu trần thì phải ĐOÁN mới hiểu, mà nhét thêm một ô vào hàng thì hàng ô
-> lệch tâm — bên Zoey's Castle hàng ô còn tự xuống hai dòng nên dấu đó có lúc
-> rơi lạc một mình. Một dòng chữ đặt DƯỚI hàng ô: đọc là hiểu, không đụng gì
-> tới bố cục hàng ô, và ở cỡ màn nào cũng gọn trong một dòng.
-
-Dòng này **phải đứng riêng**, đừng trộn vào dòng báo trạng thái (`#pinMsg`,
-`.msn-msg`, `.ls-msg`) — chỗ đó còn phải báo sai mấy lần, còn khoá bao lâu, còn
-gợi ý; nhồi thêm luật gõ vào là đọc rối.
+Chỗ **không che chữ** (ô trả lời câu hỏi bên Zoey's Castle) thì không có nhịp
+hiện-rồi-che để bám vào, nên dùng một hẹn giờ riêng (`CHO_CHAM`, 620ms) — vẫn
+là chờ một nhịp cho mắt đọc lại cả hàng ô trước khi chấm.
 
 ### 6.2 · Thấy mình gõ gì rồi mới thành chấm
 

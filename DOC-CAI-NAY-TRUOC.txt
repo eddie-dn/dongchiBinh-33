@@ -1,4 +1,138 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 15 — bỏ luật Enter, trả con trỏ về ô nhập, clip chạy trọn 10 giây.
+════════════════════════════════════════════════════════════════════════════
+10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/index.html
+    assets/lichsu.js                      dad/950901-b/config.js
+    dad/950901-a/index.html               han/961030-a/index.html
+    han/961030-b/index.html
+
+    DESIGN-SYSTEM.md  ← §6.1 viết lại      docs/BAN-GHI.md
+    DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này:
+    /                 V18.09  ← ĐỔI   /han/961030-a     V03.07  ← ĐỔI
+    /dad/950901-a     V04.01  ← ĐỔI   /han/961030-b     V02.08  ← ĐỔI
+    /dad/950901-b     V05.02  ← ĐỔI   /phao-hoa         V03.03 (không đụng)
+
+
+① BỎ LUẬT ENTER — GÕ ĐỦ LÀ TỰ CHẤM
+────────────────────────────────────────────────────────────────────────────
+Gỡ sạch dòng "Nhấn Enter để vào" ở cả bảy cửa mã, và gỡ luôn luật bắt bấm
+Enter. Gõ đủ ký tự là tự chấm một lần.
+
+NHƯNG KHÔNG CHẤM NGAY LÚC PHÍM CUỐI VỪA XUỐNG. Chấm đúng vào nhịp ký tự cuối
+vừa thành chấm — dùng chung một cái hẹn giờ với luật "thấy chữ rồi mới che":
+
+        thấy chữ  →  chữ thành chấm  →  cửa trả lời
+
+Chấm ngay lúc phím xuống thì mất hẳn nhịp giữa, người gõ không kịp biết mình
+vừa bấm trúng phím nào. Phím Enter vẫn nhận cho ai quen bấm: bấm là huỷ hẹn
+giờ, che ngay rồi chấm luôn.
+
+Chỗ KHÔNG che chữ (ô trả lời câu hỏi bên Zoey's Castle) không có nhịp
+hiện-rồi-che để bám vào, nên dùng hẹn giờ riêng 620ms — vẫn là chờ một nhịp
+cho mắt đọc lại cả hàng ô trước khi chấm.
+
+Luật viết lại ở DESIGN-SYSTEM.md §6.1, kèm ghi chú ĐỪNG DỰNG LẠI: cả dòng
+nhắc Enter (đợt 14) lẫn dấu ↵ cạnh hàng ô (đợt 13) đều đã thử và đã gỡ.
+
+
+② CON TRỎ TỰ VỀ Ô NHẬP — BỐN CHỖ QUÊN
+────────────────────────────────────────────────────────────────────────────
+Bệnh: "khi sai xong / khi bấm đúng thì trỏ chuột và khung trả lời không tự về
+lại mà phải bấm tay thêm 1 lần".
+
+Dò ra: có SÁU chỗ mở lại ô nhập, mà chỉ hai chỗ trao con trỏ. Bốn chỗ quên:
+
+        · vào vòng 1
+        · vào vòng 2 — tức NGAY SAU KHI giải xong vòng 1  ← chỗ báo lỗi
+        · vào khu Open World
+        · trả lời xong một câu Open World
+
+Ô sáng lên nhìn như đã sẵn sàng nhưng con trỏ vẫn nằm ở body, gõ không ăn.
+Nay cả sáu chỗ đều gọi kèm, và ghi thẳng luật vào chú thích của hàm: MỌI chỗ
+gọi `setInput(true)` đều phải gọi kèm `resetOnhap(true)`.
+
+Chạy thử: vào vòng 1 con trỏ tự về ô nhập sau khi màn dẫn truyện chạy xong;
+giải xong vòng 1 thì vào vòng 2 con trỏ cũng tự về.
+
+
+③ CLIP NỔ SẬP LAB BỊ CẮT MẤT 2 GIÂY CUỐI
+────────────────────────────────────────────────────────────────────────────
+Đúng như đã báo. Đọc thẳng độ dài từ chính file .webp (mỗi khung có một ô
+`duration` trong chunk ANMF, cộng lại là ra):
+
+        anim_unlock_clean   201 khung × 50ms  = 10.050 ms
+        anim_unlock (cũ)    241 khung × 42ms  = 10.122 ms
+        anim_wrong          121 khung × 42ms  =  5.082 ms
+
+Config đang khai 8000 → cắt mất 2 giây cuối, đúng 20% clip, nên cảnh bị chặt
+ngang giữa nhịp. Nay để 10050.
+
+`anim_wrong` GIỮ NGUYÊN 2000 và đã ghi rõ vì sao: clip đó là một VÒNG LẶP rung
+lắc — dò từng khung thì khung nào cũng đang động, không có nhịp lắng xuống để
+mà chờ. Bắt xem trọn 5 giây cho mỗi lần gõ trật là quá nặng. KHÔNG phải quên.
+
+Mốc tắt chữ RAZER vẫn an toàn: 0.05 × 10050 + 380 = 882ms = 8,8% clip, chớp
+nổ bắt đầu ở 12%.
+
+
+④ MẶT CƯỜI TRONG BOX TỔNG TƯ LỆNH
+────────────────────────────────────────────────────────────────────────────
+Nó có `data-ls` (nên bấm 3 nhịp vẫn vào được bản ghi) nhưng THIẾU class
+`.ls-chu` — thành ra là cửa duy nhất trong bộ trỏ vào không có phản hồi gì.
+Nay thêm class, ăn đúng bộ hiệu ứng chung: trỏ vào thì đổi màu và nháy, bấm
+trúng nhịp thì loé một cái. Màu nhấn lấy `--ls-acc` của bản đồ nên sáng lên
+vẫn ra amber, không nhảy sang xanh lá.
+
+KHÔNG đặt `cursor:pointer` — mấy cửa vào bản ghi khác cũng không có, để con
+trỏ đừng tố cáo chỗ này bấm được.
+
+
+⑤ CREDIT — GHI RÕ CÔNG TỪNG BÊN, VÀ VIẾT CHO RA GIỌNG NGƯỜI
+────────────────────────────────────────────────────────────────────────────
+Thêm mục HONGHANDANGIU ở trang Bản đồ mật thư: ảnh cô do Gemini và Adobe
+Firefly vẽ, Kling AI lo phần cho cô cử động, EZGIF đổi sang .webp.
+Bên Gate 2 cũng tách rõ: Kling AI dựng clip chuyển cảnh · Gemini + Adobe
+Firefly vẽ tranh nền, con rồng, mấy chú rắn · ảnh nét mặt của cô cũng vậy.
+
+Khu Open World ghi thêm một dòng cho đúng chuyện:
+
+    "Giọng cô không phải giọng máy: nết nói, cách nghĩ, thói quen dùng từ đều
+     gom từ chữ của người viết rồi dạy lại cho máy. Máy chỉ mượn giọng để
+     đóng vai."
+
+Cả trang cũng chải lại giọng cho bớt khô — "nơi trang này nằm" thay cho
+"dựng trang tĩnh", "ngồi lọc lại bằng tay" thay cho "lọc tay lại", câu cuối
+đổi thành "Không có mấy thứ này thì trang vẫn nằm trong đầu, chưa ra được
+tới đây."
+
+
+⑥ ĐÃ KIỂM THỬ — 307 phép, 0 hỏng
+────────────────────────────────────────────────────────────────────────────
+Bài mới soi ba việc của đợt này: mặt cười sáng lên đúng bộ hiệu ứng chung ·
+độ dài clip khớp file thật và mốc tắt RAZER vẫn nằm trước chớp nổ · con trỏ
+tự về ô nhập ở cả hai chặng vào vòng 1 và vào vòng 2.
+Bộ cũ chạy lại đủ, trong đó mười một phép về cửa mã đã viết lại theo luật mới
+(gõ chữ cuối thì CHƯA chấm vội, hết nhịp hiện chữ mới tự chấm), và phần rà
+responsive đổi từ soi dòng Enter sang soi HÀNG Ô CÓ CĂN GIỮA không — chính chỗ
+từng lệch hồi còn nhét thêm một ô ↵ vào hàng.
+
+    Hai phép báo đỏ lúc chạy lại đều là lỗi CỦA BỘ KIỂM, không phải của trang:
+    một phép còn trỏ vào `#lsEnter` đã gỡ, một phép gõ chuỗi mồi cứng 15 ký tự
+    trong khi bộ câu hỏi xáo thứ tự nên có câu đáp án dài 18 chữ — ô nhập không
+    bao giờ đầy thì chẳng có gì để tự chấm. Đã sửa bộ kiểm.
+
+    Đổi độ dài clip cũng kéo mốc tắt RAZER dời theo (0.05 × 10050 = 502ms thay
+    vì 400ms), khoảng dư trước chớp nổ tụt từ 2,9% xuống 1,0%. Đã hạ
+    `slab1_out_at` 0.05 → 0.04 để giữ nguyên mốc tính bằng mili-giây, và ghi
+    chú cảnh báo ngay tại dòng đó: MỐC NÀY LÀ % CỦA `anim_unlock`, sửa độ dài
+    clip thì phải chỉnh theo. Đo lại: tắt hẳn ở 9,5% clip, dư 2,5%.
+
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 14 — dòng chữ Enter, trang Credit, và dọn nốt ba lỗi nhìn ở Gate 2.
 ════════════════════════════════════════════════════════════════════════════
 10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
