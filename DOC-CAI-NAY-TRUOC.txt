@@ -1,4 +1,148 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 19 — ô nhập nhanh gấp đôi và thôi nuốt lượt oan; nhắc Open World mỗi ngày.
+════════════════════════════════════════════════════════════════════════════
+10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            han/961030-a/index.html
+    assets/lichsu.js                      han/961030-b/index.html
+    dad/950901-a/index.html               dad/950901-b/index.html
+    dad/950901-b/config.js
+
+    DESIGN-SYSTEM.md                      DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này:
+    /                 V19.02 → V19.03     /han/961030-a     V04.00 → V04.01
+    /dad/950901-a     V04.04 → V04.05     /han/961030-b     V03.01 → V03.02
+    /dad/950901-b     V05.05 → V05.06     /phao-hoa         V03.04 (không đụng)
+    (khu Easter Egg trong sổ bản đồ      V19.02 → V19.03)
+
+
+① Ô NHẬP: SAI XONG GÕ LẠI THÌ CHẬM, LAG, VÀ NUỐT LƯỢT OAN
+────────────────────────────────────────────────────────────────────────────
+BỆNH: "nhấn sai → nhấp 1 ký tự 2 lần → hiển thị lại đáp án sai → mất luôn 2
+lượt. Xoá đáp án cũng khó khăn/lag/chậm. Pin khá ok mà pass/đáp án khó chịu."
+
+BA BỆNH, MỘT GỐC: ĐỢT TRƯỚC ĐI ĐOÁN THAY VÌ ĐI HỎI.
+
+Luật đợt 18 đoán bằng độ dài — "ô dài thêm đúng một ký tự thì là người gõ".
+Đoán được cú tự điền thật, nhưng đoán sai ở đủ chỗ khác:
+
+  · Sửa một ký tự giữa một ô ĐÃ ĐẦY cũng là "+1" → gửi đi cái đáp án mình
+    không định gửi. Làm hai lần là mất hai lượt. Đúng như đã báo.
+  · Phải khoá đường tự chấm 900ms sau mỗi lần sai để chặn dây chuyền tự điền,
+    và chính 900ms đó là cái lag.
+  · Mấy ô pass chỉ ĐỌC ô nhập ra hàng ô mà không ghi ngược lại, nên ô nhập
+    ngầm chứa cả thứ vừa bị lọc bỏ — dấu cách, chữ có dấu, phần gõ lố quá số
+    ô. Bấm xoá một cái là mất một ký tự VÔ HÌNH, hàng ô đứng im. Mấy ô PIN
+    không dính vì chúng vốn đã ghi ngược — đúng như đã nhận xét.
+
+NAY HỎI THẲNG TRÌNH DUYỆT. Sự kiện `input` tự khai mình từ đâu ra — đo thật
+trên Chromium:
+
+    gõ tay                     insertText (đúng 1 ký tự)   isTrusted = TRUE
+    gõ tay, bàn phím Android   insertCompositionText       isTrusted = TRUE
+    xoá                        deleteContentBackward       isTrusted = TRUE
+    dán                        insertFromPaste             isTrusted = TRUE
+    tự điền, quản lý mật khẩu  KHÔNG CÓ inputType          isTrusted = FALSE
+    tự điền, Chrome            insertReplacementText       isTrusted = FALSE
+
+`isTrusted` là cờ của chính trình duyệt, mã trang KHÔNG giả được. Cú tự điền
+bị loại từ gốc — khỏi cần khoá thời gian, khỏi cần lag.
+
+BA LUẬT MỚI, ĐẶT Ở CẢ TÁM Ô NHẬP:
+
+  ① HỎI, ĐỪNG ĐOÁN. Chỉ tự chấm khi trình duyệt khai đây là một cú gõ tay
+    thật. Bỏ hẳn nhịp nghỉ 900ms sau mỗi lần sai.
+  ② CẢ CỤM PHẢI DO CHÍNH TAY NGƯỜI CHƠI GÕ RA. Dán hay tự điền vào rồi sửa
+    một ký tự thì ký tự cuối đó VẪN là cú gõ tay thật — nên phải nhớ thêm
+    nguồn gốc của cả cụm. Dính một cú dán là mất cờ, dọn sạch ô mới lấy lại.
+    Đây là chỗ vá đúng cái bệnh mất 2 lượt.
+  ③ Ô NHẬP LUÔN BẰNG ĐÚNG HÀNG Ô. Xoá một cái rụng đúng một ô, không còn ký
+    tự vô hình nào. Ô nhập vốn trong suốt nên ghi đè giá trị không ai thấy.
+
+VÀ NHANH GẤP ĐÔI: ký tự CUỐI nay chờ 420ms thay vì 800ms — lúc đó mắt đang dán
+vào ô chờ cửa trả lời, bắt chờ đủ 800ms nữa là thành đơ. Ký tự giữa vẫn 800ms,
+vẫn đúng thứ tự thấy chữ → thành chấm → cửa trả lời.
+
+    ĐO THẬT, ký tự cuối → cửa trả lời:      763ms  →  384ms
+
+ENTER VẪN LÀ ĐƯỜNG THOÁT, không hỏi han gì: dán hay tự điền vào rồi bấm Enter
+thì vẫn gửi được như thường.
+
+
+② MÀN PHÁO HOA GATE 2 DÀI THÊM
+────────────────────────────────────────────────────────────────────────────
+CÁI CẮT NGẮN MÀN NÀY KHÔNG PHẢI HẠT PHÁO — LÀ MÀN HÌNH ĐỔI CẢNH. Khung pháo
+hoa nằm TRONG màn chơi; chuyển sang màn phát mã là khung biến mất giữa chừng,
+hạt còn bay cũng không ai thấy. Nên phải nới cả hai: số đợt bắn, VÀ quãng nán
+lại trước lúc đổi cảnh.
+
+    bắn liên tục:      3,7s (6 đợt)   →   6,2s (11 đợt)
+    ĐƯỢC NHÌN:         4,8s           →   7,7s
+
+Bốn con số điều khiển màn này nay nằm ở config.js (`phao_dot`, `phao_nhip`,
+`phao_nan`, `phao_tran`), muốn chỉnh nữa thì sửa một chỗ.
+
+
+③ NHẮC OPEN WORLD — MỖI NGÀY MỘT LẦN, VÀ BIẾT DỪNG
+────────────────────────────────────────────────────────────────────────────
+Ai phá đảo Gate 2 rồi mà chưa từng ghé khu Open World thì được nhắc. Hộp riêng,
+dùng ảnh HH_4_hello_easter — clip duy nhất trong bộ chưa nhánh nào dùng tới, mà
+tên thì đúng nghĩa.
+
+ĐỜI TRƯỚC LÀ MỘT CÁI ĐUÔI DÍNH VÀO LỜI CHÀO, hỏng hai đường: ghi chú bảo "mỗi
+ngày MỘT lần" mà chẳng có dấu ngày nào cả — nó bám vào MỌI lời chào, tức ba lần
+một ngày; và nó nói chuyện "xem lại", không hề gọi tên Open World.
+
+NAY LÀ MỘT HỘP RIÊNG, ĐỨNG TRÊN NHÁNH LỜI CHÀO — nên hôm nào có nhắc thì nhắc
+THAY lời chào, không chen thêm một hộp nữa. Vẫn đi qua đủ luật nhường đường và
+giãn cách sẵn có: thấy hộp khác đang mở thì lui, hai hộp phải cách nhau một
+phút, chờ quá 90 giây thì bỏ hẳn lượt.
+
+BỐN CÁI HÃM CHO KHỎI THÀNH PHIỀN:
+  1. Mỗi ngày đúng MỘT lần.
+  2. Vào được Open World rồi thì IM HẲN, vĩnh viễn.
+  3. CÓ TRẦN — 6 lần. Nhắc tới chừng đó mà người ta vẫn không đi thì nghĩa là
+     người ta không muốn đi; nhắc nữa là phiền, không phải nhiệt tình.
+  4. NHẸ TRƯỚC, RÕ SAU. Hai lần đầu chỉ hỏi một câu, để còn cái thú tự tìm;
+     từ lần thứ ba mới chỉ thẳng đường đi.
+
+Lần nhắc đầu KHÔNG BAO GIỜ rơi vào đúng hôm phá đảo Gate 2 — hôm đó hộp chúc
+mừng đã chiếm lượt rồi. Sớm nhất là hôm sau.
+
+
+④ LUẬT NGÀY TRONG SỔ: ĐÃ ÁP CHO TẤT CẢ, NAY CÓ BỘ CANH
+────────────────────────────────────────────────────────────────────────────
+Đã soát: luật "cột ngày của bảng = mốc bắt đầu, tem = ngày sửa cuối" áp cho cả
+bảy sổ trên mọi trang, và không cần chép lại ở đâu — bảng chỉ có MỘT hàm dựng
+trong assets/lichsu.js, bảy sổ dùng chung.
+
+Nhưng trước đây chỉ có một phép canh cho một sổ. Nay soi từng dòng của cả bảy —
+40 dòng — cả hai chiều: bảng không được in nhầm ngày sửa cuối, và tem thì ngược
+lại, luôn phải là ngày sửa cuối.
+
+
+⑤ BỘ KIỂM
+────────────────────────────────────────────────────────────────────────────
+Thêm hai bộ mới:
+    nhap19.mjs   50 phép — năm cửa mã, mỗi cửa mười phép: tự điền hai kiểu
+                 không nuốt lượt; SỬA MỘT KÝ TỰ trong ô đã đầy sẵn không tự
+                 chấm (làm hai lần cũng vậy); Enter vẫn gửi; dấu cách bị nuốt
+                 ngay nên ô nhập không còn ký tự vô hình; xoá một cái rụng
+                 đúng một ký tự; và sai xong gõ lại KHÔNG chậm hơn lần đầu.
+    ow19.mjs     17 phép — soi đủ bốn cái hãm của hộp nhắc, chuyện "nhắc thay
+                 lời chào chứ không cộng thêm hộp", và chuyện chơi lại từ đầu
+                 thì bộ đếm nhắc cũng về 0.
+
+tem16.mjs thêm 15 phép cho luật ngày của cả bảy sổ.
+
+kt2.mjs phải sửa NGƯỜI CHƠI DỰNG RA: bộ này soi lời chào, mà từ đợt này ai chưa
+vào Open World thì hộp nhắc chiếm mất lượt hộp đầu tiên trong ngày. Nay dựng
+người chơi đã vào Open World rồi. Sửa bộ kiểm, KHÔNG nới luật.
+
+TỔNG: 491 phép, 0 hỏng.
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 18 — chặn cú tự điền của trình duyệt nuốt lượt; chuông báo nói đúng trang.
 ════════════════════════════════════════════════════════════════════════════
 13 file sửa, không có file mới. Chép đè theo đúng cây thư mục.

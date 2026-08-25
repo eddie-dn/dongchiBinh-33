@@ -3128,7 +3128,9 @@ el.finish.addEventListener('click', async ()=>{
   Store.patch({g2Game:true, g2Done:true});
   confetti();
   await sayAll(C.dialogues.finale, 'cy');
-  await wait(1400);
+  /* Nán lại cho xem hết màn pháo hoa rồi mới đổi cảnh — khung `#fx` nằm trong
+     màn chơi, đổi cảnh là nó biến mất giữa chừng. Xem `phao_nan` ở config. */
+  await wait(T.phao_nan || 1400);
   Code.open();                         /* → sang màn phát mã TYRION */
 });
 
@@ -3141,21 +3143,22 @@ function confetti(){
       const a = Math.random()*Math.PI*2, v = speed*(0.35+Math.random()*0.85);
       parts.push({x, y, vx:Math.cos(a)*v, vy:Math.sin(a)*v-1.4,
         s:3+Math.round(Math.random()*3), c:COLORS[(Math.random()*COLORS.length)|0],
-        life:1, decay:0.006+Math.random()*0.008});
+        life:1, decay:0.0045+Math.random()*0.006});
     }
   };
-  for(let k=0;k<90;k++) parts.push({
+  for(let k=0;k<130;k++) parts.push({
     x:Math.random()*W, y:-Math.random()*H*0.6,
     vx:(Math.random()-0.5)*1.1, vy:1.4+Math.random()*2.4,
     s:3+Math.round(Math.random()*3), c:COLORS[(Math.random()*COLORS.length)|0],
-    life:1, decay:0.0035});
+    life:1, decay:0.0024});
 
   el.fx.classList.add('on');
+  const soDot = T.phao_dot || 6, nhip = T.phao_nhip || 620;
   let bursts = 0;
   const bt = setInterval(()=>{
     push(W*(0.18+Math.random()*0.64), H*(0.18+Math.random()*0.38), 46, 4.2);
-    if(++bursts >= 6) clearInterval(bt);
-  }, 620);
+    if(++bursts >= soDot) clearInterval(bt);
+  }, nhip);
   push(W*0.5, H*0.34, 60, 4.6);
 
   const t0 = performance.now();
@@ -3171,7 +3174,7 @@ function confetti(){
       fxCtx.fillRect(p.x|0, p.y|0, p.s, p.s);      /* ô vuông = pixel */
     }
     fxCtx.globalAlpha = 1;
-    if(live > 0 && now - t0 < 12000) requestAnimationFrame(frame);
+    if(live > 0 && now - t0 < (T.phao_tran || 12000)) requestAnimationFrame(frame);
     else { clearInterval(bt); fxCtx.clearRect(0,0,W,H); el.fx.classList.remove('on'); }
   })(performance.now());
 }

@@ -171,6 +171,10 @@ trang đó trong `assets/lichsu.js`.**
 > `ngay` = **mốc ghi nhận** — ngày của bản `.00` đầu tiên, tức lúc build bắt
 > đầu. Đây là thứ **bảng bản ghi in ra**.
 > `sua` = **ngày sửa cuối** — thứ **tem "Last updated" in ra**.
+> Luật này áp cho **cả bảy sổ trên mọi trang** mà không cần chép lại ở đâu:
+> bảng chỉ có **một hàm dựng** (`veSo()` trong `assets/lichsu.js`), bảy sổ dùng
+> chung. `tem16.mjs` mục ⑥ soi từng dòng của cả bảy — 40 dòng — để chắc bảng
+> không bao giờ lỡ in nhầm cột `sua`.
 > Một build lớn kéo dài nhiều ngày nên hai cột này khác nhau là bình thường:
 > sổ Hồ sơ Phi đoàn hiện ghi mốc `24-Aug` trong khi tem là `25-Aug`.
 
@@ -442,37 +446,40 @@ Không bắt bấm `Enter`. Gõ xong ký tự cuối là hệ thống tự chấ
 vừa thành chấm — tức là dùng chung một cái hẹn giờ với luật §6.2:
 
 ```js
-var NGUOI_MS = 900;                        /* nhịp nghỉ sau mỗi lần chấm sai */
-var chanTuChamToi = 0, daiTruoc = 0;
+/* Trình duyệt TỰ KHAI cú nhập này từ đâu ra — không phải đoán nữa */
+function laGoTay(e){
+  if(!e || !e.isTrusted) return false;                   /* tự điền: isTrusted = FALSE */
+  const t = e.inputType;
+  if(t === 'insertText') return (e.data || '').length === 1;
+  return t === 'insertCompositionText';                  /* bàn phím Android gõ qua đây */
+}
+function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
 
-function veRoiChe(){
-  var truoc = daiTruoc; daiTruoc = go.length;
-  var i = go.length - 1;
+const CHOT_MS = 420;              /* nhịp của ký tự CUỐI — ngắn hơn HIEN_MS */
+let nguyenGo = true, daiTruoc = 0;
+
+function veRoiChe(e){
+  const truoc = daiTruoc; daiTruoc = go.length;
+  if(!go.length) nguyenGo = true;                        /* ô rỗng thì kể như sạch */
+  else if(!laXoa(e) && !laGoTay(e)) nguyenGo = false;    /* dán / tự điền vào đây */
+  const i = go.length - 1;
   if(henChe){ clearTimeout(henChe); henChe = null; }
-  ve(i);                                   /* hiện rõ ký tự vừa gõ */
+  ve(i);                                                 /* hiện rõ ký tự vừa gõ */
   if(i < 0) return;
-  var du = go.length === len && go.length === truoc + 1;      /* chốt 1 */
-  henChe = setTimeout(function(){
-    henChe = null; ve(-1);                 /* thành chấm */
-    if(!du || go.length !== len) return;
-    var con = chanTuChamToi - Date.now();                     /* chốt 2 */
-    if(con > 0){                           /* …chưa hết nhịp nghỉ thì HOÃN */
-      henChe = setTimeout(function(){
-        henChe = null;
-        if(go.length === len && inp.isConnected) cham();
-      }, con);
-      return;
-    }
-    cham();                                /* …rồi mới chấm */
-  }, HIEN_MS);
+  const chot = go.length === len && go.length === truoc + 1
+               && nguyenGo && laGoTay(e);
+  henChe = setTimeout(()=>{
+    henChe = null; ve(-1);                               /* thành chấm */
+    if(chot && go.length === len && inp.isConnected) cham();
+  }, chot ? CHOT_MS : HIEN_MS);
 }
 
-/* Nhánh CHẤM SAI phải đóng rào lại, nếu không thì chốt 2 vô nghĩa */
-function cham(){
-  if(go === MA){ moCua(); return; }
-  chanTuChamToi = Date.now() + NGUOI_MS;
-  go = ''; inp.value = ''; daiTruoc = 0; ve(-1);
-}
+/* Ô nhập LUÔN BẰNG ĐÚNG hàng ô — nếu không, xoá một cái có thể chẳng rụng ô nào */
+inp.addEventListener('input', e => {
+  go = norm(inp.value).slice(0, len);
+  if(inp.value !== go) inp.value = go;
+  veRoiChe(e);
+});
 ```
 
 Nhờ vậy bao giờ cũng đủ một nhịp để nhìn thấy mình vừa gõ gì rồi cửa mới phản
@@ -480,42 +487,67 @@ Nhờ vậy bao giờ cũng đủ một nhịp để nhìn thấy mình vừa g�
 mất hẳn nhịp giữa, người gõ không kịp biết mình bấm trúng phím nào.
 
 **Vẫn nhận phím `Enter`** cho ai quen bấm — bấm là huỷ hẹn giờ, che ngay rồi
-chấm luôn, khỏi phải chờ hết nhịp.
+chấm luôn, khỏi phải chờ hết nhịp. `Enter` **không hỏi han gì**: dán hay tự
+điền vào rồi bấm `Enter` thì vẫn gửi. Đó là đường thoát duy nhất, phải giữ.
 
 Chỗ **không che chữ** (ô trả lời câu hỏi bên Zoey's Castle) thì không có nhịp
 hiện-rồi-che để bám vào, nên dùng một hẹn giờ riêng (`CHO_CHAM`, 620ms) — vẫn
-là chờ một nhịp cho mắt đọc lại cả hàng ô trước khi chấm. **Hai chốt dưới đây
+là chờ một nhịp cho mắt đọc lại cả hàng ô trước khi chấm. **Ba luật dưới đây
 vẫn phải có ở đó**: ô đó dùng chung `#inp` với cửa mã của chính trang, nên
 trình duyệt rất sẵn lòng nhét mã cửa vào ô trả lời.
 
-#### Hai chốt chặn TỰ CHẤM OAN
+#### ① HỎI TRÌNH DUYỆT, ĐỪNG ĐOÁN
 
-> **⚠ BỆNH ĐÃ SỬA — ĐỌC TRƯỚC KHI ĐỘNG VÀO `veRoiChe`.**
-> *"Nhập sai, bấm lại thêm một lần là pin tự điền luôn, không kịp sửa, mất một
-> lèo ba lượt rồi mất thêm một lượt nữa."*
-> Thủ phạm là **trình duyệt tự điền**: gõ sai xong ô được dọn sạch, chạm vào ô
-> là trình duyệt (hoặc trình quản lý mật khẩu) nhét lại nguyên cụm mã vừa gõ.
-> Ô đầy ngay lập tức → luật "gõ đủ là tự chấm" nổ liền → sai tiếp → dọn ô →
-> chạm lại → nổ tiếp. Ba lượt bay trong tích tắc mà tay người chơi chưa kịp
-> làm gì.
+> **⚠ HAI ĐỜI BỆNH, MỘT GỐC. ĐỌC TRƯỚC KHI ĐỘNG VÀO `veRoiChe`.**
+> · *"nhập sai, bấm lại một cái là pin tự điền luôn, mất một lèo ba lượt"*
+> · *"nhấn sai → nhấp 1 ký tự 2 lần → hiện lại đáp án sai → mất 2 lượt; gõ lại
+>   thì chậm, lag, có lần lag ở ký tự cuối lag cả dãy"*
+>
+> Đời trước **đoán bằng độ dài**: "ô dài thêm đúng một ký tự thì là người gõ".
+> Đoán được cú tự điền thật, nhưng đoán sai ở đủ chỗ khác — sửa một ký tự giữa
+> một ô đã đầy cũng là "+1", thế là gửi đi cái đáp án mình không định gửi. Lại
+> còn phải khoá đường tự chấm 900ms sau mỗi lần sai để chặn dây chuyền, và
+> chính 900ms đó là cái lag người chơi kêu.
 
-**CHỐT 1 · chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự.**
-Người gõ tay thì mỗi nhịp thêm một: `3 → 4`. Tự điền và dán thì nhảy một phát
-`0 → 4`. Nhảy hơn một là **không** tự chấm — muốn gửi thì bấm `Enter`, đường đó
-còn nguyên. Đây mới là chốt chặn thật.
+Sự kiện `input` **tự khai** mình từ đâu ra — đo thật trên Chromium:
 
-**CHỐT 2 · vừa chấm sai thì nghỉ `NGUOI_MS` (900ms) — HOÃN, KHÔNG BỎ.**
-Trong quãng nghỉ mà ô lại đầy thì cú gõ bị **đẩy lùi** tới lúc hết nghỉ, không
-bị vứt. Nhờ vậy nhanh nhất cũng chỉ một lượt mỗi 900ms — nhìn thấy được, chặn
-được — thay vì ba lượt trong tích tắc.
+| Kiểu nhập | `inputType` | `isTrusted` | `data` |
+|---|---|---|---|
+| **gõ tay** | `insertText` | **true** | đúng 1 ký tự |
+| gõ tay (bàn phím Android) | `insertCompositionText` | **true** | — |
+| xoá | `deleteContentBackward` | true | `null` |
+| dán | `insertFromPaste` | true | cả cụm |
+| tự điền — trình quản lý mật khẩu | **không có** | **false** | — |
+| tự điền — Chrome | `insertReplacementText` | **false** | cả cụm |
 
-> **⚠ ĐỪNG ĐỔI CHỐT 2 THÀNH "BỎ HẲN".** Nghe thì chặt hơn, nhưng người gõ
-> nhanh thật có thể đập lại bốn số trong chưa đầy một giây; bỏ cú đó thì họ
-> ngồi nhìn ô đầy mà cửa im re, không hiểu vì sao — hỏng còn nặng hơn cái bệnh
-> đang chữa. Chốt 1 lo phần chặn, chốt 2 chỉ ghìm nhịp.
+`isTrusted` là cờ của chính trình duyệt, **mã trang không giả được**. Nên cú tự
+điền bị loại từ gốc — khỏi cần khoá thời gian, khỏi cần lag.
 
-**Cú hoãn phải kiểm lại `inp.isConnected`** trước khi chấm: hộp có thể đã bị
-dựng lại hoặc đóng trong quãng chờ.
+#### ② CẢ CỤM PHẢI DO CHÍNH TAY NGƯỜI CHƠI GÕ RA
+
+Chốt ① một mình chưa đủ: dán/tự điền vào rồi **sửa một ký tự** thì ký tự cuối
+đó *vẫn là* một cú gõ tay thật. `nguyenGo` nhớ nguồn gốc của cả cụm đang nằm
+trong ô — dính một cú dán hay một cú tự điền là mất cờ, và chỉ dọn sạch ô mới
+lấy lại được. Muốn gửi thì bấm `Enter`.
+
+#### ③ Ô NHẬP LUÔN BẰNG ĐÚNG HÀNG Ô
+
+> **⚠ BỆNH ĐÃ SỬA:** *"xoá đáp án cũng khó khăn/lag/chậm"*.
+> Mấy ô pass đời trước chỉ **đọc** `inp.value` ra `buf` mà không ghi ngược lại,
+> nên ô nhập ngầm chứa cả thứ `norm()` vừa vứt đi — dấu cách, chữ có dấu, và cả
+> phần gõ lố quá số ô. Bấm xoá một cái là mất một ký tự **vô hình**, hàng ô
+> đứng im: người chơi tưởng máy đơ, bấm thêm mấy cái nữa.
+> Mấy ô PIN không dính vì chúng vốn đã ghi ngược — đúng như người chơi kể,
+> *"pin khá ok mà pass/đáp án khá khó chịu"*.
+
+Ô nhập vô hình (`opacity:.01`) nên **không ai thấy con trỏ** — ghi đè `.value`
+hoàn toàn an toàn về mặt nhìn.
+
+#### Nhịp: ký tự cuối ngắn hơn ký tự giữa
+
+`HIEN_MS` 800ms cho ký tự giữa, `CHOT_MS` **420ms** cho ký tự cuối. Lúc gõ nốt
+ký tự cuối thì mắt đang dán vào ô chờ cửa trả lời — bắt chờ đủ 800ms nữa là
+thành đơ. Đo thật: **ký tự cuối → cửa trả lời, 763ms xuống còn 384ms.**
 
 #### Ô nhập phải chối bộ nhớ mật khẩu của trình duyệt
 
@@ -670,3 +702,64 @@ vào sau dấu `·`, rồi in `tt` nguyên văn.
 
 Sổ Google Sheets nhận thêm ba cột cùng tên; trang cũ chưa khai `trang` thì cột
 đó điền bằng chỗ `doanTrang()` đoán ra — xem `docs/GOOGLE-SHEETS.md`.
+
+---
+
+## 10. HỘP CHÀO VÀ HỘP NHẮC — MỘT LƯỢT MỘT HỘP
+
+Toàn bộ luật nằm ở `hhChon()` trong `index.html`, xếp từ trên xuống, gặp nhánh
+nào hợp là ra nhánh đó **rồi dừng**:
+
+| # | Nhánh | Ảnh | Khi nào |
+|---|---|---|---|
+| 1 | vừa phá đảo Gate 2 | `HH_3_excited` | một lần duy nhất cả đời |
+| 2 | vừa xong Zoey's Castle | `HH_2_happy` | một lần duy nhất cả đời |
+| 3 | **nhắc Open World** | `HH_4_hello_easter` | xong Gate 2 mà chưa ghé — mỗi ngày 1 lần, tối đa `OW_NHAC_TOI_DA` |
+| 4 | lời chào | `HH_1` / `HH_2_back` | trong một KHUNG CHÀO, mỗi khung 1 lần/ngày |
+| 5 | đi vắng rồi về | `HH_5_idle_afk` | rời máy ≥ `IDLE_PHUT` |
+| 6 | Daily Quote | `HH_2_back` | ngoài khung chào, đủ giãn cách |
+
+**Cửa chính**: chưa phá đảo Gate 2 thì **không nhánh nào chạy**. Người mới phải
+được yên — chưa quen nhau thì chưa có ai nhảy ra chào.
+
+### 10.1 · Thêm một hộp mới thì đặt ở đâu
+
+Đặt **trong cùng cái thang này**, đừng dựng một hệ hộp thứ hai. Cả thang đi
+chung `hhHien()`, và `hhHien()` mới là chỗ giữ mọi luật chống phiền:
+
+- **nhường đường** — thấy `HOP_UU_TIEN` nào đang mở thì lui, 1,5 giây ngó lại
+- **không hai hộp liền nhau** — cách hộp trước ít nhất `HH_CACH_MS` (1 phút)
+- **có hạn chờ** — quá `HH_CHO_TOI_DA` (90 giây) thì **bỏ hẳn lượt**, thà im
+  còn hơn chào trễ
+- **đóng dấu lúc LÊN HÌNH**, không phải lúc gọi hàm (tham số `khiHien`)
+
+> **⚠ ĐÓNG DẤU SỚM LÀ MẤT TRẮNG.** Lượt hộp có thể bị bỏ giữa chừng — đang có
+> hộp khác đè, hoặc chờ quá hạn. Ghi dấu ở chỗ *quyết định hiện* thay vì chỗ
+> *thật sự hiện* thì người chơi mất hẳn khung chào (hoặc lượt nhắc) của ngày
+> hôm đó mà không được xem gì cả.
+
+### 10.2 · Nhắc thì phải biết dừng
+
+Hộp nhắc Open World là hộp **duy nhất lặp lại theo ngày**, nên nó mang thêm
+bốn cái hãm — thêm hộp lặp nào về sau thì chép đủ bốn:
+
+1. **Mỗi ngày đúng một lần** (`owNhacNgay`).
+2. **Đạt mục đích rồi thì im hẳn** — vào được Open World là thôi, vĩnh viễn.
+3. **Có trần** (`OW_NHAC_TOI_DA` = 6). Nhắc tới chừng đó lần mà người ta vẫn
+   không đi thì nghĩa là người ta không muốn đi; nhắc nữa là phiền, không phải
+   nhiệt tình.
+4. **Nhẹ trước, rõ sau.** Hai lần đầu chỉ hỏi một câu, để người ta còn cái thú
+   tự tìm; từ lần thứ ba mới chỉ thẳng đường. Hỏi hoài một câu mà không giúp
+   được gì mới đúng là quấy.
+
+Và nó **đứng TRÊN nhánh lời chào**, nên hôm nào có nhắc thì nhắc **thay** lời
+chào — không phải nhắc thêm một hộp nữa.
+
+> **⚠ ĐỜI TRƯỚC LÀ MỘT CÁI ĐUÔI DÍNH VÀO LỜI CHÀO** (`hhNhac()`), và hỏng hai
+> đường: ghi chú bảo *"mỗi ngày MỘT lần"* mà chẳng có dấu ngày nào cả — nó bám
+> vào **mọi** lời chào, tức ba lần một ngày; và nó nói chuyện "xem lại", không
+> hề gọi tên Open World — thứ thật sự đáng chỉ đường thì lại không được nhắc.
+> Đừng dựng lại kiểu đuôi đó.
+
+Bộ kiểm: `ow19.mjs` — 17 phép, soi đủ cả sáu cái hãm lẫn chuyện "nhắc thay lời
+chào chứ không cộng thêm hộp".

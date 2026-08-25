@@ -65,7 +65,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 25-Aug-2026 · V05.05'
+    version       : 'Last updated 25-Aug-2026 · V05.06'
   }
 };
 
@@ -264,6 +264,19 @@ const GAME_CONFIG = {
     letter_speed  : 26,     /* ms / ký tự — thư trong modal        */
     idle_hint     : 20000,  /* không gõ bao lâu thì chữ "thở"      */
     idle_wrongs   : 3,      /* sai bao nhiêu lần thì chữ "thở"     */
+    /* ── MÀN PHÁO HOA LÚC PHÁ ĐẢO ─────────────────────────────────────────
+       ⚠ CÁI CẮT NGẮN MÀN NÀY KHÔNG PHẢI HẠT PHÁO — LÀ MÀN HÌNH ĐỔI CẢNH.
+       Khung `#fx` nằm TRONG `#scene-game`; `Code.open()` chuyển sang màn phát
+       mã là khung biến mất giữa chừng, hạt còn bay cũng không ai thấy. Nên
+       muốn màn dài thêm thì phải nới CẢ HAI: số đợt bắn, VÀ quãng nán lại
+       trước lúc đổi cảnh (`phao_nan`).
+
+       Trước: 6 đợt × 620ms bắn trong 3,7s — mà chỉ được nhìn ~5,1s (lời dẫn
+       finale ~3,7s + nán 1,4s) là cảnh đã đổi. Nay bắn 6,2s, nhìn ~8s. */
+    phao_dot      : 11,     /* số đợt bắn                          */
+    phao_nhip     : 560,    /* ms giữa hai đợt                     */
+    phao_nan      : 4300,   /* nán lại bao lâu rồi mới đổi cảnh    */
+    phao_tran     : 20000,  /* trần an toàn, hạt chết hết thì dừng sớm */
     /* ── GỢI Ý TỚI LÚC NÀO ────────────────────────────────────────────────
        CỨ MỖI LẦN SAI CHÍNH THỨC LÀ MỞ THÊM MỘT GỢI Ý. Không phải chờ gom đủ
        mấy lần nữa.

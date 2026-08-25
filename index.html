@@ -1036,7 +1036,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.02">Last updated 25-Aug-2026 · V19.02</span>
+        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.03">Last updated 25-Aug-2026 · V19.03</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1423,20 +1423,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V04.00' },
+        credGate:true, pub:'16-Aug 2026', ver:'V04.01' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.01' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.02' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026', ver:'V04.04', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V04.05', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.05',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.06',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -1613,6 +1613,9 @@ let eggG1 = false;
    luật cũ dùng biến thường nên F5 một cái là mất sạch, mở đi mở lại mười lần
    là mười câu quote liền tay. */
 let hhNgay = null, hhG2 = '', hhHan = '', g2Done = false, g2Open = false;
+/* Nhắc Open World: `owNhacNgay` = ngày đã nhắc gần nhất, `owNhacDem` = đã nhắc
+   tất cả mấy lần. Xem khối "NHẮC OPEN WORLD" dưới. */
+let owNhacNgay = '', owNhacDem = 0;
 let hhKhungDa = null, hhChaoAt = 0, hhQuoteAt = 0;
 /* Khai Ở ĐÂY chứ không để cạnh hàm dùng nó: `openCredFx` nạp ảnh qua hhSrc(),
    mà openCredFx đứng trước khối hộp chào — const khai sau là dính temporal dead
@@ -2015,6 +2018,7 @@ const store = {
   hhChaoAt  = s.hhChaoAt  || 0;
   hhQuoteAt = s.hhQuoteAt || 0;
   g2Done = !!s.g2Done; g2Open = !!s.g2Open;
+  owNhacNgay = s.owNhacNgay || ''; owNhacDem = s.owNhacDem | 0;
   eggWin = !!s.eggWin;
   pinFail = s.pinFail || 0;
   pinFailDay = s.pinFailDay || null;
@@ -2048,7 +2052,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt, owNhacNgay, owNhacDem }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3365,6 +3369,7 @@ function eggReplay(){
      đây nó bị save() ghi đè nên "tự" mất; giờ save() gộp thì phải nói rõ ra ở
      đây — đúng lời hứa của nút này: trả Easter Egg về lúc chưa ai tìm ra. */
   g2Done = false; g2Open = false; hhG2 = '';
+    owNhacNgay = ''; owNhacDem = 0;
   store.write({ g2Game:undefined, g2Vao:undefined, g2Xong:undefined,
                 g2Ow:undefined, g2Hint:undefined });
   clearTimeout(partyT); clearTimeout(gridT); clearTimeout(flyT);
@@ -3684,6 +3689,7 @@ credw.addEventListener('click', e=>{ if(e.target === credw) closeCred(); });
    |------------|------------------|-------------------------------------------|
    | gate2      | HH_3_excited     | Lần đầu quay ra bản đồ sau khi xong Gate 2 |
    | hanwin     | HH_2_happy       | Lần đầu quay ra sau khi giải hết Zoey's Castle |
+   | openworld  | HH_4_hello_easter| Xong Gate 2 mà chưa vào Open World — mỗi ngày 1 lần, tối đa OW_NHAC_TOI_DA lần |
    | chào       | HH_1 / HH_2_back | Trong một KHUNG CHÀO (06:00–07:30 · 11:00–12:30 · 17:30–19:00), mỗi khung một lần/ngày |
    | idle       | HH_5_idle_afk    | Rời máy ≥ IDLE_PHUT phút rồi quay lại     |
    | quote      | HH_2_back        | Ngoài khung chào — cách lời chào ≥ 1 tiếng, cách câu quote trước ≥ 2 tiếng |
@@ -4046,11 +4052,43 @@ function xongHan(){
   catch(e){ return false; }
 }
 
-/* Nhắc về chế độ xem lại: mỗi ngày MỘT lần, và chỉ tới khi người chơi thật sự
-   vào được Open World bên trong Gate 2 (`g2Open`). Vào rồi thì im hẳn. */
-function hhNhac(){
-  if(daVaoOpenWorld() || !xongGate2()) return '';
-  return ' <b>Xem lại được đó</b> — bấm nút cuộn phim trong khung Collected ✦';
+/* ═══ NHẮC OPEN WORLD ══════════════════════════════════════════════════════
+   Ai phá đảo Gate 2 rồi mà chưa từng vào khu Open World thì nhắc — nhưng nhắc
+   cho tử tế, không phải nhắc cho đủ.
+
+   ĐỜI TRƯỚC LÀ MỘT CÁI ĐUÔI DÍNH VÀO LỜI CHÀO (`hhNhac`). Hỏng hai đường:
+     · ghi chú bảo "mỗi ngày MỘT lần" mà chẳng có dấu ngày nào cả — nó bám
+       vào MỌI lời chào, tức là tới ba lần một ngày, ba khung chào ba lần.
+     · nó nói chuyện "xem lại", không hề nói tới Open World — thứ thật sự
+       đáng chỉ đường thì lại không được gọi tên.
+
+   NAY LÀ MỘT HỘP RIÊNG, và đứng TRƯỚC nhánh lời chào nên nó THAY CHỖ lời chào
+   của lượt đó chứ không cộng thêm một hộp nữa. Vẫn đi qua đủ luật nhường
+   đường và giãn cách của `hhHien`, khỏi phải chép lại luật lần nữa.
+
+   BỐN CÁI HÃM CHO KHỎI THÀNH PHIỀN:
+     1. Mỗi ngày đúng MỘT lần (`owNhacNgay`), tính theo ngày máy người chơi.
+     2. Vào được Open World rồi thì IM HẲN, không nhắc thêm câu nào.
+     3. Có TRẦN `OW_NHAC_TOI_DA`. Nhắc tới chừng đó lần mà người ta vẫn không
+        đi thì nghĩa là người ta không muốn đi — nhắc nữa là phiền, không phải
+        nhiệt tình. Ghi rõ con số ở đây để sau muốn nới thì biết chỗ sửa.
+     4. Nhắc NHẸ TRƯỚC, RÕ SAU. Hai lần đầu chỉ hỏi một câu, để người ta còn
+        cái thú tự tìm; từ lần thứ ba mới chỉ thẳng đường đi. Hỏi hoài một câu
+        mà không giúp được gì mới đúng là quấy.
+
+   Lần đầu KHÔNG BAO GIỜ rơi vào đúng hôm phá đảo Gate 2: hôm đó nhánh 1 đã
+   chiếm lượt bằng hộp chúc mừng rồi. Sớm nhất là hôm sau. */
+const OW_NHAC_TOI_DA = 6;
+function nenNhacOW(){
+  if(!xongGate2() || daVaoOpenWorld()) return false;
+  if(owNhacDem >= OW_NHAC_TOI_DA) return false;
+  return owNhacNgay !== ngay();
+}
+function loiNhacOW(){
+  return owNhacDem < 2
+    ? 'Đồng chí tìm ra <span class="lien">Open World</span> trong Easter Egg · Gate 2 chưa? ✦'
+    : 'Trong <span class="lien">Easter Egg · Gate 2</span> còn một khu <span class="lien">Open World</span> —'
+      + '<br>phá đảo xong bấm nút cuộn phim ở khung Collected là vào được ✦';
 }
 
 /* ═══ AI ĐƯỢC RA TRƯỚC ═════════════════════════════════════════════════════
@@ -4060,9 +4098,12 @@ function hhNhac(){
 
      1 · vừa phá đảo Gate 2      → chào mừng, một lần duy nhất cả đời
      2 · vừa xong Zoey's Castle  → khen, một lần duy nhất cả đời
-     3 · đang trong KHUNG CHÀO   → lời chào của khung đó, mỗi khung 1 lần/ngày
-     4 · đi vắng ≥ IDLE_PHUT rồi quay lại → "Đồng chí đã về"
-     5 · còn lại                 → DAILY QUOTE, nếu đủ giãn cách
+     3 · CHƯA vào Open World     → nhắc, mỗi ngày 1 lần, tối đa OW_NHAC_TOI_DA
+                                   lần; đứng trên lời chào nên nó THAY chỗ lời
+                                   chào của lượt đó, không cộng thêm hộp
+     4 · đang trong KHUNG CHÀO   → lời chào của khung đó, mỗi khung 1 lần/ngày
+     5 · đi vắng ≥ IDLE_PHUT rồi quay lại → "Đồng chí đã về"
+     6 · còn lại                 → DAILY QUOTE, nếu đủ giãn cách
 
    `hhDangDoi` (khai ở trên, cạnh `hhChoTu`) chặn chồng lượt: từ lúc quyết định
    hiện tới lúc hộp lên hình còn một quãng chờ mạng, mà `hhChon()` thì bị gọi
@@ -4095,7 +4136,19 @@ function hhChon(){
     hhHien('happy', 'Zoey’s Castle', HH_KHEN[(Math.random()*HH_KHEN.length)|0], true);
     return;
   }
-  /* 3 · ĐANG TRONG MỘT KHUNG CHÀO và khung đó hôm nay chưa chào.
+  /* 3 · NHẮC OPEN WORLD — mỗi ngày một lần, xem luật ở `nenNhacOW`.
+     Đứng TRƯỚC lời chào nên hôm nào có nhắc thì nhắc THAY lời chào, không
+     phải nhắc thêm một hộp nữa. Dấu ngày ghi lúc hộp LÊN HÌNH, y như mọi
+     nhánh khác — ghi sớm mà lượt bị bỏ là mất trắng cả ngày hôm đó. */
+  if(nenNhacOW()){
+    hhHien('hello', 'Open World', loiNhacOW(), false, ()=>{
+      owNhacNgay = ngay(); owNhacDem++;
+      hhChaoAt = Date.now();      /* tính như một lời chào — quote đếm từ đây */
+      save();
+    });
+    return;
+  }
+  /* 4 · ĐANG TRONG MỘT KHUNG CHÀO và khung đó hôm nay chưa chào.
      Dấu "đã chào khung này" ghi ĐÚNG LÚC HỘP LÊN HÌNH (`ghiChaoKhung` truyền
      vào `hhHien` làm `khiHien`), không ghi ở đây: lượt chào có thể bị bỏ vì
      đang có hộp khác đè: ghi sớm là mất trắng khung đó tới tận ngày mai. */
@@ -4106,18 +4159,18 @@ function hhChon(){
     hhXinCau(khung.ma, cau => hhHien(
       dau ? 'welcome' : 'back',
       dau ? 'Greetings' : 'Welcome back',
-      cau + hhNhac(), false,
+      cau, false,
       ()=> ghiChaoKhung(khung.ma)));
     return;
   }
-  /* 4 · đi vắng rồi quay lại */
+  /* 5 · đi vắng rồi quay lại */
   const rangoai = +(sessionStorage.getItem('hhAfk') || 0);
   if(rangoai && Date.now() - rangoai > IDLE_PHUT*60000){
     sessionStorage.removeItem('hhAfk');
     hhHien('idle', 'Đồng chí đã về', 'Nãy giờ đồng chí đi đâu đó ✦');
     return;
   }
-  /* 5 · ngoài khung chào → DAILY QUOTE, nếu đủ giãn cách.
+  /* 6 · ngoài khung chào → DAILY QUOTE, nếu đủ giãn cách.
      Cả hai mốc đều nằm trong localStorage nên F5 không lách được, và cả hai
      đều đóng dấu lúc hộp LÊN HÌNH chứ không phải lúc gửi yêu cầu. */
   const gio = Date.now();
@@ -4327,31 +4380,38 @@ function drawPin(iRo){
    chấm (`PIN_HIEN_MS`), chứ không chấm ngay lúc phím vừa xuống — nhờ vậy bao
    giờ cũng kịp nhìn thấy mình vừa gõ số gì rồi cửa mới phản ứng.
    Phím Enter vẫn ăn cho ai quen bấm. */
-/* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js:
-   ① chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự (tự điền / dán nhảy cả cụm)
-   ② vừa chấm sai thì đường tự chấm nghỉ PIN_NGUOI_MS — HOÃN cú gõ tới lúc hết
-     nghỉ, không bỏ, để người gõ nhanh không bị kẹt trước một cửa im re */
-const PIN_NGUOI_MS = 900;
-let pinChanToi = 0, pinDaiTruoc = 0;
-function pinRoiChe(){
+/* Hỏi thẳng trình duyệt xem cú nhập này do NGƯỜI gõ hay do TỰ ĐIỀN, thay vì
+   đoán bằng độ dài như đời trước — xem ghi chú đầy đủ ở assets/lichsu.js.
+   Thêm `pinNguyenGo`: cả cụm trong ô phải do chính tay người chơi gõ ra thì
+   mới tự chấm. Enter thì lúc nào cũng gửi. */
+function laGoTay(e){
+  if(!e || !e.isTrusted) return false;
+  const t = e.inputType;
+  if(t === 'insertText') return (e.data || '').length === 1;
+  return t === 'insertCompositionText';        /* bàn phím Android gõ qua đây */
+}
+function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
+/* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa — chờ đủ PIN_HIEN_MS nữa thì đơ */
+const PIN_CHOT_MS = 420;
+let pinNguyenGo = true, pinDaiTruoc = 0;
+function pinRoiChe(e){
   /* Cắt theo đúng số ô: dán một chuỗi dài hơn mã thì `drawPin` đã xén bớt,
      mà chỉ số ô được hiện rõ vẫn phải nằm trong hàng ô. */
   const need = codeNorm(CODES[pinMode].code).length;
   const dai = Math.min(codeNorm($('pinIn').value).length, need);
   const truoc = pinDaiTruoc; pinDaiTruoc = dai;
+  if(!dai) pinNguyenGo = true;
+  else if(!laXoa(e) && !laGoTay(e)) pinNguyenGo = false;
   const i = dai - 1;
   if(pinHenChe){ clearTimeout(pinHenChe); pinHenChe = null; }
   drawPin(i);
   if(i < 0) return;
-  const du = dai === need && dai === truoc + 1;            /* chốt 1 */
+  const chot = dai === need && dai === truoc + 1 && pinNguyenGo && laGoTay(e);
   const day = ()=> codeNorm($('pinIn').value).length === need;
   pinHenChe = setTimeout(()=>{
     pinHenChe = null; drawPin(-1);
-    if(!du || !day()) return;
-    const con = pinChanToi - Date.now();                   /* chốt 2 */
-    if(con > 0){ pinHenChe = setTimeout(()=>{ pinHenChe = null; if(day()) hackTry(); }, con); return; }
-    hackTry();
-  }, PIN_HIEN_MS);
+    if(chot && day()) hackTry();
+  }, chot ? PIN_CHOT_MS : PIN_HIEN_MS);
 }
 function openPin(mode, arg){
   pinMode = CODES[mode] ? mode : 'hack';
@@ -4379,7 +4439,7 @@ function openPin(mode, arg){
 }
 function closePin(){
   pinw.classList.remove('on'); pinw.setAttribute('aria-hidden','true');
-  pinChanToi = 0; pinDaiTruoc = 0;      /* mở hộp mới thì mở lại rào */
+  pinNguyenGo = true; pinDaiTruoc = 0;      /* mở hộp mới thì trả cờ về sạch */
   if(pinHenChe){ clearTimeout(pinHenChe); pinHenChe = null; }
   $('pinIn').value = ''; drawPin(-1);
   /* Gõ Enter sai mã xong đóng hộp: nếu giữ tiêu điểm thì vòng viền amber của
@@ -4433,7 +4493,7 @@ function hackTry(){
     msg.className = 'cx-hint bad';
     msg.textContent = 'Chưa đúng · Sai ' + pinFail + '/' + max + ' — gợi ý đã đổi' +
       (pinFail === max ? ' · sai thêm lần nữa là khoá 60 phút' : '');
-    pinChanToi = Date.now() + PIN_NGUOI_MS; pinDaiTruoc = 0;   /* chốt 2 */
+    pinDaiTruoc = 0; pinNguyenGo = true;
     $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
     return;
   }
@@ -4472,7 +4532,7 @@ function hackTry(){
   }
   msg.className = 'cx-hint bad';
   msg.textContent = 'Sai rồi, còn ' + left + ' lượt';
-  pinChanToi = Date.now() + PIN_NGUOI_MS; pinDaiTruoc = 0;   /* chốt 2 */
+  pinDaiTruoc = 0; pinNguyenGo = true;
   $('pinIn').value = ''; drawPin(-1);
   $('pinIn').focus();
 }

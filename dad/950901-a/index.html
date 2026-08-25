@@ -1511,30 +1511,34 @@ render();
        chấm đúng vào nhịp ký tự cuối vừa thành chấm, chứ không chấm ngay lúc
        phím vừa xuống — nhờ vậy bao giờ cũng kịp nhìn thấy mình vừa gõ gì.
        Enter vẫn ăn cho ai quen bấm. */
-  /* Hai chốt chặn tự chấm oan — xem ghi chú đầy đủ ở assets/lichsu.js:
-     ① chỉ tự chấm khi ô dài THÊM ĐÚNG MỘT ký tự (tự điền / dán nhảy cả cụm)
-     ② vừa chấm sai thì đường tự chấm nghỉ NGUOI_MS — HOÃN cú gõ tới lúc hết
-       nghỉ, không bỏ, để người gõ nhanh không bị kẹt trước một cửa im re */
-    var NGUOI_MS = 900, chanTuChamToi = 0, daiTruoc = 0;
-    function veRoiChe(){
+
+  /* Hỏi thẳng trình duyệt xem cú nhập này do NGƯỜI gõ hay do TỰ ĐIỀN, thay vì
+     đoán bằng độ dài như đời trước — xem ghi chú đầy đủ ở assets/lichsu.js.
+     Thêm `nguyenGo`: cả cụm trong ô phải do chính tay người chơi gõ ra thì mới
+     tự chấm; dán/tự điền vào rồi sửa một ký tự thì không. Enter vẫn luôn gửi. */
+    function laGoTay(e){
+      if(!e || !e.isTrusted) return false;
+      var t = e.inputType;
+      if(t === 'insertText') return (e.data || '').length === 1;
+      return t === 'insertCompositionText';       /* bàn phím Android gõ qua đây */
+    }
+    function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
+    /* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa — chờ đủ 800ms nữa thì thành đơ */
+    var CHOT_MS = 420, nguyenGo = true, daiTruoc = 0;
+    function veRoiChe(e){
       var truoc = daiTruoc; daiTruoc = buf.length;
+      if(!buf.length) nguyenGo = true;
+      else if(!laXoa(e) && !laGoTay(e)) nguyenGo = false;
       var i = buf.length - 1;
       if(henChe){ clearTimeout(henChe); henChe = null; }
       paint(i);
       if(i < 0) return;
-      var du = buf.length === len && buf.length === truoc + 1;   /* chốt 1 */
+      var chot = buf.length === len && buf.length === truoc + 1
+                 && nguyenGo && laGoTay(e);
       henChe = setTimeout(function(){
         henChe = null; paint(-1);
-        if(!du || buf.length !== len) return;
-        var con = chanTuChamToi - Date.now();                    /* chốt 2 */
-        if(con > 0){
-          henChe = setTimeout(function(){
-            henChe = null; if(buf.length === len && input.isConnected) check();
-          }, con);
-          return;
-        }
-        check();
-      }, HIEN_MS);
+        if(chot && buf.length === len && input.isConnected) check();
+      }, chot ? CHOT_MS : HIEN_MS);
     }
     function msg(t, ok){ var m = byId('msnMsg'); if(m){ m.innerHTML = t; m.classList.toggle('ok', !!ok); } }
     /* Chèn dòng gợi ý Mission 2 vào ngay dưới ô nhập. Dùng chung khuôn
@@ -1635,8 +1639,7 @@ render();
         + ' phiên · ' + st.dayN + '/' + TRY_D + ' ngày');
       if(hasNew) hintsPaint();
       cdPaint(); quotaPaint();
-      chanTuChamToi = Date.now() + NGUOI_MS;   /* chốt 2 */
-      buf = ''; input.value = ''; daiTruoc = 0; paint(-1);
+      buf = ''; input.value = ''; daiTruoc = 0; nguyenGo = true; paint(-1);
       if(dayOut() || w >= TRY_S){
         var ms = nghiMs(which);
         st.lockUntil = dayOut() ? nuaDem() : Date.now() + ms; save();
@@ -1654,8 +1657,17 @@ render();
         msg(hasNew ? SOSMSG[st.hints - 1] || SOSMSG[0] : treu(), !!hasNew);
       }
     }
-    input.addEventListener('input', function(){
-      buf = norm(input.value).slice(0, len); veRoiChe();
+  /* ⚠ NỐI Ô NHẬP VỚI HÀNG Ô CHO KHỚP TỪNG KÝ TỰ.
+     BỆNH ĐÃ SỬA: "xoá đáp án cũng khó khăn/lag/chậm". Đời trước chỉ ĐỌC
+     `input.value` ra `buf` mà không ghi ngược lại, nên ô nhập ngầm chứa cả thứ
+     `norm` vừa vứt đi — dấu cách, chữ có dấu, và cả phần gõ lố quá %d ô. Bấm
+     xoá một cái là mất một ký tự VÔ HÌNH, hàng ô đứng im: người chơi tưởng
+     máy đơ, bấm thêm mấy cái nữa. Nay hai bên luôn bằng nhau, xoá một cái là
+     rụng đúng một ô. */
+    input.addEventListener('input', function(e){
+      buf = norm(input.value).slice(0, len);
+      if(input.value !== buf) input.value = buf;
+      veRoiChe(e);
     });
     input.addEventListener('keydown', function(e){
       if(e.key !== 'Enter') return;
@@ -2234,7 +2246,7 @@ render();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.04<br>Last updated 25-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.05<br>Last updated 25-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

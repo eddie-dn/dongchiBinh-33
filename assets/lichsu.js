@@ -225,12 +225,13 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', ver:'V19', so:'03',
+        { ngay:'2026-08-25', ver:'V19', so:'04',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
-            { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Trước đó gõ sai xong chạm lại vào ô là trình duyệt nhét lại nguyên cụm, cửa chấm liền, ba lượt bay trong tích tắc' }
+            { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Trước đó gõ sai xong chạm lại vào ô là trình duyệt nhét lại nguyên cụm, cửa chấm liền, ba lượt bay trong tích tắc' },
+            { ver:'V19.03', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Thêm hộp nhắc khu Open World cho ai phá đảo Gate 2 mà chưa ghé — mỗi ngày một lần, nhắc thay lời chào chứ không chen thêm hộp, vào tới nơi rồi thì im hẳn' }
           ] }
       ]
     },
@@ -308,7 +309,8 @@
           chi:[
             { ver:'V19.00', chinh:'Số hiệu và ngày của khu lấy thẳng từ sổ, khai một chỗ thay vì hai' },
             { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
-            { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp' }
+            { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp' },
+            { ver:'V19.03', chinh:'Hộp nhắc khu Open World: ai phá đảo Gate 2 mà chưa ghé thì mỗi ngày được nhắc một lần, nhắc thay lời chào chứ không chen thêm hộp' }
           ] }
       ]
     },
@@ -356,14 +358,15 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'05',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'06',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
             { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
             { ver:'V04.01', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm ngay khi ký tự cuối vừa thành chấm' },
             { ver:'V04.02', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V04.03', chinh:'Cháy lượt thì nghỉ ngắn lại và chia theo từng cửa thay vì chung một mức: Mission 2 mười lăm phút, Mission 3 năm phút; cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn' },
-            { ver:'V04.04', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô mã Mission cũng thôi khai mình là ô mã một lần — thứ khiến trình quản lý mật khẩu hăng nhất' }
+            { ver:'V04.04', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô mã Mission cũng thôi khai mình là ô mã một lần — thứ khiến trình quản lý mật khẩu hăng nhất' },
+            { ver:'V04.05', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' }
           ] }
       ]
     },
@@ -405,7 +408,7 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'06',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'07',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
@@ -413,7 +416,8 @@
             { ver:'V05.02', chinh:'Clip nổ sập lab chạy trọn 10 giây đúng độ dài file thật, hết cảnh bị cắt ngang ở giây thứ 8; ô nhập tự nhận con trỏ mỗi lần mở lại nên gõ tiếp được ngay, khỏi bấm thêm một cái; bỏ dòng nhắc gõ Enter, gõ đủ ký tự là tự chấm' },
             { ver:'V05.03', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
-            { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' }
+            { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' },
+            { ver:'V05.06', chinh:'Màn pháo hoa lúc phá đảo dài thêm: bắn 11 đợt thay vì 6, và nán lại đủ lâu trước khi đổi cảnh — trước đây màn hình chuyển sang phát mã lúc pháo còn đang bay. Cửa mã bản ghi cũng được vá theo luật ô nhập mới' }
           ] }
       ]
     },
@@ -438,10 +442,11 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
            xem luật ở đầu file. */
-        { ngay:'2026-08-25', ver:'V04', so:'01',
+        { ngay:'2026-08-25', ver:'V04', so:'02',
           chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
           chi:[
-            { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' }
+            { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' },
+            { ver:'V04.01', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Ô trả lời câu hỏi vá theo cùng luật — đáp án có dấu cách nên ô này lệch nặng nhất' }
           ] }
       ]
     },
@@ -463,11 +468,12 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', ver:'V03', so:'02',
+        { ngay:'2026-08-25', ver:'V03', so:'03',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
             { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
-            { ver:'V03.01', chinh:'Hai cửa mã của trang không còn bị trình duyệt tự điền nuốt lượt' }
+            { ver:'V03.01', chinh:'Hai cửa mã của trang không còn bị trình duyệt tự điền nuốt lượt' },
+            { ver:'V03.02', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' }
           ] }
       ]
     },
@@ -901,68 +907,78 @@
        cuối vừa thành chấm (`HIEN_MS`). Nhờ vậy bao giờ cũng kịp nhìn thấy
        mình vừa gõ số gì rồi cửa mới phản ứng — thấy chữ, chữ thành chấm, cửa
        trả lời. Vẫn giữ phím Enter cho ai quen bấm. */
-    /* ═══ HAI CHỐT CHẶN TỰ CHẤM OAN ══════════════════════════════════════
-       BỆNH ĐÃ SỬA: "nhập sai, bấm lại một cái là pin tự điền luôn, không kịp
-       sửa, mất một lèo ba lượt rồi mất thêm một lượt nữa."
+    /* ═══ AI VỪA GÕ VÀO Ô NÀY: NGƯỜI, HAY TRÌNH DUYỆT? ══════════════════
+       BỆNH ĐÃ SỬA (hai đời):
+       ① "nhập sai, bấm lại một cái là pin tự điền luôn, mất một lèo ba lượt"
+       ② "nhấn sai → nhấp 1 ký tự 2 lần → hiện lại đáp án sai → mất 2 lượt;
+          gõ lại thì chậm, lag, có lần lag ở ký tự cuối lag cả dãy"
 
-       Thủ phạm là TRÌNH DUYỆT TỰ ĐIỀN: gõ sai xong ô được dọn sạch, chạm vào
-       ô là trình duyệt (hoặc trình quản lý mật khẩu) nhét lại nguyên cụm mã
-       vừa gõ. Ô đầy ngay lập tức → luật "gõ đủ là tự chấm" nổ liền → sai
-       tiếp → dọn ô → chạm lại → nổ tiếp. Ba lượt bay trong tích tắc mà tay
-       người chơi chưa kịp làm gì.
+       ĐỜI TRƯỚC ĐOÁN BẰNG ĐỘ DÀI: "ô dài thêm đúng một ký tự thì là người gõ".
+       Đoán được cú tự điền thật, nhưng đoán sai ở đủ chỗ khác — sửa một ký tự
+       giữa một ô đã đầy cũng là "+1", thế là gửi đi cái đáp án mình không định
+       gửi. Lại còn phải khoá đường tự chấm 900ms sau mỗi lần sai để chặn dây
+       chuyền, và chính 900ms đó là cái lag người chơi kêu.
 
-       CHỐT 1 · CHỈ TỰ CHẤM KHI Ô DÀI THÊM ĐÚNG MỘT KÝ TỰ.
-       Người gõ tay thì mỗi nhịp thêm một ký tự: 3 → 4. Tự điền và dán thì
-       nhảy một phát 0 → 4. Nhảy nhiều hơn một là KHÔNG tự chấm — muốn gửi
-       thì bấm Enter, vẫn còn nguyên đường đó.
+       NAY HỎI THẲNG TRÌNH DUYỆT. Sự kiện `input` tự khai mình từ đâu ra:
 
-       CHỐT 2 · VỪA SAI XONG THÌ NGHỈ MỘT NHỊP — HOÃN, KHÔNG BỎ.
-       Sau mỗi lần chấm sai, đường tự chấm nghỉ `NGUOI_MS`. Trong quãng đó mà
-       ô lại đầy thì KHÔNG bỏ cú gõ, chỉ đẩy nó lùi đến lúc hết nghỉ. Nhờ vậy
-       nhanh nhất cũng chỉ một lượt mỗi `NGUOI_MS` — nhìn thấy được, chặn được
-       — thay vì ba lượt bay trong tích tắc.
-       CỐ Ý KHÔNG BỎ HẲN: người gõ nhanh thật có thể đập lại bốn số trong chưa
-       đầy một giây; bỏ cú đó thì họ ngồi nhìn ô đầy mà cửa im re, không hiểu
-       vì sao — hỏng còn nặng hơn cái bệnh đang chữa. Chốt 1 mới là chốt chặn
-       tự điền, chốt 2 chỉ ghìm nhịp. */
-    var NGUOI_MS = 900;
-    var chanTuChamToi = 0, daiTruoc = 0;
-    function veRoiChe() {
+         gõ tay    inputType `insertText` (đúng 1 ký tự) hoặc
+                   `insertCompositionText` (bàn phím Android)   · isTrusted TRUE
+         xoá       inputType `deleteContent…`                   · isTrusted TRUE
+         dán       inputType `insertFromPaste`                  · isTrusted TRUE
+         tự điền   `insertReplacementText`, hoặc KHÔNG CÓ inputType
+                   (trình quản lý mật khẩu tự bắn Event)        · isTrusted FALSE
+
+       `isTrusted` là cờ của chính trình duyệt, mã trang KHÔNG giả được — nên
+       cú tự điền bị loại từ gốc, khỏi cần khoá thời gian, khỏi cần lag.
+
+       CỘNG THÊM MỘT ĐIỀU KIỆN: cả cụm đang nằm trong ô phải do CHÍNH TAY người
+       chơi gõ ra (`nguyenGo`). Dán hay tự điền vào rồi sửa một ký tự thì vẫn
+       KHÔNG tự chấm — dọn ô gõ lại, hoặc bấm Enter. Đây là chỗ vá bệnh ②.
+
+       Enter thì lúc nào cũng gửi, không hỏi han gì. Đường thoát còn nguyên. */
+    function laGoTay(e) {
+      if (!e || !e.isTrusted) return false;
+      var t = e.inputType;
+      if (t === 'insertText') return (e.data || '').length === 1;
+      return t === 'insertCompositionText';
+    }
+    function laXoa(e) {
+      return !!(e && e.isTrusted && /^delete/.test(e.inputType || ''));
+    }
+    /* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa: lúc đó mắt đang dán vào ô,
+       chờ đủ 800ms nữa thì thành đơ. Vẫn giữ đúng thứ tự thấy chữ → thành chấm
+       → cửa trả lời, chỉ là nhịp cuối gọn lại. */
+    var CHOT_MS = 420;
+    var nguyenGo = true, daiTruoc = 0;
+    function veRoiChe(e) {
       var truoc = daiTruoc;
       daiTruoc = go.length;
+      if (!go.length) nguyenGo = true;          /* ô rỗng thì kể như sạch */
+      else if (!laXoa(e) && !laGoTay(e)) nguyenGo = false;
       var i = go.length - 1;
       if (henChe) { clearTimeout(henChe); henChe = null; }
       ve(i);
       if (i < 0) return;
-      var du = go.length === 4 && go.length === truoc + 1;   /* chốt 1 */
+      var chot = go.length === 4 && go.length === truoc + 1
+                 && nguyenGo && laGoTay(e);
       henChe = setTimeout(function () {
         henChe = null; ve(-1);
-        if (!du || go.length !== 4) return;
-        var con = chanTuChamToi - Date.now();                /* chốt 2 */
-        if (con > 0) {
-          henChe = setTimeout(function () {
-            henChe = null;
-            if (go.length === 4 && inp.isConnected) cham();
-          }, con);
-          return;
-        }
-        cham();
-      }, HIEN_MS);
+        if (chot && go.length === 4 && inp.isConnected) cham();
+      }, chot ? CHOT_MS : HIEN_MS);
     }
     /* GÕ SAI THÌ IM — không báo lỗi, không đếm hộ còn mấy lần. Phản hồi duy
        nhất là một cú rung: đủ để biết máy có nhận cú gõ, không đủ để suy ra gì.
        Đủ SAI_TOI_DA lần mới mở gợi ý, và từ đó nhớ luôn. */
     function cham() {
       if (go === MA) { veSo(ma); return; }
-      chanTuChamToi = Date.now() + NGUOI_MS;   /* chốt 2 — xem ghi chú trên */
-      go = ''; inp.value = ''; daiTruoc = 0; ve(-1);
+      go = ''; inp.value = ''; daiTruoc = 0; nguyenGo = true; ve(-1);
       hop.classList.remove('rung'); void hop.offsetWidth; hop.classList.add('rung');
       if (demSai() >= SAI_TOI_DA) { ghiThayGoiY(); hienGoiY(); }
     }
-    inp.addEventListener('input', function () {
+    inp.addEventListener('input', function (e) {
       go = inp.value.replace(/\D/g, '').slice(0, 4);
-      inp.value = go;
-      veRoiChe();
+      if (inp.value !== go) inp.value = go;
+      veRoiChe(e);
     });
     /* Enter vẫn ăn cho ai quen bấm — chấm luôn, khỏi chờ hết nhịp hiện chữ. */
     inp.addEventListener('keydown', function (e) {
