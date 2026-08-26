@@ -7,7 +7,7 @@ let pass=0, fail=0;
 const ok=(t,c,x='')=>{ c?pass++:fail++; console.log((c?'  ✓ ':'  ✗ ')+t+(x?'  → '+x:'')); };
 const errs=[]; p.on('pageerror',e=>errs.push(e.message));
 await p.clock.install({ time:new Date('2026-09-05T10:00:00+07:00') });
-await p.goto('http://127.0.0.1:8099/dad/950901-b/',{waitUntil:'load'}); await p.waitForTimeout(1500);
+await p.goto(DIA_CHI+'/dad/950901-b/',{waitUntil:'load'}); await p.waitForTimeout(1500);
 await p.clock.runFor(20000);
 await p.waitForSelector('#gPlay:not([hidden])',{timeout:30000});
 await p.click('#gPlay'); await p.waitForTimeout(1200);

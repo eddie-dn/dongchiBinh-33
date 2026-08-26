@@ -2,7 +2,7 @@ import { moTrinhDuyet, DIA_CHI, GOC, require } from '../chung.mjs';
 const b = await moTrinhDuyet();
 const ctx=await b.newContext({viewport:{width:420,height:900}}); const p=await ctx.newPage();
 let ok=0,ng=0; const T=(n,c,note='')=>{ if(c){ok++;console.log('  ✓ '+n);} else {ng++;console.log('  ✗ '+n+(note?'  → '+note:''));} };
-await p.goto('http://127.0.0.1:8099/dad/950901-b/',{waitUntil:'load'}); await p.waitForTimeout(1200);
+await p.goto(DIA_CHI+'/dad/950901-b/',{waitUntil:'load'}); await p.waitForTimeout(1200);
 const r = await p.evaluate(()=>{
   /* Màn chơi đang ẩn trước PRESS START — phần tử trong cây display:none KHÔNG
      chạy animation, nên phải mở nó ra mới soi được. */

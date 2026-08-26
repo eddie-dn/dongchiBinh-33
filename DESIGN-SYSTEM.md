@@ -642,6 +642,32 @@ như bảng tổng của cả bộ; sáu trang kia không lặp lại con số.
 Thêm trang mới thì thêm một khoá vào `CRE`; không có khoá thì dòng `@Credit`
 tự không hiện, bảng bản ghi vẫn chạy như thường.
 
+### 7.1 · Mục "Làm trong bao lâu"
+
+Mỗi trang Credit có một dòng thời gian của chính nó; trang gốc có thêm dòng
+TỔNG của cả bộ. Số nằm ở `THOI_GIAN` trong `assets/lichsu.js`, **đếm từ chính
+lịch sử commit** — đo lại bằng `node docs/thoi-gian.mjs` rồi chép khối nó in ra.
+
+**Cách đo: KHOẢNG ĐẦU–CUỐI.** Commit sớm nhất tới commit muộn nhất, tính cả
+những ngày ở giữa. Cả bộ ra vừa đúng một tháng (26-07 → 26-08-2026).
+
+Đây là **chiều dài dự án** — quãng từ lúc bắt tay tới lúc xong, không phải số
+giờ ngồi trước máy. Hai thứ khác nhau, và đây cố ý lấy thứ nhất: nó là con số
+trả lời được câu *"làm trong bao lâu"*, đúng thứ trang Credit muốn kể.
+
+> **⚠ CỘNG SÁU TRANG LẠI KHÔNG RA TỔNG, và đúng là như vậy.** Mấy phần được làm
+> **xen kẽ** nhau chứ không nối đuôi, nên khoảng thời gian của chúng chồng lên
+> nhau. Trang Credit **nói thẳng chuyện đó ra** thay vì để người đọc tự cộng
+> rồi thắc mắc.
+
+> **⚠ ĐỪNG DÙNG BỘ ĐẾM `.ls-tien` ĐỂ TÌM BẢNG CHI PHÍ.** Từ đợt 21 có **hai**
+> khối cùng tên lớp đó: bảng chi phí, và mục thời gian (mang thêm `.ls-gio`).
+> Lấy `.ls-tien` đầu tiên rồi đoán là vớ phải khối thời gian — `cre14.mjs` đã
+> vấp đúng vậy. Hỏi thẳng thứ mình cần (`.ls-tien .r.tong b`).
+
+Sửa mã mà quên đo lại thì `test/bo/cre21.mjs` báo đỏ: nó chạy `docs/thoi-gian.mjs`
+tại chỗ rồi đối chiếu với bảng đang khai.
+
 ---
 
 ## 8. KHÔNG CHO BÔI ĐEN CHỮ

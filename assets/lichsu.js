@@ -209,7 +209,7 @@
             { ver:'V17.08', chinh:'Dời cửa vào bản ghi từ dòng tem sang MẶT CƯỜI trong Box Tổng tư lệnh; bảng bản ghi mượn luôn bảng màu của bản đồ. Cửa 5 nhịp vào Box qua lá cờ giữ nguyên' },
             { ver:'V17.09', chinh:'Khuôn bản ghi mới dùng chung: đổi cách bày cột, thêm bảng chi tiết từng bản nhỏ, bổ sung mốc cũ lụm lại được' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V18', so:'10',
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V18', so:'10',
           chinh:'Làm lại luật hiện hộp chào, chỉnh luật xuống dòng, mở rộng kho nội dung, đồng bộ hệ nút bản ghi, nới vùng chạm',
           chi:[
             { ver:'V18.00', chinh:'Hộp chào chia ba khung giờ trong ngày và có luật giãn cách riêng; chữ đổ đầy dòng thay vì chia đều; kho lời chào và câu trích viết dài hơn, thêm nhiều đầu mục mới; cửa vào bản ghi đổi từ nút hình sang chữ' },
@@ -225,14 +225,15 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', ver:'V19', so:'05',
+        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V19', so:'06',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Trước đó gõ sai xong chạm lại vào ô là trình duyệt nhét lại nguyên cụm, cửa chấm liền, ba lượt bay trong tích tắc' },
             { ver:'V19.03', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Thêm hộp nhắc khu Open World cho ai phá đảo Gate 2 mà chưa ghé — mỗi ngày một lần, nhắc thay lời chào chứ không chen thêm hộp, vào tới nơi rồi thì im hẳn' },
-            { ver:'V19.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' }
+            { ver:'V19.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
+            { ver:'V19.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     },
@@ -295,7 +296,7 @@
             { ver:'V17.04', chinh:'Nối liền ba khu thành một mạch: bản đồ → Easter Egg → lâu đài' },
             { ver:'V17.05', chinh:'Khung Collected có ảnh mồi tĩnh nằm dưới clip nặng nên không còn khoảng trống lúc chờ; khung cũng được xếp vào nhóm hộp ưu tiên để hộp chào biết nhường' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V18', so:null,
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V18', so:null,
           chinh:'Khung Collected thành cửa vào bản ghi riêng của khu',
           chi:[
             { ver:'V18.01', chinh:'Nới vùng bấm của nút đóng khung Collected cho vừa đầu ngón tay' },
@@ -305,13 +306,14 @@
             { ver:'V18.08', chinh:'Lời nhắc gõ Enter thành một dòng chữ; sổ của khu có thêm trang Credit riêng' },
             { ver:'V18.09', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ số là tự chấm' }
           ] },
-        { ngay:'2026-08-25', ver:'V19', so:null,
+        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V19', so:null,
           chinh:'Số hiệu của khu lấy chung một nguồn với tem ngoài trang',
           chi:[
             { ver:'V19.00', chinh:'Số hiệu và ngày của khu lấy thẳng từ sổ, khai một chỗ thay vì hai' },
             { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp' },
-            { ver:'V19.03', chinh:'Hộp nhắc khu Open World: ai phá đảo Gate 2 mà chưa ghé thì mỗi ngày được nhắc một lần, nhắc thay lời chào chứ không chen thêm hộp' }
+            { ver:'V19.03', chinh:'Hộp nhắc khu Open World: ai phá đảo Gate 2 mà chưa ghé thì mỗi ngày được nhắc một lần, nhắc thay lời chào chứ không chen thêm hộp' },
+            { ver:'V19.04', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     },
@@ -359,7 +361,7 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'07',
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V04', so:'08',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
             { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
@@ -368,7 +370,8 @@
             { ver:'V04.03', chinh:'Cháy lượt thì nghỉ ngắn lại và chia theo từng cửa thay vì chung một mức: Mission 2 mười lăm phút, Mission 3 năm phút; cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn' },
             { ver:'V04.04', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô mã Mission cũng thôi khai mình là ô mã một lần — thứ khiến trình quản lý mật khẩu hăng nhất' },
             { ver:'V04.05', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' },
-            { ver:'V04.06', chinh:'Pí danh tự cất tiến độ thêm hai chỗ nữa: ngay khi xong Mission 1, và mỗi lần rời trang hay gạt tab đi — khỏi phải nhớ bấm Lưu. Bản lưu tốt vẫn không bị một bản lùi ghi đè' }
+            { ver:'V04.06', chinh:'Pí danh tự cất tiến độ thêm hai chỗ nữa: ngay khi xong Mission 1, và mỗi lần rời trang hay gạt tab đi — khỏi phải nhớ bấm Lưu. Bản lưu tốt vẫn không bị một bản lùi ghi đè' },
+            { ver:'V04.07', chinh:'Pí danh nay ôm đủ cả ba chặng — trước đây bỏ quên phần Zoey\u2019s Castle nên đổi pí danh là mất trắng bộ câu hỏi đã giải. Mốc trong bảng pí danh cũng đi hết cả hành trình chứ không dừng ở Mission. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     },
@@ -410,7 +413,7 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'08',
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V05', so:'09',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
@@ -420,7 +423,8 @@
             { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' },
             { ver:'V05.06', chinh:'Màn pháo hoa lúc phá đảo dài thêm: bắn 11 đợt thay vì 6, và nán lại đủ lâu trước khi đổi cảnh — trước đây màn hình chuyển sang phát mã lúc pháo còn đang bay. Cửa mã bản ghi cũng được vá theo luật ô nhập mới' },
-            { ver:'V05.07', chinh:'Chỉnh lại một đoạn trong bức thư' }
+            { ver:'V05.07', chinh:'Rà lại hộp thư' },
+            { ver:'V05.08', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     },
@@ -429,7 +433,7 @@
       doi: [
         { ngay:'no info', ver:'V01', so:null, chinh:'no info' },
         { ngay:'2026-08-17', ver:'V02', so:'10', chinh:'Bộ câu hỏi và cửa mã, dọn màn hoàn thành, đồng bộ tên gọi và hệ nút' },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V03', so:'10',
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V03', so:'10',
           chinh:'Thêm bản ghi (V02 đã hết nấc đuôi nên sang dòng V03), đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V03.00', chinh:'Thêm bản ghi cho trang này' },
@@ -445,11 +449,12 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
            xem luật ở đầu file. */
-        { ngay:'2026-08-25', ver:'V04', so:'02',
+        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V04', so:'03',
           chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' },
-            { ver:'V04.01', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Ô trả lời câu hỏi vá theo cùng luật — đáp án có dấu cách nên ô này lệch nặng nhất' }
+            { ver:'V04.01', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Ô trả lời câu hỏi vá theo cùng luật — đáp án có dấu cách nên ô này lệch nặng nhất' },
+            { ver:'V04.02', chinh:'Tiến độ bộ câu hỏi nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     },
@@ -457,7 +462,7 @@
       ten: 'HongHan’s Secret Chamber', duong: '/han/961030-b',
       doi: [
         { ngay:'2026-08-17', ver:'V01', so:null, chinh:'Dải ngân hà, đồng hồ đếm ngược. Số đuôi chạy quá luật (tới .11) nên đã nắn sang V02' },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V02', so:'10',
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V02', so:'10',
           chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi, đồng bộ hệ nút bản ghi',
           chi:[
             { ver:'V02.00 → V02.01', chinh:'Chỉnh luật cửa mã, nắn lại số cho đúng luật, thêm bản ghi' },
@@ -471,12 +476,13 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', ver:'V03', so:'03',
+        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V03', so:'04',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
             { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V03.01', chinh:'Hai cửa mã của trang không còn bị trình duyệt tự điền nuốt lượt' },
-            { ver:'V03.02', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' }
+            { ver:'V03.02', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' },
+            { ver:'V03.03', chinh:'Tiến độ wishlist nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     },
@@ -498,13 +504,14 @@
           chinh:'Màn pháo hoa đầu tiên: bắn tự động, lời chúc hiện dần, thêm chế độ chạm-để-bắn' },
         { ngay:'2026-08-15', ver:'V02', so:null,
           chinh:'Quả trứng và vụ nổ vẽ tay trên canvas, thêm nút bắn lại và lối vào khu Easter Egg' },
-        { ngay:'2026-08-16', sua:'2026-08-25', ver:'V03', so:'05',
+        { ngay:'2026-08-16', sua:'2026-08-26', ver:'V03', so:'06',
           chinh:'Chỉnh khung màn và chỗ đứng của tem phiên bản',
           chi:[
             { ver:'V03.01', chinh:'Màn pháo hoa có tem phiên bản riêng' },
             { ver:'V03.02', chinh:'Dời tem lên cao và vào trong, khỏi đè lên mép màn hình' },
             { ver:'V03.03', chinh:'Chốt số hiệu' },
-            { ver:'V03.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' }
+            { ver:'V03.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
+            { ver:'V03.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
           ] }
       ]
     }
@@ -725,6 +732,7 @@
     '.ls-tien .r.tong{margin-top:5px;padding-top:5px;opacity:1;font-weight:600;',
       'border-top:1px dashed var(--ls-line,rgba(234,240,247,.12))}',
     '.ls-tien .r b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500}',
+    '.ls-tien .ls-ghi{margin:7px 0 0;font-size:10.5px;line-height:1.5;opacity:.62}',
     '.ls-doi b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500;',
       'font-size:9px;letter-spacing:.02em;white-space:nowrap;color:var(--ls-mo,rgba(234,240,247,.5))}',
     '.ls-doi b.v{color:var(--ls-acc,#8CE1B4)}',
@@ -1150,6 +1158,36 @@
     ['Kling + Adobe',      10]
   ];
 
+  /* ═══ LÀM TRONG BAO LÂU ════════════════════════════════════════════════
+     Đếm từ chính lịch sử commit của kho mã, gộp cả năm nhánh.
+
+     CÁCH ĐO: KHOẢNG ĐẦU–CUỐI. Commit sớm nhất tới commit muộn nhất, tính cả
+     những ngày ở giữa. Cả bộ ra vừa đúng một tháng.
+
+     Đây là CHIỀU DÀI DỰ ÁN — quãng từ lúc bắt tay tới lúc xong, không phải số
+     giờ ngồi trước máy. Hai thứ khác nhau, và đây cố ý lấy thứ nhất: nó là con
+     số trả lời được câu "làm trong bao lâu", đúng thứ trang Credit muốn kể.
+
+     ⚠ CỘNG SÁU TRANG LẠI KHÔNG RA TỔNG, và đúng là như vậy. Mấy phần được làm
+     XEN KẼ nhau chứ không nối đuôi, nên khoảng thời gian của chúng chồng lên
+     nhau. Trang Credit nói thẳng chuyện đó ra thay vì để người đọc tự cộng rồi
+     thắc mắc.
+
+     Đo lại: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào đây. */
+  var THOI_GIAN = {
+    MAP:    '30 ngày 12 giờ 53 phút',
+    EGG:    '30 ngày 12 giờ 53 phút',   /* khu Easter Egg nằm trong chính bản đồ */
+    'DAD-A': '14 ngày 20 giờ 20 phút',
+    'DAD-B': '21 ngày 1 giờ 30 phút',
+    'HAN-A': '12 ngày 5 giờ 19 phút',
+    'HAN-B': '12 ngày 5 giờ 19 phút',
+    FX:     '11 ngày 6 giờ 50 phút',
+    _TONG:  '30 ngày 12 giờ 53 phút',
+    _TU:    '26-07-2026',
+    _TOI:   '26-08-2026',
+    _COMMIT: 199
+  };
+
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số
      lẫn cột chữ. Trước đây hai chỗ hai kiểu ("thiếu info" / "no info"), đọc
      xuống tưởng là hai nghĩa khác nhau trong khi cùng nghĩa "không biết". */
@@ -1240,6 +1278,25 @@
        ở `CRE_CHUNG_GON`. */
     var chung = c.tien ? CRE_CHUNG : CRE_CHUNG_GON;
     for (var j = 0; j < chung.length; j++) h += nhom(chung[j]);
+    /* Làm trong bao lâu — mỗi trang một dòng của chính nó. Riêng trang gốc
+       có thêm dòng TỔNG, vì nó cũng là chỗ giữ bảng chi phí. */
+    var tg = THOI_GIAN[ma];
+    if (tg) {
+      /* Dùng chung khuôn `.ls-tien` với bảng chi phí cho khỏi khai lại kiểu,
+         nhưng mang thêm `.ls-gio` để phân biệt — hai khối cùng một tên lớp thì
+         nhìn vào DOM không biết đang đứng ở khối nào (bộ kiểm đã vấp đúng đó). */
+      h += '<div class="ls-tien ls-gio"><p class="h">Làm trong bao lâu</p>'
+         + '<div class="r"><span>Riêng trang này</span><b>' + tg + '</b></div>'
+         + (c.tien
+            ? '<div class="r"><span>Cả bộ, ' + THOI_GIAN._COMMIT + ' lượt ghi</span><b>'
+              + THOI_GIAN._TONG + '</b></div>'
+            : '')
+         + '<p class="ls-ghi">Đếm từ lịch sử kho mã, ' + THOI_GIAN._TU + ' → '
+         + THOI_GIAN._TOI + ': lượt ghi đầu tiên tới lượt ghi cuối cùng, tính cả '
+         + 'mấy ngày ở giữa. Cộng từng trang lại không ra tổng — mấy phần được '
+         + 'làm xen kẽ nhau chứ không nối đuôi.</p>'
+         + '</div>';
+    }
     if (c.tien) {
       var tong = 0, r = '';
       for (var k = 0; k < CRE_TIEN.length; k++) {

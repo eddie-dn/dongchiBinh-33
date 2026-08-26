@@ -372,6 +372,27 @@ nháy** 4,2 giây. Bấm nền hoặc mở bảng xổ là tắt. Chạy đúng 
 
 Tiến độ được cất vào pí danh đang dùng ở **năm chỗ**, không cần thao tác nào:
 
+**Bản chụp ôm ĐỦ BA KHOÁ CHẶNG** (`KHOA_CHANG` trong `dad/950901-a`):
+
+| Khoá | Chặng nào |
+|---|---|
+| `msn1` | Hồ sơ Phi đoàn — ba Mission |
+| `mtv1` | Bản đồ tác chiến + cờ phá đảo của Easter Egg · Gate 2 |
+| `hanv1` | Zoey's Castle (bộ câu hỏi) + Secret Chamber (wishlist) |
+
+> **⚠ `hanv1` TỪNG BỊ BỎ QUÊN.** Bản chụp đời trước chỉ ôm `msn1` + `mtv1`, nên
+> giải xong ba câu hỏi Zoey's Castle rồi đổi pí danh là mất trắng phần đó — bản
+> lưu không hề biết nó từng tồn tại. Thêm một trang mới có tiến độ riêng thì
+> thêm một dòng vào `KHOA_CHANG`, hết.
+
+> **⚠ `nav1` TUYỆT ĐỐI KHÔNG ĐƯỢC NẰM TRONG DANH SÁCH ĐÓ.** Đó là chỗ chứa
+> chính mấy pí danh; chụp nó vào bản lưu là bản lưu ôm lấy chính nó, khôi phục
+> một cái là nuốt luôn mọi pí danh khác. Mấy khoá không phải tiến độ cũng đứng
+> ngoài: `mtping` / `g2ping` (chống bắn trùng), `hhQuoteDa`, `ls_goi_y`.
+
+Nhãn mốc (`mocNow`) đi hết cả ba chặng, chặng xa nhất thắng:
+`—` → `M1` → `M2` → `M3 ✓` → `TAC n/4` → `EGG ✦` → `HAN n/3` → `HAN ✦` → `HAN ✦✦`.
+
 | Lúc nào | Gọi gì | Ép ghi đè? |
 |---|---|---|
 | Xong Mission 1 | `profSave('M1')` | không |

@@ -105,7 +105,14 @@ deploy sau, sửa xong mà không redeploy thì vẫn chạy bản cũ.
 | `kenh` | `js` hay `bieu-mau` (đường vòng khi máy người chơi chặn fetch) |
 | `may` | chuỗi trình duyệt |
 
-Ba cột `trang` / `noi` / `tt` thêm từ đợt 18. Trước đó mọi dòng của cả sáu trang
+> **⚠ MÁY CHỦ GỬI THÔI CHƯA ĐỦ — `COT` TRONG `Code.gs` PHẢI CÓ TÊN CỘT.**
+> `doPost` chỉ đọc đúng mấy tên khai trong `COT`; trường lạ bị **bỏ im lặng**,
+> không lỗi, không cảnh báo. Ba cột này đã được gửi từ đợt 18 nhưng bảng cột
+> thiếu tên, nên suốt quãng đó chúng rơi thẳng vào hư không. Sheet đang chạy
+> rồi thì **dán lại `Code.gs` mới và Deploy lại** — cột mới nối vào cuối, dòng
+> cũ để trống ở đó.
+
+Ba cột `trang` / `noi` / `tt` thêm từ đợt 18, vào bảng cột từ đợt 21. Trước đó mọi dòng của cả sáu trang
 đều mang chung một tiêu đề và chung một con số tiến độ của bản đồ — xem luật ở
 `DESIGN-SYSTEM.md` mục 9. Sheet cũ vẫn chạy được: cột mới nối vào cuối, dòng cũ
 để trống ở đó.
@@ -113,6 +120,21 @@ Ba cột `trang` / `noi` / `tt` thêm từ đợt 18. Trước đó mọi dòng 
 Sổ này ghi **đủ mọi tín hiệu**, kể cả sự kiện chưa có nhãn và mấy nhịp bị chặn
 vì trùng. Cố ý vậy: **Sheets là sổ lưu, Telegram là chuông báo.** Sổ thì phải
 đủ, chuông thì phải lọc cho đỡ ồn.
+
+### Tab `Thư` — do `/api/thu` gửi
+
+| Cột | Nghĩa |
+|---|---|
+| `at` | thời điểm gửi (ISO) |
+| `tu` | người gửi tự khai |
+| `loi` | **nguyên văn lời nhắn** |
+| `da_gui` | `roi` · `chua` (chưa khai biến môi trường email/Telegram) · `qua-tran` |
+| `may` | chuỗi trình duyệt |
+
+Trước đợt 21 lời nhắn **chỉ** đi email + Telegram, không vào sổ — muốn đọc lại
+một lời nhắn cũ thì phải đi lục hòm thư, mà chuông Telegram thì trôi mất theo
+dòng. Nay chép cả khi **quá trần chống spam**: sổ là chỗ LƯU nên phải đủ, cái
+cần lọc cho đỡ ồn là chuông báo.
 
 ### Tab `Chat` — do `/api/chat` gửi
 

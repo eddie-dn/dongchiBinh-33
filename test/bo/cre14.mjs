@@ -19,7 +19,11 @@ for(const [ma,ten] of [['MAP','Bản đồ mật thư'],['EGG','Easter Egg · Ga
     sub:document.querySelector('.ls-sub')?.textContent,
     nhom:document.querySelectorAll('.ls-cnhom').length,
     dong:document.querySelectorAll('.ls-cnhom p').length,
-    tien:document.querySelector('.ls-tien')?document.querySelector('.ls-tien .r.tong b').textContent:null,
+    /* Từ đợt 21 có HAI khối `.ls-tien`: bảng chi phí và mục thời gian
+       (`.ls-gio`). Hỏi thẳng dòng tổng chi phí, đừng lấy `.ls-tien` đầu tiên
+       rồi đoán — đoán thì vớ phải khối thời gian và ngã. */
+    tien:document.querySelector('.ls-tien .r.tong b')?.textContent ?? null,
+    gio:!!document.querySelector('.ls-tien.ls-gio'),
     lui:!!document.querySelector('#lsLui')
   }));
   T(ma+' → trang Credit · '+d.nhom+' nhóm · '+d.dong+' dòng'+(d.tien?' · tổng '+d.tien:''),

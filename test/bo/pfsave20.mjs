@@ -89,6 +89,51 @@ console.log('\n④ CHƠI ẨN DANH thì không có gì để cất, và không �
   await ctx.close();
 }
 
+console.log('\n⑥ BẢN LƯU ÔM ĐỦ CẢ BA CHẶNG — không bỏ quên Zoey\'s Castle');
+{
+  /* Bệnh đã sửa: bản chụp chỉ ôm msn1 + mtv1, bỏ quên hanv1. Giải xong bộ câu
+     hỏi Zoey's Castle rồi đổi pí danh là mất trắng phần đó. */
+  const { p, ctx } = await mo({
+    msn:{ m1:true, m2:true, m3:true },
+    mtv:{ solved:{A:1,B:1,C:1,D:1}, eggDone:true },
+    pf:{ name:'THU', savedAt:0, moc:'—', snap:null } });
+  await p.evaluate(()=>localStorage.setItem('hanv1', JSON.stringify({
+    dung:{q1:true,q2:true}, done:false, bOpen:false, aOpen:true })));
+  await p.evaluate(()=>{ Object.defineProperty(document,'hidden',{value:true,configurable:true});
+    document.dispatchEvent(new Event('visibilitychange')); });
+  await p.waitForTimeout(300);
+  const s = await banLuu(p);
+  T('bản chụp có msn1',  !!(s && s.snap && s.snap.msn1),  JSON.stringify(Object.keys((s&&s.snap)||{})));
+  T('bản chụp có mtv1',  !!(s && s.snap && s.snap.mtv1));
+  T('bản chụp có hanv1 — chặng Zoey\'s Castle', !!(s && s.snap && s.snap.hanv1),
+    JSON.stringify(Object.keys((s&&s.snap)||{})));
+  T('KHÔNG bao giờ chụp nav1 (bản lưu ôm chính nó là hỏng)',
+    !!(s && s.snap && !s.snap.nav1), JSON.stringify(Object.keys((s&&s.snap)||{})));
+  await ctx.close();
+}
+
+console.log('\n⑦ MỐC hiện đúng chặng xa nhất, không dừng ở Mission');
+{
+  const thu = async (msn, mtv, han)=>{
+    const { p, ctx } = await mo({ msn, mtv, pf:{ name:'THU', savedAt:0, moc:'—', snap:null } });
+    if(han) await p.evaluate(h=>localStorage.setItem('hanv1', JSON.stringify(h)), han);
+    await p.evaluate(()=>{ Object.defineProperty(document,'hidden',{value:true,configurable:true});
+      document.dispatchEvent(new Event('visibilitychange')); });
+    await p.waitForTimeout(300);
+    const s = await banLuu(p); await ctx.close();
+    return s && s.moc;
+  };
+  const xong3 = { m1:true, m2:true, m3:true };
+  T('mới xong M1 → "M1"',        (await thu({m1:true}, null, null)) === 'M1');
+  T('xong M3, chưa giải toạ độ → "M3 ✓"', (await thu(xong3, null, null)) === 'M3 ✓');
+  T('giải 4 toạ độ + Easter Egg → "EGG ✦"',
+    (await thu(xong3, {solved:{A:1,B:1,C:1,D:1}, eggDone:true}, null)) === 'EGG ✦');
+  T('đúng 2/3 câu Zoey\'s Castle → "HAN 2/3"',
+    (await thu(xong3, {solved:{A:1,B:1,C:1,D:1}, eggDone:true}, {dung:{q1:1,q2:1}})) === 'HAN 2/3');
+  T('xong Zoey\'s Castle + mở wishlist → "HAN ✦✦"',
+    (await thu(xong3, {solved:{A:1,B:1,C:1,D:1}, eggDone:true}, {done:true, bOpen:true})) === 'HAN ✦✦');
+}
+
 console.log('\n⑤ ĐỦ NĂM CHỖ TỰ LƯU trong mã nguồn');
 {
   const src = await (await fetch(B+'/dad/950901-a/index.html')).text();
@@ -99,6 +144,7 @@ console.log('\n⑤ ĐỦ NĂM CHỖ TỰ LƯU trong mã nguồn');
   T('rời trang / giấu tab → cất', /addEventListener\('pagehide', luuRoiTrang\)/.test(src)
     && /if\(document\.hidden\)\{ luuRoiTrang\(\)/.test(src));
   T('lệnh "Lưu tiến trình" vẫn còn (đường ghi đè có chủ ý)', /act === 'save'/.test(src));
+  T('ba khoá chặng khai ở MỘT chỗ', /KHOA_CHANG = \['msn1', 'mtv1', 'hanv1'\]/.test(src));
 }
 
 console.log('\nTỔNG: '+ok+' đạt / '+ng+' hỏng');

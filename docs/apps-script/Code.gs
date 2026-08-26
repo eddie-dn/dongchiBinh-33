@@ -33,10 +33,21 @@ var MA_BAO_VE = 'doi-chuoi-nay-di';
    thì ô đó để trống, không hỏng gì. Đừng đổi THỨ TỰ cột cũ: dòng đã ghi rồi
    không tự sắp xếp lại theo. */
 var COT = {
-  'Tiến độ': ['at', 'ev', 'nhan', 'detail', 'solved', 'so_giai', 'kenh', 'may'],
+  /* ⚠ BA CỘT `trang` / `noi` / `tt` PHẢI CÓ MẶT Ở ĐÂY.
+     Máy chủ đã gửi chúng từ đợt 18, nhưng bảng này thiếu tên nên chúng rơi
+     thẳng vào hư không — gửi mà không ai nhận, và KHÔNG CÓ GÌ BÁO. Đó chính
+     là kiểu hỏng tệ nhất của chỗ này: `doPost` chỉ đọc đúng mấy tên khai
+     trong `COT`, trường lạ bị bỏ im lặng.
+     Sheet cũ đã có sẵn dòng thì cột mới nối vào cuối, dòng cũ để trống. */
+  'Tiến độ': ['at', 'ev', 'nhan', 'detail', 'trang', 'noi', 'tt',
+              'solved', 'so_giai', 'kenh', 'may'],
   'Chat'   : ['luc', 'nguon', 'ok', 'ly_do', 'model', 'ms', 'hoi_dai', 'dap_dai',
               'luot_su', 'token_vao', 'token_ra', 'token_nghi', 'block', 'loi',
-              'hoi', 'dap']
+              'hoi', 'dap'],
+  /* Lời nhắn gửi tổ kỹ thuật. Trước đây `/api/thu` chỉ đi email + Telegram,
+     nghĩa là muốn đọc lại lời nhắn cũ thì phải lục hòm thư — mà chuông báo
+     Telegram gói Hobby chỉ giữ được một quãng. Nay chép về sổ luôn. */
+  'Thư'    : ['at', 'tu', 'loi', 'da_gui', 'may']
 };
 
 function doPost(e) {
@@ -47,7 +58,9 @@ function doPost(e) {
     var goi = {};
     try { goi = JSON.parse(e.postData.contents) || {}; } catch (loi) { goi = {}; }
 
-    var tenTab = (goi.loai === 'ping') ? 'Tiến độ' : 'Chat';
+    var tenTab = (goi.loai === 'ping') ? 'Tiến độ'
+               : (goi.loai === 'thu')  ? 'Thư'
+               : 'Chat';
     var sheet  = layTab(tenTab);
 
     /* Gói của /api/chat để số token trong một object con `token`. Trải phẳng

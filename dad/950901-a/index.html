@@ -1869,12 +1869,39 @@ render();
   /* LUẬT PÍ DANH: không có chữ in hoa, tối đa 6 ký tự — chữ thường, số, ký tự đặc biệt.
      Hạ chữ thường ngay khi gõ nên người chơi không bao giờ tạo được tên sai luật. */
   function pidNorm(s){ return String(s||'').toLowerCase().replace(/\s+/g,'').slice(0, PID_LEN); }
+  /* ═══ BA KHOÁ TIẾN ĐỘ CỦA CẢ BỘ ════════════════════════════════════════
+     Mỗi trang là một chặng, mỗi chặng giữ tiến độ ở một khoá riêng. Pí danh
+     phải ôm ĐỦ CẢ BA — không thì đổi pí danh xong nửa hành trình đi theo, nửa
+     kia ở lại, mà người chơi không hiểu vì sao.
+
+       msn1   Hồ sơ Phi đoàn — ba Mission
+       mtv1   Bản đồ tác chiến + mấy cờ phá đảo của Easter Egg · Gate 2
+       hanv1  Zoey's Castle (bộ câu hỏi) + Secret Chamber (wishlist)
+
+     BỆNH ĐÃ SỬA: đời trước chỉ chụp `msn1` và `mtv1`. `hanv1` bị bỏ quên hẳn,
+     nên giải xong ba câu hỏi Zoey's Castle rồi đổi pí danh là mất trắng phần
+     đó — bản lưu không hề biết nó từng tồn tại.
+
+     ⚠ `nav1` TUYỆT ĐỐI KHÔNG ĐƯỢC NẰM TRONG DANH SÁCH NÀY. Đó là chỗ chứa
+     chính mấy pí danh; chụp nó vào bản lưu là bản lưu ôm lấy chính nó, khôi
+     phục một cái là nuốt luôn mọi pí danh khác.
+
+     Mấy khoá KHÔNG phải tiến độ cũng đứng ngoài: `mtping` / `g2ping` (danh
+     sách chống bắn trùng), `hhQuoteDa` (câu quote đã xem), `ls_goi_y` (đã
+     thấy gợi ý cửa mã bản ghi).
+
+     THÊM MỘT TRANG MỚI CÓ TIẾN ĐỘ RIÊNG thì thêm một dòng vào đây, hết. */
+  var KHOA_CHANG = ['msn1', 'mtv1', 'hanv1'];
+
   function profSnap(){
-    var s = {}, t = null;
-    try{ s = JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){}
-    try{ t = JSON.parse(localStorage.getItem('mtv1')||'null'); }catch(e){}
-    var o = { msn1: s };                  /* chụp NGUYÊN VĂN, không chọn lọc trường */
-    if(t) o.mtv1 = t;                     /* tiến độ bản đồ chỉ có từ PHA 2 */
+    var o = {};
+    for(var i = 0; i < KHOA_CHANG.length; i++){
+      var k = KHOA_CHANG[i], tho = null, v = null;
+      try{ tho = localStorage.getItem(k); }catch(e){}
+      if(tho == null) continue;           /* chưa chơi tới chặng đó thì thôi */
+      try{ v = JSON.parse(tho); }catch(e){ v = null; }
+      if(v && typeof v === 'object') o[k] = v;   /* chụp NGUYÊN VĂN, không lọc trường */
+    }
     return o;
   }
   /* Chơi ẩn danh (active = -1) thì không ghi vào hồ sơ nào — đúng nghĩa ẩn danh.
@@ -1882,7 +1909,7 @@ render();
   function profSave(moc, ep){
     var nav = navRead(); if(nav.active < 0) return false;
     var p = nav.profiles[nav.active]; if(!p) return false;
-    if(!ep && p.snap && hang(p.snap.msn1, p.snap.mtv1) > hangNay()) return false;
+    if(!ep && p.snap && hang(p.snap) > hangNay()) return false;
     p.savedAt = Date.now(); p.moc = moc || mocNow(); p.snap = profSnap();
     navWrite(nav); chipDraw();
     return true;
@@ -1896,9 +1923,25 @@ render();
     if(t && t.solved) for(var k in t.solved) if(t.solved.hasOwnProperty(k)) n++;
     return { n: n, egg: !!(t && (t.credFound || t.eggHack || t.eggDone)) };
   }
-  /* Nhãn mốc của tiến độ ĐANG chơi — gộp cả hai game */
+  /* Nhãn mốc của tiến độ ĐANG chơi — đi hết cả BA chặng, chặng xa nhất thắng.
+     Đây là dòng chữ người chơi thấy trong bảng pí danh, nên nó phải nói được
+     "mình đang ở đâu trong cả hành trình", không chỉ "xong mấy Mission".
+       —  ·  M1  ·  M2         Hồ sơ Phi đoàn
+       M3 ✓ · TAC n/4          Bản đồ tác chiến
+       EGG ✦                   phá đảo Easter Egg · Gate 2
+       HAN n/3 · HAN ✦         Zoey's Castle · thêm ✦ nữa là mở được wishlist */
+  function hanTien(){
+    var h = {};
+    try{ h = JSON.parse(localStorage.getItem('hanv1') || '{}') || {}; }catch(e){}
+    var n = 0;
+    if(h.dung) for(var k in h.dung) if(h.dung.hasOwnProperty(k) && h.dung[k]) n++;
+    return { n: n, xong: !!h.done, wish: !!h.bOpen };
+  }
   function mocNow(){
     if(!st.m3) return st.m2 ? 'M2' : st.m1 ? 'M1' : '—';
+    var g = hanTien();
+    if(g.xong) return g.wish ? 'HAN ✦✦' : 'HAN ✦';
+    if(g.n > 0) return 'HAN ' + g.n + '/3';
     var m = mapTien();
     if(m.n >= 4) return m.egg ? 'EGG ✦' : 'TAC 4/4';
     return m.n > 0 ? 'TAC ' + m.n + '/4' : 'M3 ✓';
@@ -1906,27 +1949,38 @@ render();
   /* Hạng tiến độ — chỉ dùng để KHÔNG ghi đè bản lưu bằng một trạng thái lùi hơn
      (vd vừa Reset bản đồ xong mới ghé lại hồ sơ). Muốn ghi đè thật thì có lệnh
      "Lưu tiến trình" trong bảng xổ. */
-  function hang(sn, mt){
-    var r = (sn && sn.m3 ? 3 : sn && sn.m2 ? 2 : sn && sn.m1 ? 1 : 0) * 100;
-    var n = 0, egg = false;
-    if(mt){ if(mt.solved) for(var k in mt.solved) if(mt.solved.hasOwnProperty(k)) n++;
-            egg = !!(mt.credFound || mt.eggHack || mt.eggDone); }
-    return r + n * 10 + (egg ? 1 : 0);
+  /* Hạng tiến độ — chỉ để KHÔNG ghi đè bản lưu bằng một trạng thái lùi hơn.
+     Xếp theo thứ tự chặng của cả hành trình, chặng sau nặng hơn chặng trước:
+
+       Mission ×1000  ·  toạ độ đã giải ×100  ·  phá đảo Easter Egg ×10
+       ·  Zoey's Castle: xong bộ câu hỏi 2đ, mở được wishlist thêm 1đ
+
+     Nhận NGUYÊN cả bản chụp chứ không nhận từng khoá rời: thêm chặng mới thì
+     chỉ phải sửa đúng hàm này, khỏi đi sửa mọi chỗ gọi. */
+  function hang(sn){
+    sn = sn || {};
+    var m = sn.msn1 || {}, mt = sn.mtv1 || {}, h = sn.hanv1 || {};
+    var r = (m.m3 ? 3 : m.m2 ? 2 : m.m1 ? 1 : 0);
+    var n = 0;
+    if(mt.solved) for(var k in mt.solved) if(mt.solved.hasOwnProperty(k)) n++;
+    var egg = !!(mt.credFound || mt.eggHack || mt.eggDone);
+    var han = (h.done ? 2 : 0) + (h.bOpen ? 1 : 0);
+    return r * 1000 + n * 100 + (egg ? 10 : 0) + han;
   }
-  function hangNay(){
-    var sn = {}, mt = null;
-    try{ sn = JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){}
-    try{ mt = JSON.parse(localStorage.getItem('mtv1')||'null'); }catch(e){}
-    return hang(sn, mt);
-  }
+  function hangNay(){ return hang(profSnap()); }
   /* Nạp một bản lưu rồi tải lại trang — về trạng thái trọn vẹn thì reload */
   function profLoad(nav, i){
     var p = nav.profiles[i]; if(!p) return;
     nav.active = i;
     if(p.snap){
+      /* Chỉ ghi khoá nào CÓ trong bản chụp; khoá không có thì KHÔNG ĐỤNG —
+         luật này có từ đời đầu, giữ nguyên. Nghĩa là khôi phục một bản lưu cũ
+         không xoá mất chặng người chơi mới đi thêm sau đó. */
       try{
-        if(p.snap.msn1) localStorage.setItem(KEY, JSON.stringify(p.snap.msn1));
-        if(p.snap.mtv1) localStorage.setItem('mtv1', JSON.stringify(p.snap.mtv1));
+        for(var q = 0; q < KHOA_CHANG.length; q++){
+          var kc = KHOA_CHANG[q];
+          if(p.snap[kc]) localStorage.setItem(kc, JSON.stringify(p.snap[kc]));
+        }
       }catch(e){}
       nav.mapUnlocked = !!(p.snap.msn1 && p.snap.msn1.m3);   /* pha tính lại từ bản lưu */
     }
@@ -2286,7 +2340,7 @@ render();
   });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.06<br>Last updated 25-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.07<br>Last updated 26-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

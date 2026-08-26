@@ -1,4 +1,125 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 21 — pí danh ôm đủ ba chặng, sổ lưu nhận đủ cột, Credit có mục thời gian.
+════════════════════════════════════════════════════════════════════════════
+Cả bảy trang đều đổi số hiệu. Chép đè theo đúng cây thư mục.
+
+    index.html                            han/961030-a/index.html
+    assets/lichsu.js                      han/961030-b/index.html
+    dad/950901-a/index.html               phao-hoa/index.html
+    dad/950901-b/config.js                api/thu.js
+
+    docs/apps-script/Code.gs   ← DÁN LẠI VÀO APPS SCRIPT RỒI DEPLOY LẠI
+    docs/thoi-gian.mjs         ← file mới, đo thời gian từ lịch sử commit
+    test/                      ← thêm hai bộ, sửa ba bộ
+
+    DESIGN-SYSTEM.md   USER-FLOW.md   docs/GOOGLE-SHEETS.md   test/README.md
+    DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này:
+    /                 V19.04 → V19.05     /han/961030-a     V04.01 → V04.02
+    /dad/950901-a     V04.06 → V04.07     /han/961030-b     V03.02 → V03.03
+    /dad/950901-b     V05.07 → V05.08     /phao-hoa         V03.04 → V03.05
+    (khu Easter Egg trong sổ bản đồ      V19.03 → V19.04)
+
+
+① BỨC THƯ
+────────────────────────────────────────────────────────────────────────────
+Đã thay câu được chỉ. Sổ bản ghi CỐ Ý chỉ ghi "Rà lại hộp thư" — không nói gì
+tới nội dung. Sổ là thứ người chơi mở ra đọc được.
+
+
+② SỔ GOOGLE SHEETS — BA CÂU HỎI, BA CÂU TRẢ LỜI KHÁC NHAU
+────────────────────────────────────────────────────────────────────────────
+  Ba cột trang/noi/tt đã đẩy vào sheet chưa?
+    CHƯA. Máy chủ GỬI chúng từ đợt 18, nhưng bảng cột `COT` trong Apps Script
+    thiếu tên nên `doPost` bỏ qua — trường lạ bị nuốt IM LẶNG, không lỗi,
+    không cảnh báo. Suốt quãng đó ba cột rơi thẳng vào hư không.
+    ⚠ ĐÃ SỬA, NHƯNG PHẢI DÁN LẠI `docs/apps-script/Code.gs` VÀO APPS SCRIPT
+      RỒI DEPLOY LẠI. Sửa mỗi bên Vercel là không ăn thua.
+
+  Lấy được nội dung hỏi/đáp Open World không?
+    ĐƯỢC, nhưng TẮT SẴN. Hai cột `hoi` / `dap` có sẵn trong sổ; muốn ghi nội
+    dung thì khai thêm biến môi trường CHAT_LOG_NOI_DUNG=1 bên Vercel. Cố ý
+    bắt khai riêng chứ không bật mặc định.
+
+  Lấy được nội dung tâm thư không?
+    TRƯỚC ĐÂY KHÔNG. `/api/thu` chỉ đi email + Telegram, sổ không có dòng nào.
+    Muốn đọc lại một lời nhắn cũ thì phải lục hòm thư, mà chuông Telegram thì
+    trôi mất theo dòng. NAY có tab "Thư" riêng, ghi nguyên văn.
+    Chép cả khi quá trần chống spam — sổ là chỗ LƯU nên phải đủ, cái cần lọc
+    cho đỡ ồn là chuông báo. Đúng luật đã chốt ở /api/ping.
+
+
+③ PÍ DANH BỎ QUÊN HẲN MỘT CHẶNG
+────────────────────────────────────────────────────────────────────────────
+Hỏi: "có nhiều html và mỗi html là các stage khác nhau mà?" — đúng, và bản lưu
+đang thiếu một stage.
+
+Bản chụp đời trước chỉ ôm `msn1` (Mission) và `mtv1` (bản đồ + cờ Gate 2).
+`hanv1` — nơi giữ tiến độ Zoey's Castle và Secret Chamber — bị bỏ quên HẲN.
+Nghĩa là giải xong ba câu hỏi Zoey's Castle rồi đổi pí danh là mất trắng phần
+đó; bản lưu không hề biết nó từng tồn tại.
+
+NAY khai ba khoá chặng ở MỘT chỗ (`KHOA_CHANG`), chụp và khôi phục đều chạy
+theo danh sách đó. Thêm trang mới có tiến độ riêng thì thêm một dòng, hết.
+
+    ⚠ `nav1` TUYỆT ĐỐI KHÔNG ĐƯỢC NẰM TRONG DANH SÁCH ĐÓ — đó là chỗ chứa
+      chính mấy pí danh. Chụp nó vào bản lưu là bản lưu ôm lấy chính nó, khôi
+      phục một cái là nuốt luôn mọi pí danh khác.
+
+Nhãn mốc trong bảng pí danh cũng đi hết cả hành trình thay vì dừng ở Mission:
+    —  ·  M1  ·  M2  ·  M3 ✓  ·  TAC n/4  ·  EGG ✦  ·  HAN n/3  ·  HAN ✦✦
+
+
+④ CREDIT CÓ MỤC "LÀM TRONG BAO LÂU"
+────────────────────────────────────────────────────────────────────────────
+Đếm từ chính lịch sử commit, gộp cả năm nhánh (199 lượt ghi).
+
+    Bản đồ tác chiến        30 ngày 12 giờ 53 phút     26-07 → 26-08
+    Easter Egg · Gate 2     21 ngày  1 giờ 30 phút     05-08 → 26-08
+    Hồ sơ Phi đoàn          14 ngày 20 giờ 20 phút     11-08 → 26-08
+    Zoey's Castle           12 ngày  5 giờ 19 phút     13-08 → 25-08
+    Secret Chamber          12 ngày  5 giờ 19 phút     13-08 → 25-08
+    Màn pháo hoa            11 ngày  6 giờ 50 phút     14-08 → 25-08
+    ──────────────────────────────────────────────────────────────
+    TỔNG                    30 ngày 12 giờ 53 phút     26-07 → 26-08
+
+CÁCH ĐO: KHOẢNG ĐẦU-CUỐI. Commit sớm nhất tới commit muộn nhất, tính cả những
+ngày ở giữa. Cả bộ ra vừa đúng một tháng.
+
+Đây là CHIỀU DÀI DỰ ÁN — quãng từ lúc bắt tay tới lúc xong, không phải số giờ
+ngồi trước máy. Hai thứ khác nhau, và đây cố ý lấy thứ nhất: nó là con số trả
+lời được câu "làm trong bao lâu", đúng thứ trang Credit muốn kể.
+
+    ⚠ CỘNG SÁU TRANG LẠI KHÔNG RA TỔNG, và đúng là như vậy. Mấy phần được làm
+      XEN KẼ nhau chứ không nối đuôi, nên khoảng thời gian của chúng chồng lên
+      nhau. Trang Credit NÓI THẲNG chuyện đó ra thay vì để người đọc tự cộng
+      rồi thắc mắc.
+
+Đo lại bất cứ lúc nào: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào
+`THOI_GIAN` trong assets/lichsu.js. Bộ kiểm `cre21` chạy chính script đó tại
+chỗ rồi đối chiếu, nên sửa mã mà quên đo lại là báo đỏ ngay.
+
+
+⑤ BỘ KIỂM
+────────────────────────────────────────────────────────────────────────────
+Thêm hai bộ:
+    so21.mjs    16 phép — sổ lưu nhận đủ cột, cả ba câu hỏi ở mục ② ở trên.
+    cre21.mjs   19 phép — mục thời gian có ở cả bảy trang, và KHỚP lịch sử
+                commit (chạy docs/thoi-gian.mjs tại chỗ rồi đối chiếu).
+
+Sửa ba bộ:
+    kt7 · ow13  còn ghi cứng địa chỉ 127.0.0.1:8099 theo một khuôn khác nên
+                lọt lưới lúc đóng gói đợt trước. Chạy đúng cổng mặc định thì
+                không lộ; đổi cổng một cái là ngã.
+    cre14       hỏi `.ls-tien` đầu tiên rồi đoán đó là bảng chi phí. Từ đợt này
+                có HAI khối cùng tên lớp nên nó vớ phải khối thời gian và ngã.
+                Đã đặt thêm `.ls-gio` cho khối thời gian, và sửa bộ kiểm hỏi
+                thẳng dòng tổng chi phí thay vì đoán.
+
+TỔNG: 30 bộ, 573 phép, 0 hỏng.
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 20 — tín hiệu đi đúng trang, pí danh tự lưu, bộ kiểm dọn vào kho mã.
 ════════════════════════════════════════════════════════════════════════════
 9 file sửa + 1 thư mục mới. Chép đè theo đúng cây thư mục.

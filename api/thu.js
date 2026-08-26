@@ -19,6 +19,23 @@
 
 const MAIL_TO_MAC_DINH = 'honghandn@gmail.com';
 
+/* ═══ CHÉP VỀ SỔ LƯU ═══════════════════════════════════════════════════════
+   Đời trước lời nhắn CHỈ đi email + Telegram. Nghĩa là muốn đọc lại một lời
+   nhắn cũ thì phải đi lục hòm thư, mà chuông Telegram thì trôi mất theo dòng.
+   Nay chép thêm một dòng vào sổ, đúng khuôn `chepVeSheet` của /api/ping:
+   bắn đi rồi thôi, KHÔNG await, hỏng cũng không được làm phiền người gửi. */
+function chepVeSheet(o) {
+  const url = process.env.SHEET_URL;
+  if (!url) return;
+  try {
+    fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(Object.assign({ loai: 'thu' }, o))
+    }).catch(() => {});
+  } catch (e) {}
+}
+
 /* Chống spam: cùng một instance, tối đa 6 lời nhắn mỗi 10 phút. Lời nhắn là
    hành động cố ý của người dùng nên trần rộng hơn /api/ping. */
 const CUA_SO = 10 * 60 * 1000;
@@ -102,6 +119,9 @@ module.exports = async (req, res) => {
   console.log('[THU]', JSON.stringify({ tu, loi: loi.slice(0, 120), at }));
 
   if (quaTay()) {                     /* quá trần thì im lặng nuốt, không báo lỗi cho người gửi */
+    /* Vẫn chép vào sổ: sổ là chỗ LƯU, phải đủ. Cái cần lọc cho đỡ ồn là
+       chuông báo, không phải sổ — đúng luật đã chốt ở /api/ping. */
+    chepVeSheet({ at, tu, loi, da_gui: 'qua-tran', may });
     res.status(200).json({ ok: true, ghi_chu: 'qua tran' });
     return;
   }
@@ -113,6 +133,8 @@ module.exports = async (req, res) => {
   } catch (e) {
     console.log('[THU] gửi thất bại:', e && e.message);
   }
+
+  chepVeSheet({ at, tu, loi, da_gui: xong ? 'roi' : 'chua', may });
 
   /* Chưa khai biến môi trường thì vẫn báo thành công: nội dung đã nằm trong Logs,
      và người gửi không có gì để làm với một lỗi cấu hình phía máy chủ. */
