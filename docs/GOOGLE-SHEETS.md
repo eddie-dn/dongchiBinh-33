@@ -109,8 +109,7 @@ deploy sau, sửa xong mà không redeploy thì vẫn chạy bản cũ.
 > `doPost` chỉ đọc đúng mấy tên khai trong `COT`; trường lạ bị **bỏ im lặng**,
 > không lỗi, không cảnh báo. Ba cột này đã được gửi từ đợt 18 nhưng bảng cột
 > thiếu tên, nên suốt quãng đó chúng rơi thẳng vào hư không. Sheet đang chạy
-> rồi thì **dán lại `Code.gs` mới và Deploy lại** — cột mới nối vào cuối, dòng
-> cũ để trống ở đó.
+> rồi thì **dán lại `Code.gs` mới và Deploy lại**.
 
 Ba cột `trang` / `noi` / `tt` thêm từ đợt 18, vào bảng cột từ đợt 21. Trước đó mọi dòng của cả sáu trang
 đều mang chung một tiêu đề và chung một con số tiến độ của bản đồ — xem luật ở
@@ -120,6 +119,30 @@ Ba cột `trang` / `noi` / `tt` thêm từ đợt 18, vào bảng cột từ đ�
 Sổ này ghi **đủ mọi tín hiệu**, kể cả sự kiện chưa có nhãn và mấy nhịp bị chặn
 vì trùng. Cố ý vậy: **Sheets là sổ lưu, Telegram là chuông báo.** Sổ thì phải
 đủ, chuông thì phải lọc cho đỡ ồn.
+
+### Trên Google có phải làm gì không
+
+**Không.** Tạo đúng **một** file Sheet trống ở bước 1, hết. Từ đó trở đi:
+
+| Việc | Ai làm |
+|---|---|
+| Tạo tab `Tiến độ` · `Chat` · `Thư` | **mã tự tạo** lúc có dòng đầu tiên |
+| Gõ dòng tiêu đề cột | **mã tự ghi**, in đậm, khoá dòng 1 |
+| Thêm cột mới vào tab **đã có sẵn** | **mã tự viết nốt** mấy ô tiêu đề còn thiếu |
+
+Việc duy nhất phải làm tay là **dán lại `Code.gs` rồi Deploy lại** mỗi khi file
+đó đổi. Sheet thì không phải đụng vào.
+
+> **⚠ VẾ THỨ BA MỚI LÀ VẾ HAY QUÊN.** `layTab` đời trước chỉ ghi tiêu đề lúc
+> **tạo mới** tab. Sheet đang chạy từ trước cứ giữ nguyên dòng tiêu đề cũ, nên
+> thêm cột vào `COT` là dữ liệu mới rơi xuống mấy ô **không có tên** ở bên
+> phải — đọc sheet thấy ba cột trắng trơn, không biết là cột gì. Nay tab có
+> sẵn mà thiếu cột thì mã viết nốt, và **chỉ nối thêm**, không đụng ô đã có.
+
+> **⚠ CỘT MỚI LUÔN NỐI VÀO CUỐI `COT`, ĐỪNG CHÈN VÀO GIỮA.** Sheet đang chạy
+> giữ nguyên thứ tự cột cũ; chèn vào giữa là dòng mới ghi theo thứ tự mới còn
+> tiêu đề thì theo thứ tự cũ — cả bảng lệch mà nhìn vẫn ra dữ liệu, không có gì
+> báo. Đã vấp đúng lỗi này một lần; `test/bo/so21.mjs` nay canh chỗ đó.
 
 ### Tab `Thư` — do `/api/thu` gửi
 

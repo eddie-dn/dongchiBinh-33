@@ -1,4 +1,64 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 22 — vá hai lỗi tự gây ra ở đợt 21 trong mã Apps Script của sổ lưu.
+════════════════════════════════════════════════════════════════════════════
+3 file sửa, không đụng tới trang nào. Số tem GIỮ NGUYÊN — không có gì đổi trên
+màn hình người chơi.
+
+    docs/apps-script/Code.gs   ← DÁN LẠI VÀO APPS SCRIPT RỒI DEPLOY LẠI
+    docs/GOOGLE-SHEETS.md      test/bo/so21.mjs      test/README.md
+
+
+CÂU HỎI: "có cần ghi gì ra sheet để nhận thông tin không, hay tự tạo?"
+────────────────────────────────────────────────────────────────────────────
+TỰ TẠO HẾT. Tạo đúng MỘT file Sheet trống, dán mã, deploy — hết. Tab, dòng
+tiêu đề, và cả cột thêm về sau đều do mã tự lo.
+
+Nhưng đi soi lại để trả lời cho chắc thì lòi ra HAI LỖI, cả hai đều do đợt 21
+vừa rồi gây ra. Cả hai đều thuộc loại HỎNG MÀ KHÔNG BÁO GÌ.
+
+
+① CHÈN CỘT MỚI VÀO GIỮA — LỆCH CẢ BẢNG
+────────────────────────────────────────────────────────────────────────────
+Đợt 21 thêm ba cột trang/noi/tt vào NGAY SAU `detail`, tức là CHÈN VÀO GIỮA —
+đúng cái luật ghi sẵn ngay bên trên nó cấm ("Đừng đổi THỨ TỰ cột cũ"). Tệ hơn,
+ghi chú tôi viết còn nói "cột mới nối vào cuối", trong khi mã làm ngược lại.
+
+Sheet đang chạy giữ nguyên tám cột theo thứ tự cũ, mà dòng mới ghi xuống theo
+thứ tự mới. Kết quả: `trang` rơi xuống dưới tiêu đề "solved", `noi` dưới
+"so_giai", `tt` dưới "kenh"… Cả bảng lệch, mà nhìn vẫn ra dữ liệu nên không ai
+nghi. Đã trả ba cột về CUỐI danh sách.
+
+
+② TIÊU ĐỀ CỘT KHÔNG TỰ MỌC TRÊN TAB ĐÃ CÓ SẴN
+────────────────────────────────────────────────────────────────────────────
+`layTab` chỉ ghi dòng tiêu đề lúc TẠO MỚI tab. Sheet đang chạy từ trước cứ giữ
+nguyên dòng tiêu đề đời cũ, nên thêm cột vào bảng là dữ liệu mới rơi xuống mấy
+ô KHÔNG CÓ TÊN ở bên phải — mở sheet ra thấy ba cột trắng trơn, không biết là
+cột gì.
+
+NAY: tab chưa có thì dựng kèm đủ tiêu đề; tab có rồi mà thiếu cột thì viết nốt
+mấy ô còn thiếu vào cuối dòng 1. CHỈ NỐI THÊM, tuyệt đối không viết đè ô đã có.
+
+    Tạo tab Tiến độ / Chat / Thư        mã tự tạo lúc có dòng đầu tiên
+    Gõ dòng tiêu đề cột                 mã tự ghi, in đậm, khoá dòng 1
+    Thêm cột vào tab ĐÃ CÓ SẴN          mã tự viết nốt ô còn thiếu
+
+Việc duy nhất phải làm tay vẫn là: dán lại Code.gs rồi Deploy lại mỗi khi file
+đó đổi. Sheet thì không phải đụng vào.
+
+
+③ BỘ KIỂM
+────────────────────────────────────────────────────────────────────────────
+`so21` nay chạy THẬT hàm `layTab` của Apps Script trong một cái Sheet giả, soi
+đủ ba cảnh: tab chưa có · tab có rồi mà thiếu cột · tab đã đủ cột (không được
+viết lại lần nữa). Cộng phép soi tám cột đời đầu phải giữ nguyên đúng vị trí.
+
+Đã thử dựng lại từng lỗi một để chắc bộ kiểm không xanh suông:
+    dựng lại lỗi ① → 3 phép đỏ
+    dựng lại lỗi ② → 1 phép đỏ
+    bản đúng       → 21 phép xanh
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 21 — pí danh ôm đủ ba chặng, sổ lưu nhận đủ cột, Credit có mục thời gian.
 ════════════════════════════════════════════════════════════════════════════
 Cả bảy trang đều đổi số hiệu. Chép đè theo đúng cây thư mục.

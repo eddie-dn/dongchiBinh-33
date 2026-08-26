@@ -38,9 +38,14 @@ var COT = {
      thẳng vào hư không — gửi mà không ai nhận, và KHÔNG CÓ GÌ BÁO. Đó chính
      là kiểu hỏng tệ nhất của chỗ này: `doPost` chỉ đọc đúng mấy tên khai
      trong `COT`, trường lạ bị bỏ im lặng.
-     Sheet cũ đã có sẵn dòng thì cột mới nối vào cuối, dòng cũ để trống. */
-  'Tiến độ': ['at', 'ev', 'nhan', 'detail', 'trang', 'noi', 'tt',
-              'solved', 'so_giai', 'kenh', 'may'],
+
+     ⚠⚠ CỘT MỚI PHẢI NỐI VÀO CUỐI. Đợt 21 từng chèn ba cột này vào GIỮA, ngay
+     sau `detail` — đúng cái luật ngay dưới đây cấm. Hậu quả: sheet đang chạy
+     có sẵn tám cột theo thứ tự cũ, mà dòng mới ghi xuống theo thứ tự mới, nên
+     `trang` rơi xuống dưới tiêu đề "solved", `noi` dưới "so_giai"… — cả bảng
+     lệch mà nhìn vẫn ra dữ liệu, không có gì báo. Đã trả về cuối. */
+  'Tiến độ': ['at', 'ev', 'nhan', 'detail', 'solved', 'so_giai', 'kenh', 'may',
+              'trang', 'noi', 'tt'],
   'Chat'   : ['luc', 'nguon', 'ok', 'ly_do', 'model', 'ms', 'hoi_dai', 'dap_dai',
               'luot_su', 'token_vao', 'token_ra', 'token_nghi', 'block', 'loi',
               'hoi', 'dap'],
@@ -91,15 +96,37 @@ function doGet() {
   return traLoi({ ok: true, noi: 'So luu dang chay. Gui bang POST nhe.' });
 }
 
+/* ═══ TAB VÀ DÒNG TIÊU ĐỀ TỰ MỌC ═══════════════════════════════════════════
+   Không phải tạo tab nào bằng tay, cũng không phải gõ tiêu đề cột nào. Chưa có
+   tab thì dựng tab kèm dòng tiêu đề; tab có rồi mà THIẾU CỘT MỚI thì viết nốt
+   mấy ô tiêu đề còn thiếu vào cuối dòng 1.
+
+   ⚠ VẾ THỨ HAI MỚI LÀ VẾ QUAN TRỌNG, và đời trước không có. Hàm này chỉ viết
+   tiêu đề lúc TẠO MỚI tab, nên sheet đang chạy từ trước cứ giữ nguyên dòng
+   tiêu đề cũ: thêm cột vào `COT` thì dữ liệu mới rơi xuống mấy ô KHÔNG CÓ TÊN
+   ở bên phải. Đọc sheet thấy ba cột trắng trơn, không biết là cột gì.
+
+   Chỉ NỐI THÊM, tuyệt đối không viết đè ô tiêu đề đã có — dòng đã ghi rồi
+   không tự sắp xếp lại theo. */
 function layTab(ten) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(ten);
+  var cot = COT[ten];
   if (!sh) {
     sh = ss.insertSheet(ten);
-    sh.appendRow(COT[ten]);
+    sh.appendRow(cot);
     sh.setFrozenRows(1);
-    sh.getRange(1, 1, 1, COT[ten].length).setFontWeight('bold');
+    sh.getRange(1, 1, 1, cot.length).setFontWeight('bold');
+    return sh;
   }
+  try {
+    var rong = sh.getLastColumn();
+    if (rong < cot.length) {
+      var them = cot.slice(rong);                 /* chỉ mấy cột còn thiếu */
+      sh.getRange(1, rong + 1, 1, them.length)
+        .setValues([them]).setFontWeight('bold');
+    }
+  } catch (loi) {}                                /* hỏng cũng đừng chặn dòng ghi */
   return sh;
 }
 

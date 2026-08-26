@@ -55,12 +55,77 @@ console.log('\n③ LỜI NHẮN "tâm tư" — trước đây không hề vào s
   T('doPost xếp đúng gói loai=thu vào tab đó', /goi\.loai === 'thu'\)\s*\? 'Thư'/.test(cg));
 }
 
-console.log('\n④ Thêm cột thì phải nối vào CUỐI, không đổi thứ tự cột cũ');
+console.log('\n④ THÊM CỘT PHẢI NỐI VÀO CUỐI — sheet đang chạy không tự sắp lại');
 {
+  /* BỆNH ĐÃ SỬA: đợt 21 chèn ba cột mới vào GIỮA, ngay sau `detail`. Sheet
+     đang chạy có sẵn tám cột theo thứ tự cũ, mà dòng mới ghi theo thứ tự mới
+     → `trang` rơi xuống dưới tiêu đề "solved", cả bảng lệch mà nhìn vẫn ra dữ
+     liệu. Phép dưới đây soi đúng chuyện đó: TÁM CỘT ĐỜI ĐẦU phải giữ nguyên
+     đúng vị trí cũ, cột mới xếp sau. */
+  const CU = ['at','ev','nhan','detail','solved','so_giai','kenh','may'];
   const c = cot('Tiến độ');
-  T('bốn cột đời đầu vẫn đứng đầu, đúng thứ tự',
-    c[0]==='at' && c[1]==='ev' && c[2]==='nhan' && c[3]==='detail', c.join(', '));
+  const lech = CU.map((k,i) => c[i] === k ? null : `#${i} phải là "${k}", đang là "${c[i]}"`)
+                 .filter(Boolean);
+  T('tám cột đời đầu giữ nguyên đúng vị trí', lech.length === 0, lech.join(' , '));
+  T('ba cột mới xếp SAU tám cột đó',
+    c.indexOf('trang') >= CU.length && c.indexOf('noi') >= CU.length && c.indexOf('tt') >= CU.length,
+    c.join(', '));
   T('Apps Script có nhắc luật đó', /Đừng đổi THỨ TỰ cột cũ/.test(cg));
+}
+
+console.log('\n⑤ TAB VÀ TIÊU ĐỀ TỰ MỌC — không phải gõ tay gì trên Google');
+{
+  /* Chạy thật hàm `layTab` của Apps Script trong một cái Sheet giả, để soi
+     đúng hai cảnh: tab chưa có, và tab CÓ RỒI mà thiếu cột mới. */
+  function sheetGia(tieuDe){
+    const oCot = tieuDe ? [...tieuDe] : [];
+    return {
+      _cot: oCot, _dong: [], _dam: 0,
+      getLastColumn: () => oCot.length,
+      appendRow(d){ if(!oCot.length) oCot.push(...d); else this._dong.push(d); },
+      setFrozenRows(){}, 
+      getRange(h, c, _r, n){
+        const self = this;
+        return { setValues(v){ for(let i=0;i<n;i++) oCot[c-1+i] = v[0][i];
+                               return this; },
+                 setFontWeight(){ self._dam++; return this; } };
+      }
+    };
+  }
+  const src = readFileSync(G+'docs/apps-script/Code.gs','utf8');
+  const than = src.slice(src.indexOf('function layTab'));
+  const layTab = new Function('COT', 'SpreadsheetApp',
+    than.slice(0, than.indexOf('\nfunction traLoi')) + '\nreturn layTab;');
+  const COT = { 'Tiến độ': cot('Tiến độ'), 'Thư': cot('Thư') };
+
+  /* ① tab chưa có → dựng kèm đủ tiêu đề */
+  let kho = {};
+  let ham = layTab(COT, { getActiveSpreadsheet: () => ({
+    getSheetByName: n => kho[n] || null,
+    insertSheet: n => (kho[n] = sheetGia(null)) }) });
+  let sh = ham('Thư');
+  T('tab chưa có → tự dựng, tự ghi đủ tiêu đề',
+    sh._cot.join(',') === COT['Thư'].join(','), sh._cot.join(','));
+
+  /* ② tab CÓ RỒI nhưng còn tiêu đề đời cũ → phải viết nốt mấy cột thiếu */
+  const CU = ['at','ev','nhan','detail','solved','so_giai','kenh','may'];
+  kho = { 'Tiến độ': sheetGia(CU) };
+  ham = layTab(COT, { getActiveSpreadsheet: () => ({
+    getSheetByName: n => kho[n] || null,
+    insertSheet: n => (kho[n] = sheetGia(null)) }) });
+  sh = ham('Tiến độ');
+  T('sheet cũ thiếu cột → tự viết nốt tiêu đề còn thiếu',
+    sh._cot.join(',') === COT['Tiến độ'].join(','), sh._cot.join(','));
+  T('  và KHÔNG đụng vào tám ô tiêu đề đã có',
+    sh._cot.slice(0, 8).join(',') === CU.join(','), sh._cot.slice(0,8).join(','));
+
+  /* ③ tab đã đủ cột → không đụng gì nữa */
+  kho = { 'Tiến độ': sheetGia(COT['Tiến độ']) };
+  ham = layTab(COT, { getActiveSpreadsheet: () => ({
+    getSheetByName: n => kho[n] || null,
+    insertSheet: n => (kho[n] = sheetGia(null)) }) });
+  sh = ham('Tiến độ');
+  T('tab đã đủ cột → không viết lại lần nữa', sh._dam === 0, 'ghi đè ' + sh._dam + ' lần');
 }
 
 console.log('\nTỔNG: '+ok+' đạt / '+ng+' hỏng');
