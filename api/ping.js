@@ -24,16 +24,65 @@
    trang gọi /api/ping là để ghi nhận, chứ không chờ kết quả gì. Sheets hỏng,
    mạng nghẽn, dán nhầm địa chỉ — người chơi không được biết và không được
    chậm đi một nhịp nào. */
+/* ⚠ HỎNG THÌ PHẢI NÓI RA — ĐỜI TRƯỚC NUỐT SẠCH.
+   `.catch(() => {})` trơn khiến chỗ này KHÔNG THỂ CHẨN ĐƯỢC: sai địa chỉ, thiếu
+   mã bảo vệ, Apps Script deploy sai quyền, hay quên Redeploy Vercel sau khi
+   khai biến — tất cả đều ra cùng một hiện tượng "Telegram kêu mà sổ trống", và
+   không có nửa dòng manh mối nào. Nay ghi kết quả vào log Vercel: một dòng khi
+   xong, một dòng khi hỏng. Vẫn KHÔNG await và vẫn không bao giờ làm hỏng câu
+   trả lời — người chơi không phải chờ cái nhật ký này. */
 function chepVeSheet(o) {
   const url = process.env.SHEET_URL;
-  if (!url) return;
+  if (!url) { console.log('[SHEET] chưa khai SHEET_URL — bỏ qua'); return; }
   try {
     fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(Object.assign({ loai: 'ping' }, o))
-    }).catch(() => {});
-  } catch (e) {}
+    }).then(async r => {
+      let noi = '';
+      try { noi = (await r.text()).slice(0, 200); } catch (e) {}
+      console.log('[SHEET]', r.status, noi);
+    }).catch(e => console.log('[SHEET] hỏng:', e && e.message));
+  } catch (e) { console.log('[SHEET] hỏng ngay:', e && e.message); }
+}
+
+/* ═══ TỰ SOI SỔ LƯU — /api/ping?soi_so=1 ═══════════════════════════════════
+   Trả về ĐÚNG thứ máy chủ nhận được khi gọi sang Apps Script. Sinh ra vì cái
+   hiện tượng "Telegram bắn rầm rầm mà Google Sheets không chạy gì": đường sang
+   sổ vốn im lặng hoàn toàn, không có cách nào biết nó tắc ở khúc nào.
+   KHÔNG lộ địa chỉ sổ ra ngoài — chỉ nói có khai chưa, có kèm mã bảo vệ chưa,
+   máy chủ Google trả về mã gì. */
+async function soiSo(res) {
+  const url = process.env.SHEET_URL || '';
+  if (!url) {
+    return res.status(200).json({ ok: false, buoc: 'SHEET_URL',
+      vi: 'Chưa khai biến SHEET_URL bên Vercel, hoặc khai rồi mà chưa Redeploy.' });
+  }
+  const coMa = /[?&]k=/.test(url);
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ loai: 'ping', ev: 'tu_soi', nhan: 'Tự soi sổ lưu',
+                             detail: 'gọi từ /api/ping?soi_so=1',
+                             at: new Date().toISOString() })
+    });
+    let noi = '';
+    try { noi = (await r.text()).slice(0, 300); } catch (e) {}
+    const ok = r.status === 200 && /"ok"\s*:\s*true/.test(noi);
+    return res.status(200).json({
+      ok, trang_thai: r.status, co_ma_bao_ve: coMa, google_tra_ve: noi,
+      vi: ok ? 'Chạy được — mở Sheet xem dòng "tu_soi" ở tab Tiến độ.'
+        : !coMa ? 'Địa chỉ THIẾU phần ?k=<mã bảo vệ> — xem bước 5 của docs/GOOGLE-SHEETS.md.'
+        : /sai ma/.test(noi) ? 'Mã bảo vệ trong địa chỉ KHÁC với MA_BAO_VE trong Code.gs.'
+        : r.status === 401 || r.status === 403
+          ? 'Apps Script chặn: deploy lại với "Who has access = Anyone".'
+        : 'Google trả về thứ lạ — xem `google_tra_ve` ở trên.' });
+  } catch (e) {
+    return res.status(200).json({ ok: false, buoc: 'mang', co_ma_bao_ve: coMa,
+      vi: 'Không gọi tới được Apps Script: ' + (e && e.message) });
+  }
 }
 
 /* ═══ TIÊU ĐỀ ĐI THEO ĐÚNG TRANG ĐÃ BẮN ═════════════════════════════════
@@ -291,6 +340,9 @@ function throttled(key){
 
 module.exports = async (req, res) => {
   let d = {};
+
+  /* Cửa tự soi — đứng TRƯỚC mọi thứ, kể cả chống spam. Xem `soiSo()` ở trên. */
+  if (req.method === 'GET' && req.query && req.query.soi_so) return soiSo(res);
 
   if (req.method === 'GET') {
     /* Đường cứu cánh: trang gọi bằng request ảnh khi fetch/beacon bị chặn.

@@ -1037,7 +1037,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 26-Aug-2026 · V19.05">Last updated 26-Aug-2026 · V19.05</span>
+        <span class="stamp" id="stamp" data-base="Last updated 26-Aug-2026 · V19.06">Last updated 26-Aug-2026 · V19.06</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1437,7 +1437,7 @@ const NODES = [
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
         meta:'Published date: 27-Jul 2026', ver:'V04.07', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.08',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.09',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -2197,7 +2197,7 @@ let eggT = null;
    |----------|--------------------------------------|----------------------------------|
    | 'win'    | vừa giải xong đủ 4, và mỗi lần mở    | chỉ nháy MỘT lần đời (eggDone)   |
    |          | trang sau khi đã thắng               |                                  |
-   | 'daily'  | phiên đầu trong ngày                 | CHƯA credFound, mỗi ngày 1 lần   |
+   | 'daily'  | phiên đầu trong ngày                 | ĐỦ 4 toạ độ, chưa credFound, 1/ngày |
    | 'clue'   | chuỗi nhắc bài tìm cửa hậu           | CHƯA credFound                   |
    | 'gameon' | MỌI lần mở trang trong cửa sổ Game On| KHÔNG kèm điều kiện nào          |
 
@@ -2214,6 +2214,17 @@ function eggFlash(why){
     /* Lượt nháy trong chuỗi nhắc bài — mỗi lần mở trang một lần, không đếm ngày */
     if(credFound) return;
   }else if(why === 'daily'){
+    /* ⚠ CHƯA PHÁ ĐẢO HẾT MẬT THƯ THÌ TEM PHẢI IM.
+       BỆNH ĐÃ SỬA: xong Mission 3 bước sang bản đồ là tem nháy ngay từ lượt
+       đầu, chưa giải nổi một mã morse nào. Nhánh này chỉ vướng `credFound`
+       chứ không xét tiến độ, nên nó bắn ở MỌI phiên đầu ngày kể cả phiên đầu
+       tiên của cả hành trình.
+       Tem là CỬA VÀO KHU EASTER EGG — cửa quan trọng nhất còn lại. Nháy sớm
+       là chỉ đường cho một người còn chưa biết mình phải làm gì với bản đồ,
+       và làm hỏng luôn cái thú tự tìm. Giải xong bốn mật thư mới tới lượt nó.
+       Ba nhánh kia vốn đã đúng: 'win' xét đủ bốn, 'clue' đi qua `dangDoManh()`
+       (cũng xét đủ bốn), 'gameon' chỉ chạy trong cửa sổ ăn mừng. */
+    if(nSolved() !== NODES.length) return;
     if(credFound) return;
     const today = ngay();
     if(eggDay === today) return;
@@ -3413,12 +3424,15 @@ $('hqHack').addEventListener('click', ()=> openPin(hqGame === 'egg' ? 'egg' : 'm
    (`eggHack`), coi như đã tìm ra và đã qua cửa (`credFound` + `eggWin`), và bỏ
    qua mốc ngày của Gate 2 (`g2Hack`). Dùng để xem trước màn cuối và vào chơi
    game bên trong mà không phải đợi tới 01-09. */
-$('hqG2').addEventListener('click', ()=>{
+/* Cửa này ĐI TẮT QUA CẢ MÀN CHƠI Gate 2, nên phải hỏi mã — trước đây bấm một
+   cái là vào thẳng. Cùng mã với Hack Map, và không kèm gợi ý nào. */
+function vaoThangG2(){
   eggHack = true; g2Hack = true; eggTitleDay = null;
   ghiMoEgg(); credFound = true; eggWin = true; save();
   ping('hack_gate2', 'vào thẳng màn cuối Gate 2');
   setTimeout(()=>{ location.href = EGG_HREF; }, 150);
-});
+}
+$('hqG2').addEventListener('click', ()=> openPin('g2'));
 
 /* ---- Clockwise ----
    Chọn một ngày rồi vặn kim: trang tải lại với đồng hồ đặt đúng 00:00 ngày đó,
@@ -3628,7 +3642,14 @@ function openCredFx(){
      chuyện vòng lặp. */
   if(!eggParty){ eggParty = true; save(); }
   credTitleBlink();
-  if(eggAn >= EGG_AN_TU){
+  /* ⚠ CÁI QUYẾT ĐỊNH LÀ "ĐÃ XEM ĐƯỢC PHÁO HOA CHƯA", KHÔNG PHẢI "ĐÃ BAY SANG
+     ĐÓ MẤY LẦN". Đời trước chỉ đếm số lần bay sang, nên rớt mạng hay lỡ tay
+     thoát giữa chừng vẫn bị tính là đã xem — mất luôn màn ăn mừng, mà đó là
+     thứ chỉ có một lần. Nay trang pháo hoa tự ghi cờ `phaoXem` khi màn bắn
+     THẬT SỰ chạy; chưa có cờ đó thì lần sau vẫn được bay sang xem lại.
+     `eggAn` giữ lại làm TRẦN CỨNG: trang pháo hoa hỏng hẳn thì cũng chỉ thử
+     hai lần rồi thôi, không lặp vô tận. */
+  if(daXemPhaoHoa() || eggAn >= EGG_AN_TU){
     ping('easter_egg_found', 'lần ' + (eggAn + 1) + ' — mở khung, tự xem lại bằng nút');
     return;
   }
@@ -3646,13 +3667,36 @@ function openCredFx(){
        Đứng yên, đọc, rồi tự bay sang pháo hoa — người chơi không phải bấm gì. */
     credKhoa = true;
     credw.classList.add('locked');
+    /* Nạp sẵn trang pháo hoa NGAY trong lúc khung đang khoá — quãng đó vốn là
+       thời gian chết. Trên điện thoại chạy mạng di động, cú tải trang đó tốn
+       vài trăm mili giây; nạp trước thì lúc bay sang là có ngay. */
+    napTruocPhaoHoa();
     clearTimeout(fwT);
-    fwT = setTimeout(goFireworks, 3000);
+    /* 3000 xuống 1800: cộng với 2,4 giây trứng lắc rồi nứt bên trang pháo hoa
+       thì người chơi vốn đã phải chờ 5,5 giây mới thấy quả pháo đầu tiên —
+       dài quá. 1,8 giây vẫn đủ đọc xong dòng chữ trong khung. */
+    fwT = setTimeout(goFireworks, 1800);
   }
 }
 /* Màn trứng nứt nằm ở ĐẦU trang pháo hoa, không phải ở đây — nứt trứng rồi mới
    nổ pháo là một mạch liền, tách ra hai trang thì đứt đoạn. */
 let fwT = null, credKhoa = false;
+/* Trang pháo hoa ghi cờ này khi màn bắn thật sự chạy được một nhịp. Đọc thẳng
+   ổ nhớ chứ không qua `store` — đây là cờ của trang KHÁC ghi vào. */
+function daXemPhaoHoa(){
+  try{ return !!(JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).phaoXem; }
+  catch(e){ return false; }
+}
+/* Nạp trước trang pháo hoa. `prefetch` là gợi ý, trình duyệt nào không nghe thì
+   cũng không sao — nên không có nhánh dự phòng nào ở đây. */
+function napTruocPhaoHoa(){
+  try{
+    if(document.querySelector('link[data-fw]')) return;
+    const l = document.createElement('link');
+    l.rel = 'prefetch'; l.href = FW_HREF; l.setAttribute('data-fw', '1');
+    document.head.appendChild(l);
+  }catch(e){}
+}
 function goFireworks(){
   clearTimeout(fwT);
   credKhoa = false;                   /* mở khoá để còn đóng được khung */
@@ -4330,6 +4374,12 @@ const CODES = {
      nhích sang câu kế tiếp rồi vòng lại từ đầu. Thứ tự đã chốt:
        1. Gợi ý số 2, mission 3   2. MIG-21   3. 5 ngôi sao   4. Phi công Phạm Tuân
      Sai QUÁ `lockAfter` lần TRONG MỘT NGÀY thì mới khoá `lockMs`. */
+  /* Đường "vào thẳng màn cuối Gate 2" trong Box Tổng tư lệnh. CÙNG MÃ với hai
+     cửa Hack Map, nhưng KHÔNG CÓ GỢI Ý NÀO — `hints` để rỗng là `showHint()`
+     tự dọn sạch dòng gợi ý. Đây là cửa đi tắt qua cả màn chơi, ai biết mã thì
+     vào; không biết thì không có nửa câu nào chỉ đường. */
+  g2:   { kind:'PIN', code:'1959', label:'⏩ Vào thẳng màn cuối Gate 2',
+          hints:[], tries:2 },
   file: { kind:'PIN', code:'5121', label:'Mã PIN xem lại hồ sơ',
           hints:['Gợi ý số 2, mission 3', 'MIG-21', '5 ngôi sao', 'Phi công Phạm Tuân'],
           lockAfter:3, lockMs:3600000 }
@@ -4502,6 +4552,23 @@ function hackTry(){
     $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
     return;
   }
+  /* Vào thẳng màn cuối Gate 2 — cùng mã với Hack Map, nhưng việc làm sau khi
+     mở thì khác hẳn: không đụng gì tới bản đồ, đi thẳng sang Gate 2. */
+  if(pinMode === 'g2'){
+    if(codeNorm(v) === codeNorm(CODES.g2.code)){
+      hackTries = 0; closePin(); closeWipe(); closeCx();
+      vaoThangG2();
+      return;
+    }
+    hackTries++;
+    const conLai = CODES.g2.tries - hackTries;
+    if(conLai <= 0){ hackTries = 0; closePin(); closeWipe(); closeCx(); return; }
+    msg.className = 'cx-hint bad';
+    msg.textContent = 'Sai rồi, còn ' + conLai + ' lượt';
+    pinDaiTruoc = 0; pinNguyenGo = true;
+    $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
+    return;
+  }
   /* Hai cửa Hack Map dùng CHUNG một nhánh: cùng mã, khác việc làm sau khi mở.
      MAP-01 → mở hết bốn toạ độ rồi chạy màn ăn mừng.
      MAP-02 → làm y vậy, cộng thêm bật cờ eggHack để mở cửa sổ Easter Egg. */
@@ -4633,8 +4700,10 @@ $('fileList').addEventListener('click', e=>{
 })();
 
 /* ========================= 9. KHỞI ĐỘNG ========================= */
-/* Ngồi im quá lâu mà chưa biết cơ chế gõ đúp → nhắc một câu.
-   Lần ghé đầu chờ 25 giây; từ lần thứ hai trở đi chỉ 6 giây. */
+/* Ngồi im quá lâu mà chưa biết cơ chế gõ đúp → nhắc một câu sau 6 giây.
+   ⚠ LƯỢT GHÉ ĐẦU TIÊN KHÔNG NHẮC GÌ CẢ (`visits < 2`) — cố ý để người xem tự
+   mò. Ghi chú đời trước ghi "lần ghé đầu chờ 25 giây", sai: mã chưa bao giờ
+   làm vậy. Sửa ghi chú cho khớp mã, đừng sửa mã theo ghi chú. */
 const LEAD_DEFAULT = 'Xin mừi Dongchi Bình chọn toạ độ hạ cánh';
 const LEAD_WIN     = 'Map: Bản đồ Tác chiến';
 /* Dòng dẫn tĩnh và nội dung băng rôn trong cửa sổ Easter Egg (từ 00:00 01-09) */

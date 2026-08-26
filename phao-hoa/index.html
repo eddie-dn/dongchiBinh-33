@@ -96,6 +96,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   letter-spacing:.22em;text-transform:uppercase;text-align:right;line-height:1.5;
   color:rgba(234,240,247,.3)}
 
+/* Lần đầu xem pháo hoa: hai đường ra mờ đi và không nhận chạm — thấy ngay là
+   chưa tới lúc, chứ không phải bấm mà máy lơ đi (bấm không ăn mà nút vẫn sáng
+   thì người chơi tưởng hỏng). Nút "Bắn lại" KHÔNG khoá: nó không dẫn đi đâu. */
+.frame.khoa-ra #close,.frame.khoa-ra #mEgg{opacity:.32;pointer-events:none;
+  filter:grayscale(.6);transition:opacity .3s,filter .3s}
 </style>
 </head>
 <body>
@@ -112,7 +117,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
 
   <p class="eggcap" id="eggCap">Oh?</p>
-  <span class="vstamp">V03.05<br>Last updated 26-Aug-2026</span>
+  <span class="vstamp">V03.06<br>Last updated 26-Aug-2026</span>
 
   <div class="top">
     <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
@@ -322,6 +327,49 @@ function ve(){
   raf = requestAnimationFrame(ve);
 }
 
+/* ═══ LẦN ĐẦU THÌ PHẢI XEM HẾT MỘT NHỊP MỚI ĐI ĐƯỢC ══════════════════════
+   Màn này chỉ đến MỘT LẦN trong cả hành trình, và người chơi vừa gõ mười nhịp
+   liên tiếp để mở khung Collected — tay đang đập, nhịp thừa rất dễ rơi trúng
+   nút Thoát hay khoảng trống (gõ đúp = ra về). Bấm hụt một cái là mất luôn màn
+   ăn mừng, không có đường lấy lại.
+
+   Nên LẦN ĐẦU: khoá cả ba đường ra — nút Thoát, nút sang Easter Egg, và gõ đúp
+   vào khoảng trống — cho tới khi pháo đã bắn được `KHOA_MS`. Đủ nhịp đó thì
+   ghi cờ `phaoXem` vào ổ nhớ, và từ đó trang này mở ra là đi lại được ngay,
+   không khoá gì nữa.
+
+   ⚠ CỜ `phaoXem` CÒN LÀ THỨ BÊN BẢN ĐỒ ĐỌC. Chưa có nó thì lần sau mở khung
+   Collected, bản đồ vẫn tự bay sang đây lần nữa — dự phòng cho ai rớt mạng
+   hoặc lỡ thoát giữa chừng. Xem `daXemPhaoHoa()` bên index.html. */
+var KHOA_MS = 4500;
+function daXemRoi(){
+  try{ return !!(JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).phaoXem; }
+  catch(e){ return false; }
+}
+var khoaRa = !daXemRoi(), moKhoaT = 0;
+function ghiDaXem(){
+  try{
+    var m = JSON.parse(localStorage.getItem('mtv1') || '{}') || {};
+    if(m.phaoXem) return;
+    m.phaoXem = true;
+    localStorage.setItem('mtv1', JSON.stringify(m));
+  }catch(e){}
+}
+function moKhoaRa(){
+  if(!khoaRa) return;
+  khoaRa = false; ghiDaXem();
+  $('frame').classList.remove('khoa-ra');
+  $('tip').textContent = 'Chạm màn hình để bắn thêm · gõ đúp để ra về';
+}
+/* Gọi từ `batDau()` — đếm từ lúc pháo THẬT SỰ bắt đầu bắn, không đếm từ lúc
+   trang vừa mở: quãng trứng lắc rồi nứt không tính là đã được xem pháo hoa. */
+function hanKhoaRa(){
+  if(!khoaRa || moKhoaT) return;
+  $('frame').classList.add('khoa-ra');
+  $('tip').textContent = 'Ngồi xem một chút đã nào ✦';
+  moKhoaT = setTimeout(moKhoaRa, KHOA_MS);
+}
+
 /* ═══════════ HAI CHẾ ĐỘ ═══════════ */
 var che = '', autoT = 0, autoHet = 0;
 function dungAuto(){ clearTimeout(autoT); autoT = 0; }
@@ -347,6 +395,7 @@ function batDau(){
   autoHet = Date.now() + AUTO_MS;
   $('tip').textContent = 'Chạm màn hình để bắn thêm · gõ đúp để ra về';
   ban(); dotTiep();
+  hanKhoaRa();                      /* lần đầu: chưa cho đi đâu cả — xem ghi chú trên */
 }
 $('mAuto').addEventListener('click', function(e){
   e.stopPropagation();
@@ -367,6 +416,7 @@ function ghiEggWin(){
 }
 $('mEgg').addEventListener('click', function(e){
   e.stopPropagation();
+  if(khoaRa) return;                /* lần đầu: xem hết một nhịp đã */
   if(dangVe) return; dangVe = true;
   ghiEggWin();
   ping('vao_easter_egg', 'từ màn pháo hoa');
@@ -380,6 +430,7 @@ function thaTay(){}
 /* ═══════════ RA VỀ ═══════════ */
 var dangVe = false;
 function veLai(){
+  if(khoaRa) return;                /* lần đầu: xem hết một nhịp đã */
   if(dangVe) return; dangVe = true;
   ping('phao_hoa_dong', che || 'chưa chọn chế độ');
   /* Về thẳng bản đồ kèm cờ cred=1 để khung Tổ kỹ thuật mở lại — quay lại mà

@@ -225,7 +225,7 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V19', so:'06',
+        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V19', so:'07',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
@@ -233,7 +233,8 @@
             { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Trước đó gõ sai xong chạm lại vào ô là trình duyệt nhét lại nguyên cụm, cửa chấm liền, ba lượt bay trong tích tắc' },
             { ver:'V19.03', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Thêm hộp nhắc khu Open World cho ai phá đảo Gate 2 mà chưa ghé — mỗi ngày một lần, nhắc thay lời chào chứ không chen thêm hộp, vào tới nơi rồi thì im hẳn' },
             { ver:'V19.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
-            { ver:'V19.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V19.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V19.06', chinh:'Tem phiên bản thôi nháy sớm — phải giải xong cả bốn mật thư mới tới lượt nó, vì đó là cửa vào khu Easter Egg chứ không phải chỗ để gây chú ý. Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa lên nhanh hơn hẳn, bớt được quãng ngồi chờ; lỡ chưa xem được thì lần sau vẫn được xem lại' }
           ] }
       ]
     },
@@ -313,7 +314,8 @@
             { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp' },
             { ver:'V19.03', chinh:'Hộp nhắc khu Open World: ai phá đảo Gate 2 mà chưa ghé thì mỗi ngày được nhắc một lần, nhắc thay lời chào chứ không chen thêm hộp' },
-            { ver:'V19.04', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V19.04', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V19.05', chinh:'Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa: lần đầu phải xem hết một nhịp mới đi được, và chưa xem được thì lần sau vẫn được xem lại' }
           ] }
       ]
     },
@@ -413,7 +415,7 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V05', so:'09',
+        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V05', so:'10',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
@@ -424,7 +426,8 @@
             { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' },
             { ver:'V05.06', chinh:'Màn pháo hoa lúc phá đảo dài thêm: bắn 11 đợt thay vì 6, và nán lại đủ lâu trước khi đổi cảnh — trước đây màn hình chuyển sang phát mã lúc pháo còn đang bay. Cửa mã bản ghi cũng được vá theo luật ô nhập mới' },
             { ver:'V05.07', chinh:'Rà lại hộp thư' },
-            { ver:'V05.08', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V05.08', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V05.09', chinh:'Ô hỏi ở khu Open World thôi bị nhét lại đáp án vòng 2 sau mỗi câu' }
           ] }
       ]
     },
@@ -504,14 +507,15 @@
           chinh:'Màn pháo hoa đầu tiên: bắn tự động, lời chúc hiện dần, thêm chế độ chạm-để-bắn' },
         { ngay:'2026-08-15', ver:'V02', so:null,
           chinh:'Quả trứng và vụ nổ vẽ tay trên canvas, thêm nút bắn lại và lối vào khu Easter Egg' },
-        { ngay:'2026-08-16', sua:'2026-08-26', ver:'V03', so:'06',
+        { ngay:'2026-08-16', sua:'2026-08-26', ver:'V03', so:'07',
           chinh:'Chỉnh khung màn và chỗ đứng của tem phiên bản',
           chi:[
             { ver:'V03.01', chinh:'Màn pháo hoa có tem phiên bản riêng' },
             { ver:'V03.02', chinh:'Dời tem lên cao và vào trong, khỏi đè lên mép màn hình' },
             { ver:'V03.03', chinh:'Chốt số hiệu' },
             { ver:'V03.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
-            { ver:'V03.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V03.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V03.06', chinh:'Lần đầu xem thì khoá đường ra cho tới khi pháo bắn được một nhịp — tay còn đang đập từ mười nhịp lúc nãy, bấm hụt một cái là mất luôn màn ăn mừng' }
           ] }
       ]
     }
@@ -1291,10 +1295,12 @@
             ? '<div class="r"><span>Cả bộ, ' + THOI_GIAN._COMMIT + ' lượt ghi</span><b>'
               + THOI_GIAN._TONG + '</b></div>'
             : '')
-         + '<p class="ls-ghi">Đếm từ lịch sử kho mã, ' + THOI_GIAN._TU + ' → '
-         + THOI_GIAN._TOI + ': lượt ghi đầu tiên tới lượt ghi cuối cùng, tính cả '
-         + 'mấy ngày ở giữa. Cộng từng trang lại không ra tổng — mấy phần được '
-         + 'làm xen kẽ nhau chứ không nối đuôi.</p>'
+         /* Chỉ ghi hai cái mốc, hết. Đời trước còn giải thích thêm chuyện
+            "cộng từng trang lại không ra tổng" — đúng, nhưng người chơi không
+            cần biết, mà đọc thì dài dòng. Lời giải thích đó chuyển hẳn vào
+            DESIGN-SYSTEM §7.1 cho người dựng trang. */
+         + '<p class="ls-ghi">Đếm từ lịch sử kho mã · ' + THOI_GIAN._TU + ' → '
+         + THOI_GIAN._TOI + '</p>'
          + '</div>';
     }
     if (c.tien) {

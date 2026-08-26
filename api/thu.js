@@ -32,8 +32,12 @@ function chepVeSheet(o) {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(Object.assign({ loai: 'thu' }, o))
-    }).catch(() => {});
-  } catch (e) {}
+    }).then(async r => {
+      let noi = '';
+      try { noi = (await r.text()).slice(0, 200); } catch (e) {}
+      console.log('[SHEET/thu]', r.status, noi);
+    }).catch(e => console.log('[SHEET/thu] hỏng:', e && e.message));
+  } catch (e) { console.log('[SHEET/thu] hỏng ngay:', e && e.message); }
 }
 
 /* Chống spam: cùng một instance, tối đa 6 lời nhắn mỗi 10 phút. Lời nhắn là

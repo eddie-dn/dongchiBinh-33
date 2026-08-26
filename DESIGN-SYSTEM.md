@@ -657,8 +657,9 @@ trả lời được câu *"làm trong bao lâu"*, đúng thứ trang Credit mu�
 
 > **⚠ CỘNG SÁU TRANG LẠI KHÔNG RA TỔNG, và đúng là như vậy.** Mấy phần được làm
 > **xen kẽ** nhau chứ không nối đuôi, nên khoảng thời gian của chúng chồng lên
-> nhau. Trang Credit **nói thẳng chuyện đó ra** thay vì để người đọc tự cộng
-> rồi thắc mắc.
+> nhau. Lời giải thích đó nằm **ở đây**, không nằm trên trang Credit: người
+> chơi mở Credit ra là để xem, không phải đọc chú thích phương pháp. Trên trang
+> chỉ còn đúng hai cái mốc `26-07-2026 → 26-08-2026`.
 
 > **⚠ ĐỪNG DÙNG BỘ ĐẾM `.ls-tien` ĐỂ TÌM BẢNG CHI PHÍ.** Từ đợt 21 có **hai**
 > khối cùng tên lớp đó: bảng chi phí, và mục thời gian (mang thêm `.ls-gio`).

@@ -2678,7 +2678,13 @@ function submit(){
    khi bấm đúng thì trỏ chuột và khung trả lời không tự về lại".
    `fail()` và `endLock()` vốn đã làm đúng — bốn chỗ kia nay theo cho đủ. */
 function resetOnhap(trao_phim){
-  el.input.value = S.mode === 'progressive' ? chuoiDaLo() : '';
+  /* ⚠ KHU OPEN WORLD THÌ DỌN SẠCH, ĐỪNG TRẢ VỀ CHUỖI ĐÃ LỘ.
+     BỆNH ĐÃ SỬA: "box open world cứ bị reset về chữ ZHAOYUN bất kể hỏi bao
+     nhiêu câu". `S.mode` vẫn còn là 'progressive' của vòng 2 sau khi phá đảo,
+     nên mỗi lần hàm này chạy là nó nhét lại đáp án vòng 2 vào ô hỏi. Mà đợt 15
+     vừa gắn `resetOnhap(true)` vào đúng hai chỗ của Open World — vào khu, và
+     trả lời xong một câu — nên hỏi câu nào cũng dính. */
+  el.input.value = (!owOn && S.mode === 'progressive') ? chuoiDaLo() : '';
   S.lastLen = S.lastNoSp = el.input.value.length;
   if(!trao_phim) return;
   const n = el.input.value.length;

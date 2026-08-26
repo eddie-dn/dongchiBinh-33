@@ -97,9 +97,10 @@ console.log('\n④ Ghi rõ cách đo, để người đọc không hiểu nhầm
 {
   const src = await (await fetch(B+'/assets/lichsu.js')).text();
   const g = src.replace(/\s+/g,' ');
-  T('trang Credit nói rõ đây là khoảng đầu–cuối', /lượt ghi đầu tiên tới lượt ghi cuối cùng/.test(g));
-  T('nói rõ tính cả mấy ngày ở giữa', /tính cả.{0,10}mấy ngày ở giữa/.test(g));
-  T('nói rõ cộng từng trang không ra tổng', /Cộng từng trang lại không/.test(g));
+  /* Dòng ghi chú CỐ Ý NGẮN — chỉ hai cái mốc, không giải thích cách đo. Phần
+     giải thích nằm ở DESIGN-SYSTEM §7.1, dành cho người dựng trang. */
+  T('dòng ghi chú gọn, chỉ nêu hai mốc', /Đếm từ lịch sử kho mã · /.test(g));
+  T('KHÔNG còn đoạn giải thích dài dòng', !/Cộng từng trang lại không/.test(g));
   /* Chuỗi này bị ngắt dòng giữa chừng trong mã nguồn — soi trên bản đã dồn
      khoảng trắng, đừng soi trên bản thô rồi tưởng là thiếu. */
   T('in cả mốc từ → tới', /_TU \+ ' → ' \+ THOI_GIAN\._TOI/.test(g));

@@ -67,6 +67,9 @@ không phải trang web hỏng.
 | `pfsave20` | pí danh tự lưu: đủ năm chỗ, ôm đủ ba chặng, không ghi đè bản tốt bằng bản lùi |
 | `so21` | sổ Google Sheets: đủ cột, cột mới nối vào cuối, tab và tiêu đề tự mọc (chạy thật `layTab` trên một Sheet giả), và chạy luôn `docs/mau-so.mjs` |
 | `cre21` | mục "Làm trong bao lâu" — có ở cả bảy trang, và **khớp lịch sử commit** |
+| `soi22` | cửa `/api/ping?soi_so=1` chỉ đúng chỗ tắc; đường chép về sổ không còn câm |
+| `phao24` | màn pháo hoa: lần đầu khoá đường ra, và dự phòng khi chưa xem được |
+| `cua24` | tem không nháy sớm · nhắc double-tap · cửa mã MAP-02 · Open World |
 
 ## Thêm một bộ mới
 
@@ -91,5 +94,9 @@ không phải trang web hỏng.
   với lịch sử commit thật, nên **kho phải fetch đủ nhánh** — thiếu nhánh là
   con số hụt và bộ này báo đỏ. Kiểm: `git fetch --all && git rev-list --all --count`.
   Sửa mã xong quên đo lại cũng đỏ, đó là chủ đích.
+- **Người chơi dựng ra PHẢI kèm mốc `season`.** `boot()` của bản đồ có nhánh
+  "sang mùa mới thì xoá sạch tiến độ", nên thiếu mốc đó là mọi thứ vừa dựng bị
+  dọn ngay lúc trang mở — `nSolved()` trả 0 dù đã khai đủ bốn toạ độ, và bộ
+  kiểm đỏ vì một lý do chẳng liên quan gì tới thứ nó đang soi.
 - **Cửa mã bản ghi luôn hỏi lại.** Không có đường nhớ phiên, nên bộ nào cần
   vào bảng bản ghi thì phải gõ mã `0981` mỗi lần mở.

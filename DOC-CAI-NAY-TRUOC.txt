@@ -1,4 +1,130 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 24 — tem thôi nháy sớm, pháo hoa không thoát được lần đầu, sổ lưu tự soi.
+════════════════════════════════════════════════════════════════════════════
+    index.html            assets/lichsu.js       phao-hoa/index.html
+    dad/950901-b/index.html   dad/950901-b/config.js
+    api/ping.js           api/thu.js             docs/GOOGLE-SHEETS.md
+    DESIGN-SYSTEM.md      test/ (thêm 3 bộ)      DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /  V19.05 → V19.06   ·  /dad/950901-b  V05.08 → V05.09
+         /phao-hoa  V03.05 → V03.06   ·  (khu Easter Egg  V19.04 → V19.05)
+
+
+① OPEN WORLD CỨ BỊ RESET VỀ CHỮ ZHAOYUN
+────────────────────────────────────────────────────────────────────────────
+Hồi quy do chính đợt 15 gây ra. `resetOnhap()` trả ô nhập về "chuỗi đã lộ" khi
+`S.mode === 'progressive'` — mà sau khi phá đảo vòng 2 thì cờ đó VẪN CÒN, nên
+mỗi lần hàm chạy là nó nhét đáp án vòng 2 vào ô hỏi. Đợt 15 lại vừa gắn
+`resetOnhap(true)` vào đúng hai chỗ của Open World (vào khu, và trả lời xong
+một câu), nên hỏi câu nào cũng dính.
+NAY: đang ở Open World thì dọn sạch ô, không trả về chuỗi nào.
+
+
+② TEM "LAST UPDATED" NHÁY QUÁ SỚM
+────────────────────────────────────────────────────────────────────────────
+Xong Mission 3 bước sang bản đồ là tem nháy ngay từ lượt đầu, chưa giải nổi một
+mã morse nào. Thủ phạm là nhánh 'daily': nó chỉ xét `credFound` chứ KHÔNG xét
+tiến độ, nên bắn ở mọi phiên đầu ngày — kể cả phiên đầu tiên của cả hành trình.
+
+Tem là CỬA VÀO KHU EASTER EGG. Nháy sớm là chỉ đường cho một người còn chưa
+biết mình phải làm gì với bản đồ. NAY phải giải xong cả bốn mật thư mới tới
+lượt nó. Ba nhánh kia vốn đã đúng.
+
+
+③ NHẮC DOUBLE-TAP — CÓ THẬT, nhưng ghi chú nói sai
+────────────────────────────────────────────────────────────────────────────
+Có. Ngồi im 6 giây mà chưa biết cơ chế thì dòng dẫn đổi thành
+"Double-tap / Double-click to start mission".
+
+NHƯNG LƯỢT GHÉ ĐẦU TIÊN KHÔNG NHẮC GÌ CẢ (`visits < 2`) — cố ý, để người xem
+tự mò. Ghi chú trong mã lại ghi "lần ghé đầu chờ 25 giây", tức là mô tả một
+hành vi CHƯA BAO GIỜ CÓ. Đã sửa ghi chú cho khớp mã, không sửa mã theo ghi chú.
+
+
+④ MÀN PHÁO HOA — ĐO THẬT RỒI MỚI SỬA
+────────────────────────────────────────────────────────────────────────────
+Nạp trang chỉ tốn 90ms, không phải chỗ chậm. Chỗ chậm là:
+
+    khoá khung Collected      3000ms
+    trứng lắc rồi nứt         2400ms
+    ─────────────────────────────────
+    tổng phải chờ             5500ms   ← quá dài, đúng như đã kêu
+
+ĐÃ SỬA BỐN CHỖ:
+  · Nạp trước trang pháo hoa NGAY trong lúc khung đang khoá — quãng đó vốn là
+    thời gian chết. Trên mạng di động cú tải đó tốn vài trăm ms, nạp trước thì
+    lúc bay sang là có ngay.
+  · Khoá khung rút 3000 → 1800ms. Vẫn đủ đọc xong dòng chữ trong khung.
+  · LẦN ĐẦU: khoá cả ba đường ra của trang pháo hoa (nút Thoát, nút sang Easter
+    Egg, gõ đúp vào khoảng trống) cho tới khi pháo bắn được 4,5 giây. Người
+    chơi vừa gõ mười nhịp liên tiếp để mở khung — tay đang đập, nhịp thừa rất
+    dễ rơi trúng nút Thoát. Hai nút bị khoá thì MỜ ĐI và không nhận chạm, để
+    thấy ngay là chưa tới lúc chứ không phải bấm mà máy lơ. Nút "Bắn lại" không
+    khoá — nó không dẫn đi đâu.
+  · DỰ PHÒNG NAY XÉT ĐÚNG THỨ: đời trước chỉ đếm số lần BAY SANG, nên rớt mạng
+    hay lỡ thoát giữa chừng vẫn bị tính là đã xem — mất luôn màn ăn mừng, mà đó
+    là thứ chỉ có một lần. Nay trang pháo hoa tự ghi cờ `phaoXem` khi màn bắn
+    THẬT SỰ chạy; chưa có cờ đó thì lần sau mở khung vẫn được bay sang xem lại.
+    `eggAn` giữ lại làm trần cứng chống lặp vô tận.
+
+
+⑤ TELEGRAM BẮN RẦM RẦM MÀ GOOGLE SHEETS KHÔNG CHẠY GÌ
+────────────────────────────────────────────────────────────────────────────
+KHÔNG ĐOÁN ĐƯỢC NGUYÊN NHÂN TỪ XA, và đó chính là vấn đề: đường sang sổ nuốt
+sạch mọi lỗi (`.catch(() => {})` trơn), nên sai địa chỉ, thiếu mã bảo vệ, deploy
+sai quyền, hay quên Redeploy Vercel — TẤT CẢ đều ra cùng một hiện tượng, không
+có nửa dòng manh mối.
+
+NAY MỞ MẮT CHO NÓ:
+  · Mỗi lần chép đều ghi một dòng `[SHEET]` vào Logs của Vercel, kèm mã trạng
+    thái và câu Google đáp lại.
+  · Thêm cửa tự soi:  https://<tên-miền>/api/ping?soi_so=1
+    Nó gọi THẬT sang Apps Script rồi trả về đúng thứ Google đáp, kèm một câu
+    chỉ chỗ tắc. Không lộ địa chỉ sổ ra ngoài.
+
+        buoc: "SHEET_URL"        → chưa khai biến, HOẶC khai rồi mà chưa Redeploy
+        co_ma_bao_ve: false      → địa chỉ thiếu ?k=<mã>, xem bước 5 tài liệu
+        google_tra_ve "sai ma"   → mã trong địa chỉ khác MA_BAO_VE trong Code.gs
+        trang_thai 401/403       → deploy lại với Who has access = Anyone
+        ok: true                 → chạy được, mở Sheet xem dòng "tu_soi"
+
+HAI CÁI HAY QUÊN NHẤT, cả hai đều im re:
+  · khai biến bên Vercel xong KHÔNG Redeploy — bản đang chạy vẫn chưa có biến;
+  · sửa Code.gs xong KHÔNG Deploy lại Apps Script — Google vẫn chạy bản cũ.
+
+
+⑥ ĐƯỜNG MAP-02 VÀO THẲNG MÀN CUỐI GATE 2 NAY HỎI MÃ
+────────────────────────────────────────────────────────────────────────────
+Trước đây bấm một cái là vào thẳng — mà đó là cửa ĐI TẮT QUA CẢ MÀN CHƠI. Nay
+hỏi mã, cùng mã với Hack Map, và KHÔNG có gợi ý nào: ai biết thì vào, không
+biết thì không có nửa câu chỉ đường.
+
+
+⑦ DÒNG THỜI GIAN TRONG CREDIT NGẮN LẠI
+────────────────────────────────────────────────────────────────────────────
+Chỉ còn hai cái mốc: "Đếm từ lịch sử kho mã · 26-07-2026 → 26-08-2026". Đoạn
+giải thích cách đo chuyển hẳn sang DESIGN-SYSTEM §7.1 — người chơi mở Credit ra
+là để xem, không phải đọc chú thích phương pháp.
+
+
+⑧ BỘ KIỂM
+────────────────────────────────────────────────────────────────────────────
+    soi22.mjs    15 phép — cửa tự soi chỉ đúng chỗ tắc ở cả sáu tình huống
+    phao24.mjs   15 phép — lần đầu khoá đường ra, bấm loạn cũng không thoát;
+                 lần sau bình thường; dự phòng xét theo ĐÃ XEM chứ không theo
+                 số lần bay sang
+    cua24.mjs    17 phép — tem im ở 0/4 và 2/4, chỉ nháy ở 4/4; nhắc double-tap;
+                 cửa mã MAP-02 không gợi ý và chặn được mã sai; Open World
+
+    ⚠ BẪY GẶP NGAY KHI VIẾT BỘ KIỂM: người chơi dựng ra phải kèm mốc `season`.
+      `boot()` có nhánh "sang mùa mới thì xoá sạch tiến độ", nên thiếu mốc đó
+      là mọi thứ vừa dựng bị dọn ngay lúc trang mở — `nSolved()` trả 0 dù đã
+      khai đủ bốn toạ độ. README mục 19b có ghi, dính rồi mới nhớ. Đã ghi thêm
+      vào test/README.md.
+
+TỔNG: 33 bộ, 633 phép, 0 hỏng.
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 23 — mẫu giả lập sổ lưu; vá nốt hai lỗ của kênh ảnh.
 ════════════════════════════════════════════════════════════════════════════
 Không đụng tới trang nào. Số tem GIỮ NGUYÊN, trừ số hiệu thời gian trong

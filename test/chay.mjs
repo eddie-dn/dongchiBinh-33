@@ -43,7 +43,8 @@ const THUTU = [
   'kt','kt2','kt3','kt4','kt5','kt7','kt8','kt9','kt10','kt11',
   'pin13','pin13b','pin13c','msn13','zq13','ow13',
   'cre14','resp14','resp14b','kt15','tem16','nghi16',
-  'tudien18','bao18','nhap19','ow19','kenh20','pfsave20','so21','cre21'
+  'tudien18','bao18','nhap19','ow19','kenh20','pfsave20','so21','cre21',
+  'soi22','phao24','cua24'
 ];
 const coSan = readdirSync(join(THUMUC, 'bo')).filter(f => f.endsWith('.mjs')).map(f => f.slice(0, -4));
 let ds = [...THUTU.filter(x => coSan.includes(x)), ...coSan.filter(x => !THUTU.includes(x))];

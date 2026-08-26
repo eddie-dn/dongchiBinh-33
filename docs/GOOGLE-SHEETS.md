@@ -205,6 +205,35 @@ hỏng ở đâu mà không cần đọc ai nói gì.
 
 ---
 
+## Telegram kêu mà Sheet trống trơn — soi theo thứ tự này
+
+Mở địa chỉ này trên trình duyệt:
+
+```
+https://<tên-miền>/api/ping?soi_so=1
+```
+
+Nó gọi thật sang Apps Script rồi trả về đúng thứ Google đáp lại, kèm một câu
+chỉ chỗ tắc. **Không lộ địa chỉ sổ ra ngoài** — chỉ nói có khai chưa, có kèm mã
+bảo vệ chưa, Google trả mã gì.
+
+| Trả về | Nghĩa là | Sửa ở đâu |
+|---|---|---|
+| `buoc: "SHEET_URL"` | Vercel chưa thấy biến | Khai `SHEET_URL`, rồi **Redeploy** — khai xong không deploy lại thì bản đang chạy vẫn không có biến |
+| `co_ma_bao_ve: false` | Địa chỉ thiếu `?k=…` | Bước 5 ở trên |
+| `google_tra_ve` chứa `sai ma` | Mã trong địa chỉ khác `MA_BAO_VE` trong `Code.gs` | Sửa cho khớp, rồi **Deploy lại Apps Script** |
+| `trang_thai: 401` / `403` | Web app không cho người lạ gọi | Deploy lại với **Who has access = Anyone** |
+| `ok: true` | Chạy được | Mở Sheet, tab `Tiến độ` có dòng `tu_soi` |
+
+Ngoài ra **tab Logs của Vercel** nay có một dòng `[SHEET]` cho mỗi lần chép —
+kèm mã trạng thái và câu Google đáp. Trước đây chỗ này nuốt sạch mọi lỗi, nên
+mọi nguyên nhân đều ra cùng một hiện tượng "Telegram kêu mà sổ trống" mà không
+có nửa dòng manh mối.
+
+> **⚠ HAI CÁI HAY QUÊN NHẤT, cả hai đều im re:**
+> · khai biến bên Vercel xong **không Redeploy** — bản đang chạy vẫn chưa có biến;
+> · sửa `Code.gs` xong **không Deploy lại** Apps Script — Google vẫn chạy bản cũ.
+
 ## Mấy chỗ hay vấp
 
 | Hiện tượng | Vì sao | Sửa |
