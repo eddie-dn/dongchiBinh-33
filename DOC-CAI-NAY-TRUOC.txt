@@ -1,4 +1,157 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 20 — tín hiệu đi đúng trang, pí danh tự lưu, bộ kiểm dọn vào kho mã.
+════════════════════════════════════════════════════════════════════════════
+9 file sửa + 1 thư mục mới. Chép đè theo đúng cây thư mục.
+
+    index.html                            dad/950901-b/config.js
+    assets/lichsu.js                      api/ping.js
+    dad/950901-a/index.html               .vercelignore
+
+    test/                                 ← THƯ MỤC MỚI, cả bộ kiểm hồi quy
+    README.md            USER-FLOW.md     dad/950901-a/MISSIONS.md
+    dad/950901-b/DIALOGUES.md             DOC-CAI-NAY-TRUOC.txt (file này)
+
+Số tem sau đợt này:
+    /                 V19.03 → V19.04     /han/961030-a     V04.01 (không đụng)
+    /dad/950901-a     V04.05 → V04.06     /han/961030-b     V03.02 (không đụng)
+    /dad/950901-b     V05.06 → V05.07     /phao-hoa         V03.04 (không đụng)
+
+
+① BỨC THƯ
+────────────────────────────────────────────────────────────────────────────
+Đã chỉnh đúng hai chỗ được chỉ: thêm "mà là thất vọng", và thêm vế "sau khi cả
+hai ngồi lại và trao đổi, thấu hiểu nhau". Phần còn lại của thư giữ nguyên
+từng chữ.
+
+
+② TÍN HIỆU LẪN LỘN GIỮA HỒ SƠ PHI ĐOÀN VÀ BẢN ĐỒ TÁC CHIẾN
+────────────────────────────────────────────────────────────────────────────
+BỆNH: "khi bắn tracking hiện tại lẫn lộn giữa hồ sơ phi đoàn và bản đồ tác
+chiến. Mission 3 nằm ở hồ sơ phi đoàn nhé."
+
+Đúng, và nặng hơn tưởng. Ba lỗ, cùng một gốc: CHỖ NÀO KHÔNG KHAI THÌ MÁY CHỦ
+ĐI ĐOÁN, MÀ ĐOÁN THÌ TRẬT.
+
+  LỖ 1 · ĐOÁN THEO TIỀN TỐ TÊN SỰ KIỆN.
+  Hồ sơ Phi đoàn có 25 tên sự kiện thì 15 cái không mang tiền tố nào cả, nên
+  rơi hết vào nhánh chót là bản đồ. Trong đó có `mo_pha_map` (giải đúng PHAM
+  TUAN — tức phá đảo Mission 3), `reset_msn`, `test_unlock`, `ho_so_mo`,
+  `gui_form`, `vao_ban_do`… Chuông báo phá đảo Mission 3 mà đề "BẢN ĐỒ TÁC
+  CHIẾN" — đúng cái đã chỉ ra.
+
+  LỖ 2 · TÊN SỰ KIỆN NÓI VỀ NƠI NÓ DẪN TỚI, KHÔNG NÓI NƠI NÓ XẢY RA.
+  `vao_ban_do`, `bam_ban_do_khoa`, `nhay_ban_do_xong` nghe như chuyện của bản
+  đồ, nhưng đó là mấy cái NÚT TRÊN TRANG HỒ SƠ. Đoán theo tên là sai từ gốc,
+  không phải sai vì thiếu mấy dòng luật.
+
+  LỖ 3 · KÊNH DỰ PHÒNG QUÊN KHAI.
+  Đường ảnh và đường biểu mẫu (dùng khi máy người chơi có bộ chặn quảng cáo)
+  trước chỉ gửi mỗi `ev` + `detail`. Nghĩa là đúng mấy người chơi bị chặn lại
+  là mấy người bị đoán nhầm trang.
+
+NAY: khai THẲNG từng tên vào một bảng, hết đoán. Tiền tố chỉ còn là lưới hứng
+cho tên mới chưa kịp khai. Cả ba kênh của mỗi trang đều khai `trang`.
+
+VÀ MỘT BỆNH NỮA LỘ RA TRONG LÚC SOÁT — nặng hơn:
+
+  BẢY SỰ KIỆN KHÔNG CÓ NHÃN, tức là bắn ra rồi RƠI THẲNG XUỐNG LOG, KHÔNG BAO
+  GIỜ TỚI CHUÔNG, mà cũng không có gì báo cho biết. Toàn thứ đáng biết nhất:
+
+      giai_m3          GIẢI ĐÚNG MISSION 3
+      skip_m3          phá đảo Mission 3 bằng cửa hậu
+      hackmap          mở toàn bộ bản đồ bằng PIN cửa hậu
+      hack_easter_egg  mở khu Easter Egg bằng PIN cửa hậu
+      redirect_ho_so   tín hiệu ĐẦU TIÊN của mọi người chơi mới
+      ghe_tham         ghé thăm lần đầu trong phiên
+      tai_lai          tải lại trang bản đồ
+
+  Chúng lọt lưới vì gọi bằng biểu thức điều kiện — `ping(co ? 'a' : 'b')` —
+  hoặc dựng thẳng thân tín hiệu, nên lối dò `ping('…')` không thấy. Đã khai
+  nhãn đủ bảy.
+
+
+③ PÍ DANH TỰ LƯU
+────────────────────────────────────────────────────────────────────────────
+Hỏi: "chơi tới đâu có tự lưu theo pí danh chưa hay phải tự vào save?"
+
+TRẢ LỜI: trước đợt này có tự lưu ở BA chỗ (xong Mission 2, xong Mission 3, và
+mỗi lần mở lại trang bìa hồ sơ), nhưng thiếu hai chỗ đáng ra phải có. Đã thêm:
+
+  · XONG MISSION 1 → cất luôn, cho cân với M2 và M3.
+  · RỜI TRANG hoặc GẠT TAB ĐI → cất. Dùng CẢ `pagehide` LẪN `visibilitychange`
+    vì điện thoại nhiều máy không bao giờ bắn `pagehide` — gạt sang app khác là
+    hệ điều hành giết thẳng tab đang ẩn. Thiếu vế sau thì đúng tình huống hay
+    gặp nhất trên điện thoại lại là cái không được lưu.
+
+Năm chỗ tự lưu này đều KHÔNG ép ghi đè, nên chỉ ghi khi tiến độ ĐI LÊN — vừa
+Reset bản đồ xong mà ghé qua hồ sơ thì bản lưu tốt vẫn còn nguyên. Lệnh "Lưu
+tiến trình" trong bảng xổ vẫn giữ, vì đó là đường ghi đè CÓ CHỦ Ý, không phải
+vì máy không biết tự lưu.
+
+KHÔNG ĐỤNG: tiến độ bản đồ vẫn chỉ theo về khi ghé lại trang hồ sơ. Bản đồ cố ý
+không tự ghi vào pí danh — lối đó đã bỏ một lần rồi, không dựng lại.
+
+
+④ BỘ KIỂM HỒI QUY NAY NẰM TRONG KHO MÃ
+────────────────────────────────────────────────────────────────────────────
+    node test/chay.mjs
+
+Bộ chạy tự bật máy chủ tĩnh, chạy 28 bộ, in bảng tổng kết, tự tắt. Có phép
+hỏng thì mã thoát khác 0.
+
+TRƯỚC ĐÂY BỘ KIỂM NẰM NGOÀI KHO MÃ, với lý do "nó là công cụ dựng trang, không
+phải nội dung trang". Nghe hợp lý, mà cái giá thì trả bằng đúng thứ nó sinh ra
+để giữ: mỗi lần quay lại sau một quãng là phải dựng lại từ đầu, và mấy con số
+chép tay trong tài liệu ("43/43 đạt", "31 bộ · 0 FAIL") mốc dần mà không ai
+biết. Nay bộ kiểm đi cùng mã nguồn, và KHÔNG tài liệu nào chép số nữa — muốn
+biết bao nhiêu thì chạy.
+
+Ba thứ từng ghi cứng trong từng bộ đã gom về một chỗ (`test/chung.mjs`): đường
+tới Playwright, đường tới trình duyệt, địa chỉ máy chủ. Cả ba đều là chuyện của
+MÁY chứ không phải của bộ kiểm — để rải trong 28 file thì chỉ cần nâng
+Playwright một nấc là chết cùng lúc cả 28, mà lỗi báo ra trông như trang web
+hỏng chứ không như bộ kiểm hỏng.
+
+    ⚠ MỘT BẪY ĐÃ VẤP NGAY TRONG LÚC ĐÓNG GÓI: `chromium.launch()` trần nay lấy
+    bản rút gọn `headless_shell`, không phải Chromium đầy đủ. Nó chạy được gần
+    hết, nhưng khác ở đúng chỗ bộ kiểm soi — trang có mấy khung webp động 4-5
+    MB, bản rút gọn xử lý khác nên hộp chào mở ra rồi tắt trước lúc đọc. Sáu
+    phép của kt2 hỏng, mà lỗi báo ra trông y như trang web hỏng. Nay xin đúng
+    bản đầy đủ bằng `channel:'chromium'`, và bộ kiểm chạy nhanh hơn hẳn.
+
+    ⚠ `test/` PHẢI NẰM TRONG `.vercelignore`. Mấy bộ kiểm phải gõ mã thật mới
+    chạy được, nên trong đó có nguyên mã vào bản ghi, mã Mission, mã cửa Zoey's
+    Castle và mã PIN cửa hậu. Kiểm sau khi deploy: mở
+    https://<tên-miền>/test/chay.mjs — phải ra 404.
+
+Thêm hai bộ mới:
+    kenh20.mjs    23 phép — mọi tên sự kiện của cả sáu trang phải ra đúng
+                  trang, trên mọi kênh; và mọi tên có bắn đều phải có nhãn.
+    pfsave20.mjs  12 phép — đủ năm chỗ tự lưu, và không ghi đè bản tốt bằng
+                  bản lùi.
+
+TỔNG: 28 bộ, 526 phép, 0 hỏng.
+
+
+⑤ SOÁT TÀI LIỆU
+────────────────────────────────────────────────────────────────────────────
+Dò lại luồng chơi, reset, nhập mã, hiệu ứng chuyển động rồi đối chiếu tài liệu.
+Bắt được hai chỗ lệch:
+
+  · DIALOGUES.md ghi `anim_unlock` = 8000, trong khi độ dài THẬT của clip là
+    10050 (sửa từ đợt 15, mà tài liệu không theo). Mọi mốc phần trăm của màn
+    chuyển cảnh đều ăn theo số này, nên để lệch là đọc tài liệu ra một đằng mà
+    máy chạy một nẻo.
+  · USER-FLOW.md §9 còn là một danh sách gạch đầu dòng chép tay "43/43 đạt".
+
+Mấy hằng số khác đối chiếu ĐỀU KHỚP: luật lượt sai Zoey's Castle (2 / 30 phút /
+2 vòng), hạn nghỉ Mission (15 và 5 phút), lượt nhập (3 phiên / 12 ngày).
+
+Đã ghi thêm vào tài liệu: luật tự khai `trang` cho tín hiệu (DESIGN-SYSTEM §9
+đã có từ đợt 18, nay thêm ba cái bẫy vào USER-FLOW §7.1), luật tự lưu pí danh
+(USER-FLOW §6.7), bốn con số của màn pháo hoa (DIALOGUES.md).
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 19 — ô nhập nhanh gấp đôi và thôi nuốt lượt oan; nhắc Open World mỗi ngày.
 ════════════════════════════════════════════════════════════════════════════
 10 file sửa, không có file mới. Chép đè theo đúng cây thư mục.

@@ -18,10 +18,11 @@
   }catch(e){}  /* đọc storage lỗi (ẩn danh, dữ liệu vỡ) → coi như chưa mở khoá */
   try{
     var body = JSON.stringify({ ev:'redirect_ho_so', detail:'PHA 1 · tu / ve ho so',
-      at:new Date().toISOString(), solved:[], ua:navigator.userAgent.slice(0,120) });
+      at:new Date().toISOString(), trang:'ban-do', noi:'Cửa vào', solved:[],
+      ua:navigator.userAgent.slice(0,120) });
     if(!(navigator.sendBeacon &&
          navigator.sendBeacon('/api/ping', new Blob([body],{type:'application/json'}))))
-      new Image().src = '/api/ping?ev=redirect_ho_so&t=' + Date.now();
+      new Image().src = '/api/ping?ev=redirect_ho_so&trang=ban-do&t=' + Date.now();
   }catch(e){}
   location.replace('/dad/950901-a');   /* replace: không để vết trong lịch sử, Back không kẹt vòng */
 })();
@@ -1036,7 +1037,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.03">Last updated 25-Aug-2026 · V19.03</span>
+        <span class="stamp" id="stamp" data-base="Last updated 25-Aug-2026 · V19.04">Last updated 25-Aug-2026 · V19.04</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1434,9 +1435,9 @@ const NODES = [
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026', ver:'V04.05', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V04.06', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.06',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.07',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -2105,8 +2106,12 @@ function ping(ev, detail, onlyOnce){
       headers:{'Content-Type':'application/json'}})
       .catch(()=>{                       /* bị chặn thì thử đường request ảnh */
         try{
+          /* ⚠ Kênh ảnh cũng phải khai `trang`, không thì máy chủ đi đoán theo
+             tên sự kiện — xem ghi chú ở `doanTrang()` trong api/ping.js. */
           new Image().src = '/api/ping?ev='+encodeURIComponent(ev)+
-            '&detail='+encodeURIComponent((detail||'').slice(0,80))+'&t='+Date.now();
+            '&detail='+encodeURIComponent((detail||'').slice(0,80))+
+            '&trang=ban-do&noi='+encodeURIComponent(noiHienTai().slice(0,40))+
+            '&tt='+encodeURIComponent(ttHienTai().slice(0,90))+'&t='+Date.now();
         }catch(e){}
       });
   }catch(e){}

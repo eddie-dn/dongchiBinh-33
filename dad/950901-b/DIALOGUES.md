@@ -406,13 +406,23 @@ tay thì trôi mượt về giữa.
 | `anim_wrong` | 2000 | clip ổ khoá rung đỏ |
 | `lock_after_bad` | 2000 | khoá ô nhập sau mỗi lần sai |
 | `glow_hold` | 3000 | giữ chữ sáng rực trước khi nổ |
-| `anim_unlock` | 8000 | clip nổ sập lab |
+| `anim_unlock` | **10050** | clip nổ sập lab — ĐỘ DÀI THẬT của file, đo bằng cách đọc trường `duration` của từng khối `ANMF` trong webp (241 khung × 42ms). Đừng đoán: PIL trả về 0 cho file này. ⚠ Mọi mốc `%` (`slab1_out_at`, `che_vao_at`, `chu_lo_at`) đều ăn theo số này |
 | `type_speed` / `letter_speed` | 24 / 26 | mỗi ký tự hộp thoại / bức thư |
 | `idle_hint` / `idle_wrongs` | 20000 / 3 | khi nào chữ "thở" một nhịp |
 | **`hint_first_wrong`** | **1** | **sai lần đầu là có ngay gợi ý 1** |
 | **`hint_every_wrongs`** | **1** | **sai phát nào mở tiếp phát đó** |
 | **`hint_cooldown_ms`** | **120000** | **hai gợi ý cách nhau 2 phút** |
 | `slide_auto` | 3000 | tự chuyển ảnh slideshow |
+| `phao_dot` / `phao_nhip` | 11 / 560 | màn pháo hoa lúc phá đảo: 11 đợt, cách nhau 560ms |
+| `phao_nan` | 4300 | nán lại bấy lâu rồi mới đổi sang màn phát mã |
+| `phao_tran` | 20000 | trần an toàn; hạt chết hết thì dừng sớm |
+
+> **⚠ CÁI CẮT NGẮN MÀN PHÁO HOA KHÔNG PHẢI HẠT PHÁO — LÀ MÀN HÌNH ĐỔI CẢNH.**
+> Khung `#fx` nằm TRONG `#scene-game`; `Code.open()` chuyển sang màn phát mã là
+> khung biến mất giữa chừng, hạt còn bay cũng không ai thấy. Muốn màn dài thêm
+> thì phải nới CẢ HAI: số đợt bắn, VÀ `phao_nan`. Nới mỗi số đợt là công cốc.
+> Đo được: bắn 6,2 giây, người chơi nhìn được 7,7 giây (lời dẫn finale ~3,4s
+> cộng `phao_nan`).
 
 ---
 

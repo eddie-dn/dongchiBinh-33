@@ -225,13 +225,14 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', ver:'V19', so:'04',
+        { ngay:'2026-08-25', ver:'V19', so:'05',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V19.01', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Trước đó gõ sai xong chạm lại vào ô là trình duyệt nhét lại nguyên cụm, cửa chấm liền, ba lượt bay trong tích tắc' },
-            { ver:'V19.03', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Thêm hộp nhắc khu Open World cho ai phá đảo Gate 2 mà chưa ghé — mỗi ngày một lần, nhắc thay lời chào chứ không chen thêm hộp, vào tới nơi rồi thì im hẳn' }
+            { ver:'V19.03', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Thêm hộp nhắc khu Open World cho ai phá đảo Gate 2 mà chưa ghé — mỗi ngày một lần, nhắc thay lời chào chứ không chen thêm hộp, vào tới nơi rồi thì im hẳn' },
+            { ver:'V19.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' }
           ] }
       ]
     },
@@ -358,7 +359,7 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'06',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V04', so:'07',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
             { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
@@ -366,7 +367,8 @@
             { ver:'V04.02', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V04.03', chinh:'Cháy lượt thì nghỉ ngắn lại và chia theo từng cửa thay vì chung một mức: Mission 2 mười lăm phút, Mission 3 năm phút; cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn' },
             { ver:'V04.04', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô mã Mission cũng thôi khai mình là ô mã một lần — thứ khiến trình quản lý mật khẩu hăng nhất' },
-            { ver:'V04.05', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' }
+            { ver:'V04.05', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' },
+            { ver:'V04.06', chinh:'Pí danh tự cất tiến độ thêm hai chỗ nữa: ngay khi xong Mission 1, và mỗi lần rời trang hay gạt tab đi — khỏi phải nhớ bấm Lưu. Bản lưu tốt vẫn không bị một bản lùi ghi đè' }
           ] }
       ]
     },
@@ -408,7 +410,7 @@
             { ver:'V04.08', chinh:'Khối vận hành bỏ dòng chỉ đường, thay bằng dòng trạng thái màn chơi; cửa vào bản ghi im lặng hoàn toàn; nới vùng chạm của nút đóng' },
             { ver:'V04.09', chinh:'Sửa lỗi đáp án vòng 1 trôi khỏi bệ đá trong chuyển cảnh; nắn lại tấm biển vòng 1 cho khớp vòng 2' }
           ] },
-        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'07',
+        { ngay:'2026-08-24', sua:'2026-08-25', ver:'V05', so:'08',
           chinh:'Đặt lại khung clip chuyển cảnh, dựng lại tấm biển vòng 1, chỉnh tông chữ vòng 2 và dấu ba chấm khu Open World',
           chi:[
             { ver:'V05.00', chinh:'Clip chuyển cảnh đặt đúng phần cảnh mà nó quay nên hết cảnh phóng to hụt và hết cắt mất hai con rắn giữa khung; đáp án vòng 1 tắt hẳn trước lúc chớp nổ loé lên; tấm biển vòng 1 dựng lại từ đầu nên không còn vệt chữ nhật; chữ vòng 2 lúc giải xong về đúng tông với mấy chữ quanh nó; dấu ba chấm lúc chờ trả lời trong Open World chạy như đang gõ' },
@@ -417,7 +419,8 @@
             { ver:'V05.03', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
             { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' },
-            { ver:'V05.06', chinh:'Màn pháo hoa lúc phá đảo dài thêm: bắn 11 đợt thay vì 6, và nán lại đủ lâu trước khi đổi cảnh — trước đây màn hình chuyển sang phát mã lúc pháo còn đang bay. Cửa mã bản ghi cũng được vá theo luật ô nhập mới' }
+            { ver:'V05.06', chinh:'Màn pháo hoa lúc phá đảo dài thêm: bắn 11 đợt thay vì 6, và nán lại đủ lâu trước khi đổi cảnh — trước đây màn hình chuyển sang phát mã lúc pháo còn đang bay. Cửa mã bản ghi cũng được vá theo luật ô nhập mới' },
+            { ver:'V05.07', chinh:'Chỉnh lại một đoạn trong bức thư' }
           ] }
       ]
     },

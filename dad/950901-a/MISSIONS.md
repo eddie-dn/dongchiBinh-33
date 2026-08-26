@@ -247,6 +247,17 @@ Mỗi lần dùng đều bắn sự kiện `test_unlock` về Telegram.
 
 Tất cả đi qua hệ `ping` sẵn có (endpoint `/api/ping`, 3 tầng dự phòng).
 
+> **⚠ CẢ BA TẦNG ĐỀU PHẢI KHAI `trang: 'dad-a'`.** Tầng chính (JSON), tầng biểu
+> mẫu và tầng ảnh — thiếu ở tầng nào thì máy chủ phải đi ĐOÁN theo tên sự kiện
+> cho tầng đó, và đoán thì trật. Đã vấp: `mo_pha_map`, `giai_m3`, `reset_msn`,
+> `ho_so_mo`… không mang tiền tố nào nên rơi hết sang bản đồ — chuông báo *phá
+> đảo Mission 3* mà đề "BẢN ĐỒ TÁC CHIẾN". Luật đầy đủ ở `DESIGN-SYSTEM.md` §9.
+>
+> Và nhớ: **sự kiện không có nhãn trong `NHAN` thì không bao giờ tới chuông**,
+> máy chủ chỉ ghi log rồi thôi, không báo gì. `giai_m3` / `skip_m3` từng nằm
+> đúng chỗ đó suốt một quãng. Bộ kiểm `test/bo/kenh20.mjs` nay canh cả hai
+> chuyện: đủ nhãn, và ra đúng trang.
+
 ---
 
 ## 9. Lưu trữ & reset

@@ -723,6 +723,12 @@ render();
       them('at', new Date().toISOString());
       them('ua', navigator.userAgent.slice(0, 120));
       them('kenh', 'bieu-mau');
+      /* ⚠ KÊNH DỰ PHÒNG CŨNG PHẢI KHAI MÌNH LÀ TRANG NÀO. Thiếu ba trường này
+         thì máy chủ phải đi ĐOÁN theo tên sự kiện, mà đoán thì trật — xem ghi
+         chú ở `doanTrang()` trong api/ping.js. */
+      them('trang', 'dad-a');
+      them('noi', noiHS());
+      them('tt', ttHS());
       document.body.appendChild(f);
       f.submit();
       setTimeout(function(){ if(f.parentNode) f.parentNode.removeChild(f); }, 3000);
@@ -733,8 +739,11 @@ render();
     try{
       var img = new Image();
       img.onerror = function(){ formPing(ev, detail); };   /* ảnh 1×1 hỏng nốt → kênh biểu mẫu */
+      /* ⚠ Kênh ảnh cũng khai `trang` — xem ghi chú ở `formPing` ngay dưới */
       img.src = (TRACK.endpoint2 || TRACK.endpoint) + '?ev=' + encodeURIComponent(ev) +
-        '&detail=' + encodeURIComponent((detail||'').slice(0,80)) + '&t=' + Date.now();
+        '&detail=' + encodeURIComponent((detail||'').slice(0,80)) +
+        '&trang=dad-a&noi=' + encodeURIComponent(noiHS().slice(0,40)) +
+        '&tt=' + encodeURIComponent(ttHS().slice(0,90)) + '&t=' + Date.now();
     }catch(e){ formPing(ev, detail); }
   }
   /* Đang mở hộp nào, người chơi tới đâu — chuông báo phải nói đúng chỗ, xem
@@ -1198,6 +1207,7 @@ render();
   function doneM1(tu){
     if(st.m1) return false;
     st.m1 = true; st.m1at = Date.now(); st.m2at = st.m1at + W2; save();
+    profSave('M1');          /* cất luôn, cho cân với M2 và M3 — xem TỰ LƯU dưới */
     ping('mo_khoa_m2_cua', tu || 'gửi form');
     drawLine(); drawTl(); celebrate();
     return true;
@@ -2241,12 +2251,42 @@ render();
      để vừa Reset bản đồ xong ghé qua không xoá mất bản lưu tốt. Muốn ghi đè thật
      thì dùng lệnh "Lưu tiến trình" trong bảng xổ. */
   if(profCur()) profSave(mocNow());
+
+  /* ═══ TỰ LƯU · NGƯỜI CHƠI KHÔNG PHẢI NHỚ BẤM LƯU ═══════════════════════
+     Người chơi hỏi thẳng: "chơi tới đâu có tự lưu theo pí danh chưa, hay phải
+     tự vào save?" Đây là đủ bộ chỗ tiến độ được cất vào pí danh đang dùng:
+
+       · xong Mission 1 / 2 / 3          → cất ngay tại chỗ
+       · mở lại trang bìa                → cất (dòng ngay trên)
+       · RỜI TRANG hoặc GIẤU TAB         → cất (khối này)
+       · đổi pí danh · chơi ẩn danh      → cất vào pí danh cũ trước khi đi
+       · lệnh "Lưu tiến trình" trong bảng xổ → cất, và ĐƯỢC PHÉP GHI ĐÈ
+
+     Năm chỗ đầu đều gọi `profSave` KHÔNG kèm cờ ép, nên chúng chỉ ghi khi tiến
+     độ ĐI LÊN. Nhờ vậy vừa Reset bản đồ xong mà ghé qua đây thì bản lưu tốt
+     vẫn còn nguyên. Muốn ghi đè thật thì mới cần lệnh trong bảng xổ — đó là
+     lý do lệnh đó vẫn phải giữ, chứ không phải vì máy không biết tự lưu.
+
+     ⚠ TIẾN ĐỘ BẢN ĐỒ VẪN CHỈ THEO VỀ KHI GHÉ LẠI TRANG NÀY. Bản đồ cố ý không
+     tự ghi vào pí danh (xem ghi chú ở `mapTien`), nên chơi bản đồ xong phải
+     quay về đây một nhịp thì pí danh mới biết. Đừng "sửa" bằng cách cho bản đồ
+     ghi thẳng — đã bỏ lối đó một lần rồi.
+
+     Dùng CẢ HAI sự kiện: `pagehide` cho lúc đóng tab / đi trang khác, và
+     `visibilitychange` cho lúc gạt sang app khác trên điện thoại — nhiều máy
+     không bao giờ bắn `pagehide` mà giết thẳng tab đang ẩn. */
+  function luuRoiTrang(){ try{ if(profCur()) profSave(mocNow()); }catch(e){} }
+  addEventListener('pagehide', luuRoiTrang);
+
   drawLine(); drawTl(); mapUI(); lockForm(); chipDraw(); updVis();
   setInterval(drawLine, 1000);
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ drawLine(); drawTl(); } });
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ luuRoiTrang(); return; }
+    drawLine(); drawTl();
+  });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.05<br>Last updated 25-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.06<br>Last updated 25-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

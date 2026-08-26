@@ -368,7 +368,39 @@ Mission lẫn bảng xổ đều ẩn.
 Ngay sau khi có pí danh đầu tiên: nền tối lại (`#msnDim`) và **cả dòng Mission nhấp
 nháy** 4,2 giây. Bấm nền hoặc mở bảng xổ là tắt. Chạy đúng một lần — cờ `chipTaught`.
 
-### 6.7. Khôi phục, reset, và vòng đời
+### 6.7. Tự lưu — người chơi không phải nhớ bấm Lưu
+
+Tiến độ được cất vào pí danh đang dùng ở **năm chỗ**, không cần thao tác nào:
+
+| Lúc nào | Gọi gì | Ép ghi đè? |
+|---|---|---|
+| Xong Mission 1 | `profSave('M1')` | không |
+| Xong Mission 2 | `profSave('M2')` | không |
+| Xong Mission 3 | `profSave('M3 ✓')` | không |
+| Mở lại trang bìa hồ sơ | `profSave(mocNow())` | không |
+| **Rời trang hoặc giấu tab** | `luuRoiTrang()` | không |
+| Đổi pí danh · chơi ẩn danh | `profSave(mocNow(), true)` | **có** |
+| Lệnh "Lưu tiến trình" trong bảng xổ | `profSave(mocNow(), true)` | **có** |
+
+Năm chỗ đầu **không ép**, nên `profSave` chỉ ghi khi tiến độ **đi lên**
+(`hang(snap) > hangNay()` thì từ chối). Nhờ vậy vừa Reset bản đồ xong mà ghé
+qua hồ sơ thì bản lưu tốt vẫn còn nguyên. Muốn ghi đè thật thì mới cần lệnh
+trong bảng xổ — đó là lý do lệnh đó vẫn phải giữ, chứ **không** phải vì máy
+không biết tự lưu.
+
+> **⚠ DÙNG CẢ `pagehide` LẪN `visibilitychange`.** Điện thoại nhiều máy không
+> bao giờ bắn `pagehide` — người dùng gạt sang app khác là hệ điều hành giết
+> thẳng tab đang ẩn. Thiếu `visibilitychange` thì đúng cái tình huống hay gặp
+> nhất trên điện thoại lại là cái không được lưu.
+
+> **⚠ TIẾN ĐỘ BẢN ĐỒ VẪN CHỈ THEO VỀ KHI GHÉ LẠI TRANG HỒ SƠ.** Bản đồ **cố ý
+> không** tự ghi vào pí danh (xem ghi chú ở `mapTien`) — chơi bản đồ xong phải
+> quay về hồ sơ một nhịp thì pí danh mới biết. Đừng "sửa" bằng cách cho bản đồ
+> ghi thẳng: đã bỏ lối đó một lần rồi.
+
+Bộ kiểm: `test/bo/pfsave20.mjs`.
+
+### 6.8. Khôi phục, reset, và vòng đời
 
 Khôi phục / đổi hồ sơ đều đi qua `profLoad(nav, i)`:
 
@@ -421,6 +453,40 @@ phòng giữ nguyên). Nhãn tiếng Việt khai trong `NHAN` của **cả hai**
 `mo_pha_map`, `luu_profile`, `khoi_phuc_profile` nằm trong danh sách `QUAN_TRONG` của hồ
 sơ (đi song song hai kênh, MISSIONS.md §12) — mất dấu mốc chuyển pha là mù cả phân tích.
 
+### 7.1. Mỗi tín hiệu phải tự khai mình từ TRANG NÀO
+
+Cột "Trang" ở bảng trên không phải chuyện ghi chép cho vui — nó phải đi kèm
+chính tín hiệu. Mỗi cú `ping` mang thêm ba trường: `trang` (mã trang), `noi`
+(hộp đang mở) và `tt` (một dòng trạng thái thật). Luật đầy đủ ở
+`DESIGN-SYSTEM.md` §9.
+
+> **⚠ BA CÁI BẪY ĐÃ VẤP, đều cùng một kiểu: chỗ nào KHÔNG khai thì máy chủ đi
+> ĐOÁN, và đoán thì trật.**
+>
+> 1. **Đoán theo tiền tố tên sự kiện.** Hồ sơ Phi đoàn có 25 tên thì 15 cái
+>    không mang tiền tố nào — `mo_pha_map`, `giai_m3`, `reset_msn`, `ho_so_mo`…
+>    — nên rơi hết vào nhánh chót là bản đồ. Chuông báo *phá đảo Mission 3* mà
+>    đề "BẢN ĐỒ TÁC CHIẾN". Nay khai thẳng từng tên vào `CHU_TRANG`.
+> 2. **Tên sự kiện nói về NƠI NÓ DẪN TỚI, không nói NƠI NÓ XẢY RA.**
+>    `vao_ban_do` / `bam_ban_do_khoa` / `nhay_ban_do_xong` nghe như chuyện của
+>    bản đồ, nhưng đó là mấy cái nút **trên trang hồ sơ**. Đoán theo tên là sai
+>    từ gốc.
+> 3. **Kênh dự phòng quên khai.** Đường ảnh và đường biểu mẫu (dùng khi máy
+>    người chơi chặn `fetch`) trước đây chỉ gửi `ev` + `detail`. Nghĩa là đúng
+>    mấy người chơi có bộ chặn quảng cáo lại là mấy người bị đoán nhầm trang.
+>    Nay cả ba kênh đều khai.
+
+Và một bẫy nữa, khác kiểu: **sự kiện không có nhãn thì không bao giờ tới
+chuông.** `api/ping.js` chỉ ghi log rồi thôi, không báo gì cả. Bảy cái từng lọt
+lưới đúng vậy — trong đó có `giai_m3` / `skip_m3` (hai mốc phá đảo Mission 3),
+`hackmap` / `hack_easter_egg` (hai cửa hậu), và `redirect_ho_so` (tín hiệu đầu
+tiên của mọi người chơi mới). Chúng lọt vì gọi bằng biểu thức điều kiện
+`ping(co ? 'a' : 'b')` hoặc dựng thẳng thân tín hiệu, nên lối dò `ping('…')`
+không thấy.
+
+Bộ kiểm `test/bo/kenh20.mjs` nay soi cả ba dạng gọi, và bắt buộc: mọi tên sự
+kiện có bắn đều phải có nhãn, và đều phải ra đúng trang của nó.
+
 ---
 
 ## 8. Ràng buộc kỹ thuật & bẫy cần né
@@ -446,44 +512,40 @@ sơ (đi song song hai kênh, MISSIONS.md §12) — mất dấu mốc chuyển p
 
 ---
 
-## 9. Checklist QA — đã chạy tự động, 43/43 đạt
+## 9. Bộ kiểm hồi quy
 
-Kịch bản Chromium headless dựng lại đúng các bước dưới; mục nào không tự động hoá được
-thì soi ảnh chụp ở khổ 390px.
+**Chạy: `node test/chay.mjs`** — bộ chạy tự bật máy chủ tĩnh, chạy 28 bộ, in
+bảng tổng kết, tự tắt. Có phép hỏng thì mã thoát khác 0. Chi tiết ở
+`test/README.md`.
 
-**Hai pha**
-- [x] Máy mới tinh, gõ `/` → về `/dad/950901-a`, không loé bản đồ, Back không kẹt vòng
-- [x] `/?stay=1` đứng lại được Map dù chưa mở khoá
-- [x] Phá đảo M3 (cả đường skip) → gõ `/` vào thẳng Map
-- [x] Reset hồ sơ → `/` lại bị đẩy về hồ sơ; reset MAP-01 thì vẫn ở Map
+> **⚠ ĐỜI TRƯỚC LÀ MỘT DANH SÁCH GẠCH ĐẦU DÒNG CHÉP TAY** ("43/43 đạt"), và nó
+> mốc đúng như mọi danh sách chép tay: con số đứng im qua mười mấy đợt trong
+> khi bộ kiểm thật đã lên 500 phép. Nay không chép số vào tài liệu nữa — muốn
+> biết bao nhiêu thì chạy.
 
-**Pí danh**
-- [x] Nhập đúng `JUNGLE` → hộp ghi **"Nhập pí danh ✦"**, ô trống, có dòng luật
-- [x] Gõ `CHUBINHXYZ` → tự thành `chubin` (hạ hoa + cắt 6 ký tự)
-- [x] Bỏ trống mà Lưu → báo *"Nhập pí danh đã nha ✦"*; trùng tên → *"Pí danh này có rồi ✦"*
-- [x] Lưu xong: nền tối lại + chip nhấp nháy đúng **một lần** (`chipTaught`)
-- [x] Bảng xổ: nhãn `1/2` → `2/2`, đủ hai thì mất dòng "＋ Pí danh mới"
-- [x] Tap hồ sơ khác → switch, tiến độ đang chơi được cất vào hồ sơ cũ trước
-- [x] Tap hồ sơ đang dùng → hỏi lại *"chắc chưaaa?"* rồi mới khôi phục
-- [x] ✕ cần **hai nhịp**; xoá hồ sơ đang dùng → rơi về ẩn danh, hồ sơ kia còn nguyên
-- [x] Chơi ẩn danh → chip xám ghi `ẩn danh`, không xoá hồ sơ nào, bảng xổ vẫn mở
-- [x] Chip chỉ ở trang bìa của hồ sơ; lật trang là ẩn
-- [x] Chip **không đè góc kẻ tay phải**; bảng xổ nằm gọn trong khung; `Esc` đóng được
-- [x] Chip không có nền hộp, có mũi `▾`
+Mấy bộ soi thẳng những thứ mục này từng liệt kê:
 
-**Giao diện khác**
-- [x] Bảng ghi công Mission 1 gói đúng **2 dòng**
-- [x] Box Tổng tư lệnh: bỏ gợi ý "bấm 5 nhịp", kaomoji không tràn viền
-- [x] Trong cửa sổ Easter Egg, tiêu đề đổi **"Easter Egg" ⇄ "Game On"**, cả hai nửa
-      cùng tông amber và cùng nhịp nhấp nháy (`class="title mc egg eggblink"`)
+| Việc | Bộ |
+|---|---|
+| Hai pha · chuyển hướng · Back không kẹt vòng | `kt` `kt3` |
+| Pí danh: đặt tên, đổi, xoá, ẩn danh, khôi phục | `kt8` `kt10` |
+| **Pí danh tự lưu** — năm chỗ, không ghi đè bản lùi | `pfsave20` |
+| Reset: `hardWipe` vs `reset_msn`, pí danh sống qua cả hai | `kt3` `kt9` |
+| Ô mã: hiện rồi che · tự chấm · cửa nào cũng hỏi lại | `pin13` `pin13b` `pin13c` |
+| Ô mã: chặn tự điền, tốc độ, xoá | `tudien18` `nhap19` |
+| Sổ bản ghi: tem, thẻ toạ độ, hai cột ngày | `tem16` |
+| Trang Credit của cả bảy sổ | `cre14` |
+| Hộp chào · hộp nhắc Open World | `kt2` `ow19` |
+| Hiệu ứng chuyển cảnh Gate 2 → phát mã → Zoey's Castle | `kt15` |
+| Co giãn 320px → 1440px | `resp14` `resp14b` |
+| Tín hiệu bắn về: đúng trang, đủ nhãn, đủ kênh | `bao18` `kenh20` |
 
-**Mở tại chỗ (file://)**
-- [x] Mở thẳng `index.html` bằng trình duyệt → hiện bản đồ, không bị đẩy đi đâu
-- [x] Mở thẳng `dad/950901-a/index.html` → hiện hồ sơ bình thường
+**Còn phải thử tay** (máy không thay được):
 
-**Còn phải thử tay**
-- [ ] Điện thoại thật, cả màn 360px
-- [ ] Sau khi deploy: Telegram nhận đủ 7 sự kiện ở mục 7
+- [ ] Điện thoại thật, cả màn 360px — nhất là bàn phím ảo che ô nhập
+- [ ] Sau khi deploy: mở `https://<tên-miền>/README.md` và `/test/chay.mjs`,
+      **cả hai phải ra 404** (xem `.vercelignore`)
+- [ ] Sau khi deploy: Telegram nhận đủ nhãn ở mục 7
 
 ---
 

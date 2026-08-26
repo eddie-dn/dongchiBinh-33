@@ -54,14 +54,65 @@ const TEN_TRANG = {
   'han-b'    : "HONGHAN'S SECRET CHAMBER",
   'phao-hoa' : 'MÀN PHÁO HOA'
 };
-/* Đoán theo tiền tố sự kiện — chỉ dùng khi trang chưa khai `trang`. */
+/* ═══ ĐƯỜNG LÙI KHI TRANG CHƯA KHAI `trang` ════════════════════════════════
+   BỆNH ĐÃ SỬA: "khi bắn tracking hiện tại lẫn lộn giữa hồ sơ phi đoàn và bản
+   đồ tác chiến. Mission 3 nằm ở hồ sơ phi đoàn nhé."
+
+   Đời trước đoán bằng TIỀN TỐ tên sự kiện, và trật nặng: Hồ sơ Phi đoàn có 25
+   tên sự kiện thì 15 cái không mang tiền tố nào cả — `mo_pha_map` (giải đúng
+   PHAM TUAN, tức PHÁ ĐẢO MISSION 3), `reset_msn`, `test_unlock`, `ho_so_mo`,
+   `gui_form`, `vao_ban_do`… — nên rơi hết vào nhánh chót là 'ban-do'. Chuông
+   báo Mission 3 xong mà đề "BẢN ĐỒ TÁC CHIẾN".
+
+   Chưa hết: mấy tên như `vao_ban_do` / `bam_ban_do_khoa` / `nhay_ban_do_xong`
+   NGHE như chuyện của bản đồ, nhưng đó là mấy cái nút TRÊN TRANG HỒ SƠ. Tên
+   sự kiện nói về NƠI NÓ DẪN TỚI, không nói về NƠI NÓ XẢY RA — nên đoán theo
+   tên là sai từ gốc.
+
+   NAY: khai THẲNG từng tên vào `CHU_TRANG`, hết đoán. Tiền tố chỉ còn là lưới
+   hứng cho tên mới chưa kịp khai.
+
+   ⚠ THÊM SỰ KIỆN MỚI THÌ KHAI VÀO ĐÂY. `bao18.mjs` mục ③ soi đúng chuyện đó:
+   mọi tên sự kiện có trong `NHAN` đều phải ra đúng trang của nó. */
+const CHU_TRANG = {};
+const gan = (trang, ds) => ds.split(/\s+/).filter(Boolean).forEach(e => { CHU_TRANG[e] = trang; });
+
+gan('dad-a', `
+  an_danh bam_ban_do_khoa bam_dong_countdown doi_profile gia_han_m2 gui_form
+  ho_so_dong ho_so_mo khoa_pin khoi_phuc_profile luu_profile luu_tien_trinh
+  mo_khoa_m2 mo_khoa_m2_cua mo_pha_map nhay_ban_do_xong nhay_phan1 reset_msn
+  sai_pin sos_hint test_unlock trang_ho_so vao_ban_do ve_trang_bia xoa_profile
+  giai_m3 skip_m3`);
+/* ⚠ `giai_m3` / `skip_m3` gọi bằng biểu thức điều kiện — `ping(bySkip ? … : …)`
+   — nên lối dò tên bằng `ping('…')` KHÔNG thấy chúng. Đó đúng là hai cái mốc
+   PHÁ ĐẢO MISSION 3, tức chỗ người chơi chỉ ra là đang báo nhầm trang. Thêm
+   tên gọi kiểu này thì nhớ khai tay; `kenh20.mjs` có dò cả dạng đó. */
+
+gan('ban-do', `
+  bay_lai_bang_ron cham_ho_so_niem_phong chon_kenh clockwise clue_game_on
+  cua_sau doi_tab easter_egg_found get_to_know_me giai_dung giai_sai
+  gui_tam_tu gui_tam_tu_loi hack_gate2 hackmap hoan_thanh hop_chao
+  khoa_pin_ho_so mo_ho_so mo_ho_so_bang_pin mo_hop mo_khoa_morse
+  mo_toa_do_niem_phong nhac_goi_y redirect_ho_so reset_easter_egg
+  sai_pin_ho_so unlock_gate1 vao_ho_so xem_lai_phao_hoa
+  ghe_tham tai_lai`);      /* hai tên này cũng gọi bằng biểu thức điều kiện */
+
+gan('phao-hoa', 'phao_hoa_che phao_hoa_dong phao_hoa_mo');
+
+/* Secret Chamber cũng mang tiền tố `han_` như Zoey's Castle, nên mấy tên riêng
+   của nó phải khai thẳng — không thì luật tiền tố đẩy hết sang Zoey's Castle. */
+gan('han-b', 'han_b_mo han_hop_mo han_pin_sai');
+
+/* `vao_easter_egg` bắn từ CẢ bản đồ lẫn màn pháo hoa, `han_*` thì có mấy tên
+   dùng chung giữa Zoey's Castle và Secret Chamber. Không khai cứng mấy tên đó
+   — để tiền tố đoán, và trang nào cũng đã tự khai `trang` ở kênh chính rồi. */
 function doanTrang(ev) {
+  if (CHU_TRANG[ev]) return CHU_TRANG[ev];
   if (/^g2_/.test(ev)) return 'dad-b';
   if (/^han_b_|wishlist/.test(ev)) return 'han-b';
   if (/^han_/.test(ev)) return 'han-a';
   if (/^phao_hoa_/.test(ev)) return 'phao-hoa';
-  if (/^(sai_pin|khoa_pin|mo_khoa_m|gia_han_m|sos_|bam_dong_countdown|luu_profile|ve_trang_bia|trang_ho_so)/.test(ev))
-    return 'dad-a';
+  if (/^(sai_pin|khoa_pin|mo_khoa_m|gia_han_m|sos_|msn_|mission)/.test(ev)) return 'dad-a';
   return 'ban-do';
 }
 function tieuDe(trang, ev) {
@@ -128,6 +179,22 @@ const NHAN = {
 
   /* Hai pha điều hướng + hồ sơ người chơi (profile) — USER-FLOW.md */
   mo_pha_map:         'MỞ PHA MAP — bản đồ thành trang chính',
+  /* ⚠ SÁU CÁI DƯỚI ĐÂY TỪNG KHÔNG CÓ NHÃN, tức là bắn ra rồi RƠI THẲNG XUỐNG
+     LOG, không bao giờ tới chuông. Trong đó `giai_m3` / `skip_m3` chính là hai
+     mốc PHÁ ĐẢO MISSION 3, và `hackmap` / `hack_easter_egg` là hai cửa hậu —
+     toàn thứ đáng biết nhất thì lại im nhất. Chúng lọt lưới vì gọi bằng biểu
+     thức điều kiện `ping(co ? 'a' : 'b')`, lối dò `ping('…')` không thấy.
+     `kenh20.mjs` mục ⑥ nay soi mọi tên sự kiện có bắn mà thiếu nhãn. */
+  giai_m3:            'GIẢI ĐÚNG MISSION 3 — PHAM TUAN',
+  skip_m3:            'Phá đảo Mission 3 bằng cửa hậu 10 nhịp',
+  hackmap:            'Mở toàn bộ bản đồ bằng PIN cửa hậu',
+  hack_easter_egg:    'Mở khu Easter Egg bằng PIN cửa hậu',
+  ghe_tham:           'Ghé thăm lần đầu trong phiên',
+  /* Bắn từ cú chuyển hướng lúc `/` vừa mở, TRƯỚC cả lúc hàm `ping()` kịp khai
+     — nên nó dựng thẳng thân tín hiệu, và cũng vì thế mà lọt lưới lần soát
+     trước. Đây là tín hiệu đầu tiên của mọi người chơi mới. */
+  redirect_ho_so:     'Vào thẳng hồ sơ — PHA 1 dẫn đường',
+  tai_lai:            'Tải lại trang bản đồ',
   luu_profile:        'KHAI DANH — tạo bản lưu profile',
   khoi_phuc_profile:  'KHÔI PHỤC bản lưu profile',
   doi_profile:        'Đổi sang pí danh khác',
@@ -228,7 +295,11 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     /* Đường cứu cánh: trang gọi bằng request ảnh khi fetch/beacon bị chặn.
        Phải trả về ảnh thật, nếu không trình duyệt báo lỗi tải ảnh. */
-    d = { ev: req.query.ev, detail: req.query.detail, at: new Date().toISOString() };
+    /* ⚠ ĐỌC ĐỦ `trang` / `noi` / `tt` Ở ĐÂY NỮA. Đường ảnh là kênh dự phòng
+       lúc fetch bị chặn — bỏ sót ba trường này thì đúng mấy người chơi có bộ
+       chặn quảng cáo lại là mấy người bị máy chủ đoán nhầm trang. */
+    d = { ev: req.query.ev, detail: req.query.detail, trang: req.query.trang,
+          noi: req.query.noi, tt: req.query.tt, at: new Date().toISOString() };
   } else if (req.method === 'POST') {
     d = req.body;
     if (typeof d === 'string') {

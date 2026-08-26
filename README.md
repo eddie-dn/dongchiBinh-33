@@ -2079,18 +2079,29 @@ Quy ước để khỏi tam sao thất bản: **một chuyện chỉ nói ở m�
 sang. Ví dụ luật khoá gợi ý Map 3 nằm ở mục 22 của file này, `CHU-MAP3.md` chỉ nhắc lại
 đúng một hằng số cần sửa.
 
-### Trạng thái kiểm thử (19-Aug-2026)
+### Bộ kiểm hồi quy — NAY NẰM TRONG KHO MÃ
 
-Bộ kiểm thử đầu-cuối chạy bằng Chromium headless, **không nằm trong repo** (nó là công cụ
-dựng trang, không phải nội dung trang). Lượt chạy gần nhất: **31 bộ · 0 FAIL · 0 crash**,
-cộng một lượt soát giao diện 8 trang × 6 cỡ màn (320 → 1280 px) báo *SẠCH*.
+```bash
+node test/chay.mjs
+```
 
-Đợt 5 soát thêm bằng tay: **sổ phiên bản** trên cả năm trang có bảng điều khiển (mở bảng
-bằng cửa hậu cũ → 3 nhịp vào nút → sai mã 3 lần ra gợi ý → mã đúng ra sổ, và **chỉ ra sổ
-của đúng trang đó**), **cửa hậu cũ chạy y như trước** (Box Tổng tư lệnh, Khối vận hành hai
-trang HAN, nút Bỏ qua Gate 2, thẻ Phá đảo Gate 1), và **chuyển cảnh Gate 2** chơi hết vòng
-1 rồi soi từng khung clip: chữ `NUY OAHZ` không đọc ra ở bất cứ khung nào.
+Bộ chạy tự bật máy chủ tĩnh, chạy 28 bộ bằng Chromium headless, in bảng tổng kết rồi tự
+tắt. Có phép hỏng thì mã thoát khác 0. Hướng dẫn đầy đủ ở **`test/README.md`**.
+
+> **⚠ ĐỜI TRƯỚC BỘ KIỂM NẰM NGOÀI KHO MÃ**, với lý do "nó là công cụ dựng trang, không
+> phải nội dung trang". Nghe hợp lý, mà cái giá thì trả bằng đúng thứ bộ kiểm sinh ra để
+> giữ: mỗi lần quay lại sau một quãng là phải dựng lại từ đầu, và mấy con số chép tay
+> trong tài liệu ("31 bộ · 0 FAIL") mốc dần mà không ai biết. Nay bộ kiểm đi cùng mã
+> nguồn, chạy được ngay, và **không tài liệu nào chép số nữa** — muốn biết thì chạy.
+
+> **⚠ `test/` PHẢI NẰM TRONG `.vercelignore`.** Mấy bộ kiểm phải gõ mã thật mới chạy
+> được, nên trong đó có nguyên mã vào bản ghi, mã Mission, mã cửa Zoey's Castle và mã PIN
+> cửa hậu. Kiểm sau khi deploy: `https://<tên-miền>/test/chay.mjs` phải ra **404**.
 
 Phủ các luồng: chơi từ đầu tới phá đảo · ba Mission M1→M2→M3 · cửa hậu 10 nhịp và màn
 Collected · pháo hoa + quả trứng · Gate 2 hai trạng thái · cửa mã `HO CHI MINH` · bộ câu hỏi
-Map 3 và Secret Chamber · Clockwise · mọi đường reset.
+Map 3 và Secret Chamber · Clockwise · mọi đường reset · pí danh tự lưu · tín hiệu bắn về.
+
+**Máy không thay được ba việc** — vẫn phải soi tay: điện thoại thật ở khổ 360px (nhất là
+bàn phím ảo che ô nhập), `https://<tên-miền>/README.md` và `/test/chay.mjs` phải ra 404
+sau khi deploy, và Telegram nhận đủ nhãn sau khi deploy.
