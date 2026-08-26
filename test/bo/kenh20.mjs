@@ -98,11 +98,15 @@ console.log('\n③ KÊNH ẢNH (lúc fetch bị chặn) cũng mang được `tra
 {
   const t = await banAnh({ ev:'mo_pha_map', trang:'dad-a', noi:'Mission 3', tt:'M1 ✓ · M2 ✓ · M3 ✓' });
   const d = (t||'').split('\n');
-  T('dòng đầu đúng trang + chỗ đứng', d[0] === 'HỒ SƠ PHI ĐOÀN · Mission 3', d[0]);
+  /* Từ đợt 23 kênh ảnh tự khai `kenh='anh'`, nên dòng đầu có thêm dấu "[anh]"
+     ở cuối — CỐ Ý vậy: đọc chuông là biết ngay tín hiệu này đi đường vòng vì
+     máy người chơi chặn fetch. Soi phần đầu, đừng soi bằng dấu bằng. */
+  T('dòng đầu đúng trang + chỗ đứng', d[0].startsWith('HỒ SƠ PHI ĐOÀN · Mission 3'), d[0]);
+  T('dòng đầu tự khai là đi đường vòng', / \[anh\]$/.test(d[0]), d[0]);
   T('dòng trạng thái đi theo', d[2] === 'M1 ✓ · M2 ✓ · M3 ✓', d[2]);
   const t2 = await banAnh({ ev:'mo_pha_map' });        /* không khai gì → phải đoán đúng */
   T('không khai gì thì vẫn đoán ra HỒ SƠ PHI ĐOÀN',
-    !!t2 && t2.split('\n')[0] === 'HỒ SƠ PHI ĐOÀN', t2 && t2.split('\n')[0]);
+    !!t2 && t2.split('\n')[0].startsWith('HỒ SƠ PHI ĐOÀN'), t2 && t2.split('\n')[0]);
 }
 
 console.log('\n④ CẢ BA KÊNH của Hồ sơ Phi đoàn đều khai `trang`');

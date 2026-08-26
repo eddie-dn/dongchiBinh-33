@@ -56,6 +56,9 @@ function chu(g){
   return [d && d + ' ngày', h && h + ' giờ', m && m + ' phút'].filter(Boolean).join(' ') || '0 phút';
 }
 const ngay = t => new Date(t * 1000).toISOString().slice(0, 10);
+/* Khuôn cho NGƯỜI ĐỌC — trang Credit in hai mốc này ra, mà người Việt đọc
+   ngày-tháng-năm. Bảng ở trên thì cứ ISO cho dễ dò. */
+const ngayVN = t => { const [y, m, d] = ngay(t).split('-'); return d + '-' + m + '-' + y; };
 
 const gom = {};
 for (const c of cm) for (const k of c.khu) (gom[k] ||= []).push(c.at);
@@ -83,7 +86,7 @@ console.log(`  var THOI_GIAN = {
     'HAN-B': ${q('HAN-B')},
     FX:     ${q('FX')},
     _TONG:  '${chu(T)}',
-    _TU:    '${ngay(Math.min(...ds))}',
-    _TOI:   '${ngay(Math.max(...ds))}',
+    _TU:    '${ngayVN(Math.min(...ds))}',
+    _TOI:   '${ngayVN(Math.max(...ds))}',
     _COMMIT: ${cm.length}
   };`);

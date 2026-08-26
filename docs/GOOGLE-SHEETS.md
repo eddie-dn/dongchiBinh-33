@@ -102,7 +102,7 @@ deploy sau, sửa xong mà không redeploy thì vẫn chạy bản cũ.
 | `trang` | trang nào gửi: `ban-do` · `dad-a` · `dad-b` · `han-a` · `han-b` · `phao-hoa`. Trang cũ chưa tự khai thì điền bằng chỗ `doanTrang()` đoán ra từ tiền tố tên sự kiện |
 | `noi` | đang mở hộp nào trong trang đó, ví dụ `Ô mã · DAD-950901-A`, `Khu Open World` |
 | `tt` | một dòng trạng thái thật của người chơi trên trang đó, ví dụ `Mission: M1 ✓ · M2 — · M3 —` |
-| `kenh` | `js` hay `bieu-mau` (đường vòng khi máy người chơi chặn fetch) |
+| `kenh` | `js` (đường chính) · `anh` · `bieu-mau` — hai cái sau là đường vòng, dùng khi máy người chơi chặn `fetch`. Chuông báo cũng in dấu này ở cuối dòng đầu |
 | `may` | chuỗi trình duyệt |
 
 > **⚠ MÁY CHỦ GỬI THÔI CHƯA ĐỦ — `COT` TRONG `Code.gs` PHẢI CÓ TÊN CỘT.**
@@ -119,6 +119,26 @@ Ba cột `trang` / `noi` / `tt` thêm từ đợt 18, vào bảng cột từ đ�
 Sổ này ghi **đủ mọi tín hiệu**, kể cả sự kiện chưa có nhãn và mấy nhịp bị chặn
 vì trùng. Cố ý vậy: **Sheets là sổ lưu, Telegram là chuông báo.** Sổ thì phải
 đủ, chuông thì phải lọc cho đỡ ồn.
+
+### Xem thử một lượt chơi ghi ra sổ trông như thế nào
+
+```bash
+node docs/mau-so.mjs          # giấu bớt cột trống cho dễ đọc
+node docs/mau-so.mjs --rong   # in đủ mọi cột
+```
+
+Nó giả lập một lượt chơi trọn vẹn — vào hồ sơ, ba Mission, bốn toạ độ, Gate 2,
+Open World, gửi lời nhắn, màn pháo hoa — rồi in ra **cả ba tab** đúng như sẽ
+hiện trên Google Sheets.
+
+> **Không phải dữ liệu bịa.** Nó chạy đúng mã thật của cả hai chặng: thao tác
+> đi qua `api/ping.js` · `api/thu.js` · `api/chat.js`, rồi gói mấy hàm đó gửi
+> đi lại đi tiếp qua chính `doPost()` + `layTab()` của `Code.gs`, ghi vào một
+> Sheet giả dựng bằng JavaScript. Nên sửa `COT` hay sửa `chepVeSheet` mà chạy
+> lại cái này là **thấy ngay khác chỗ nào** — nhanh hơn deploy rồi ngồi chờ
+> người chơi thật.
+
+`test/bo/so21.mjs` chạy chính nó rồi soi kết quả, nên mẫu này hỏng là báo đỏ.
 
 ### Trên Google có phải làm gì không
 

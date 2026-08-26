@@ -1,4 +1,63 @@
 ════════════════════════════════════════════════════════════════════════════
+ĐỢT 23 — mẫu giả lập sổ lưu; vá nốt hai lỗ của kênh ảnh.
+════════════════════════════════════════════════════════════════════════════
+Không đụng tới trang nào. Số tem GIỮ NGUYÊN, trừ số hiệu thời gian trong
+trang Credit (đo lại theo lịch sử commit mới).
+
+    api/ping.js            assets/lichsu.js
+    docs/mau-so.mjs        ← FILE MỚI, giả lập một lượt chơi rồi in ra sổ
+    docs/thoi-gian.mjs     docs/GOOGLE-SHEETS.md
+    test/bo/so21.mjs       test/bo/kenh20.mjs      test/bo/cre21.mjs
+    test/README.md         DOC-CAI-NAY-TRUOC.txt (file này)
+
+
+① XEM THỬ MỘT LƯỢT CHƠI GHI RA SỔ TRÔNG NHƯ THẾ NÀO
+────────────────────────────────────────────────────────────────────────────
+    node docs/mau-so.mjs          giấu bớt cột trống cho dễ đọc
+    node docs/mau-so.mjs --rong   in đủ mọi cột
+
+Giả lập một lượt chơi trọn vẹn — vào hồ sơ, ba Mission (kể cả gõ sai và bị
+khoá), bốn toạ độ, Gate 2 hai vòng, Open World hỏi một câu, gửi lời nhắn, màn
+pháo hoa — rồi in ra cả BA TAB đúng như sẽ hiện trên Google Sheets.
+
+KHÔNG PHẢI DỮ LIỆU BỊA. Nó chạy đúng mã thật của cả hai chặng:
+    thao tác  →  api/ping.js · api/thu.js · api/chat.js
+    gói gửi   →  doPost() + layTab() của docs/apps-script/Code.gs
+                 ghi vào một Sheet giả dựng bằng JavaScript
+Nên sửa `COT` hay sửa `chepVeSheet` mà chạy lại cái này là thấy ngay khác chỗ
+nào — nhanh hơn deploy rồi ngồi chờ người chơi thật.
+
+
+② CHÍNH CÁI MẪU ĐÓ LỘ RA HAI LỖ CỦA KÊNH ẢNH
+────────────────────────────────────────────────────────────────────────────
+Nhìn dòng `vao_easter_egg` trong bảng in ra: cột "may" TRỐNG TRƠN, còn "kenh"
+vẫn ghi 'js' như mọi dòng khác.
+
+Kênh ảnh là đường dùng khi máy người chơi CHẶN fetch — tức là đúng nhóm đáng
+quan tâm nhất. Mà nhánh GET của api/ping.js không đọc `ua` (địa chỉ ảnh không
+mang nổi chuỗi đó), cũng không khai `kenh`. Kết quả: dòng của họ vào sổ mà
+không biết máy gì, cũng không biết là đã đi đường vòng.
+
+NAY: `ua` lấy thẳng từ tiêu đề request — nó luôn có sẵn ở đó, chỉ là chưa ai
+đọc. `kenh` ghi 'anh'. Chuông báo cũng in dấu "[anh]" ở cuối dòng đầu, đọc là
+biết ngay tín hiệu này đi đường vòng.
+
+
+③ PHÉP CANH THỜI GIAN: SOI THEO NGÀY, KHÔNG SOI TỚI PHÚT
+────────────────────────────────────────────────────────────────────────────
+`cre21` đối chiếu bảng THOI_GIAN với lịch sử commit. Nhưng con số đó lớn dần
+theo mỗi cú commit, nên soi bằng dấu bằng thì CỨ COMMIT MỘT CÁI LÀ ĐỎ — mà đỏ
+vì lý do vô nghĩa thì người ta học cách phớt lờ nó, và lúc đỏ thật cũng phớt
+lờ nốt. Đúng lỗi đó vừa xảy ra ngay trong đợt này.
+
+NAY soi theo SỐ NGÀY. Trang Credit vẫn in tới phút cho đẹp, nhưng thứ đáng
+canh là lệch một ngày trở lên — nghĩa là quên đo lại cả tuần.
+
+Đã thử: giả cảnh lệch 8 ngày → đỏ. Giả cảnh lệch vài giờ → xanh, đúng ý.
+
+TỔNG: 30 bộ, 587 phép, 0 hỏng.
+
+════════════════════════════════════════════════════════════════════════════
 ĐỢT 22 — vá hai lỗi tự gây ra ở đợt 21 trong mã Apps Script của sổ lưu.
 ════════════════════════════════════════════════════════════════════════════
 3 file sửa, không đụng tới trang nào. Số tem GIỮ NGUYÊN — không có gì đổi trên

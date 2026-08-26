@@ -128,5 +128,37 @@ console.log('\n⑤ TAB VÀ TIÊU ĐỀ TỰ MỌC — không phải gõ tay gì 
   T('tab đã đủ cột → không viết lại lần nữa', sh._dam === 0, 'ghi đè ' + sh._dam + ' lần');
 }
 
+console.log('\n⑥ KÊNH ẢNH cũng phải ghi đủ máy và tự khai là đường vòng');
+{
+  /* Kênh ảnh dùng khi máy người chơi chặn fetch — tức là đúng nhóm đáng quan
+     tâm nhất. Đời trước dòng của họ vào sổ với cột "may" TRỐNG TRƠN và `kenh`
+     ghi 'js' như mọi dòng khác, nên nhìn sổ không biết ai đi đường vòng. */
+  const ping = readFileSync(G+'api/ping.js','utf8');
+  const kh = ping.slice(ping.indexOf("if (req.method === 'GET')"));
+  const doan = kh.slice(0, kh.indexOf('} else if'));
+  T('lấy `ua` từ tiêu đề request', /req\.headers\['user-agent'\]/.test(doan), doan.slice(0,80));
+  T("tự khai kenh = 'anh'", /kenh: req\.query\.kenh \|\| 'anh'/.test(doan));
+  /* Và bên trang, kênh ảnh phải khai `trang` — đã soi ở mục ④, nhắc lại đây
+     cho đủ một chỗ đọc */
+  const bd = readFileSync(G+'index.html','utf8');
+  T('bản đồ · kênh ảnh vẫn khai trang', /&trang=ban-do/.test(bd));
+}
+
+console.log('\n⑦ MẪU GIẢ LẬP CHẠY ĐƯỢC — nó là bằng chứng sống của cả chuỗi');
+{
+  const { execFileSync } = await import('node:child_process');
+  let ra = '';
+  try {
+    ra = execFileSync('node', [G + 'docs/mau-so.mjs'],
+      { encoding:'utf8', cwd: G, maxBuffer: 32e6 });
+  } catch (e) { ra = String(e.stdout || '') + String(e.message || ''); }
+  T('dựng được cả ba tab', /TAB "Tiến độ"/.test(ra) && /TAB "Chat"/.test(ra) && /TAB "Thư"/.test(ra));
+  T('có dòng phá đảo Mission 3, và nằm ở HỒ SƠ (dad-a)',
+    /giai_m3[\s\S]{0,400}?dad-a/.test(ra));
+  T('có nội dung hỏi/đáp Open World', /Đà Nẵng không\?/.test(ra));
+  T('có lời nhắn tâm tư', /TAB "Thư" — 1 dòng/.test(ra));
+  T('dòng kênh ảnh ghi kenh = anh', /vao_easter_egg[^\n]*│ anh /.test(ra));
+}
+
 console.log('\nTỔNG: '+ok+' đạt / '+ng+' hỏng');
 process.exit(ng?1:0);

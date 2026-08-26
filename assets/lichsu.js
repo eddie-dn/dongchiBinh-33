@@ -1175,17 +1175,17 @@
 
      Đo lại: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào đây. */
   var THOI_GIAN = {
-    MAP:    '30 ngày 12 giờ 53 phút',
-    EGG:    '30 ngày 12 giờ 53 phút',   /* khu Easter Egg nằm trong chính bản đồ */
-    'DAD-A': '14 ngày 20 giờ 20 phút',
-    'DAD-B': '21 ngày 1 giờ 30 phút',
-    'HAN-A': '12 ngày 5 giờ 19 phút',
-    'HAN-B': '12 ngày 5 giờ 19 phút',
-    FX:     '11 ngày 6 giờ 50 phút',
-    _TONG:  '30 ngày 12 giờ 53 phút',
+    MAP:    '30 ngày 14 giờ 43 phút',
+    EGG:    '30 ngày 14 giờ 43 phút',   /* khu Easter Egg nằm trong chính bản đồ */
+    'DAD-A': '14 ngày 22 giờ 9 phút',
+    'DAD-B': '21 ngày 3 giờ 19 phút',
+    'HAN-A': '12 ngày 22 giờ 12 phút',
+    'HAN-B': '12 ngày 22 giờ 12 phút',
+    FX:     '12 ngày 5 giờ 13 phút',
+    _TONG:  '30 ngày 15 giờ 6 phút',
     _TU:    '26-07-2026',
     _TOI:   '26-08-2026',
-    _COMMIT: 199
+    _COMMIT: 201
   };
 
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số

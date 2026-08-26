@@ -297,9 +297,17 @@ module.exports = async (req, res) => {
        Phải trả về ảnh thật, nếu không trình duyệt báo lỗi tải ảnh. */
     /* ⚠ ĐỌC ĐỦ `trang` / `noi` / `tt` Ở ĐÂY NỮA. Đường ảnh là kênh dự phòng
        lúc fetch bị chặn — bỏ sót ba trường này thì đúng mấy người chơi có bộ
-       chặn quảng cáo lại là mấy người bị máy chủ đoán nhầm trang. */
+       chặn quảng cáo lại là mấy người bị máy chủ đoán nhầm trang.
+
+       `ua` KHÔNG đi kèm được trong địa chỉ ảnh (dài quá, mà cũng thừa) — lấy
+       thẳng từ tiêu đề request. Thiếu nó thì cột "máy" trống trơn đúng ở mấy
+       dòng của người bị chặn fetch, tức là mất dấu đúng nhóm đáng quan tâm
+       nhất. `kenh` ghi 'anh' để đọc sổ biết dòng này đi đường vòng. */
     d = { ev: req.query.ev, detail: req.query.detail, trang: req.query.trang,
-          noi: req.query.noi, tt: req.query.tt, at: new Date().toISOString() };
+          noi: req.query.noi, tt: req.query.tt,
+          ua: req.query.ua || (req.headers && req.headers['user-agent']) || '',
+          kenh: req.query.kenh || 'anh',
+          at: new Date().toISOString() };
   } else if (req.method === 'POST') {
     d = req.body;
     if (typeof d === 'string') {

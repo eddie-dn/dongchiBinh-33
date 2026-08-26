@@ -65,7 +65,7 @@ không phải trang web hỏng.
 | `bao18` `kenh20` | tín hiệu bắn về: đúng trang, đúng chỗ đứng, đủ nhãn, đủ mọi kênh |
 | `ow19` | hộp nhắc Open World — mỗi ngày một lần và biết dừng |
 | `pfsave20` | pí danh tự lưu: đủ năm chỗ, ôm đủ ba chặng, không ghi đè bản tốt bằng bản lùi |
-| `so21` | sổ Google Sheets: đủ cột, cột mới nối vào cuối, tab và tiêu đề tự mọc (chạy thật `layTab` trên một Sheet giả) |
+| `so21` | sổ Google Sheets: đủ cột, cột mới nối vào cuối, tab và tiêu đề tự mọc (chạy thật `layTab` trên một Sheet giả), và chạy luôn `docs/mau-so.mjs` |
 | `cre21` | mục "Làm trong bao lâu" — có ở cả bảy trang, và **khớp lịch sử commit** |
 
 ## Thêm một bộ mới

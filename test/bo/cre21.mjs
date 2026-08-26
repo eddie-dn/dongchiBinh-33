@@ -69,13 +69,27 @@ console.log('\n③ CON SỐ PHẢI KHỚP LỊCH SỬ COMMIT — đo lại tại
   const src = await (await fetch(B+'/assets/lichsu.js')).text();
   const kh = src.slice(src.indexOf('var THOI_GIAN = {'));
   const cai = kh.slice(0, kh.indexOf('};'));
+  /* ⚠ SOI THEO NGÀY, ĐỪNG SOI TỚI TỪNG PHÚT.
+     Con số này lớn dần theo mỗi cú commit, nên soi bằng dấu bằng thì cứ commit
+     một cái là bộ kiểm đỏ — mà đỏ vì lý do vô nghĩa thì người ta học cách phớt
+     lờ nó, và lúc đỏ thật cũng phớt lờ nốt. Trang Credit in tới phút cho đẹp,
+     nhưng thứ đáng canh là SỐ NGÀY: lệch một ngày nghĩa là quên đo lại cả tuần. */
+  const soNgay = t => { const m = /(\d+)\s*ngày/.exec(t || ''); return m ? +m[1] : -1; };
+  const trongBang = k => {
+    const m = new RegExp("'?" + k + "'?\\s*:\\s*'([^']+)'").exec(cai);
+    return m ? m[1] : '';
+  };
   const lech = [];
   for(const [k,v] of Object.entries(bang)){
     if(k === 'EGG') continue;                    /* EGG lấy theo MAP, đã khai vậy */
-    if(!cai.includes("'" + v + "'")) lech.push(k + ' đo được "' + v + '"');
+    const co = trongBang(k);
+    if(soNgay(co) !== soNgay(v))
+      lech.push(k + ': bảng ghi "' + co + '" mà đo được "' + v + '"');
   }
-  if(tong && !cai.includes("'" + tong + "'")) lech.push('TỔNG đo được "' + tong + '"');
-  T('bảng THOI_GIAN khớp với lịch sử commit hiện tại', lech.length === 0,
+  const tongCo = trongBang('_TONG');
+  if(tong && soNgay(tongCo) !== soNgay(tong))
+    lech.push('TỔNG: bảng ghi "' + tongCo + '" mà đo được "' + tong + '"');
+  T('bảng THOI_GIAN khớp lịch sử commit (soi theo ngày)', lech.length === 0,
     lech.join(' , ') + '  → chạy `node docs/thoi-gian.mjs` rồi chép lại');
 }
 
