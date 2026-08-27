@@ -102,6 +102,46 @@ Nút reset khi đã "lên cò" (bấm lần một) thì **đổi luôn `data-tip
 | **Nút phụ (`ghost`)** | việc phụ, quay lại, reset có kèm chữ | viền mảnh, nền trong |
 | **Cửa hậu** | chỉ hiện sau khi gõ đủ nhịp bí mật | tông xám / xanh nhạt, **không** được tranh chỗ với nút chính |
 
+### 2.1 · NÚT CỦA BẢNG ĐIỀU KHIỂN — `.ops-btn`, khai MỘT chỗ
+
+Bốn bảng điều khiển của bộ này — **Khối vận hành** (Gate 2, Zoey's Castle,
+Secret Chamber), **Box Tổng tư lệnh** ngoài bản đồ, và khung **Collected:
+Easter Egg** — dùng **chung một khuôn nút**, khai đúng một lần trong
+`/assets/lichsu.js` (file duy nhất cả sáu trang đều nạp).
+
+```html
+<div class="ops-cot">                          <!-- xếp dọc, gap 8px -->
+  <button class="ops-btn"     id="…">Lệnh chính</button>
+  <button class="ops-btn phu" id="…">Lệnh phụ</button>
+</div>
+
+<div class="ops-hang">                          <!-- CHỈ khi hai lệnh ngang vai -->
+  <button class="ops-btn"     id="…">Vặn kim</button>
+  <button class="ops-btn phu" id="…">Về hiện tại</button>
+</div>
+```
+
+| Lớp | Việc |
+|---|---|
+| `.ops-btn` | pill bo `999px`, **viền nét đứt**, nền rỗng, chữ Oswald `9.5px` giãn `.18em`, chữ hoa, rộng hết khối |
+| `.ops-btn.phu` | cùng hình hài, nhạt hơn một bậc — quay lại / bỏ qua / về hiện tại |
+| `.ops-cot` | khối dọc, khoảng cách nằm ở `gap` |
+| `.ops-hang` | hàng ngang, **tối đa hai nút**; ba nút trở lên thì về hàng dọc |
+
+**Màu tự đi theo trang.** Nút ăn `--ls-acc` khai ở `:root` của từng trang, nên
+bản đồ ra amber, Zoey's Castle ra tím, Gate 2 ra xanh lá — cùng hình hài, đúng
+tông từng khu. **Không** khai màu ở trang.
+
+**⚠ BẪY ĐÃ VẤP — bộ chọn nặng ký hơn đè ngược khuôn chung.** `index.html` từng
+có `.cred-acts button{…}`. Bộ chọn đó là *class + thẻ* (0,1,1), nặng hơn
+`.ops-btn` (0,1,0), nên nó lặng lẽ thắng và khung Collected lại lạc ra một kiểu
+riêng — đúng thứ vừa dọn đi. **Thêm bảng mới thì ĐỪNG viết lại kiểu dáng nút ở
+trang của mình**; chỉ được đặt khoảng cách của khối bao ngoài.
+
+**⚠ Icon trong nút phải là `inline-block`.** `.ops-btn` là khối, chữ căn giữa —
+icon để `display:block` sẽ rơi xuống một dòng riêng, nhìn như hai thứ rời nhau.
+Đã vấp ở `.egg-ico`.
+
 ---
 
 ## 3. TÊN GỌI — VIẾT ĐÚNG MỘT KIỂU

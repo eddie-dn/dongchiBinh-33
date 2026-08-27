@@ -1,3 +1,124 @@
+════════════════════════════════════════
+ĐỢT 25 — vá cửa tem bỏ qua cả bản đồ, ô đếm chơi lại, nút bốn bảng về một khuôn.
+════════════════════════════════════════
+    index.html            assets/lichsu.js
+    dad/950901-a/index.html   dad/950901-b/index.html   dad/950901-b/config.js
+    han/961030-a/index.html   han/961030-b/index.html
+    DESIGN-SYSTEM.md      README.md      test/ (thêm 1 bộ)   DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /  V19.06 → V19.07   ·  /dad/950901-a  V04.07 → V04.08
+         /dad/950901-b  V05.09 → V06.00 (V05 kín mười nấc đuôi, buộc mở dòng lớn)
+         /han/961030-a  V04.02 → V04.03  ·  /han/961030-b  V03.03 → V03.04
+         (khu Easter Egg  V19.05 → V19.06)  ·  /phao-hoa giữ nguyên V03.06
+
+
+① LỖ HỔNG NẶNG NHẤT: GÕ 10 NHỊP LÊN TEM LÀ BỎ QUA CẢ BẢN ĐỒ
+────────────────────────────────────────
+Đợt 24 bắt cái tem THÔI NHÁY khi chưa phá đảo, lý do ghi rõ: tem là cửa vào khu
+Easter Egg, nháy sớm là chỉ đường cho người còn chưa biết phải làm gì với bản đồ.
+
+Nhưng đợt đó mới giấu TẤM BIỂN. CÁNH CỬA thì vẫn mở toang: `stampZone` chỉ chặn
+mỗi `credKhoa` (khoá lúc đang ăn mừng), không hề xét tiến độ. Nghĩa là mở trang
+lần đầu, chưa giải nổi một mã morse nào, gõ đủ 10 nhịp lên dòng "Last updated"
+là khung Collected bung ra, `credFound` bật, hồ sơ niêm phong mở khoá — đi
+thẳng tới pháo hoa và bức thư, bỏ qua sạch bốn mật thư.
+
+Đã dựng lại đúng cảnh đó trong trình duyệt thật để chắc chắn không phải đọc
+nhầm mã: 0/4 toạ độ, gõ 10 nhịp, vào được thật.
+
+NAY đếm nhịp chỉ chạy khi đã đủ bốn toạ độ. VẪN KHÔNG khoá theo ngày — tìm ra
+Easter Egg trước 01-09 vẫn được, đúng luật README mục 19b; chỉ là phải phá đảo
+bản đồ trước đã. Ai đã tìm ra từ trước thì gõ lại vẫn mở khung như cũ.
+
+
+② BĂNG RÔN SINH NHẬT — KIỂM XONG, KHÔNG CÓ BỆNH
+────────────────────────────────────────
+Câu hỏi: vào sau 01-09 mà bản đồ chưa xong thì băng rôn có bung ra đè lên
+không? KHÔNG. Nó được chặn ở năm chỗ độc lập, chỉ cần một chỗ là đủ:
+
+    winBanner()   done = nSolved() === NODES.length → không đủ thì gỡ cờ 'won'
+    bangRon/bannerFly()  thoát ngay nếu chưa đủ bốn
+    CSS           .banner ẩn, chỉ hiện khi có ĐỦ CẢ HAI cờ .won và .flying
+    eggIntro()    thoát nếu chưa đủ bốn
+    gridFlash()   thoát nếu chưa đủ bốn
+
+Đã vặn đồng hồ tới 05-09 rồi thử bốn mức 0/4 · 2/4 · 3/4 · 4/4: ba mức đầu băng
+rôn im và khung không mang cờ nào; đủ 4/4 mới bay ra. Có bộ kiểm giữ chỗ này.
+
+
+③ Ô ĐẾM CHƠI LẠI — RÀ CẢ SÁU TRANG, HAI TRANG THIẾU HẲN
+────────────────────────────────────────
+Hiện trạng trước đợt này:
+
+    /                 có `resetCount`, hiện trên tem — nhưng KHÔNG hiện trong hộp
+    /dad/950901-a     KHÔNG CÓ Ô ĐẾM NÀO
+    /dad/950901-b     KHÔNG CÓ Ô ĐẾM NÀO
+    /han/961030-a     đủ cả: tem + Khối vận hành
+    /han/961030-b     đủ cả: tem + Khối vận hành
+    /phao-hoa         không có trạng thái chơi, không cần
+
+NAY cả năm trang có trạng thái đều đếm, và đều khoe ngay trong hộp lúc mở ra:
+  · Box Tổng tư lệnh: MAP-01 "Đã chơi lại bản đồ: n lần";
+    MAP-02 thêm "đã trả về: n lần" bên cạnh số lần mở được.
+  · Hồ sơ Phi đoàn: số hiệu R(n) trên tem góc trang + một dòng trong thẻ Phá đảo.
+    Nút chơi lại trước đây `removeItem(KEY)` — xoá trắng, nên không ô đếm nào
+    sống nổi. Nay ghi đè bằng đúng một trường `reset`.
+  · Gate 2: Khối vận hành thêm "đã chơi lại n lần". Đếm ở ĐÚNG nút chơi lại chứ
+    KHÔNG đặt trong `reset()` — hàm đó còn được `enterGallery` gọi mỗi lần vào
+    chế độ xem lại, nhét vào đó thì chỉ ngắm lại ảnh cũng bị tính một lượt.
+
+Kèm một bệnh nữa: `hardWipe` (Reset bản đồ) xoá cả khoá `mtv1`, mà `g2Reset`
+của Gate 2 ở nhờ chung khoá đó — reset bản đồ một cái là Gate 2 quên sạch đã
+chơi lại mấy lần. Ô đếm là SỔ ĐÃ LÀM GÌ, không phải tiến độ. Nay bốn ô đếm
+(`resetCount` · `eggMo` · `eggReset` · `g2Reset`) đi tiếp qua cú reset.
+
+
+④ DÒNG ĐẾM DÁN SÁT TÊN BOX TỔNG TƯ LỆNH
+────────────────────────────────────────
+`#hqCount` mang `margin:-4px` viết thẳng trong thẻ, kéo ngược lên gần như dính
+vào dòng "BOX TỔNG TƯ LỆNH" — đọc ra thành hai dòng chồng nhau, không biết dòng
+nào thuộc về ai. Dòng tiêu đề chiến dịch cũng chỉ cách tên box 4px.
+NAY: tiêu đề cách 15px, dòng đếm có lớp riêng `.hq-count` với khoảng thở 9px.
+
+
+⑤ NÚT BỐN BẢNG ĐIỀU KHIỂN — MỘT KHUÔN DUY NHẤT
+────────────────────────────────────────
+Bốn bảng làm đúng một việc mà mỗi chỗ một kiểu nút: chỗ bo 5px chỗ bo tròn, chỗ
+nền đặc chỗ nền rỗng, chỗ viền liền chỗ viền đứt; Secret Chamber còn hai nút
+nằm một hàng rồi nút thứ ba treo lủng lẳng bên dưới. Lại dán style thẳng vào
+thẻ nên sửa một nút phải đi lục từng dòng HTML.
+
+Lấy khuôn Khối vận hành bên Gate 2 làm chuẩn (pill viền nét đứt, nền rỗng, chữ
+Oswald giãn rộng) và khai MỘT chỗ: `.ops-btn` trong /assets/lichsu.js — file
+duy nhất cả sáu trang đều nạp. Màu tự ăn `--ls-acc` của từng trang nên bản đồ
+ra amber, Zoey's Castle ra tím, Gate 2 ra xanh lá: cùng hình hài, đúng tông
+từng khu. Kèm `.ops-cot` (xếp dọc) và `.ops-hang` (hai lệnh ngang vai).
+
+BẪY: `.cred-acts button{...}` trong index.html nặng ký hơn `.ops-btn` (class +
+thẻ so với một class) nên nó lặng lẽ đè ngược lại khuôn chung. Đã bỏ, chỉ giữ
+khoảng cách. Ai thêm bảng mới thì ĐỪNG viết lại kiểu dáng nút ở trang của mình.
+
+
+⑥ KHUNG ẢNH CHẠY TRONG GATE 2 — HAI LỖI, VÀ NĂM Ô ẢNH TRỐNG
+────────────────────────────────────────
+  · Nhịp phóng viết cứng 3.4s trong khi ảnh tự đổi mỗi 3.0s → cú phóng chưa bao
+    giờ chạy hết, tấm nào cũng bị cắt ngang lúc còn đang nhích. Nay buộc vào
+    `slide_auto`, sửa một chỗ là cả hai đi theo.
+  · `image-rendering:pixelated` đặt cho MỌI ảnh. Đúng với ảnh vẽ tạm (tranh
+    pixel), nhưng ngày nào thả ảnh chụp thật vào thì ảnh thật cũng bị dựng
+    thành khối vuông — mà lỗi đó chỉ lộ ra đúng lúc đã thay ảnh xong, muộn nhất
+    có thể. Nay chỉ ảnh vẽ tạm mới mang lớp `.ph` và giữ răng cưa.
+
+  · NĂM Ô ẢNH KỶ NIỆM CHƯA CÓ ẢNH THẬT. `config.js` khai
+    `photos: ['photo_1.jpg' … 'photo_5.jpg']` nhưng thư mục
+    `dad/950901-b/assets/` không có file nào tên đó, nên lâu nay slideshow chạy
+    ảnh pixel do `pixelPlaceholder()` tự vẽ.
+    MUỐN THAY ẢNH THẬT: thả đúng năm file tên `photo_1.jpg` … `photo_5.jpg` vào
+    `dad/950901-b/assets/`. Không phải sửa mã gì cả. Muốn đổi tên file hay đổi
+    số lượng thì sửa mảng `photos` (và `photo_captions` cho khớp) trong
+    `dad/950901-b/config.js`. Khung là 4:3, ảnh sẽ được cắt `object-fit:cover`.
+
+
 ════════════════════════════════════════════════════════════════════════════
 ĐỢT 24 — tem thôi nháy sớm, pháo hoa không thoát được lần đầu, sổ lưu tự soi.
 ════════════════════════════════════════════════════════════════════════════

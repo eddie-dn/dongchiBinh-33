@@ -453,7 +453,9 @@ a.file:active{background:rgba(242,180,65,.07)}
 .hq-state{font-family:"Oswald";font-size:8px;letter-spacing:.14em;text-transform:uppercase;
   color:rgba(234,240,247,.42)}
 .hq-card.off .hq-state{color:rgba(242,180,65,.62)}
-.hq-back{display:block;margin:12px auto 0;background:none;border:0;padding:4px 8px;
+/* Chỉ còn giữ khoảng cách — hình hài do `.ops-btn.phu` lo (xem lichsu.js). */
+.hq-back{margin-top:12px}
+.hq-back-cu{display:block;margin:12px auto 0;background:none;border:0;padding:4px 8px;
   font-family:"Oswald";font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
   color:rgba(234,240,247,.42);cursor:pointer}
 .hq-back:hover,.hq-back:focus-visible{color:var(--paper)}
@@ -577,8 +579,12 @@ a.file:active{background:rgba(242,180,65,.07)}
 /* KHÔNG dùng white-space:nowrap ở đây: kaomoji dài hơn bề ngang hộp sẽ tràn
    ra ngoài viền (đã vấp ở Box Tổng tư lệnh). Cho phép xuống dòng, chỉ giữ
    nguyên khối cho từng cụm kaomoji. */
-.cred-body.wide{text-align:center;font-size:12.5px;color:var(--paper);margin-top:4px;
+.cred-body.wide{text-align:center;font-size:12.5px;color:var(--paper);margin-top:15px;
   text-wrap:balance;overflow-wrap:anywhere}
+/* Dòng đếm dưới tiêu đề chiến dịch. ĐÃ VẤP: nó mang `margin:-4px` viết thẳng
+   trong thẻ, kéo ngược lên gần như dán vào tên box — đọc ra thành hai dòng
+   dính nhau, không biết dòng nào thuộc về ai. Nay có khoảng thở riêng. */
+.hq-count{margin:9px 0 3px;color:rgba(242,180,65,.6)}
 /* Mặt cười này là CỬA VÀO bản ghi (gõ 3 nhịp). Nó mang luôn class `.ls-chu`
    nên ăn đúng bộ hiệu ứng chung của mọi cửa vào bản ghi: trỏ vào thì đổi màu
    và nháy, bấm trúng nhịp thì sáng loé — xem `.ls-chu` trong assets/lichsu.js.
@@ -728,7 +734,11 @@ a.file:active{background:rgba(242,180,65,.07)}
 .cx-title.eggfound{cursor:default}
 .cx-title.eggfound.blink{animation:egg 1.8s linear 4}
 /* Quả trứng trên nút Enter Easter Egg — thay cho dấu sao ✦ */
-.egg-ico{width:13px;height:17px;flex:none;display:block;color:rgba(242,180,65,.9);
+/* `display:block` là của thời nút này còn là flex-row. Trong nút `.ops-btn`
+   (khối, chữ căn giữa) thì block đẩy quả trứng xuống một dòng riêng — nhìn
+   như hai thứ rời nhau. Cho về inline để nó đi cạnh chữ. */
+.egg-ico{width:13px;height:17px;flex:none;display:inline-block;
+  vertical-align:-3px;margin-left:7px;color:rgba(242,180,65,.9);
   filter:drop-shadow(0 0 5px rgba(242,180,65,.55))}
 /* nút xem lại pháo hoa — cùng ngôn ngữ với nút cuộn phim trong hộp pí mật */
 /* Icon xem lại đi CHUNG HÀNG với tiêu đề. Trước đây nó absolute ở top:6px nên
@@ -743,18 +753,13 @@ a.file:active{background:rgba(242,180,65,.07)}
 .cred-rp svg{width:17px;height:17px;fill:currentColor}
 
 /* ── Khung Tổ kỹ thuật: hàng hai nút + dòng gửi tâm tư ── */
-.cred-acts{display:flex;gap:8px;margin-top:16px}
-.cred-acts button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-  font-family:"Oswald";font-size:9px;font-weight:600;
-  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;padding:12px 6px;
-  border-radius:5px;
-  border:1px solid var(--line);background:rgba(6,16,31,.6);color:rgba(234,240,247,.78);
-  cursor:pointer;transition:border-color .25s,background .25s,color .25s}
-.cred-acts button:hover,.cred-acts button:focus-visible{border-color:rgba(242,180,65,.55);
-  background:rgba(242,180,65,.08);color:var(--paper)}
-.cred-acts #credEgg{color:var(--amber);border-color:rgba(242,180,65,.5);
-  background:rgba(242,180,65,.08)}
-.cred-acts button.on{color:var(--amber);border-color:rgba(242,180,65,.6)}
+/* ⚠ KHÔNG viết lại kiểu dáng nút ở đây nữa. Hai nút này đã mang `.ops-btn`
+   (khai trong /assets/lichsu.js) — cùng khuôn với Khối vận hành và Box Tổng
+   tư lệnh. Đặt `.cred-acts button{...}` ở đây là bộ chọn NẶNG KÝ HƠN `.ops-btn`
+   (class + thẻ so với một class), nên nó lặng lẽ đè ngược lại khuôn chung và
+   khung này lại lạc ra một kiểu riêng — đúng cái vừa dọn đi.
+   Chỉ giữ khoảng cách trên, phần còn lại để khuôn chung lo. */
+.cred-acts{margin-top:16px}
 /* Dòng gửi tâm tư — chữ nhỏ, có dấu thư, KHÔNG phải nút */
 .tt-line{display:flex;align-items:center;justify-content:center;gap:7px;margin:14px 0 0;
   cursor:pointer;font-size:12px;line-height:1.5;color:rgba(234,240,247,.5);
@@ -1037,7 +1042,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 26-Aug-2026 · V19.06">Last updated 26-Aug-2026 · V19.06</span>
+        <span class="stamp" id="stamp" data-base="Last updated 27-Aug-2026 · V19.07">Last updated 27-Aug-2026 · V19.07</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1154,29 +1159,30 @@ a.file:active{background:rgba(242,180,65,.07)}
       <!-- Bước 2 — lệnh của chiến dịch đã chọn -->
       <div id="hqStep2" hidden>
         <p class="cred-body wide" id="hqTitle"></p>
-        <p class="cx-hint" id="hqCount" hidden style="margin:-4px 0 10px"></p>
-        <div class="cx-form" style="flex-direction:column;gap:8px">
-          <button id="hqReset" style="width:100%"></button>
-          <button id="hqHack" style="width:100%;color:var(--amber);
-            border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08)">Hack Map</button>
-          <button id="hqClock" style="width:100%;color:var(--neon);
-            border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.08)">Clockwise</button>
-          <button id="hqG2" style="width:100%;color:var(--amber);
-            border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08)">⏩ Vào thẳng màn cuối Gate 2</button>
-          <div id="hqClockBox" hidden style="margin-top:2px">
+        <p class="cx-hint hq-count" id="hqCount" hidden></p>
+        <!-- Nút của bảng điều khiển dùng khuôn CHUNG `.ops-btn` khai trong
+             /assets/lichsu.js — cùng hình hài với Khối vận hành bên Gate 2 và
+             Zoey's Castle. Màu tự ăn `--ls-acc` của trang này (amber), nên
+             KHÔNG dán màu thẳng vào thẻ nữa: dán vào thẻ là mỗi nút một sắc,
+             mà sửa thì phải đi lục từng dòng. -->
+        <div class="ops-cot">
+          <button class="ops-btn" id="hqReset" type="button"></button>
+          <button class="ops-btn" id="hqHack" type="button">Hack Map</button>
+          <button class="ops-btn" id="hqClock" type="button">Clockwise</button>
+          <button class="ops-btn" id="hqG2" type="button">⏩ Vào thẳng màn cuối Gate 2</button>
+          <div id="hqClockBox" hidden>
             <input type="date" id="hqDate" aria-label="Chọn ngày"
               style="width:100%;padding:11px 12px;border-radius:6px;
                      border:1px solid var(--line);background:rgba(6,16,31,.6);
                      color:var(--paper);font-family:'Oswald';font-size:13px">
-            <div class="cx-form" style="margin-top:8px;gap:8px">
-              <button id="hqClockGo" style="flex:1">Vặn kim</button>
-              <button id="hqClockOff" style="flex:1;background:none;
-                color:rgba(234,240,247,.72);border:1px solid var(--line)">Về hiện tại</button>
+            <div class="ops-hang">
+              <button class="ops-btn" id="hqClockGo" type="button">Vặn kim</button>
+              <button class="ops-btn phu" id="hqClockOff" type="button">Về hiện tại</button>
             </div>
           </div>
         </div>
         <p class="cx-hint" id="hqNote"></p>
-        <button class="hq-back" id="hqBack">&#8592; Chọn chiến dịch khác</button>
+        <button class="hq-back ops-btn phu" id="hqBack" type="button">&#8592; Chọn chiến dịch khác</button>
       </div>
     </div>
   </div>
@@ -1224,9 +1230,9 @@ a.file:active{background:rgba(242,180,65,.07)}
         </svg>
       </p>
 
-      <div class="cred-acts">
-        <button id="credKnow" type="button">Get to know me</button>
-        <button id="credEgg" type="button">Enter Easter Egg
+      <div class="cred-acts ops-cot">
+        <button class="ops-btn" id="credKnow" type="button">Get to know me</button>
+        <button class="ops-btn" id="credEgg" type="button">Enter Easter Egg
           <svg class="egg-ico" viewBox="0 0 20 26" aria-hidden="true">
             <path d="M10 1.2c4.4 0 8 6.1 8 12.3 0 6-3.6 10.3-8 10.3S2 19.5 2 13.5C2 7.3 5.6 1.2 10 1.2Z"
                   fill="url(#eggG)" stroke="currentColor" stroke-width="1.3"/>
@@ -1258,10 +1264,9 @@ a.file:active{background:rgba(242,180,65,.07)}
         <textarea id="ttIn" rows="4" maxlength="600" placeholder="Tổ kỹ thuật đọc hết, thật đó…"
                   aria-label="Lời nhắn gửi tổ kỹ thuật"></textarea>
       </div>
-      <div class="cx-form" style="margin-top:12px">
-        <button id="ttBack" style="flex:1;background:none;color:rgba(234,240,247,.72);
-          border:1px solid var(--line)">&#8592; Quay lại</button>
-        <button id="ttSend" style="flex:1">Gửi ✦</button>
+      <div class="ops-hang" style="margin-top:12px">
+        <button class="ops-btn phu" id="ttBack" type="button">&#8592; Quay lại</button>
+        <button class="ops-btn" id="ttSend" type="button">Gửi ✦</button>
       </div>
       <p class="cx-hint" id="ttMsg"></p>
     </div>
@@ -1424,20 +1429,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V04.02' },
+        credGate:true, pub:'16-Aug 2026', ver:'V04.03' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.03' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.04' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026', ver:'V04.07', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V04.08', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V05.09',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.00',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -1661,6 +1666,10 @@ let eggDay = null, credFound = false, coachDone = false;
    này thì GIỮ, y như R(n) của tem: nó là dấu vết, không phải tiến độ. */
 let eggMo = 0;
 function ghiMoEgg(){ if(!credFound){ eggMo++; } }
+/* Số lần đã trả Easter Egg về lúc chưa ai tìm ra. Đứng riêng với `eggMo` (số
+   lần MỞ ĐƯỢC) và với `resetCount` (số lần chơi lại cả bản đồ) — ba con số ba
+   ý nghĩa, gộp lại là mất dấu. */
+let eggReset = 0;
 /* Số lần đã TỰ chạy màn ăn mừng (khoá khung rồi bay sang pháo hoa).
    Hai lần đầu thì tự chạy — lần đầu là chính, lần hai là DỰ PHÒNG cho ai lỡ
    tay bấm ra khỏi trang hoặc mạng chậm nên chưa kịp xem. Từ lần thứ ba trở đi
@@ -2009,6 +2018,7 @@ const store = {
   if(!firstAt) firstAt = Date.now();
   eggDay = s.eggDay || null;
   eggMo = s.eggMo || 0;
+  eggReset = s.eggReset || 0;
   eggAn = s.eggAn || 0;
   g2Hack = !!s.g2Hack;
   eggG1 = !!s.eggG1;
@@ -2053,7 +2063,7 @@ const store = {
   showPz(); refreshBeacons(); lum();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt, owNhacNgay, owNhacDem }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, eggReset, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt, owNhacNgay, owNhacDem }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3253,11 +3263,22 @@ $('pz').addEventListener('click', ()=>{
    phép sống sót là bộ đếm R(n). */
 function hardWipe(ev, detail){
   ping(ev, detail || '');
+  /* ⚠ MẤY Ô ĐẾM PHẢI SỐNG SÓT, TIẾN ĐỘ THÌ KHÔNG.
+     BỆNH ĐÃ SỬA: chỗ này chỉ giữ `resetCount`, nên bấm Reset bản đồ một cái là
+     ba ô đếm kia về 0 — kể cả `g2Reset` vốn là số lần chơi lại của Gate 2, một
+     game khác hẳn, chỉ vì nó ở nhờ chung khoá `mtv1`. Hộp Khối vận hành bên
+     Gate 2 sẽ báo "chưa chơi lại lần nào" cho người đã chơi lại bốn lần.
+     Ô đếm là SỔ GHI ĐÃ LÀM GÌ, không phải tiến độ — reset tiến độ không được
+     xoá sổ. Bốn con số này đi tiếp, mọi thứ khác vẫn xoá sạch như cũ. */
   const keepR = resetCount + 1;
+  const giuDem = { eggMo, eggReset };
+  let g2R = 0;
+  try{ g2R = (JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).g2Reset | 0; }catch(e){}
   /* nav1 (pí danh + pha điều hướng) cố ý KHÔNG đụng — Mission 3 của hồ sơ vẫn
      xong nên vẫn ở PHA 2, và bản lưu phải sống qua reset (USER-FLOW.md §6) */
   try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
-  try{ localStorage.setItem('mtv1', JSON.stringify({ resetCount: keepR })); }catch(e){}
+  try{ localStorage.setItem('mtv1', JSON.stringify(
+    Object.assign({ resetCount: keepR, g2Reset: g2R }, giuDem))); }catch(e){}
   try{ ['mtseen','mtload','mtvisit','mtpf'].forEach(k=>sessionStorage.removeItem(k)); }catch(e){}
   setTimeout(()=>location.reload(), 240);
 }
@@ -3355,10 +3376,11 @@ function hqPick(g){
   /* Bộ đếm "mở được Easter Egg mấy lần" — để biết mình đang ở đâu, và để thấy
      ngay rằng bấm Reset là được xem lại toàn bộ hiệu ứng từ đầu. */
   const hc = $('hqCount');
-  hc.hidden = g !== 'egg';
-  if(g === 'egg'){
-    hc.textContent = 'Đã mở được Easter Egg: ' + eggMo + ' lần';
-  }
+  hc.hidden = false;
+  hc.textContent = (g === 'egg')
+    ? 'Đã mở được Easter Egg: ' + eggMo + ' lần'
+      + (eggReset ? ' · đã trả về: ' + eggReset + ' lần' : '')
+    : 'Đã chơi lại bản đồ: ' + resetCount + ' lần';
   /* Ghi chú giữ NGẮN — hộp này là bảng điều khiển, không phải trang hướng dẫn. */
   $('hqNote').textContent = g === 'map'
     ? 'Xoá sạch tiến độ, chơi lại từ đầu. Giữ R(n).'
@@ -3377,6 +3399,7 @@ function hqPick(g){
    hỏi Map 3 nằm ở khoá `hanv1` riêng nên KHÔNG mất. */
 function eggReplay(){
   ping('reset_easter_egg', 'trả Easter Egg về lúc chưa ai tìm ra');
+  eggReset++;
   eggTitleDay = null; eggDay = null; winParty = false;
   credFound = false; eggWin = false; eggDone = false; coachDone = false;
   eggAn = 0;                          /* trả lại quyền tự ăn mừng hai lần đầu */
@@ -3583,6 +3606,20 @@ $('stampZone').addEventListener('click', ()=>{
      rồi, nhưng cú chạm trên điện thoại vẫn có thể lọt xuống dưới — mà mỗi lần
      lọt là ăn mất một lượt tự ăn mừng (chỉ có hai). Chặn thẳng ở đây. */
   if(credKhoa) return;
+  /* ⚠ CHƯA GIẢI XONG BỐN MẬT THƯ THÌ CỬA NÀY KHÔNG MỞ.
+     BỆNH ĐÃ SỬA: đợt 24 đã bắt cái tem THÔI NHÁY khi chưa phá đảo, vì tem là
+     cửa vào khu Easter Egg và nháy sớm là chỉ đường cho người còn chưa biết
+     phải làm gì với bản đồ. Nhưng lúc đó mới giấu tấm biển, còn CÁNH CỬA thì
+     vẫn mở toang: gõ đủ 10 nhịp lúc 0/4 là khung Collected bung ra, `credFound`
+     bật, hồ sơ niêm phong mở khoá — bỏ qua sạch cả bản đồ, đi thẳng tới pháo
+     hoa và bức thư. Đã dựng lại đúng cảnh đó trong trình duyệt: 0/4 gõ 10 nhịp
+     là vào được thật.
+     Nay đếm nhịp CHỈ chạy khi đã đủ bốn toạ độ. Vẫn KHÔNG khoá theo ngày —
+     tìm ra Easter Egg trước 01-09 vẫn được, đúng luật README mục 19b; chỉ là
+     phải phá đảo bản đồ trước đã.
+     Người đã tìm ra từ trước (`credFound` sẵn) vẫn gõ lại để mở khung như cũ,
+     vì lúc đó chắc chắn đã đủ bốn. */
+  if(nSolved() !== NODES.length){ tapN = 0; return; }
   clearTimeout(tapT);
   tapN++;
   tapT = setTimeout(()=>{ tapN = 0; }, 900);   /* ngưng gõ 0,9 giây là đếm lại */

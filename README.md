@@ -1067,7 +1067,7 @@ cho khỏi nhầm về sau:
 
 | Chặng | Việc người chơi làm | Cờ ghi lại | Xong thì được gì |
 |---|---|---|---|
-| **Stage 1** | Tìm ra cửa hậu — gõ 10 nhịp lên tem *Last updated*, mở được khung **Collected: Easter Egg** | `credFound` | Hồ sơ `DAD-950901-B` **bỏ ổ khoá**, hiện *"điểm kích hoạt"*. Đây chính là **điều kiện vào Stage 2** |
+| **Stage 1** | Tìm ra cửa hậu — gõ 10 nhịp lên tem *Last updated* (**phải phá đảo đủ bốn mật thư trước**, xem mục dưới), mở được khung **Collected: Easter Egg** | `credFound` | Hồ sơ `DAD-950901-B` **bỏ ổ khoá**, hiện *"điểm kích hoạt"*. Đây chính là **điều kiện vào Stage 2** |
 | **Stage 2** | Đi qua cửa đó — được **điều hướng về `/dad/950901-b`** (thẳng từ khung Collected, từ hồ sơ trên bản đồ, hay từ nút *Vào Easter Egg* của trang pháo hoa) | `eggWin` | **Phá đảo Map 2**. Mở luôn **Map 3** — node HAN hiện hai hồ sơ `961030` |
 
 Nói gọn: `credFound` = **thấy cửa**, `eggWin` = **qua cửa**. Ba đường vào Stage 2 đều
@@ -1152,9 +1152,17 @@ Hồ sơ này gắn cờ `eggGate:true` trong `NODES` — nó thuộc về MAP-0
 trong `NODES`, chỉ dùng khi `eggWin`) — cả trang `/dad/950901-b` cũng đổi tiêu
 đề theo. Tên "Hồ sơ niêm phong" chỉ còn đúng lúc nó **đang** niêm phong.
 
-**Mở SỚM trước 01-09.** Cửa hậu 10 nhịp không hề khoá theo ngày, nên người chơi
-có thể tìm ra Easter Egg trước sinh nhật, rồi bấm *Enter Easter Egg* (bật
-`eggHack`) để vào Gate 2 sớm. Cửa mở thật, nhưng **bên trong chưa có gì** — phải
+**Cửa hậu 10 nhịp ĐÒI PHÁ ĐẢO BẢN ĐỒ, nhưng KHÔNG đòi tới ngày.** Hai điều kiện
+này khác nhau, đừng gộp:
+
+- **Tiến độ — CÓ khoá.** `stampZone` chỉ bắt đầu đếm nhịp khi
+  `nSolved() === NODES.length`. Đợt 24 đã bắt cái tem thôi nháy sớm vì tem là
+  cửa vào khu Easter Egg, nhưng lúc đó mới giấu *tấm biển* — cánh cửa vẫn mở
+  toang: 0/4 toạ độ gõ đủ 10 nhịp là vào thẳng khung Collected, bỏ qua sạch cả
+  bản đồ. Đợt 25 vá lại (đã dựng lại đúng cảnh đó trong trình duyệt để xác
+  nhận, không phải đọc mã mà đoán). Bộ kiểm `nac25` giữ chỗ này.
+- **Ngày — KHÔNG khoá, cố ý.** Phá đảo xong bản đồ thì tìm ra Easter Egg trước
+  01-09 vẫn được, rồi bấm *Enter Easter Egg* (bật `eggHack`) để vào Gate 2 sớm. Cửa mở thật, nhưng **bên trong chưa có gì** — phải
 nói thẳng ở cả hai chỗ:
 - dòng meta của hồ sơ trên bản đồ: `Published date: 01-Sep 2026 | V1 · Mở sớm`
   (đúng khuôn lý lịch file của mục 15, chỉ nối thêm một mẩu);
@@ -1166,8 +1174,9 @@ nói thẳng ở cả hai chỗ:
 Ngày trong câu đó cắt thẳng từ chuỗi ISO `+07:00`, không qua `getDate()` — đúng
 cái bẫy múi giờ của mục 21c.
 
-**Điểm kích hoạt chính là cửa hậu `credFound`** — bấm 10 nhịp vào dòng Last updated. Ai lỡ
-tìm ra từ trước thì vào thẳng, không phải làm lại. Mở được cửa hậu lúc bảng hồ sơ đang mở
+**Điểm kích hoạt chính là cửa hậu `credFound`** — phá đảo đủ bốn mật thư rồi bấm 10 nhịp
+vào dòng Last updated. Ai lỡ tìm ra từ trước thì vào thẳng, không phải làm lại (lúc đó
+chắc chắn đã đủ bốn nên luật mới không đụng tới họ). Mở được cửa hậu lúc bảng hồ sơ đang mở
 thì `render(current)` chạy lại ngay, hồ sơ chuyển sang bấm được mà không cần đóng mở.
 
 **Thứ tự nhánh trong `render()` rất quan trọng:** nhánh `eggGate` đặt **trước** `isOpen()`.

@@ -225,7 +225,7 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V19', so:'07',
+        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V19', so:'08',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
@@ -234,7 +234,8 @@
             { ver:'V19.03', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Thêm hộp nhắc khu Open World cho ai phá đảo Gate 2 mà chưa ghé — mỗi ngày một lần, nhắc thay lời chào chứ không chen thêm hộp, vào tới nơi rồi thì im hẳn' },
             { ver:'V19.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
             { ver:'V19.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
-            { ver:'V19.06', chinh:'Tem phiên bản thôi nháy sớm — phải giải xong cả bốn mật thư mới tới lượt nó, vì đó là cửa vào khu Easter Egg chứ không phải chỗ để gây chú ý. Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa lên nhanh hơn hẳn, bớt được quãng ngồi chờ; lỡ chưa xem được thì lần sau vẫn được xem lại' }
+            { ver:'V19.06', chinh:'Tem phiên bản thôi nháy sớm — phải giải xong cả bốn mật thư mới tới lượt nó, vì đó là cửa vào khu Easter Egg chứ không phải chỗ để gây chú ý. Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa lên nhanh hơn hẳn, bớt được quãng ngồi chờ; lỡ chưa xem được thì lần sau vẫn được xem lại' },
+            { ver:'V19.07', chinh:'Cửa vào khu Easter Egg nay đòi phá đảo đủ bốn mật thư mới chịu mở — trước đó gõ đúng nhịp lúc chưa giải được mã nào cũng lọt vào, bỏ qua sạch cả bản đồ. Box Tổng tư lệnh khoe luôn số lần đã chơi lại, dòng đếm thôi dán sát tên box, và mấy cái nút trong hộp về chung một dáng với các bảng khác trong bộ. Bấm chơi lại nay không xoá mất sổ đã chơi bao nhiêu lần nữa' }
           ] }
       ]
     },
@@ -307,7 +308,7 @@
             { ver:'V18.08', chinh:'Lời nhắc gõ Enter thành một dòng chữ; sổ của khu có thêm trang Credit riêng' },
             { ver:'V18.09', chinh:'Bỏ dòng nhắc gõ Enter, gõ đủ số là tự chấm' }
           ] },
-        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V19', so:null,
+        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V19', so:null,
           chinh:'Số hiệu của khu lấy chung một nguồn với tem ngoài trang',
           chi:[
             { ver:'V19.00', chinh:'Số hiệu và ngày của khu lấy thẳng từ sổ, khai một chỗ thay vì hai' },
@@ -315,7 +316,8 @@
             { ver:'V19.02', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp' },
             { ver:'V19.03', chinh:'Hộp nhắc khu Open World: ai phá đảo Gate 2 mà chưa ghé thì mỗi ngày được nhắc một lần, nhắc thay lời chào chứ không chen thêm hộp' },
             { ver:'V19.04', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
-            { ver:'V19.05', chinh:'Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa: lần đầu phải xem hết một nhịp mới đi được, và chưa xem được thì lần sau vẫn được xem lại' }
+            { ver:'V19.05', chinh:'Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa: lần đầu phải xem hết một nhịp mới đi được, và chưa xem được thì lần sau vẫn được xem lại' },
+            { ver:'V19.06', chinh:'Hai cái nút trong khung Collected về chung một dáng với mấy bảng điều khiển khác trong bộ — cùng cỡ, cùng độ bo, xếp dọc cho dễ bấm bằng ngón cái' }
           ] }
       ]
     },
@@ -363,7 +365,7 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04,
            không ghi V03.10 — xem luật ở đầu file. */
-        { ngay:'2026-08-24', sua:'2026-08-26', ver:'V04', so:'08',
+        { ngay:'2026-08-24', sua:'2026-08-27', ver:'V04', so:'09',
           chinh:'Lời nhắc gõ Enter thành một dòng chữ, thêm trang Credit cho bản ghi',
           chi:[
             { ver:'V04.00', chinh:'Lời nhắc gõ Enter ở cả hai cửa Mission đổi từ ký hiệu sang một dòng chữ đọc là hiểu; bản ghi của trang có thêm trang Credit riêng' },
@@ -373,7 +375,8 @@
             { ver:'V04.04', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô mã Mission cũng thôi khai mình là ô mã một lần — thứ khiến trình quản lý mật khẩu hăng nhất' },
             { ver:'V04.05', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' },
             { ver:'V04.06', chinh:'Pí danh tự cất tiến độ thêm hai chỗ nữa: ngay khi xong Mission 1, và mỗi lần rời trang hay gạt tab đi — khỏi phải nhớ bấm Lưu. Bản lưu tốt vẫn không bị một bản lùi ghi đè' },
-            { ver:'V04.07', chinh:'Pí danh nay ôm đủ cả ba chặng — trước đây bỏ quên phần Zoey\u2019s Castle nên đổi pí danh là mất trắng bộ câu hỏi đã giải. Mốc trong bảng pí danh cũng đi hết cả hành trình chứ không dừng ở Mission. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V04.07', chinh:'Pí danh nay ôm đủ cả ba chặng — trước đây bỏ quên phần Zoey\u2019s Castle nên đổi pí danh là mất trắng bộ câu hỏi đã giải. Mốc trong bảng pí danh cũng đi hết cả hành trình chứ không dừng ở Mission. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V04.08', chinh:'Bấm chơi lại từ đầu nay có nhớ đã chơi lại mấy lần: số hiệu hiện ngay trên tem góc trang và trong thẻ Phá đảo. Trước đây bấm chơi lại là xoá trắng, không còn dấu vết nào của mấy lượt trước' }
           ] }
       ]
     },
@@ -425,9 +428,17 @@
             { ver:'V05.04', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V05.05', chinh:'Cửa mã bản ghi không còn bị trình duyệt tự điền nuốt lượt' },
             { ver:'V05.06', chinh:'Màn pháo hoa lúc phá đảo dài thêm: bắn 11 đợt thay vì 6, và nán lại đủ lâu trước khi đổi cảnh — trước đây màn hình chuyển sang phát mã lúc pháo còn đang bay. Cửa mã bản ghi cũng được vá theo luật ô nhập mới' },
-            { ver:'V05.07', chinh:'Rà lại hộp thư' },
+            { ver:'V05.07', chinh:'Nắn lại khung ảnh chạy: nhịp phóng của mỗi tấm nay khớp đúng nhịp chuyển tấm, hết cảnh đang phóng dở đã bị cắt ngang; khung cũng thôi làm vỡ hạt những tấm ảnh chụp thật. Soát ra năm ô ảnh kỷ niệm chưa có ảnh nào, lâu nay vẫn là ảnh vẽ tạm' },
             { ver:'V05.08', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V05.09', chinh:'Ô hỏi ở khu Open World thôi bị nhét lại đáp án vòng 2 sau mỗi câu' }
+          ] },
+        /* V05 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc phải mở dòng lớn
+           kế tiếp — đúng luật ghi ở đầu file. Không phải vì đợt này to hơn mấy
+           đợt trước, chỉ là hết chỗ. */
+        { ngay:'2026-08-27', sua:'2026-08-27', ver:'V06', so:'01',
+          chinh:'Dòng lớn mới vì V05 đã kín mười nấc đuôi. Mở màn bằng đợt dọn lại Khối vận hành',
+          chi:[
+            { ver:'V06.00', chinh:'Khối vận hành khoe luôn số lần đã chơi lại màn này, và ba cái nút gom vào một khối dọc cùng dáng với mấy bảng điều khiển khác trong bộ — trước đó hai nút nằm chung một hàng rồi nút thứ ba treo riêng bên dưới, nhìn ra thành hai cụm rời' }
           ] }
       ]
     },
@@ -452,12 +463,13 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
            xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V04', so:'03',
+        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V04', so:'04',
           chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' },
             { ver:'V04.01', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Ô trả lời câu hỏi vá theo cùng luật — đáp án có dấu cách nên ô này lệch nặng nhất' },
-            { ver:'V04.02', chinh:'Tiến độ bộ câu hỏi nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V04.02', chinh:'Tiến độ bộ câu hỏi nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V04.03', chinh:'Nút trong Khối vận hành xếp dọc và về chung một dáng với mấy bảng điều khiển khác trong bộ' }
           ] }
       ]
     },
@@ -479,13 +491,14 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-26', ver:'V03', so:'04',
+        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V03', so:'05',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
             { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
             { ver:'V03.01', chinh:'Hai cửa mã của trang không còn bị trình duyệt tự điền nuốt lượt' },
             { ver:'V03.02', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' },
-            { ver:'V03.03', chinh:'Tiến độ wishlist nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' }
+            { ver:'V03.03', chinh:'Tiến độ wishlist nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
+            { ver:'V03.04', chinh:'Ba cái nút trong Khối vận hành gom vào một khối dọc — hết cảnh hai nút nằm một hàng rồi nút thứ ba treo lủng lẳng bên dưới như hai cụm rời nhau' }
           ] }
       ]
     },
@@ -767,7 +780,54 @@
     '.ls-nho:first-of-type{border-top:0}',
     '.ls-nho b{font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-weight:500;font-size:9px;',
       'white-space:nowrap;color:var(--ls-acc,#8CE1B4)}',
-    '.ls-nho span{color:var(--ls-fg,#EAF0F7);opacity:.85}'
+    '.ls-nho span{color:var(--ls-fg,#EAF0F7);opacity:.85}',
+
+    /* ═══ NÚT CỦA MẤY BẢNG ĐIỀU KHIỂN — MỘT KHUÔN DUY NHẤT ══════════════════
+       BỆNH ĐÃ SỬA: bốn bảng điều khiển của bộ này (Khối vận hành ở Zoey's
+       Castle và Secret Chamber, Box Tổng tư lệnh ngoài bản đồ, khung Collected)
+       mỗi chỗ một kiểu nút — chỗ bo 5px chỗ bo tròn, chỗ nền đặc chỗ nền rỗng,
+       chỗ viền liền chỗ viền đứt, lại còn dán style thẳng vào thẻ nên sửa một
+       nút phải đi lục từng dòng HTML. Nhìn qua bốn bảng là thấy bốn trang khác
+       nhau, dù chúng làm đúng một việc.
+
+       Nay lấy khuôn của Khối vận hành bên Gate 2 làm chuẩn — pill viền đứt,
+       nền rỗng, chữ Oswald giãn rộng — và khai ở ĐÂY, file duy nhất mà cả sáu
+       trang đều nạp. Màu tự ăn `--ls-acc` của từng trang nên bản đồ ra amber,
+       Zoey's Castle ra tím, Gate 2 ra xanh lá: cùng một hình hài, đúng tông
+       từng khu.
+
+       `border-color` khai HAI LẦN là cố ý: dòng trên là bản lùi cho máy chưa
+       hiểu color-mix, dòng dưới mới là bản pha loãng. Máy cũ bỏ qua dòng dưới
+       và vẫn có viền tử tế. */
+    '.ops-btn{display:block;width:100%;margin:0;padding:11px 10px;border-radius:999px;',
+      'font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-size:9.5px;',
+      'font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-align:center;',
+      'cursor:pointer;background:none;color:var(--ls-acc,#8CE1B4);',
+      'border:1px dashed var(--ls-line,rgba(234,240,247,.16));',
+      'transition:background .18s ease,border-color .18s ease,color .18s ease}',
+    '@supports (border-color:color-mix(in srgb,red 30%,transparent)){',
+      '.ops-btn{border-color:color-mix(in srgb,var(--ls-acc,#8CE1B4) 46%,transparent)}}',
+    '.ops-btn:hover,.ops-btn:focus-visible{outline:none;border-color:var(--ls-acc,#8CE1B4)}',
+    '@supports (background:color-mix(in srgb,red 30%,transparent)){',
+      '.ops-btn:hover,.ops-btn:focus-visible{',
+        'background:color-mix(in srgb,var(--ls-acc,#8CE1B4) 11%,transparent)}}',
+    '.ops-btn:active{transform:translateY(1px)}',
+    '.ops-btn[disabled]{opacity:.34;cursor:not-allowed;transform:none}',
+    '.ops-btn[disabled]:hover{background:none;',
+      'border-color:var(--ls-line,rgba(234,240,247,.16))}',
+    /* Lệnh phụ (quay lại, bỏ qua, về hiện tại): cùng hình hài, nhạt hơn một
+       bậc — để mắt biết ngay đâu là lệnh chính mà không cần đọc hết chữ. */
+    '.ops-btn.phu{color:var(--ls-mo,rgba(234,240,247,.5));',
+      'border-color:var(--ls-line,rgba(234,240,247,.14))}',
+    '.ops-btn.phu:hover,.ops-btn.phu:focus-visible{color:var(--ls-fg,#EAF0F7);',
+      'border-color:var(--ls-line,rgba(234,240,247,.3));background:none}',
+    /* Xếp dọc — khuôn mặc định. Khoảng cách nằm ở `gap` của khối chứ không ở
+       margin từng nút, nên thêm/bớt nút không phải đi sửa margin chỗ nào. */
+    '.ops-cot{display:flex;flex-direction:column;gap:8px;margin-top:14px}',
+    /* Xếp ngang — CHỈ khi hai lệnh thật sự ngang vai nhau (kiểu vặn kim / về
+       hiện tại). Ba nút trở lên thì về hàng dọc, đừng nhồi. */
+    '.ops-hang{display:flex;gap:8px;margin-top:10px}',
+    '.ops-hang .ops-btn{flex:1;min-width:0}'
   ].join('');
 
   var style = document.createElement('style');

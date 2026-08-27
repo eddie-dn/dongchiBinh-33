@@ -1130,9 +1130,18 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   border:2px solid rgba(0,242,255,.35);overflow:hidden;flex:0 0 auto}
 #scene-game .slidebox img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:0;transform:scale(1.04);transition:opacity .55s ease,transform 3.4s linear;
-  image-rendering:pixelated;
+  opacity:0;transform:scale(1.04);
+  /* Nhịp phóng lấy thẳng từ `slide_auto` (xem buildSlides đặt --slide-zoom).
+     ĐÃ VẤP: viết cứng 3.4s trong khi ảnh tự đổi mỗi 3.0s, nên cú phóng chưa
+     bao giờ chạy hết — tấm nào cũng bị cắt ngang lúc còn đang nhích. Buộc hai
+     con số vào nhau thì sửa `slide_auto` một chỗ là cả hai đi theo. */
+  transition:opacity .55s ease,transform var(--slide-zoom,2.9s) linear;
 }
+/* Răng cưa CHỈ dành cho ảnh vẽ tạm — nó là tranh pixel nên phải giữ hạt vuông.
+   ĐÃ VẤP: đặt ở đây cho MỌI ảnh, nên ngày nào thả ảnh chụp thật vào thì ảnh
+   thật cũng bị dựng thành khối vuông, mà lỗi đó chỉ lộ ra đúng lúc đã thay ảnh
+   xong — muộn nhất có thể. Nay ảnh thật để trình duyệt tự lo. */
+#scene-game .slidebox img.ph{image-rendering:pixelated}
 #scene-game .slidebox img.on{opacity:1;transform:scale(1)}
 #scene-game .navrow{display:flex;align-items:center;justify-content:space-between;
   gap:8px;flex:0 0 auto}
@@ -1637,7 +1646,9 @@ const Kvh = (function(){
              : (r.g2Vao  ? 'đang giải mã' : 'chưa vào màn chơi'));
     let h = '<p class="kvh-lab"><span '
           + (window.LichSu ? LichSu.chu('DAD-B') : '') + '>Khối vận hành</span></p>'
-          + '<p class="kvh-txt">Trạng thái: <b>' + tt + '</b></p>';
+          + '<p class="kvh-txt">Trạng thái: <b>' + tt + '</b>'
+          + ((r.g2Reset | 0) ? ' · đã chơi lại <b>' + (r.g2Reset | 0) + '</b> lần' : '')
+          + '</p>';
     if(man === 'gate' && !xong)
       h += '<button class="kvh-go" id="kvhSkip" type="button">⏭ Bỏ qua · vào thẳng màn cuối</button>';
     than.innerHTML = h;
@@ -1844,7 +1855,13 @@ const Code = (function(){
     el.maO.innerHTML = chuMa.map(c=> c === ' ' ? '<b></b>' : '<i>'+c+'</i>').join('');
   }
 
-  el.replay.addEventListener('click', ()=>{ show('game'); Game.start(true); });
+  el.replay.addEventListener('click', ()=>{
+    /* Đếm ở ĐÂY chứ không đặt trong `reset()`. `reset()` còn được `enterGallery`
+       gọi mỗi lần vào chế độ xem lại — nhét ô đếm vào đó thì chỉ ngắm lại ảnh
+       cũng bị tính thành một lần chơi lại, con số thành vô nghĩa. */
+    try{ Store.patch({ g2Reset: (Store.get().g2Reset | 0) + 1 }); }catch(e){}
+    show('game'); Game.start(true);
+  });
   el.review.addEventListener('click', ()=>{ show('game'); Game.review(1); });
 
   return { open(){ build(); show('code'); } };
@@ -3031,10 +3048,16 @@ function pixelPlaceholder(i){
 }
 function buildSlides(){
   el.show.innerHTML = ''; el.dots.innerHTML = '';
+  /* Buộc nhịp phóng vào nhịp đổi ảnh: phóng xong ngay trước lúc tấm sau đè lên,
+     chừa .1s cho cú mờ chồng. Không có dòng này thì hai con số trôi khỏi nhau. */
+  el.show.style.setProperty('--slide-zoom',
+    Math.max(0.6, (T.slide_auto - 100) / 1000) + 's');
   C.photos.forEach((p,i)=>{
     const im = document.createElement('img');
     im.alt = C.photo_captions[i] || ('Ảnh kỷ niệm ' + (i+1));
-    im.onerror = function(){ this.onerror = null; this.src = pixelPlaceholder(i); };
+    im.onerror = function(){ this.onerror = null;
+      this.classList.add('ph');            /* ảnh vẽ tạm → mới giữ răng cưa */
+      this.src = pixelPlaceholder(i); };
     im.src = C.photos_base + p;
     if(i === 0) im.classList.add('on');
     el.show.appendChild(im);

@@ -1188,7 +1188,10 @@ render();
          (Bộ ĐẾM số lần sai KHÔNG nằm ở đây — nó ở sessionStorage `msnsai` để
           đóng trình duyệt là xoá. Xem khối GỢI Ý MISSION 2 ở trên.) */
       m2goi:!!s.m2goi,
-      dayKey:s.dayKey||'', dayN:s.dayN|0 };
+      dayKey:s.dayKey||'', dayN:s.dayN|0,
+      /* Số lần đã bấm "Chơi lại từ đầu". Phải SỐNG QUA cú xoá sạch bên dưới,
+         nếu không thì mỗi lần chơi lại nó lại về 0 và chẳng đếm được gì. */
+      reset:s.reset|0 };
   })();
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
 
@@ -1808,6 +1811,7 @@ render();
       + '<div class="msn-txt">Chúc đồng chí giữ vững phong độ tiếp tục phá đảo '
       + '<b>Map: Bản đồ tác chiến</b>.</div>'
       + '<div class="msn-sign">--Kí tên: Hội Đồng MeowMeow ฅ^>⩊&lt;^ ฅ</div>'
+      + '<p class="msn-quota">Đã chơi lại: <b>' + (st.reset|0) + '</b> lần</p>'
       + '<button class="navbtn wide" id="msnGo" style="margin-top:18px;justify-content:center">Mở khoá Bản đồ tác chiến ✈</button>'
       + '<div class="msn-row">'
       +   '<button class="msn-ghost" id="msnReset" type="button">↻ Chơi lại từ đầu</button>'
@@ -1837,7 +1841,10 @@ render();
         rs.style.color = '#ffb4a6'; rs.style.textDecoration = 'none'; return; }
       ping('reset_msn', 'chơi lại từ đầu');
       try{
-        localStorage.removeItem(KEY);
+        /* KHÔNG removeItem: xoá trắng khoá là mất luôn ô đếm số lần chơi lại.
+           Ghi đè bằng đúng MỘT trường `reset` — mọi trường khác biến mất y hệt
+           như xoá, còn con số thì đi tiếp. Cùng cách bản đồ giữ `resetCount`. */
+        localStorage.setItem(KEY, JSON.stringify({ reset: (st.reset|0) + 1 }));
         sessionStorage.removeItem('msnw'); sessionStorage.removeItem('msnsos');
         sessionStorage.removeItem('msnsai');
       }catch(e){}
@@ -2340,7 +2347,7 @@ render();
   });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.07<br>Last updated 26-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.08<br>Last updated 27-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
@@ -2354,7 +2361,12 @@ render();
   try{
     var n = document.getElementById('vstamp');
     var t = window.LichSu && LichSu.tem && LichSu.tem('DAD-A');
-    if(n && t) n.innerHTML = t.ver + '<br>Last updated ' + t.ngay;
+    /* Khối này là IIFE RIÊNG, không thấy biến `st` của khối Mission — phải đọc
+       thẳng localStorage. Đã vấp đúng kiểu lỗi này ở khối tín hiệu. */
+    var r = 0;
+    try{ r = (JSON.parse(localStorage.getItem('msn1') || '{}') || {}).reset | 0; }catch(e){}
+    if(n && t) n.innerHTML = t.ver + (r > 0 ? ' · R' + r : '')
+                           + '<br>Last updated ' + t.ngay;
   }catch(e){}
 })();
 </script>
