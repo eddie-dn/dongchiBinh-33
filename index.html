@@ -1042,7 +1042,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 27-Aug-2026 · V19.07">Last updated 27-Aug-2026 · V19.07</span>
+        <span class="stamp" id="stamp" data-base="Last updated 27-Aug-2026 · V19.08">Last updated 27-Aug-2026 · V19.08</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1442,7 +1442,7 @@ const NODES = [
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
         meta:'Published date: 27-Jul 2026', ver:'V04.08', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.00',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.01',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -2061,9 +2061,20 @@ const store = {
   morseSeen = !!s.morseSeen;
   if(morseSeen) frame.classList.add('hot');
   showPz(); refreshBeacons(); lum();
+  /* Ghi lại MỘT lần ngay lúc mở trang, chỉ để chốt hai trường `mapXong` /
+     `mapTong` cho Gate 2 đọc. Cần vì người đã phá đảo TỪ TRƯỚC bản này không
+     có hai trường đó trong kho — không ghi ở đây thì họ sang Gate 2 lại bị
+     cổng chặn oan, dù đã giải đủ bốn mật thư từ lâu. Không đổi gì khác. */
+  save();
 })();
 
-function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, eggReset, missionShown, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt, owNhacNgay, owNhacDem }); }
+function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unlocked, wrongCount, resetCount, eggReset, missionShown,
+    /* HAI TRƯỜNG NÀY LÀ ĐỂ CHO TRANG KHÁC ĐỌC, không phải cho bản đồ dùng.
+       Gate 2 cần biết bản đồ đã phá đảo chưa mới quyết định cho chơi hay chặn.
+       Khai sẵn ở đây thay vì bắt Gate 2 tự đếm `solved`: đếm thì phải biết
+       TỔNG là mấy, mà con số đó nằm ở bản đồ — chép sang trang kia là hai nơi
+       cùng giữ một sự thật, thêm một toạ độ là lệch ngay mà không ai báo. */
+    mapXong: nSolved() === NODES.length, mapTong: NODES.length, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt, owNhacNgay, owNhacDem }); }
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3606,7 +3617,14 @@ $('stampZone').addEventListener('click', ()=>{
      rồi, nhưng cú chạm trên điện thoại vẫn có thể lọt xuống dưới — mà mỗi lần
      lọt là ăn mất một lượt tự ăn mừng (chỉ có hai). Chặn thẳng ở đây. */
   if(credKhoa) return;
-  /* ⚠ CHƯA GIẢI XONG BỐN MẬT THƯ THÌ CỬA NÀY KHÔNG MỞ.
+  /* ⚠ CỬA NÀY CỐ Ý KHÔNG XÉT TIẾN ĐỘ — ĐỪNG KHOÁ LẠI.
+     Đợt 25 từng khoá ở đây (phải đủ bốn toạ độ mới đếm nhịp). Đã GỠ: cái thú
+     của cửa hậu là mò ra được BẤT CỨ LÚC NÀO, kể cả buổi đầu tiên; tìm thấy
+     khung Collected và xem màn pháo hoa sớm không hỏng gì cả.
+     Chốt chặn ĐÃ CHUYỂN SANG CỔNG GATE 2 (/dad/950901-b): vào được màn hình
+     nhưng chưa phá đảo bản đồ thì không chơi được, cổng nói thẳng lý do. Nhờ
+     vậy phần thưởng vẫn mở sớm, còn thứ tự chơi vẫn giữ.
+     LỊCH SỬ CŨ (giữ cho khỏi vá lại lần ba):
      BỆNH ĐÃ SỬA: đợt 24 đã bắt cái tem THÔI NHÁY khi chưa phá đảo, vì tem là
      cửa vào khu Easter Egg và nháy sớm là chỉ đường cho người còn chưa biết
      phải làm gì với bản đồ. Nhưng lúc đó mới giấu tấm biển, còn CÁNH CỬA thì
@@ -3617,9 +3635,7 @@ $('stampZone').addEventListener('click', ()=>{
      Nay đếm nhịp CHỈ chạy khi đã đủ bốn toạ độ. Vẫn KHÔNG khoá theo ngày —
      tìm ra Easter Egg trước 01-09 vẫn được, đúng luật README mục 19b; chỉ là
      phải phá đảo bản đồ trước đã.
-     Người đã tìm ra từ trước (`credFound` sẵn) vẫn gõ lại để mở khung như cũ,
-     vì lúc đó chắc chắn đã đủ bốn. */
-  if(nSolved() !== NODES.length){ tapN = 0; return; }
+     Người đã tìm ra từ trước (`credFound` sẵn) vẫn gõ lại để mở khung như cũ. */
   clearTimeout(tapT);
   tapN++;
   tapT = setTimeout(()=>{ tapN = 0; }, 900);   /* ngưng gõ 0,9 giây là đếm lại */

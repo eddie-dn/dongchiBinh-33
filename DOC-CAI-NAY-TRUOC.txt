@@ -1,4 +1,100 @@
 ════════════════════════════════════════
+ĐỢT 26 — chốt thứ tự chơi dời sang cổng Gate 2, mốc vòng, nguồn bờ biển.
+════════════════════════════════════════
+    index.html            assets/lichsu.js
+    dad/950901-b/index.html   dad/950901-b/config.js
+    README.md      test/ (thêm 1 bộ, sửa 1 bộ)      DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /  V19.07 → V19.08   ·  /dad/950901-b  V06.00 → V06.01
+         (khu Easter Egg  V19.06 → V19.07)
+
+
+① CHỐT THỨ TỰ CHƠI ĐỔI CHỖ: RỜI KHỎI TEM, VỀ CỔNG GATE 2
+────────────────────────────────────────
+Đợt 25 khoá cửa hậu 10 nhịp trên tem theo tiến độ. ĐÃ GỠ. Lý do gỡ: cái thú
+của cửa hậu là mò ra được BẤT CỨ LÚC NÀO — tìm thấy khung Collected và xem màn
+pháo hoa từ buổi đầu tiên thì có hỏng gì đâu, đó là phần thưởng của việc chịu
+khó mò.
+
+Thứ cần giữ không phải là "giấu phần thưởng", mà là THỨ TỰ CHƠI: đừng để ai đọc
+được bức thư trước khi giải xong bản đồ. Nên chốt chuyển sang đúng chỗ của nó —
+CỔNG PHÒNG LAB bên /dad/950901-b:
+
+    tem 10 nhịp        → khung Collected mở       ✔ mọi lúc
+    màn pháo hoa       → xem được                 ✔ mọi lúc
+    hồ sơ DAD-950901-B → bấm vào, sang Gate 2     ✔ mọi lúc
+    PHÒNG LAB Gate 2   → chơi được                ✘ phải phá đảo bản đồ đã
+
+Vào Gate 2 lúc bản đồ còn dở thì vẫn thấy màn cổng đầy đủ, nhưng nút "Bắt đầu
+giải mã" không hiện; thay vào đó là một dòng nói thẳng còn mấy mật thư chưa
+giải, kèm lối quay về bản đồ. Không để ai đứng nhìn màn hình im lìm mà đoán.
+
+CÁCH GATE 2 BIẾT: bản đồ tự khai hai trường `mapXong` / `mapTong` vào kho lưu
+chung, Gate 2 chỉ việc đọc. CỐ Ý KHÔNG cho Gate 2 tự đếm `solved` — đếm thì nó
+phải biết bản đồ có mấy toạ độ, mà con số đó là của bản đồ; chép sang đây là
+hai nơi cùng giữ một sự thật, thêm một toạ độ bên kia là bên này lệch ngay mà
+chẳng có gì báo.
+
+BẪY ĐÃ NÉ: người phá đảo bản đồ TỪ TRƯỚC bản này không có hai trường đó trong
+kho, sang Gate 2 sẽ bị chặn oan. Nên bản đồ gọi `save()` một lần ngay lúc mở
+trang để chốt lại hai trường. Kèm một đường lùi nữa trong chính Gate 2: có
+`mapTong` thì đếm `solved` theo con số đó.
+
+Cửa hậu 1959 (Box Tổng tư lệnh → vào thẳng màn cuối) VẪN đi thẳng — nó là cửa
+của người dựng game, không phải đường chơi.
+
+
+② MỐC VÒNG 1 / VÒNG 2 — TẮT MÁY GIỮA CHỪNG CÒN QUAY LẠI
+────────────────────────────────────────
+Trước đợt này Gate 2 chỉ nhớ mấy cột mốc LỚN: đã vào, đã giải xong hai vòng, đã
+phá đảo, đã đọc thư. Ai đang giữa vòng 2 mà tắt trình duyệt thì quay lại phải
+chơi lại CẢ VÒNG 1 — mà vòng 1 đã giải xong rồi.
+
+NAY ghi thêm đang ở vòng nào (`g2Round`). Vào lại thì nút PRESS START đổi nhãn
+thành "▶ CHƠI TIẾP · ROUND 02" và bấm là nhảy thẳng vòng 2. Khối vận hành cũng
+khoe "đang giải mã · vòng 2".
+
+CHỈ ghi MỐC VÒNG, cố ý KHÔNG ghi mấy chữ đã xếp được trong vòng đang dở: vào
+lại giữa một vòng thì mất đoạn dẫn truyện và cú chuyển cảnh của vòng đó — mà đó
+mới là phần đáng xem. Làm lại một vòng thì nhanh; làm lại từ vòng 1 mới là mất
+công.
+
+`startRound2()` vốn đã tự dựng được cảnh khi vào thẳng (ghi chú trong nó:
+"Vào thẳng từ chỗ khác … thì dựng ở đây"), nên nhảy vào giữa là an toàn sẵn.
+
+Chơi lại từ đầu thì xoá mốc. Giải xong hai vòng cũng thôi tính là đang dở.
+
+
+③ CREDIT GHI SAI NGUỒN ĐƯỜNG BỜ BIỂN
+────────────────────────────────────────
+Trang Credit của Bản đồ mật thư đang ghi:
+
+    "Đường bờ biển và bốn toạ độ vẽ tay bằng SVG, không mượn thư viện bản đồ nào"
+
+Vế sau đúng (không mượn thư viện nào), nhưng vế đầu thì SAI: đường bờ biển lấy
+từ NATURAL EARTH — bộ dữ liệu bản đồ thả vào phạm vi công cộng. Đã tách làm hai
+dòng, ghi đúng phần nào là đi mượn, phần nào là vẽ tay (bốn toạ độ và mạng lưới
+nối).
+
+⚠ CHƯA GHI MỨC TỈ LỆ. Natural Earth có ba mức — 1:10m, 1:50m, 1:110m — chưa
+chắc bản này lấy mức nào nên cố ý để trống thay vì đoán bừa vào trang Credit.
+Biết chắc thì nối thêm vào đúng dòng đó.
+
+
+④ BỘ KIỂM
+────────────────────────────────────────
+Thêm `cong26` (26 phép): cổng chặn khi bản đồ còn dở · cửa hậu 1959 vẫn thông ·
+mốc vòng chạy thật (bấm PRESS START là vào thẳng ROUND 02) · Credit nguồn bờ biển.
+
+Sửa `nac25` mục ②: nó đang khẳng định luật đợt 25 (cửa tem khoá theo tiến độ),
+mà luật đó vừa bị gỡ. Để nguyên thì bộ kiểm nói sai về chính sản phẩm.
+
+⚠ BẪY LÚC VIẾT BỘ KIỂM: gieo `g2Vao` KHÔNG mở được cổng — nó chỉ bỏ qua quãng
+chờ vài giây, không vặn được đồng hồ. Phải `clock.install` sang sau 01-09 rồi
+`clock.runFor` cho đồng hồ đếm ngược chạy tới nơi.
+
+
+════════════════════════════════════════
 ĐỢT 25 — vá cửa tem bỏ qua cả bản đồ, ô đếm chơi lại, nút bốn bảng về một khuôn.
 ════════════════════════════════════════
     index.html            assets/lichsu.js

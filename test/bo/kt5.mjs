@@ -12,6 +12,15 @@ console.log('\n⑨ Gate 2 — chơi thật qua vòng 1');
   const p = await ctx.newPage();
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
   const req=[]; p.on('request', r=>{ const u=r.url(); if(/\.webp$/.test(u)) req.push(u.split('/').pop()); });
+  /* ⚠ ĐỢT 26: cổng Gate 2 nay ĐÒI bản đồ tác chiến đã phá đảo mới cho chơi —
+     chưa xong thì `#gPlay` không bao giờ hiện và bộ này treo tới hết giờ.
+     Gieo sẵn cờ `mapXong` do bản đồ khai (xem `xongBanDo()` trong Gate 2).
+     `season` phải có kèm, nếu không `boot()` bên bản đồ dọn sạch (README 19b). */
+  await p.addInitScript(y=>{ if(!localStorage.getItem('mtv1'))
+    localStorage.setItem('mtv1', JSON.stringify(
+      { season:y, mapXong:true, mapTong:4, morseSeen:true, pzOn:true,
+        solved:{DAD:'x',HAN:'x',UIH:'x',SGN:'x'},
+        unlocked:{DAD:1,HAN:1,UIH:1,SGN:1} })); }, new Date().getFullYear());
   await p.clock.install({ time:new Date('2026-09-05T10:00:00+07:00') });
   await p.goto(B+'/dad/950901-b/',{waitUntil:'load'}); await p.waitForTimeout(1500);
   await p.clock.runFor(20000);

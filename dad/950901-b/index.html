@@ -197,6 +197,15 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
 .gate-look .dem{margin:14px 0 0;font-family:"Oswald";font-size:11px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;color:rgba(219,230,243,.55)}
 .gate-look .dem b{font-size:19px;font-weight:600;color:var(--neon);letter-spacing:.04em}
+/* ── Cổng mở nhưng bản đồ còn dở ──────────────────────────────────────────
+   Dùng chung ô `.dem` với đồng hồ đếm ngược, nhưng ĐÂY LÀ CÂU VĂN chứ không
+   phải số hiệu: bỏ chữ hoa và giãn chữ của `.dem`, trả về cỡ đọc bình thường.
+   Không có mấy dòng này thì câu bị kéo dãn thành một dải chữ hoa, đọc rất mệt. */
+.gate-look .dem .cho-map{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;
+  font-size:12.5px;line-height:1.65;letter-spacing:.01em;text-transform:none;
+  color:rgba(219,230,243,.72);text-wrap:balance}
+.gate-look .dem .cho-map b{font-size:inherit;color:var(--neon);letter-spacing:.01em}
+.gate-look .dem .cho-map-nut{margin-top:12px;text-decoration:none}
 /* Tem phiên bản: CĂN GIỮA dưới chân màn hình, không nhét vào góc phải nữa.
    Góc phải thì nó chen với hai dấu ngoặc `.corner` ở hai bên và lệch hẳn khỏi
    trục giữa mà cả trang đang dựa vào (mắt khoá · tiêu đề · đồng hồ · nút đều
@@ -1643,7 +1652,8 @@ const Kvh = (function(){
     const r = Store.get();
     const tt = xong ? 'đã phá đảo'
              : (r.g2Xong ? 'đã giải xong hai vòng'
-             : (r.g2Vao  ? 'đang giải mã' : 'chưa vào màn chơi'));
+             : (r.g2Vao  ? ('đang giải mã' + ((r.g2Round | 0) ? ' · vòng ' + (r.g2Round | 0) : ''))
+             : 'chưa vào màn chơi'));
     let h = '<p class="kvh-lab"><span '
           + (window.LichSu ? LichSu.chu('DAD-B') : '') + '>Khối vận hành</span></p>'
           + '<p class="kvh-txt">Trạng thái: <b>' + tt + '</b>'
@@ -1746,6 +1756,24 @@ const Gate = (function(){
     return v[Math.max(0, Math.min(v.length - 1, i))];
   }
 
+  /* ═══ BẢN ĐỒ TÁC CHIẾN XONG CHƯA ═══════════════════════════════════════
+     Đọc cờ do CHÍNH BẢN ĐỒ khai (`mapXong` / `mapTong` trong khoá `mtv1`),
+     KHÔNG tự đếm `solved` ở đây: đếm thì trang này phải biết bản đồ có mấy
+     toạ độ, mà con số đó là của bản đồ — thêm một toạ độ bên kia là bên này
+     lệch ngay mà chẳng có gì báo.
+     `mapTong` là đường lùi cho kho lưu đời cũ chưa có `mapXong`. */
+  function xongBanDo(){
+    var m = Store.get();
+    if(m.mapXong === true) return true;
+    if(m.mapTong) return Object.keys(m.solved || {}).length >= m.mapTong;
+    return false;
+  }
+  function conLaiMap(){
+    var m = Store.get();
+    if(!m.mapTong) return 0;
+    return Math.max(0, m.mapTong - Object.keys(m.solved || {}).length);
+  }
+
   function moCong(){
     if(moKhoaRoi) return;
     moKhoaRoi = true;
@@ -1753,6 +1781,23 @@ const Gate = (function(){
     el.dem.textContent = '';
     /* Đã phá đảo mini-game rồi thì khỏi bắt chơi lại — vào thẳng màn phát mã. */
     if(Store.get().g2Game){ Code.open(); return; }
+    /* ⚠ CHỐT THỨ TỰ CHƠI NẰM Ở ĐÂY, KHÔNG PHẢI Ở CỬA HẬU BÊN BẢN ĐỒ.
+       Tìm ra khung Collected và xem màn pháo hoa sớm thì thoải mái — đó là
+       phần thưởng của việc mò ra cửa hậu. Nhưng PHÒNG LAB thì phải xong bản
+       đồ mới vào: đây mới là chỗ giữ thứ tự của cả cuộc chơi.
+       `BYPASS` (cửa hậu 1959 từ Box Tổng tư lệnh) vẫn đi thẳng như cũ. */
+    if(!BYPASS && !xongBanDo()){
+      moKhoaRoi = false;             /* chưa mở thật, để lần sau còn mở lại */
+      el.loi.textContent = T.chua_xong_map;
+      el.dem.innerHTML = '<p class="cho-map">'
+        + (T.chua_xong_map_phu || '').replace('{n}', conLaiMap() || '') + '</p>'
+        + '<a class="ma-go cho-map-nut" href="/">'
+        + (T.chua_xong_map_nut || '← Về bản đồ') + '</a>';
+      el.play.hidden = true;
+      ping('g2_chan_chua_xong_map', 'còn ' + conLaiMap() + ' mật thư');
+      fitTitle(SCENES.gate);
+      return;
+    }
     el.loi.textContent = T.moi_vao_game;
     el.play.hidden = false;
     ping('g2_cong_mo', '', true);
@@ -1859,7 +1904,7 @@ const Code = (function(){
     /* Đếm ở ĐÂY chứ không đặt trong `reset()`. `reset()` còn được `enterGallery`
        gọi mỗi lần vào chế độ xem lại — nhét ô đếm vào đó thì chỉ ngắm lại ảnh
        cũng bị tính thành một lần chơi lại, con số thành vô nghĩa. */
-    try{ Store.patch({ g2Reset: (Store.get().g2Reset | 0) + 1 }); }catch(e){}
+    try{ Store.patch({ g2Reset: (Store.get().g2Reset | 0) + 1, g2Round:0 }); }catch(e){}
     show('game'); Game.start(true);
   });
   el.review.addEventListener('click', ()=>{ show('game'); Game.review(1); });
@@ -2776,7 +2821,25 @@ async function fail(le){
 }
 
 /* ═══ VÒNG 1 ══════════════════════════════════════════════════════════════ */
+/* ═══ MỐC VÒNG — ĐỂ TẮT MÁY GIỮA CHỪNG CÒN QUAY LẠI ĐƯỢC ═════════════════
+   Trang này vốn chỉ nhớ mấy cột mốc LỚN (đã vào, đã giải xong hai vòng, đã
+   phá đảo). Ai đang giữa vòng 2 mà tắt trình duyệt thì quay lại phải chơi lại
+   CẢ VÒNG 1 — mà vòng 1 đã giải xong rồi, làm lại chỉ tổ chán.
+   Nay ghi thêm ĐANG Ở VÒNG NÀO. Chỉ mốc vòng thôi, KHÔNG ghi mấy chữ đã xếp
+   được trong vòng đang dở: vào lại giữa một vòng thì mất hết đoạn dẫn truyện
+   và cú chuyển cảnh của vòng đó, mà đó mới là phần đáng xem. Làm lại một vòng
+   thì nhanh, làm lại từ vòng 1 mới là mất công. */
+function ghiVong(n){ try{ Store.patch({ g2Round:n }); }catch(e){} }
+function vongDangDo(){
+  try{
+    var m = Store.get();
+    if(m.g2Game || m.g2Xong) return 0;      /* xong rồi thì không còn dở */
+    return (m.g2Round | 0) === 2 ? 2 : 0;
+  }catch(e){ return 0; }
+}
+
 async function startRound1(){
+  ghiVong(1);
   ping('g2_vong_1', '', true);
   S.round = 1; S.busy = true;
   S.lastLen = 0; S.lastNoSp = 0; el.input.value = '';
@@ -2959,6 +3022,7 @@ function prepRound2(){
 
 /* ═══ VÒNG 2 ══════════════════════════════════════════════════════════════ */
 async function startRound2(){
+  ghiVong(2);
   ping('g2_vong_2', '', true);
   S.round = 2; S.busy = true;
   S.slabWord = C.round2.scrambled; S.slabRow = el.row2; S.slabEl = el.slab2;
@@ -3566,16 +3630,23 @@ async function bootUp(){
   el.bar.style.width = '100%';
   el.loadTxt.textContent = 'LOADING 100%';
   el.bootSub.textContent = C.ui.boot_ready;
+  /* Nhãn đặt Ở ĐÂY chứ không phải lúc dựng trang: lúc đó chưa chắc đã biết
+     người chơi đang dở vòng nào (kho lưu đọc xong rồi mới rõ). */
+  el.startBtn.textContent = (vongDangDo() === 2 && C.ui.start_btn_tiep)
+                            ? C.ui.start_btn_tiep : C.ui.start_btn;
   el.startBtn.hidden = false;
 
   const idle = window.requestIdleCallback || (f=> setTimeout(f,600));
   idle(()=>{ load(A('anim_wrong')); load(A('bg_r2')); });
 }
 el.startBtn.addEventListener('click', ()=>{
-  ping('g2_press_start');
+  const tiep = vongDangDo();
+  ping('g2_press_start', tiep === 2 ? 'chơi tiếp vòng 2' : '');
   el.boot.classList.add('gone');
   setTimeout(()=>{ el.boot.style.display = 'none'; }, 520);
-  startRound1();
+  /* `startRound2()` tự dựng được cảnh khi vào thẳng — xem ghi chú trong nó
+     ("Vào thẳng từ chỗ khác … thì dựng ở đây"), nên nhảy vào giữa là an toàn. */
+  if(tiep === 2) startRound2(); else startRound1();
 });
 
 /* Dọn sạch để chơi lại từ đầu */

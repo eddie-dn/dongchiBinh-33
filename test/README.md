@@ -70,7 +70,8 @@ không phải trang web hỏng.
 | `soi22` | cửa `/api/ping?soi_so=1` chỉ đúng chỗ tắc; đường chép về sổ không còn câm |
 | `phao24` | màn pháo hoa: lần đầu khoá đường ra, và dự phòng khi chưa xem được |
 | `cua24` | tem không nháy sớm · nhắc double-tap · cửa mã MAP-02 · Open World |
-| `nac25` | băng rôn sinh nhật không bung sớm · cửa 10 nhịp đòi phá đảo đủ bốn mật thư · ô đếm chơi lại của cả năm trang · nút bốn bảng cùng một khuôn · khung slideshow |
+| `nac25` | băng rôn sinh nhật không bung sớm · cửa 10 nhịp mở ở mọi tiến độ · ô đếm chơi lại của cả năm trang · nút bốn bảng cùng một khuôn · khung slideshow |
+| `cong26` | cổng Gate 2 đòi phá đảo bản đồ mới cho chơi · cửa hậu 1959 vẫn thông · mốc vòng 1/2 để quay lại chơi tiếp · Credit ghi đúng nguồn đường bờ biển |
 
 ## Thêm một bộ mới
 

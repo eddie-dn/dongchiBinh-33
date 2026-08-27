@@ -225,7 +225,7 @@
           ] },
         /* V18 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V19 —
            xem luật ở đầu file. Nấc 19 không nằm trong danh sách bỏ qua. */
-        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V19', so:'08',
+        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V19', so:'09',
           chinh:'Tem phiên bản và thẻ toạ độ lấy số hiệu thẳng từ sổ; ô mã chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V19.00', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' },
@@ -235,7 +235,8 @@
             { ver:'V19.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
             { ver:'V19.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V19.06', chinh:'Tem phiên bản thôi nháy sớm — phải giải xong cả bốn mật thư mới tới lượt nó, vì đó là cửa vào khu Easter Egg chứ không phải chỗ để gây chú ý. Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa lên nhanh hơn hẳn, bớt được quãng ngồi chờ; lỡ chưa xem được thì lần sau vẫn được xem lại' },
-            { ver:'V19.07', chinh:'Cửa vào khu Easter Egg nay đòi phá đảo đủ bốn mật thư mới chịu mở — trước đó gõ đúng nhịp lúc chưa giải được mã nào cũng lọt vào, bỏ qua sạch cả bản đồ. Box Tổng tư lệnh khoe luôn số lần đã chơi lại, dòng đếm thôi dán sát tên box, và mấy cái nút trong hộp về chung một dáng với các bảng khác trong bộ. Bấm chơi lại nay không xoá mất sổ đã chơi bao nhiêu lần nữa' }
+            { ver:'V19.07', chinh:'Cửa vào khu Easter Egg nay đòi phá đảo đủ bốn mật thư mới chịu mở — trước đó gõ đúng nhịp lúc chưa giải được mã nào cũng lọt vào, bỏ qua sạch cả bản đồ. Box Tổng tư lệnh khoe luôn số lần đã chơi lại, dòng đếm thôi dán sát tên box, và mấy cái nút trong hộp về chung một dáng với các bảng khác trong bộ. Bấm chơi lại nay không xoá mất sổ đã chơi bao nhiêu lần nữa' },
+            { ver:'V19.08', chinh:'Cửa vào khu Easter Egg mở lại cho mọi lúc — mò ra sớm là vẫn xem được khung Collected và màn pháo hoa, không phải phá đảo bản đồ trước. Chốt thứ tự chơi dời sang cổng phòng lab bên Gate 2. Trang Credit ghi lại đúng nguồn của đường bờ biển' }
           ] }
       ]
     },
@@ -317,7 +318,8 @@
             { ver:'V19.03', chinh:'Hộp nhắc khu Open World: ai phá đảo Gate 2 mà chưa ghé thì mỗi ngày được nhắc một lần, nhắc thay lời chào chứ không chen thêm hộp' },
             { ver:'V19.04', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V19.05', chinh:'Đường vào thẳng màn cuối Gate 2 nay hỏi mã. Màn pháo hoa: lần đầu phải xem hết một nhịp mới đi được, và chưa xem được thì lần sau vẫn được xem lại' },
-            { ver:'V19.06', chinh:'Hai cái nút trong khung Collected về chung một dáng với mấy bảng điều khiển khác trong bộ — cùng cỡ, cùng độ bo, xếp dọc cho dễ bấm bằng ngón cái' }
+            { ver:'V19.06', chinh:'Hai cái nút trong khung Collected về chung một dáng với mấy bảng điều khiển khác trong bộ — cùng cỡ, cùng độ bo, xếp dọc cho dễ bấm bằng ngón cái' },
+            { ver:'V19.07', chinh:'Mò ra khung Collected lúc nào cũng được, thôi đòi phá đảo bản đồ trước' }
           ] }
       ]
     },
@@ -435,10 +437,11 @@
         /* V05 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc phải mở dòng lớn
            kế tiếp — đúng luật ghi ở đầu file. Không phải vì đợt này to hơn mấy
            đợt trước, chỉ là hết chỗ. */
-        { ngay:'2026-08-27', sua:'2026-08-27', ver:'V06', so:'01',
+        { ngay:'2026-08-27', sua:'2026-08-27', ver:'V06', so:'02',
           chinh:'Dòng lớn mới vì V05 đã kín mười nấc đuôi. Mở màn bằng đợt dọn lại Khối vận hành',
           chi:[
-            { ver:'V06.00', chinh:'Khối vận hành khoe luôn số lần đã chơi lại màn này, và ba cái nút gom vào một khối dọc cùng dáng với mấy bảng điều khiển khác trong bộ — trước đó hai nút nằm chung một hàng rồi nút thứ ba treo riêng bên dưới, nhìn ra thành hai cụm rời' }
+            { ver:'V06.00', chinh:'Khối vận hành khoe luôn số lần đã chơi lại màn này, và ba cái nút gom vào một khối dọc cùng dáng với mấy bảng điều khiển khác trong bộ — trước đó hai nút nằm chung một hàng rồi nút thứ ba treo riêng bên dưới, nhìn ra thành hai cụm rời' },
+            { ver:'V06.01', chinh:'Cổng phòng lab nay đòi phá đảo bản đồ tác chiến trước: vào tới nơi vẫn thấy cửa, nhưng chưa xong bản đồ thì cổng nói còn mấy mật thư và chỉ luôn đường quay về. Thêm mốc vòng — tắt máy giữa chừng rồi quay lại là chơi tiếp đúng vòng đang dở, không phải làm lại từ vòng 1' }
           ] }
       ]
     },
@@ -1126,7 +1129,8 @@
           'Máy soạn xong thì ngồi lọc lại bằng tay, giữ đúng mấy đầu mục đã chọn'
         ] },
         { t: 'Bản đồ và mật thư', d: [
-          'Đường bờ biển và bốn toạ độ vẽ tay bằng SVG, không mượn thư viện bản đồ nào',
+          'Đường bờ biển lấy từ <b>Natural Earth</b> — bộ dữ liệu bản đồ thả vào phạm vi công cộng, ai dùng cũng được, không phải xin phép ai',
+          'Từ đó nắn lại thành SVG cho vừa khung, rồi vẽ tay bốn toạ độ và mạng lưới nối — không mượn thư viện bản đồ nào',
           'Mã Morse dùng bảng chuẩn quốc tế'
         ] }
       ],
@@ -1239,17 +1243,17 @@
 
      Đo lại: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào đây. */
   var THOI_GIAN = {
-    MAP:    '30 ngày 14 giờ 43 phút',
-    EGG:    '30 ngày 14 giờ 43 phút',   /* khu Easter Egg nằm trong chính bản đồ */
-    'DAD-A': '14 ngày 22 giờ 9 phút',
-    'DAD-B': '21 ngày 3 giờ 19 phút',
-    'HAN-A': '12 ngày 22 giờ 12 phút',
-    'HAN-B': '12 ngày 22 giờ 12 phút',
-    FX:     '12 ngày 5 giờ 13 phút',
-    _TONG:  '30 ngày 15 giờ 6 phút',
+    MAP:    '31 ngày 17 giờ 54 phút',
+    EGG:    '31 ngày 17 giờ 54 phút',
+    'DAD-A': '16 ngày 1 giờ 20 phút',
+    'DAD-B': '22 ngày 6 giờ 30 phút',
+    'HAN-A': '14 ngày 1 giờ 23 phút',
+    'HAN-B': '14 ngày 1 giờ 23 phút',
+    FX:     '12 ngày 13 giờ 19 phút',
+    _TONG:  '31 ngày 17 giờ 54 phút',
     _TU:    '26-07-2026',
-    _TOI:   '26-08-2026',
-    _COMMIT: 201
+    _TOI:   '27-08-2026',
+    _COMMIT: 218
   };
 
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số

@@ -48,6 +48,13 @@ const GATE_CONFIG = {
       'Đang kiểm tra…'
     ],
     moi_vao_game  : 'Người chơi đang tiến vào phòng lab',
+    /* Cổng mở đúng lịch rồi NHƯNG bản đồ tác chiến còn dở — vào được tới đây,
+       nhìn thấy cửa, mà chưa chơi được. Nói thẳng thiếu gì, đừng để người chơi
+       đứng nhìn một màn hình im lìm mà đoán. */
+    chua_xong_map : 'Cửa đã mở, nhưng khoá vẫn chưa nhả',
+    chua_xong_map_phu :
+      'Bản đồ tác chiến còn <b>{n}</b> mật thư chưa giải. Giải hết rồi quay lại đây, phòng lab mở ngay.',
+    chua_xong_map_nut : '← Về giải nốt bản đồ',
     da_pha_dao    : 'Phi ngựa tới Zoey’s Castle 🦄',
     nut_vao_game  : '▶ Bắt đầu giải mã',
     nut_choi_lai_game : 'Chơi lại',
@@ -65,7 +72,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 27-Aug-2026 · V06.00'
+    version       : 'Last updated 27-Aug-2026 · V06.01'
   }
 };
 
@@ -511,6 +518,9 @@ const GAME_CONFIG = {
     boot_sub     : 'Đang nạp dữ liệu phòng lab ngầm…',
     boot_ready   : 'Dữ liệu đã sẵn sàng.',
     start_btn    : '▶ PRESS START',
+    /* Nhãn thay thế khi lần trước đã qua được vòng 1 rồi mới tắt máy — vào lại
+       là chơi tiếp vòng 2 chứ không làm lại từ đầu. */
+    start_btn_tiep : '▶ CHƠI TIẾP · ROUND 02',
     swipe_hint   : '◄ VUỐT ĐỂ NGẮM BỐI CẢNH ►',
     unlock_btn   : 'UNLOCK',
     modal_title  : 'BÍ TỊCH BẠCH LONG',

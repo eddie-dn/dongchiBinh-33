@@ -46,14 +46,16 @@ for(const [ten, them, mongDoi] of [
   await ctx.close();
 }
 
-console.log('\n② CỬA 10 NHỊP TRÊN TEM — chưa phá đảo thì KHÔNG mở');
+/* ⚠ LUẬT NÀY ĐÃ ĐỔI Ở ĐỢT 26 — đừng khoá lại lần nữa.
+   Đợt 25 khoá cửa tem theo tiến độ. Đợt 26 GỠ: cửa hậu mở được ở mọi tiến độ
+   (mò ra sớm là phần thưởng), còn chốt thứ tự chơi chuyển sang CỔNG GATE 2 —
+   xem bộ `cong26`. */
+console.log('\n② CỬA 10 NHỊP TRÊN TEM — mở được ở MỌI tiến độ');
 {
   const { p, ctx } = await banDo({ channel:'map' });
   await nhip(p, '#stampZone', 10);
-  T('0/4 toạ độ: gõ đủ 10 nhịp vẫn KHÔNG vào được khung Collected',
-    !(await p.evaluate(()=>document.getElementById('credw').classList.contains('on'))));
-  T('0/4 toạ độ: không lỡ tay bật cờ đã-tìm-ra',
-    !(await p.evaluate(()=>{ try{ return !!JSON.parse(localStorage.mtv1||'{}').credFound; }catch(e){ return true; } })));
+  T('0/4 toạ độ: gõ đủ 10 nhịp VẪN vào được khung Collected',
+    await p.evaluate(()=>document.getElementById('credw').classList.contains('on')));
   await ctx.close();
 }
 {

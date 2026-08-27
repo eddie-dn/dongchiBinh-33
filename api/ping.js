@@ -289,6 +289,9 @@ const NHAN = {
      tới cổng cho tới lúc phá đảo và vào khu Open World. */
   g2_vao_cong:          'Tới cổng Easter Egg · Gate 2',
   g2_cong_mo:           'Cổng Gate 2 đã mở',
+  /* Cổng mở đúng lịch nhưng bản đồ tác chiến còn dở → chưa cho vào phòng lab.
+     `detail` mang số mật thư còn thiếu. */
+  g2_chan_chua_xong_map: 'Cổng Gate 2 chặn — bản đồ còn dở',
   g2_bam_choi:          'Bấm Bắt đầu giải mã',
   g2_press_start:       'Bấm PRESS START (vào game)',
   g2_vong_1:            'VÀO VÒNG 1 (RAZER)',
