@@ -1541,13 +1541,10 @@ render();
      đoán bằng độ dài như đời trước — xem ghi chú đầy đủ ở assets/lichsu.js.
      Thêm `nguyenGo`: cả cụm trong ô phải do chính tay người chơi gõ ra thì mới
      tự chấm; dán/tự điền vào rồi sửa một ký tự thì không. Enter vẫn luôn gửi. */
-    function laGoTay(e){
-      if(!e || !e.isTrusted) return false;
-      var t = e.inputType;
-      if(t === 'insertText') return (e.data || '').length === 1;
-      return t === 'insertCompositionText';       /* bàn phím Android gõ qua đây */
-    }
-    function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
+    /* Luật phân biệt NGƯỜI GÕ với TRÌNH DUYỆT TỰ ĐIỀN nay khai đúng MỘT chỗ:
+       `laGoTay` / `laXoa` trong /assets/lichsu.js, bày ra `window` cho mọi
+       trang gọi nhờ. Trước đợt 30 nó bị chép tám bản — mà luật đã phải sửa
+       hai lần, tức hai lần đi lục đủ tám chỗ. ĐỪNG chép lại vào đây. */
     /* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa — chờ đủ 800ms nữa thì thành đơ */
     var CHOT_MS = 420, nguyenGo = true, daiTruoc = 0;
     function veRoiChe(e){
@@ -2425,7 +2422,7 @@ render();
   });
 })();
 </script>
-<span class="vstamp" id="vstamp">V05.00<br>Last updated 28-Aug-2026</span>
+<span class="vstamp" id="vstamp">V05.01<br>Last updated 28-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

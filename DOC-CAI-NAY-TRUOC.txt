@@ -1,4 +1,79 @@
 ════════════════════════════════════════
+ĐỢT 30 — vòng 2 thôi cho không đáp án, luật ô nhập về một chỗ, Box gọn lại.
+════════════════════════════════════════
+    assets/lichsu.js      index.html            api/ping.js
+    dad/950901-a/index.html   dad/950901-b/index.html   dad/950901-b/config.js
+    han/961030-a/index.html   han/961030-b/index.html
+    test/ (sửa 4 bộ)      DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /  V20.01 → V20.02  ·  /dad/950901-a  V05.00 → V05.01
+         /dad/950901-b  V06.04 → V06.05
+         /han/961030-a  V04.05 → V04.06  ·  /han/961030-b  V03.06 → V03.07
+         (khu Easter Egg  V19.09 → V20.00)
+
+
+① VÒNG 2 CHO KHÔNG GẦN HẾT ĐÁP ÁN — LỖI NẶNG NHẤT ĐỢT NÀY
+────────────────────────────────────────
+Người chơi báo: vòng 2 cứ đoán trật là lộ thêm chữ, "HAO YUN" hiện dần ra.
+
+TRUY RA: `fail()` gọi `serveHint()` mỗi lần sai chính thức, mà trong `serveHint`
+có một dòng lộ thêm một chữ. Vòng 2 lại đặt `sai_moi_lan: 1` — tức MỖI PHÍM GÕ
+TRẬT đã là một lần sai chính thức. Cộng lại: trật mấy phím là lộ bấy nhiêu chữ.
+Vòng 2 có bốn gợi ý nên lộ được tới bốn chữ: Z · H · A · O.
+
+Chua nhất là ghi chú cũ ngay tại dòng đó đã hứa đúng điều ngược lại: "Đoán trật
+thì mất lượt chứ không được lộ không, nếu không cứ gõ bừa là có đáp án."
+
+NAY: chỉ mồi ĐÚNG MỘT chữ đầu (Z, ngoài cùng bên phải) và CHỈ MỘT LẦN cho cả
+vòng. Từ đó gợi ý chỉ còn là chữ nghĩa. Ai tự mò ra Z trước khi sai lần nào thì
+không được mồi — họ có cần đâu.
+
+ĐÃ ĐO HAI CHIỀU trong trình duyệt thật, gõ trật năm phím liên tiếp:
+    bản cũ  →  Z · Z · ZH · ZHA · ZHAO
+    bản mới →  Z · Z · Z  · Z   · Z
+
+⚠ Lần đo đầu KHÔNG phân biệt được hai bản: probe gõ phím kế tiếp trong lúc
+`S.busy` còn bật nên mấy phím sau bị nuốt sạch. Phải chờ ô nhập mở lại rồi mới
+gõ tiếp. Ai viết bộ kiểm cho màn này nhớ chờ, đừng gõ liên tục.
+
+
+② LUẬT CỔNG Ô NHẬP — TÁM BẢN CHÉP VỀ CÒN MỘT
+────────────────────────────────────────
+`laGoTay` / `laXoa` (phân biệt người gõ với trình duyệt tự điền) từng bị chép
+tám bản rải khắp năm file. Nay khai đúng một chỗ ở tầng ngoài `lichsu.js` và
+bày ra `window`; bảy bản trong trang đã xoá sạch. KHÔNG để lại bản dự phòng nào
+— bản dự phòng cũng là một bản chép, và là bản không ai nhớ sửa.
+
+⚠ BẪY ĐÃ VẤP NGAY LÚC GOM, suýt hỏng cả bộ: hai hàm này vốn khai LỒNG trong
+`veCuaMa`, nên dòng `window.laGoTay = laGoTay` ở tầng ngoài không thấy chúng.
+Nó ném "laGoTay is not defined", và cú ném đó cắt luôn `window.LichSu` ngay bên
+dưới — cả sáu trang mất sổ, mất tem, mất bộ nút, mất luôn ô nhập. Bộ kiểm bắt
+được ngay (34 phép đỏ). Nay khai ở TẦNG NGOÀI, `veCuaMa` gọi nhờ.
+
+
+③ BOX TỔNG TƯ LỆNH — GỌN LẠI, VÀ MỘT LỖI ẨN LỘ RA
+────────────────────────────────────────
+· Bốn lệnh xếp thành LƯỚI HAI CỘT thay vì một cột dài lê thê.
+· Nhãn ngắn: "Reset" (thôi chép tên chiến dịch — nó đã ở dòng ngay trên),
+  "Hack Map", "Clockwise" (ngày đã vặn nói ở dòng ghi chú bên dưới).
+· Viền LIỀN góc bo vừa thay cho pill viền nét đứt. Nét đứt hợp với nhãn nhỏ,
+  không hợp với nút to chiếm hết bề ngang hộp. Đổi ở `.ops-btn` nên khung
+  Collected và hai Khối vận hành bên HongHan ăn theo luôn; `.kvh-go` bên Gate 2
+  chỉnh tay cho khớp.
+· BỎ "Vào thẳng màn cuối Gate 2": lối đó TRÙNG với cửa hậu sẵn có bên trong
+  chính Gate 2 (gõ 10 nhịp vào tem → Khối vận hành → Bỏ qua). Gỡ cả nút, cửa mã
+  riêng, hàm đi thẳng và nhãn tín hiệu của nó.
+
+⚠ LỖI ẨN LỘ RA TỪ CHÍNH ẢNH CHỤP: nút "Vào thẳng màn cuối Gate 2" đứng chình
+ình trong lúc đang chọn MAP-01, dù mã đã ghi `hidden = true`. Vì `.ops-btn` đặt
+`display:block` — luật của một CLASS, nặng ký hơn `[hidden]{display:none}` vốn
+chỉ là mặc định của trình duyệt. Nghĩa là MỌI nút mang `.ops-btn` đều không ẩn
+được bằng `hidden` nữa; Clockwise ở MAP-02 cũng vậy. Trang Gate 2 từng vấp đúng
+cái này và đã vá riêng cho `.ma-go`, bộ nút chung thì chưa. Nay có
+`.ops-btn[hidden]{display:none}`. Đã đo lại: MAP-02 ẩn đúng Clockwise.
+
+
+════════════════════════════════════════
 ĐỢT 29 — pí danh đi theo người, và một lượt rà lỗi/dọn thừa.
 ════════════════════════════════════════
     api/pidanh.js (MỚI)   docs/apps-script/Code.gs   docs/GOOGLE-SHEETS.md

@@ -1031,7 +1031,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 28-Aug-2026 · V20.01">Last updated 28-Aug-2026 · V20.01</span>
+        <span class="stamp" id="stamp" data-base="Last updated 28-Aug-2026 · V20.02">Last updated 28-Aug-2026 · V20.02</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1154,11 +1154,19 @@ a.file:active{background:rgba(242,180,65,.07)}
              Zoey's Castle. Màu tự ăn `--ls-acc` của trang này (amber), nên
              KHÔNG dán màu thẳng vào thẻ nữa: dán vào thẻ là mỗi nút một sắc,
              mà sửa thì phải đi lục từng dòng. -->
-        <div class="ops-cot">
-          <button class="ops-btn" id="hqReset" type="button"></button>
+        <!-- LƯỚI HAI CỘT, hai hàng. Xếp dọc thì bốn lệnh thành một cột dài lê
+             thê; nhét cả bốn vào một hàng thì cụt chữ. Nhãn giữ NGẮN — tên
+             chiến dịch đã nằm ngay dòng trên rồi, nhắc lại trong nút là thừa.
+             ĐÃ BỎ "Vào thẳng màn cuối Gate 2": lối đó TRÙNG với cửa hậu sẵn có
+             bên trong chính Gate 2 (gõ 10 nhịp vào tem → Khối vận hành → Bỏ
+             qua). Hai đường cùng làm một việc, giữ đường nằm đúng chỗ của nó. -->
+        <div class="ops-luoi">
+          <button class="ops-btn" id="hqReset" type="button">Reset</button>
           <button class="ops-btn" id="hqHack" type="button">Hack Map</button>
           <button class="ops-btn" id="hqClock" type="button">Clockwise</button>
-          <button class="ops-btn" id="hqG2" type="button">⏩ Vào thẳng màn cuối Gate 2</button>
+          <button class="ops-btn phu" id="hqBack" type="button">&#8592; Chiến dịch khác</button>
+        </div>
+        <div class="ops-cot">
           <div id="hqClockBox" hidden>
             <input type="date" id="hqDate" aria-label="Chọn ngày"
               style="width:100%;padding:11px 12px;border-radius:6px;
@@ -1171,7 +1179,6 @@ a.file:active{background:rgba(242,180,65,.07)}
           </div>
         </div>
         <p class="cx-hint" id="hqNote"></p>
-        <button class="hq-back ops-btn phu" id="hqBack" type="button">&#8592; Chọn chiến dịch khác</button>
       </div>
     </div>
   </div>
@@ -1411,20 +1418,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V04.05' },
+        credGate:true, pub:'16-Aug 2026', ver:'V04.06' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.06' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.07' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026', ver:'V05.00', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V05.01', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.04',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.05',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -3364,20 +3371,14 @@ function hqPick(g){
   hqGame = g; hqArmed = false;
   const G = GAMES[g], rs = $('hqReset');
   $('hqTitle').textContent = G.code + ' · ' + G.name;
-  rs.textContent = 'Reset: ' + G.name;
+  rs.textContent = 'Reset';          /* tên chiến dịch đã ở dòng trên, khỏi lặp */
   const ok = (g === 'map') || eggSan();
   rs.disabled = !ok;
   /* Clockwise chỉ gắn với MAP-01 — Bản đồ tác chiến là nơi có đồng hồ đếm ngược.
      Ngược lại, cửa "vào thẳng màn cuối Gate 2" chỉ có nghĩa với MAP-02. */
   $('hqClock').hidden = g !== 'map';
-  $('hqG2').hidden = g !== 'egg';
   $('hqClockBox').hidden = true;
-  if(g === 'map' && LECH){
-    const d = new Date();
-    $('hqClock').textContent = 'Clockwise · đang ở ' + d.getDate() + '-' + (d.getMonth()+1);
-  }else{
-    $('hqClock').textContent = 'Clockwise';
-  }
+  $('hqClock').textContent = 'Clockwise';   /* ngày đã vặn nói ở dòng ghi chú */
   /* Bộ đếm "mở được Easter Egg mấy lần" — để biết mình đang ở đâu, và để thấy
      ngay rằng bấm Reset là được xem lại toàn bộ hiệu ứng từ đầu. */
   /* Số lần CHƠI LẠI không hiện ở đây — nó nằm ở cuối dòng tem, đúng một chỗ
@@ -3454,15 +3455,6 @@ $('hqHack').addEventListener('click', ()=> openPin(hqGame === 'egg' ? 'egg' : 'm
    (`eggHack`), coi như đã tìm ra và đã qua cửa (`credFound` + `eggWin`), và bỏ
    qua mốc ngày của Gate 2 (`g2Hack`). Dùng để xem trước màn cuối và vào chơi
    game bên trong mà không phải đợi tới 01-09. */
-/* Cửa này ĐI TẮT QUA CẢ MÀN CHƠI Gate 2, nên phải hỏi mã — trước đây bấm một
-   cái là vào thẳng. Cùng mã với Hack Map, và không kèm gợi ý nào. */
-function vaoThangG2(){
-  eggHack = true; g2Hack = true; eggTitleDay = null;
-  ghiMoEgg(); credFound = true; eggWin = true; save();
-  ping('hack_gate2', 'vào thẳng màn cuối Gate 2');
-  setTimeout(()=>{ location.href = EGG_HREF; }, 150);
-}
-$('hqG2').addEventListener('click', ()=> openPin('g2'));
 
 /* ---- Clockwise ----
    Chọn một ngày rồi vặn kim: trang tải lại với đồng hồ đặt đúng 00:00 ngày đó,
@@ -4427,8 +4419,6 @@ const CODES = {
      cửa Hack Map, nhưng KHÔNG CÓ GỢI Ý NÀO — `hints` để rỗng là `showHint()`
      tự dọn sạch dòng gợi ý. Đây là cửa đi tắt qua cả màn chơi, ai biết mã thì
      vào; không biết thì không có nửa câu nào chỉ đường. */
-  g2:   { kind:'PIN', code:'1959', label:'⏩ Vào thẳng màn cuối Gate 2',
-          hints:[], tries:2 },
   file: { kind:'PIN', code:'5121', label:'Mã PIN xem lại hồ sơ',
           hints:['Gợi ý số 2, mission 3', 'MIG-21', '5 ngôi sao', 'Phi công Phạm Tuân'],
           lockAfter:3, lockMs:3600000 }
@@ -4488,13 +4478,10 @@ function drawPin(iRo){
    đoán bằng độ dài như đời trước — xem ghi chú đầy đủ ở assets/lichsu.js.
    Thêm `pinNguyenGo`: cả cụm trong ô phải do chính tay người chơi gõ ra thì
    mới tự chấm. Enter thì lúc nào cũng gửi. */
-function laGoTay(e){
-  if(!e || !e.isTrusted) return false;
-  const t = e.inputType;
-  if(t === 'insertText') return (e.data || '').length === 1;
-  return t === 'insertCompositionText';        /* bàn phím Android gõ qua đây */
-}
-function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
+/* Luật phân biệt NGƯỜI GÕ với TRÌNH DUYỆT TỰ ĐIỀN nay khai đúng MỘT chỗ:
+   `laGoTay` / `laXoa` trong /assets/lichsu.js, bày ra `window` cho mọi
+   trang gọi nhờ. Trước đợt 30 nó bị chép tám bản — mà luật đã phải sửa
+   hai lần, tức hai lần đi lục đủ tám chỗ. ĐỪNG chép lại vào đây. */
 /* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa — chờ đủ PIN_HIEN_MS nữa thì đơ */
 const PIN_CHOT_MS = 420;
 let pinNguyenGo = true, pinDaiTruoc = 0;
@@ -4598,27 +4585,6 @@ function hackTry(){
     msg.className = 'cx-hint bad';
     msg.textContent = 'Chưa đúng · Sai ' + pinFail + '/' + max + ' — gợi ý đã đổi' +
       (pinFail === max ? ' · sai thêm lần nữa là khoá 60 phút' : '');
-    pinDaiTruoc = 0; pinNguyenGo = true;
-    $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
-    return;
-  }
-  /* Vào thẳng màn cuối Gate 2 — cùng mã với Hack Map, nhưng việc làm sau khi
-     mở thì khác hẳn: không đụng gì tới bản đồ, đi thẳng sang Gate 2. */
-  if(pinMode === 'g2'){
-    if(codeNorm(v) === codeNorm(CODES.g2.code)){
-      hackTries = 0; closePin(); closeWipe(); closeCx();
-      vaoThangG2();
-      return;
-    }
-    hackTries++;
-    /* ĐÃ VẤP: hai cửa mã trong Box Tổng tư lệnh (cửa này và cửa Hack Map bên
-       dưới) gõ sai bao nhiêu lần cũng KHÔNG bắn một tín hiệu nào — đọc sổ
-       không thể biết có ai từng mò tới đây. Nay có. */
-    ping('sai_pin_g2', 'lần ' + hackTries + '/' + CODES.g2.tries + goSai(v));
-    const conLai = CODES.g2.tries - hackTries;
-    if(conLai <= 0){ hackTries = 0; closePin(); closeWipe(); closeCx(); return; }
-    msg.className = 'cx-hint bad';
-    msg.textContent = 'Sai rồi, còn ' + conLai + ' lượt';
     pinDaiTruoc = 0; pinNguyenGo = true;
     $('pinIn').value = ''; drawPin(-1); $('pinIn').focus();
     return;

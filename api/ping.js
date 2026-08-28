@@ -140,10 +140,10 @@ gan('dad-a', `
 gan('ban-do', `
   bay_lai_bang_ron cham_ho_so_niem_phong chon_kenh clockwise clue_game_on
   cua_sau doi_tab easter_egg_found get_to_know_me giai_dung giai_sai
-  gui_tam_tu gui_tam_tu_loi hack_gate2 hackmap hoan_thanh hop_chao
+  gui_tam_tu gui_tam_tu_loi hackmap hoan_thanh hop_chao
   khoa_pin_ho_so mo_ho_so mo_ho_so_bang_pin mo_hop mo_khoa_morse
   mo_toa_do_niem_phong nhac_goi_y redirect_ho_so reset_easter_egg
-  sai_pin_ho_so sai_pin_g2 sai_pin_hack unlock_gate1 vao_ho_so xem_lai_phao_hoa
+  sai_pin_ho_so sai_pin_hack unlock_gate1 vao_ho_so xem_lai_phao_hoa
   ghe_tham tai_lai`);      /* hai tên này cũng gọi bằng biểu thức điều kiện */
 
 gan('phao-hoa', 'phao_hoa_che phao_hoa_dong phao_hoa_mo');
@@ -267,7 +267,6 @@ const NHAN = {
   /* ── BẢN ĐỒ · mấy mốc trước đây BẮN NHƯNG KHÔNG CÓ NHÃN nên bị bỏ qua ──── */
   unlock_gate1:         'MỞ ĐƯỢC Easter Egg · Gate 1',
   cua_sau:              'Gõ 10 nhịp mở khung Collected',
-  hack_gate2:           'Mở MAP-02 bằng PIN (chưa tới ngày)',
   reset_easter_egg:     'Reset MAP-02',
   hop_chao:             'Hộp chào Honghandangiu hiện ra',
   nhac_goi_y:           'Nhắc gợi ý mật thư',
@@ -275,11 +274,12 @@ const NHAN = {
   nhay_phan1:           'Nháy nút Phần 1',
   mo_ho_so_bang_pin:    'Mở hồ sơ niêm phong bằng PIN',
   sai_pin_ho_so:        'Nhập sai PIN hồ sơ',
-  /* ⚠ HAI TÊN NÀY BẮT ĐẦU BẰNG `sai_pin` — cùng tiền tố với mã Mission bên
-     Hồ sơ Phi đoàn. Luật đoán trang theo tiền tố sẽ đẩy nhầm chúng về `dad-a`,
-     nên chúng ĐÃ ĐƯỢC KHAI ĐÍCH DANH trong bảng `ban-do` ở trên. Đổi tên hay
-     thêm anh em cùng họ thì nhớ khai kèm. */
-  sai_pin_g2:           'Nhập sai mã cửa MAP-02',
+  /* ⚠ TÊN NÀY BẮT ĐẦU BẰNG `sai_pin` — cùng tiền tố với mã Mission bên Hồ sơ
+     Phi đoàn. Luật đoán trang theo tiền tố sẽ đẩy nhầm nó về `dad-a`, nên nó
+     ĐÃ ĐƯỢC KHAI ĐÍCH DANH trong bảng `ban-do` ở trên. Đổi tên hay thêm anh em
+     cùng họ thì nhớ khai kèm.
+     (`sai_pin_g2` đã bỏ ở đợt 30 cùng lúc gỡ lối đi thẳng màn cuối Gate 2 —
+      lối đó trùng với cửa hậu sẵn có bên trong chính Gate 2.) */
   sai_pin_hack:         'Nhập sai mã Hack Map',
   khoa_pin_ho_so:       'PIN hồ sơ bị khoá tạm',
   cham_ho_so_niem_phong:'Chạm hồ sơ còn niêm phong',

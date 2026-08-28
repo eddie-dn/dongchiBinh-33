@@ -375,7 +375,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V04.05<br>Last updated 28-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V04.06<br>Last updated 28-Aug-2026"></span>
     </span>
   </div>
 
@@ -1080,13 +1080,10 @@ function drawQ(pos){
      chú đầy đủ ở assets/lichsu.js. Ô này dùng CHUNG id `#inp` với cửa mã của
      chính trang, nên trình duyệt rất sẵn lòng nhét lại mã cửa vào đây: một cú
      tự điền là bay một lượt, mà cháy lượt thì câu đó bị gác lại 30 phút. */
-  function laGoTay(e){
-    if(!e || !e.isTrusted) return false;
-    var t = e.inputType;
-    if(t === 'insertText') return (e.data || '').length === 1;
-    return t === 'insertCompositionText';       /* bàn phím Android gõ qua đây */
-  }
-  function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
+  /* Luật phân biệt NGƯỜI GÕ với TRÌNH DUYỆT TỰ ĐIỀN nay khai đúng MỘT chỗ:
+     `laGoTay` / `laXoa` trong /assets/lichsu.js, bày ra `window` cho mọi
+     trang gọi nhờ. Trước đợt 30 nó bị chép tám bản — mà luật đã phải sửa
+     hai lần, tức hai lần đi lục đủ tám chỗ. ĐỪNG chép lại vào đây. */
   var nguyenGo = true, daiTruoc = 0;
   /* Ô nhập luôn bằng đúng hàng ô — xem ghi chú "NỐI Ô NHẬP VỚI HÀNG Ô" ở cửa
      mã bên dưới. Ô này còn dễ lệch hơn vì đáp án có dấu cách giữa các từ. */
@@ -1244,13 +1241,6 @@ function drawGateA(){
      đoán bằng độ dài như đời trước — xem ghi chú đầy đủ ở assets/lichsu.js.
      Thêm `nguyenGo`: cả cụm trong ô phải do chính tay người chơi gõ ra thì mới
      tự chấm; dán/tự điền vào rồi sửa một ký tự thì không. Enter vẫn luôn gửi. */
-  function laGoTay(e){
-    if(!e || !e.isTrusted) return false;
-    var t = e.inputType;
-    if(t === 'insertText') return (e.data || '').length === 1;
-    return t === 'insertCompositionText';       /* bàn phím Android gõ qua đây */
-  }
-  function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
   /* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa — chờ đủ 800ms nữa thì thành đơ */
   var CHOT_MS = 420, nguyenGo = true, daiTruoc = 0;
   function veRoiChe(e){
@@ -1479,13 +1469,6 @@ function hopPin(){
      đoán bằng độ dài như đời trước — xem ghi chú đầy đủ ở assets/lichsu.js.
      Thêm `nguyenGo`: cả cụm trong ô phải do chính tay người chơi gõ ra thì mới
      tự chấm; dán/tự điền vào rồi sửa một ký tự thì không. Enter vẫn luôn gửi. */
-  function laGoTay(e){
-    if(!e || !e.isTrusted) return false;
-    var t = e.inputType;
-    if(t === 'insertText') return (e.data || '').length === 1;
-    return t === 'insertCompositionText';       /* bàn phím Android gõ qua đây */
-  }
-  function laXoa(e){ return !!(e && e.isTrusted && /^delete/.test(e.inputType || '')); }
   /* Ký tự CUỐI chờ nhịp ngắn hơn mấy ký tự giữa — chờ đủ 800ms nữa thì thành đơ */
   var CHOT_MS = 420, nguyenGo = true, daiTruoc = 0;
   function veRoiChe(e){

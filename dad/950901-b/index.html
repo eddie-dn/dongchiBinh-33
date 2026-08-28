@@ -259,10 +259,14 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
   font-family:"Oswald",system-ui,sans-serif;font-size:10.5px;font-weight:600;
   letter-spacing:.22em;text-transform:uppercase;color:rgba(140,225,180,.9)}
 .kvh-txt{margin:0;text-align:center;font-size:10.5px;line-height:1.6;color:rgba(234,240,247,.5)}
-.kvh-go{display:block;width:100%;margin:14px 0 0;padding:11px 8px;border-radius:999px;
+/* Cùng khuôn với `.ops-btn` bên /assets/lichsu.js: góc bo vừa, viền LIỀN.
+   Bản trước là pill viền nét đứt — ở cỡ nút chiếm hết bề ngang hộp thì nét đứt
+   nhìn rối. Đổi bên kia thì đổi cả bên này, hai chỗ phải cùng một dáng. */
+.kvh-go{display:block;width:100%;margin:14px 0 0;padding:10px 9px;border-radius:6px;
   font-family:"Oswald",system-ui,sans-serif;font-size:9.5px;font-weight:600;
-  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;
-  background:none;color:rgba(140,225,180,.9);border:1px dashed rgba(140,225,180,.5)}
+  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;
+  background:rgba(6,16,31,.5);color:rgba(140,225,180,.9);
+  border:1px solid rgba(140,225,180,.42)}
 .kvh-go:active{transform:translateY(1px)}
 /* Dòng ký tên, nằm TRÊN dòng phiên bản. Cỡ chữ · giãn chữ · độ mờ lấy ĐÚNG
    theo dòng "© Bản quyền · …" ở chân bản đồ ngoài trang chủ (`.cr`), để hai
@@ -2409,9 +2413,18 @@ async function grantHint(round){
   await say(C.dialogues.hint_show
     .replace('{N}', st.n)
     .replace('{TEXT}', list[st.n - 1]), 'warn');
-  /* Vòng 2 chỉ lộ chữ qua đường GỢI Ý. Đoán trật thì mất lượt chứ không được
-     lộ không, nếu không cứ gõ bừa là có đáp án. */
-  if(round === 2 && uncoverNext()) resetOnhap(!S.inputLocked);
+  /* ⚠ CHỈ LỘ ĐÚNG MỘT CHỮ, VÀ CHỈ MỘT LẦN CHO CẢ VÒNG.
+     BỆNH ĐÃ SỬA: dòng này vốn không có điều kiện `S.dug === 0`, nên MỖI LẦN
+     gợi ý là lộ thêm một chữ. Mà vòng 2 đặt `sai_moi_lan: 1`, tức mỗi phím gõ
+     trật đã là một lần sai chính thức, và mỗi lần sai chính thức thì gọi gợi ý.
+     Cộng lại: gõ trật mấy phím là lộ ra bấy nhiêu chữ — trật ba cái đã thấy
+     "HAO", trật thêm nữa là ra gần hết ZHAO YUN. Đúng cái ghi chú cũ ngay đây
+     đã hứa sẽ không xảy ra ("cứ gõ bừa là có đáp án").
+     NAY: chữ đầu (Z, ngoài cùng bên phải) được lộ MỘT lần như cú mồi cho biết
+     bắt đầu từ đâu; từ đó trở đi gợi ý chỉ còn là CHỮ NGHĨA, không cho thêm
+     chữ cái nào. Ai tự mò ra Z trước khi sai lần nào thì `S.dug` đã là 1, và
+     cũng không được mồi — đúng lẽ, vì họ có cần đâu. */
+  if(round === 2 && S.dug === 0 && uncoverNext()) resetOnhap(!S.inputLocked);
 }
 
 let lockTimer = 0;

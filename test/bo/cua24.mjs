@@ -65,28 +65,21 @@ console.log('\n② NHẮC DOUBLE-TAP — có thật, và đúng luật đang kha
   await ctx.close();
 }
 
-console.log('\n③ MAP-02 "vào thẳng màn cuối Gate 2" phải HỎI MÃ, và không gợi ý');
+/* ⚠ LUẬT ĐÃ ĐỔI Ở ĐỢT 30 — đừng dựng lại lối đi này.
+   Đợt 24 thêm "vào thẳng màn cuối Gate 2" vào Box Tổng tư lệnh, có cửa mã
+   riêng. Đợt 30 GỠ HẲN: lối đó TRÙNG với cửa hậu sẵn có bên trong chính Gate 2
+   (gõ 10 nhịp vào tem → Khối vận hành → Bỏ qua). Hai đường cùng làm một việc,
+   giữ đường nằm đúng chỗ của nó, Box Tổng tư lệnh gọn được một nút. */
+console.log('\n③ LỐI ĐI THẲNG MÀN CUỐI GATE 2 — đã gỡ khỏi Box Tổng tư lệnh');
 {
   const src = readFileSync(GOC + '/index.html', 'utf8');
-  T('có khai cửa mã riêng cho đường này', /g2:\s*\{ kind:'PIN', code:'1959'/.test(src));
-  T('KHÔNG kèm gợi ý nào', /hints:\[\], tries:2/.test(src));
-  T('nút bấm mở cửa mã chứ không đi thẳng', /\$\('hqG2'\)\.addEventListener\('click', \(\)=> openPin\('g2'\)\)/.test(src));
-
-  const { p, ctx } = await banDo({ channel:'map', credFound:true, eggWin:true,
-    solved:{DAD:'x',HAN:'x',UIH:'x',SGN:'x'}, unlocked:{DAD:1,HAN:1,UIH:1,SGN:1} });
-  await p.evaluate(()=>openPin('g2'));
-  await cho(p, 300);
-  T('mở ra đúng bốn ô mã', await p.locator('#pinDash span').count() === 4);
-  T('dòng gợi ý TRỐNG TRƠN', (await p.locator('#pinHint').innerHTML()) === '',
-    await p.locator('#pinHint').innerHTML());
-  /* gõ sai → phải báo sai, không cho qua */
-  await p.locator('#pinIn').fill('1111');
-  await p.locator('#pinIn').press('Enter');
-  await cho(p, 300);
-  T('gõ sai thì không cho vào', p.url().includes('/?stay=1'), p.url());
-  T('và báo còn mấy lượt', /còn 1 lượt/.test(await p.locator('#pinMsg').textContent()),
-    await p.locator('#pinMsg').textContent());
-  await ctx.close();
+  T('không còn nút trong Box Tổng tư lệnh', !/id="hqG2"/.test(src));
+  T('không còn cửa mã riêng', !/g2:\s*\{ kind:'PIN'/.test(src));
+  T('không còn hàm đi thẳng', !/function vaoThangG2/.test(src));
+  const pg = readFileSync(GOC + '/api/ping.js', 'utf8');
+  T('nhãn tín hiệu của nó cũng dọn theo', !/hack_gate2/.test(pg));
+  const g2 = readFileSync(GOC + '/dad/950901-b/index.html', 'utf8');
+  T('cửa hậu bên trong Gate 2 VẪN CÒN', /id="kvhSkip"/.test(g2));
 }
 
 console.log('\n④ OPEN WORLD không bị nhét lại đáp án vòng 2 vào ô hỏi');

@@ -81,7 +81,7 @@ console.log('\n④ R(n) CHỈ GHI MỘT CHỖ — mọi trang có tem đều man
 
 console.log('\n⑤ NHẬP SAI — tín hiệu mang theo CHUỖI ĐÃ GÕ');
 {
-  for(const [ten, f, n] of [['Bản đồ','index.html',6], ['Hồ sơ Phi đoàn','dad/950901-a/index.html',2],
+  for(const [ten, f, n] of [['Bản đồ','index.html',5], ['Hồ sơ Phi đoàn','dad/950901-a/index.html',2],
                             ['Gate 2','dad/950901-b/index.html',2], ["Zoey's Castle",'han/961030-a/index.html',4],
                             ['Secret Chamber','han/961030-b/index.html',2]]){
     const s = doc(f);
@@ -90,8 +90,11 @@ console.log('\n⑤ NHẬP SAI — tín hiệu mang theo CHUỖI ĐÃ GÕ');
     T(ten + ': cắt chuỗi cho khỏi tràn', /slice\(0,24\)/.test(s));
   }
   const i = doc('index.html');
-  T('hai cửa mã trong Box Tổng tư lệnh nay có bắn tín hiệu',
-    /ping\('sai_pin_g2'/.test(i) && /ping\('sai_pin_hack'/.test(i));
+  /* ĐỢT 30 gỡ cửa mã MAP-02 (trùng với cửa hậu bên trong Gate 2), nên chỉ còn
+     một cửa mã trong Box Tổng tư lệnh — cửa Hack Map. */
+  T('cửa mã Hack Map nay có bắn tín hiệu khi gõ sai',
+    /ping\('sai_pin_hack'/.test(i));
+  T('và cửa mã MAP-02 đã gỡ hẳn', !/sai_pin_g2/.test(i));
   T('Gate 2 chộp chuỗi ngay đầu hàm, trước khi ô bị dọn',
     /const daGo = el\.input\.value;/.test(doc('dad/950901-b/index.html')));
   /* ⚠ BẪY ĐÃ VẤP NGAY TRONG ĐỢT NÀY: `goSai` khai lồng trong một khối IIFE thì
@@ -112,10 +115,10 @@ console.log('\n⑤ NHẬP SAI — tín hiệu mang theo CHUỖI ĐÃ GÕ');
   }
   const pg = doc('api/ping.js');
   T('máy chủ nới ô chi tiết đủ chỗ', /slice\(0, 140\)/.test(pg));
-  T('hai sự kiện mới có nhãn', /sai_pin_g2:/.test(pg) && /sai_pin_hack:/.test(pg));
-  /* ⚠ Chúng cùng tiền tố `sai_pin` với mã Mission bên dad-a → phải khai đích
-     danh vào bảng ban-do, không thì luật đoán theo tiền tố đẩy nhầm trang. */
-  T('và được khai đích danh cho đúng trang', /sai_pin_g2 sai_pin_hack/.test(pg));
+  T('sự kiện cửa mã Hack Map có nhãn', /sai_pin_hack:/.test(pg));
+  /* ⚠ Nó cùng tiền tố `sai_pin` với mã Mission bên dad-a → phải khai đích danh
+     vào bảng ban-do, không thì luật đoán theo tiền tố đẩy nhầm trang. */
+  T('và được khai đích danh cho đúng trang', /sai_pin_ho_so sai_pin_hack/.test(pg));
 }
 
 await br.close();

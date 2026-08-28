@@ -96,12 +96,13 @@ console.log('\n④ NÚT BỐN BẢNG ĐIỀU KHIỂN — CÙNG MỘT KHUÔN');
     eggWin:true, winParty:true }, DU4));
   await nhip(p, '#flagZone', 5);
   await nhip(p, '#hqCardMap', 5);
-  const ds = ['hqReset','hqHack','hqClock','hqG2','hqBack','hqClockGo','hqClockOff'];
-  T('cả 7 nút Box Tổng tư lệnh mang khuôn chung',
+  const ds = ['hqReset','hqHack','hqClock','hqBack','hqClockGo','hqClockOff'];
+  T('cả 6 nút Box Tổng tư lệnh mang khuôn chung',
     await p.evaluate(l=>l.every(id=>document.getElementById(id).classList.contains('ops-btn')), ds));
   const kieu = await p.evaluate(()=>{ const c=getComputedStyle(document.getElementById('hqReset'));
     return { bo:c.borderRadius, net:c.borderStyle }; });
-  T('đúng dáng pill viền nét đứt', kieu.bo === '999px' && kieu.net === 'dashed', JSON.stringify(kieu));
+  /* ĐỢT 30: góc bo vừa + viền LIỀN, thay cho pill viền nét đứt. */
+  T('đúng dáng góc bo vừa, viền liền', kieu.bo === '6px' && kieu.net === 'solid', JSON.stringify(kieu));
   T('không còn nút nào dán style thẳng vào thẻ',
     await p.evaluate(l=>l.every(id=>!document.getElementById(id).getAttribute('style')), ds));
   await ctx.close();
