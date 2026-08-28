@@ -51,10 +51,9 @@ const GATE_CONFIG = {
     /* Cổng mở đúng lịch rồi NHƯNG bản đồ tác chiến còn dở — vào được tới đây,
        nhìn thấy cửa, mà chưa chơi được. Nói thẳng thiếu gì, đừng để người chơi
        đứng nhìn một màn hình im lìm mà đoán. */
-    chua_xong_map : 'Cửa đã mở, nhưng khoá vẫn chưa nhả',
-    chua_xong_map_phu :
-      'Bản đồ tác chiến còn <b>{n}</b> mật thư chưa giải. Giải hết rồi quay lại đây, phòng lab mở ngay.',
-    chua_xong_map_nut : '← Về giải nốt bản đồ',
+    chua_xong_map : 'Giải xong Bản đồ tác chiến để vào chơi',
+    chua_xong_map_phu : '',
+    chua_xong_map_nut : '← Bản đồ',
     da_pha_dao    : 'Phi ngựa tới Zoey’s Castle 🦄',
     nut_vao_game  : '▶ Bắt đầu giải mã',
     nut_choi_lai_game : 'Chơi lại',
@@ -72,7 +71,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 27-Aug-2026 · V06.01'
+    version       : 'Last updated 27-Aug-2026 · V06.02'
   }
 };
 

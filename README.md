@@ -3,7 +3,7 @@
 Trang tĩnh, không build, không dependency. Mỗi file HTML tự chứa toàn bộ CSS/JS của nó.
 Deploy thẳng lên Vercel từ GitHub.
 
-**Phiên bản hiện tại: V17.08** — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
+**Số hiệu hiện tại: xem sổ bản ghi** (`assets/lichsu.js`) hoặc tem chân mỗi trang — ba map nối liền: bản đồ mật thư → Easter Egg (pháo hoa +
 Gate 2) → Zoey's Castle.
 
 > **Tên gọi chốt cho về sau:** trang này chứa **hai game rời nhau**.
@@ -335,7 +335,7 @@ Mở bằng cửa hậu **10 nhịp vào dòng Last updated**. Nội dung sửa 
 
 | Phần | Chi tiết |
 |---|---|
-| Ảnh chân dung | `.cred-hero` — ảnh ở `/han/honghan.jpg`, hai lớp sáng kiểu splash art (quầng gradient phía sau + lớp phủ bắt sáng phía trước). **Chưa có ảnh thì tự ẩn** (`onerror`) và còn lại quầng sáng, trang không vỡ |
+| Ảnh chân dung | `.cred-hero` — ảnh lấy qua `hhSrc('hello')`, tức cùng bộ clip nhân vật `/assets/HH_*.webp` (KHÔNG phải `/han/honghan.jpg` — file đó không còn được gọi tới), hai lớp sáng kiểu splash art (quầng gradient phía sau + lớp phủ bắt sáng phía trước). **Chưa có ảnh thì tự ẩn** (`onerror`) và còn lại quầng sáng, trang không vỡ |
 | Tiêu đề | **Collected: Easter Egg** — nhấp nháy cùng cơ chế với cặp *Easter Egg ⇄ Game On* ở tiêu đề trang. Cụm chữ *Tổ kỹ thuật* phía trên đã bỏ để tiêu đề này làm chính |
 | Dòng dưới | Dòng chúc mừng kèm chìa khoá xoay. Trước đây còn một dòng `Collected: Easter Egg` nữa — **đã bỏ** vì trùng hệt tiêu đề |
 | Dòng chúc mừng | *Chúc mừng **Dongchi Bình** 🎉* với chiếc **jet lượn một vòng chéo** phía trước |
@@ -404,7 +404,7 @@ trang sau 240 ms. Quy tắc: **muốn reset trọn vẹn thì reload, đừng g�
 
 ## 11. Tem phiên bản và bộ đếm reset
 
-Dòng **Last updated 19-Aug-2026 · V17.08** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
+Dòng **Last updated `<ngày>` · `<Vxx.xx>`** chạy dọc mép trái bản đồ (`.stamp`), tự ẩn khi
 zoom. Chuỗi gốc nằm ở thuộc tính `data-base`; hàm `stampText()` ghép thêm hậu tố
 **`· R(n)`** khi đã chơi lại ít nhất một lần.
 
@@ -426,16 +426,27 @@ vào `mtv1` ngay sau khi xoá. Đây là dấu vết duy nhất được phép t
 
 Sửa chuỗi ở thuộc tính `data-base` của `#stamp`; `stampText()` sẽ ghép thêm `· R(n)`.
 
-### Bảng phiên bản của cả sáu trang (19-Aug-2026)
+### Bảng phiên bản của cả sáu trang
 
-| Trang | Đường | Đang chạy |
-|---|---|---|
-| Bản đồ mật thư | `/` | **V17.08** |
-| Hồ sơ Phi đoàn | `/dad/950901-a` | **V3.08** |
-| Easter Egg · Gate 2 | `/dad/950901-b` | **V04.05** (khai ở `config.js`) |
-| Zoey's Castle | `/han/961030-a` | **V3.00** |
-| HongHan's Secret Chamber | `/han/961030-b` | **V2.01** |
-| Màn pháo hoa | `/phao-hoa` | **V3.03** |
+**⚠ ĐÃ BỎ BẢNG SỐ Ở ĐÂY — CỐ Ý. ĐỪNG CHÉP SỐ TRỞ LẠI.**
+
+Chỗ này từng là một bảng liệt kê số hiệu của sáu trang. Nó **lỗi thời ngay lượt
+push kế tiếp** và không có gì báo — mà chính README đã ghi lại đúng cái bệnh đó
+ở mục ngay dưới ("README tự nó ghi `V17.03` trong khi tem trang đã là `V17.05`").
+Rồi nó tái phát nặng hơn: bảng đứng nguyên ở số của giữa tháng 8 trong khi bản
+đồ đã đi thêm hai dòng lớn — sai cả sáu dòng, không sót dòng nào.
+
+Số hiệu chỉ có **một nguồn**: cuốn sổ trong `assets/lichsu.js`. Trang lấy số
+qua `LichSu.tem(<mã khu>)`, tem chân trang và thẻ toạ độ ngoài bản đồ đều ăn
+theo đó. Muốn biết trang nào đang ở đâu thì:
+
+| Cách | Làm gì |
+|---|---|
+| Nhanh nhất | mở trang, đọc tem chân màn hình |
+| Đủ cả sáu | mở `assets/lichsu.js`, xem bản cuối của từng cuốn trong `SO` |
+| Bằng máy | `node -e "…"` đọc `SO`, hoặc chạy bộ kiểm `tem16` — nó so tem với sổ |
+
+Bộ kiểm `nguon27` chặn không cho ai chép số hiệu hiện hành vào lại tài liệu.
 
 ### Rà soát số phiên bản — ba chỗ đã lệch, đã xử
 

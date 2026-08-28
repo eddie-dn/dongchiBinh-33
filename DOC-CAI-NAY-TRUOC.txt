@@ -1,4 +1,97 @@
 ════════════════════════════════════════
+ĐỢT 27 — kiểm kê đồ đi mượn, tài liệu thôi chép số hiệu, chữ ở cổng gọn lại.
+════════════════════════════════════════
+    assets/lichsu.js      dad/950901-b/index.html   dad/950901-b/config.js
+    index.html            phao-hoa/index.html
+    README.md             DESIGN-SYSTEM.md
+    test/ (thêm 1 bộ, sửa 1 bộ)                 DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /  V19.08 → V19.09   ·  /dad/950901-b  V06.01 → V06.02
+         /phao-hoa  V03.06 → V03.07   ·  (khu Easter Egg  V19.07 → V19.08)
+
+
+① CHỮ Ở CỔNG GATE 2 — BA DÒNG XUỐNG CÒN MỘT CÂU
+────────────────────────────────────────
+    TRƯỚC:  Cửa đã mở, nhưng khoá vẫn chưa nhả
+            Bản đồ tác chiến còn 3 mật thư chưa giải. Giải hết rồi quay lại
+            đây, phòng lab mở ngay.
+            ← Về giải nốt bản đồ
+
+    NAY:    Giải xong Bản đồ tác chiến để vào chơi
+            ← Bản đồ
+
+Dòng phụ để rỗng thì KHÔNG dựng thẻ <p> nữa — nhả thẻ rỗng ra là nó chiếm một
+khoảng lửng, đẩy cái nút xuống không lý do.
+
+
+② KIỂM KÊ TOÀN BỘ ĐỒ ĐI MƯỢN
+────────────────────────────────────────
+Quét cả kho mã: phông chữ nạp ở từng trang, tên miền ngoài mà máy chủ gọi tới,
+thư viện, nguồn dữ liệu, tài nguyên ảnh. Đối chiếu với trang Credit.
+
+KẾT QUẢ — Credit đầy đủ hơn tưởng. Đủ sẵn 15/17 mục: Be Vietnam Pro · Oswald ·
+Saira Stencil One · Press Start 2P · Roboto Mono · Cormorant Garamond ·
+html2canvas · FormSubmit · Gemini · Adobe Firefly · Kling AI · EZGIF · Vercel ·
+Natural Earth · Claude.
+
+HAI CHỖ THIẾU, đã bổ sung:
+  · RESEND — dịch vụ chuyển lời nhắn ở ô "Gửi tâm tư" thành thư điện tử.
+    Dùng thật trong `api/thu.js` mà Credit không có một chữ nào.
+  · POKÉMON GO — quả trứng nảy lắc rồi nứt bung ở màn pháo hoa lấy ý từ quả
+    trứng raid. Chủ trang xác nhận, và chính ghi chú trong mã cũng đã viết
+    "kiểu quả trứng raid" từ trước — nhưng Credit thì chưa ghi.
+    Ghi rõ là chỉ mượn CÁI NHỊP, không lấy tệp gốc nào.
+
+Natural Earth nay ghi kèm đúng mức tỉ lệ: bản 1:110m.
+
+KHÔNG đưa vào Credit (đúng luật viết ở DESIGN-SYSTEM mục 7): mấy đường đo đạc
+và ghi nhận. Chúng có thật trong mã nhưng người chơi mở Credit ra là để biết ơn,
+không phải đọc tài liệu hạ tầng.
+
+Bộ kiểm `nguon27` nay TỰ QUÉT: có phông nào nạp mà Credit không nhắc tên, hoặc
+dịch vụ nào máy chủ gọi mà Credit bỏ sót, là nó đỏ. Kiểm kê tự giữ mình.
+
+
+③ TÀI LIỆU CHÉP SỐ HIỆU — BỆNH TÁI PHÁT LẦN THỨ HAI, NAY CHẶN HẲN
+────────────────────────────────────────
+README có một bảng liệt kê số hiệu của sáu trang. Nó SAI CẢ SÁU DÒNG: đứng
+nguyên ở số của giữa tháng 8 trong khi bản đồ đã đi thêm hai dòng lớn. Dòng đầu
+file cũng ghi một số hiệu đã cũ hai dòng lớn.
+
+Chua nhất: chính README, ở mục ngay dưới cái bảng đó, đã ghi lại lần trước nó
+mắc đúng bệnh này ("README tự nó ghi V17.03 trong khi tem trang đã là V17.05").
+Ghi lại rồi vẫn tái phát, vì lần đó chỉ SỬA SỐ chứ không bỏ cái thói chép số.
+
+NAY BỎ HẲN BẢNG. Số hiệu chỉ có một nguồn: cuốn sổ trong `assets/lichsu.js`.
+Chỗ đó giờ là một khối chữ nói rõ vì sao không còn bảng và tra số ở đâu.
+
+`nguon27` chốt lại: lấy số mới nhất của từng cuốn trong sổ, rồi bắt README và
+DESIGN-SYSTEM KHÔNG được chứa chuỗi đó. Ai chép số vào là đỏ ngay.
+(Bộ kiểm bắt được hai chỗ ngay lúc vừa viết ra — trong đó MỘT chỗ là do chính
+câu giải thích vừa gõ ở trên có nhắc số thật. Đã viết lại không kèm số.)
+
+
+④ TÀI LIỆU TẢ SAI THỨ ĐANG CHẠY
+────────────────────────────────────────
+README mục 10 tả ảnh chân dung trong khung Collected là "ảnh ở /han/honghan.jpg".
+SAI: khung đó lấy ảnh qua `hhSrc('hello')`, tức cùng bộ clip nhân vật
+`/assets/HH_*.webp`. File `honghan.jpg` không còn được gọi từ bất cứ đâu.
+
+
+⑤ HAI TỆP NẰM KHÔNG (chưa xoá — chờ chủ trang quyết)
+────────────────────────────────────────
+    han/honghan.jpg              344 KB   không file nào gọi tới
+    dad/950901-b/assets/ow_2_5.webp  4,9 MB   config chỉ khai ow_2_1..4
+
+Cả hai vẫn nằm trong bản deploy. KHÔNG tự xoá: đây là tài nguyên của chủ trang,
+biết đâu còn để dành. Nói ra để quyết.
+
+Ngoài ra `anim_unlock.webp` (23,5 MB) VẪN CÒN DÙNG — nhưng chỉ là đường lùi khi
+`anim_unlock_clean.webp` tải hỏng. Giữ thì tốn 23 MB cho một nhánh gần như
+không bao giờ chạy; bỏ thì mất lưới an toàn. Cũng để chủ trang quyết.
+
+
+════════════════════════════════════════
 ĐỢT 26 — chốt thứ tự chơi dời sang cổng Gate 2, mốc vòng, nguồn bờ biển.
 ════════════════════════════════════════
     index.html            assets/lichsu.js

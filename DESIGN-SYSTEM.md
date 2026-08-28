@@ -226,8 +226,12 @@ trang đó trong `assets/lichsu.js`.**
 > nằm hai chỗ: số sửa ở sổ, ngày nằm trong một chuỗi cứng trong HTML. Sửa một
 > quên một là chuyện sớm muộn — và nó đã xảy ra ba lần liên tiếp mà không ai
 > thấy.
-> Thẻ toạ độ còn tệ hơn: Zoey's Castle hiện `V2` trong khi trang đã chạy
-> `V03.07` — số đó đứng nguyên từ đời V02, lệch năm nấc lớn.
+> Thẻ toạ độ còn tệ hơn: Zoey's Castle hiện `V2` trong khi trang đã đi thêm
+> năm nấc lớn — số trên thẻ đứng nguyên từ đời V02.
+>
+> *(Kể chuyện cũ thì ĐỪNG chép số hiệu thật vào — hôm nay là chuyện cũ, mai
+> lại trùng đúng số một khu đang chạy. Bộ kiểm `nguon27` cấm tài liệu chứa số
+> hiệu hiện hành, và nó đã đỏ đúng ở câu này.)*
 
 **Chuỗi cứng trong HTML vẫn giữ**, nhưng chỉ là **bản lùi** cho trường hợp
 `lichsu.js` không tải nổi. Nó **phải khớp sổ**, và có bộ kiểm soát đúng chuyện
@@ -248,7 +252,7 @@ trang đó trong `assets/lichsu.js`.**
 
 > **⚠ `meta:` KHÔNG ĐƯỢC ÔM SỐ HIỆU.** Thẻ còn khoá khai `meta:'Published
 > date: …'` — **chỉ phần ngày**, số hiệu nằm ở `ver:` và do `metaKhoa()` nối
-> vào. Trước đây `meta` ôm luôn cả `| V04.03` rồi mới bị thay bằng số của sổ:
+> vào. Trước đây `meta` ôm luôn cả `| Vxx.xx` rồi mới bị thay bằng số của sổ:
 > thẻ hiện ra thì đúng, nhưng chuỗi trong `NODES` lặng lẽ mốc lại từng đợt, và
 > chính nó là bản lùi khi `lichsu.js` không tải nổi. Một số hiệu, một chỗ khai.
 

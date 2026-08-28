@@ -56,8 +56,12 @@ console.log('\n① CHƯA PHÁ ĐẢO BẢN ĐỒ — vào được màn hình, n
     morseSeen:true, solved:{DAD:'x'}, unlocked:{DAD:1}, mapXong:false, mapTong:4 });
   const t = await congTT(p);
   T('nút "Bắt đầu giải mã" KHÔNG hiện', !t.play, JSON.stringify(t));
-  T('cổng nói rõ vì sao chưa vào được', /khoá|chưa nhả|mật thư/i.test(t.loi + ' ' + t.dem), t.loi + ' | ' + t.dem);
-  T('có đếm hộ còn mấy mật thư', /3/.test(t.dem), t.dem);
+  T('cổng nói rõ vì sao chưa vào được',
+    /Giải xong Bản đồ tác chiến/i.test(t.loi), t.loi + ' | ' + t.dem);
+  /* ĐỢT 27: bỏ dòng đếm "còn n mật thư" — chủ trang muốn gọn, một câu là đủ.
+     Kiểm luôn là KHÔNG còn thẻ rỗng nào chiếm chỗ. */
+  T('không đẻ thẻ rỗng khi bỏ dòng phụ',
+    await p.evaluate(()=>!document.querySelector('.cho-map')));
   T('có lối quay về bản đồ',
     await p.evaluate(()=>!!document.querySelector('.cho-map-nut')));
   await ctx.close();
@@ -66,7 +70,7 @@ console.log('\n① CHƯA PHÁ ĐẢO BẢN ĐỒ — vào được màn hình, n
   const { p, ctx } = await gate2(Object.assign({ g2Vao:true, credFound:true, eggWin:true }, DU4));
   const t = await congTT(p);
   T('phá đảo đủ 4/4 → nút chơi HIỆN ra', t.play, JSON.stringify(t));
-  T('hết dòng chặn', !/chưa nhả/i.test(t.loi), t.loi);
+  T('hết dòng chặn', !/Giải xong Bản đồ/i.test(t.loi), t.loi);
   await ctx.close();
 }
 

@@ -1789,10 +1789,12 @@ const Gate = (function(){
     if(!BYPASS && !xongBanDo()){
       moKhoaRoi = false;             /* chưa mở thật, để lần sau còn mở lại */
       el.loi.textContent = T.chua_xong_map;
-      el.dem.innerHTML = '<p class="cho-map">'
-        + (T.chua_xong_map_phu || '').replace('{n}', conLaiMap() || '') + '</p>'
+      /* Dòng phụ chỉ dựng khi có chữ. Để rỗng mà vẫn nhả thẻ <p> ra thì nó
+         chiếm một khoảng trống lửng, đẩy cái nút xuống không lý do. */
+      var phu = (T.chua_xong_map_phu || '').replace('{n}', conLaiMap() || '');
+      el.dem.innerHTML = (phu ? '<p class="cho-map">' + phu + '</p>' : '')
         + '<a class="ma-go cho-map-nut" href="/">'
-        + (T.chua_xong_map_nut || '← Về bản đồ') + '</a>';
+        + (T.chua_xong_map_nut || '← Bản đồ') + '</a>';
       el.play.hidden = true;
       ping('g2_chan_chua_xong_map', 'còn ' + conLaiMap() + ' mật thư');
       fitTitle(SCENES.gate);

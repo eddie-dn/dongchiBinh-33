@@ -72,6 +72,7 @@ không phải trang web hỏng.
 | `cua24` | tem không nháy sớm · nhắc double-tap · cửa mã MAP-02 · Open World |
 | `nac25` | băng rôn sinh nhật không bung sớm · cửa 10 nhịp mở ở mọi tiến độ · ô đếm chơi lại của cả năm trang · nút bốn bảng cùng một khuôn · khung slideshow |
 | `cong26` | cổng Gate 2 đòi phá đảo bản đồ mới cho chơi · cửa hậu 1959 vẫn thông · mốc vòng 1/2 để quay lại chơi tiếp · Credit ghi đúng nguồn đường bờ biển |
+| `nguon27` | kiểm kê đồ đi mượn: phông chữ · dịch vụ · nguồn dữ liệu · ý tưởng — và chặn tài liệu chép lại số hiệu đang chạy |
 
 ## Thêm một bộ mới
 
