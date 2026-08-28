@@ -75,11 +75,12 @@ function quaTay() {
    Muốn tắt hẳn cho nhanh thì đặt biến môi trường GEMINI_THINK=0; muốn nghĩ
    sâu hơn thì nâng số đó lên. Không cần sửa mã.
 
-   TRẦN THỜI GIAN: 9 giây, đặt bằng AbortController. Chọn 9 vì gói Hobby của
-   Vercel cắt hàm ở 10 giây — phải tự dừng TRƯỚC mốc đó thì mới kịp trả về một
-   lỗi gọn gàng; để nền tảng cắt thì trang chỉ nhận được một cú fetch chết,
-   không hiện được câu gì tử tế. Tắt suy nghĩ rồi thì Flash trả lời trong
-   1-3 giây, 9 giây là rộng rãi. Nâng gói thì nới số này lên cũng được. */
+   TRẦN THỜI GIAN: đặt bằng AbortController, và phải NHỎ HƠN trần của nền
+   tảng — để nền tảng cắt thì trang chỉ nhận được một cú fetch chết, không
+   hiện được câu gì tử tế. Đời trước để 9 giây vì mặc định Vercel cắt hàm ở
+   10; số đó chật đến mức hỏi câu nào cũng bị cắt. Nay `vercel.json` khai
+   `maxDuration: 30` cho cả thư mục api, nên trần ở đây mới nới ra được —
+   xem khối ⚠ ngay trên chỗ khai `HET_GIO_MS`. */
 /* ═══ NHẬT KÝ CUỘC TRÒ CHUYỆN ═════════════════════════════════════════════
    TÌNH TRẠNG TRƯỚC BẢN NÀY: KHÔNG có gì cả. Hàm chỉ `console.log` mấy dòng
    chữ khi hỏng, mà log của Vercel thì gói Hobby giữ khoảng một tiếng rồi mất.
@@ -120,25 +121,71 @@ function ghiNhatKy(o) {
   } catch (e) {}
 }
 
-const MAX_TOKEN   = 1600;
+/* ⚠ VÌ SAO KHU OPEN WORLD IM BẶT — VÀ VÌ SAO BẢN TRƯỚC THÌ KHÔNG.
+   BỆNH ĐÃ SỬA: hỏi câu nào cũng ra "lỗi đường truyền". Log máy chủ chỉ có một
+   dòng, lặp lại y hệt sau MỌI câu hỏi:
+
+       [CHAT] lỗi: This operation was aborted        ms: 9002
+
+   `ms` gần đúng 9000 tuyệt đối, không xê dịch — nghĩa là KHÔNG PHẢI Google
+   trả lời hỏng, mà là chính mình cắt máy đang nói dở. Ba con số dưới đây cộng
+   lại thành cái bẫy:
+
+     · trần thời gian 9 giây — đặt sát ngay dưới mốc 10 giây mà Vercel cắt hàm,
+       nên không còn một nhịp dư nào;
+     · trần chữ 1600 token — model viết đủ 1600 rồi mới trả về, mà trang thì
+       chỉ hiện 900 KÝ TỰ (~300 token): ngồi chờ gấp năm lần lượng chữ dùng tới;
+     · thêm 512 token cho bước suy nghĩ, nghĩ xong mới bắt đầu viết.
+
+   Đem cộng với đoạn tính cách hơn hai vạn ký tự gửi kèm mỗi lượt thì 9 giây
+   là không bao giờ đủ. Bản chạy được trước đây không dính vì nó chưa có bước
+   suy nghĩ và chỉ xin 400 token — viết ngắn nên kịp về.
+
+   NAY SỬA CẢ BA, cộng một đường lùi:
+     1. Nới trần hàm lên 30 giây (`maxDuration` trong vercel.json) rồi mới đặt
+        trần thời gian ở đây — chứ không phải bóp mình cho vừa mốc 10 giây.
+     2. Xin đúng lượng chữ dùng tới, thay vì xin thừa rồi cắt bỏ.
+     3. Cắt giữa chừng thì HỎI LẠI MỘT LẦN, lần này bỏ bước suy nghĩ và xin
+        ngắn hơn — thà một câu trả lời mộc còn hơn một câu báo lỗi. */
+/* Trần chữ: trang chỉ hiện `TRAN_KY_TU` ký tự, mà tiếng Việt rơi vào quãng
+   3 ký tự một token — 900 ký tự ≈ 300 token. Để 1200 là đã rộng gấp ba, thừa
+   chỗ cho câu dài mà không phải ngồi đợi model viết thứ sẽ bị cắt đi. */
+const MAX_TOKEN   = 1200;
 /* Trần cho bước suy nghĩ. Đọc từ GEMINI_THINK nếu có; 0 = tắt hẳn.
    Phải NHỎ HƠN HẲN MAX_TOKEN, vì hai thứ ăn chung một hạn mức. */
 const THINK_TOKEN = (() => {
   const v = parseInt(process.env.GEMINI_THINK, 10);
-  return Number.isFinite(v) && v >= 0 ? Math.min(v, Math.floor(MAX_TOKEN * 0.6)) : 512;
+  return Number.isFinite(v) && v >= 0 ? Math.min(v, Math.floor(MAX_TOKEN * 0.5)) : 256;
 })();
-const HET_GIO_MS  = 9000;
+/* Hai trần thời gian, KHÔNG phải một. Lượt đầu được thong thả; nếu bị cắt thì
+   lượt gỡ phải gọn để cả hai cộng lại còn nằm trong `maxDuration` 30 giây
+   (16 + 10 = 26, dư 4 giây cho lúc dựng hàm và dọn chữ).
+   Đổi được bằng biến môi trường GEMINI_HET_GIO, khỏi phải sửa mã. */
+const HET_GIO_MS  = (() => {
+  const v = parseInt(process.env.GEMINI_HET_GIO, 10);
+  return Number.isFinite(v) && v >= 3000 ? Math.min(v, 25000) : 16000;
+})();
+/* Trần của cả HÀM, khai ở `vercel.json` — chép lại đây để tính lượt gỡ.
+   Sửa một bên thì sửa cả bên kia, nếu không nền tảng cắt trước và người chơi
+   mất luôn câu báo lỗi tử tế. */
+const TRAN_HAM    = 30000;
+/* Lượt gỡ ăn phần thời gian CÒN LẠI, chừa 4 giây cho lúc dựng hàm và dọn chữ.
+   Tính chứ không ghi cứng: ai đó nâng GEMINI_HET_GIO lên kịch trần 25 giây mà
+   lượt gỡ vẫn cố xin thêm 10 giây nữa thì tổng vượt 30, hỏng đúng cái vừa sửa. */
+const HET_GIO_GO  = Math.max(4000, TRAN_HAM - HET_GIO_MS - 4000);
 /* Trần ký tự trả về trang. Hộp thoại pixel gõ từng chữ nên dài quá thì người
    chơi ngồi đợi; 900 là mức vừa đủ một đoạn trọn ý. Cắt Ở CUỐI CÂU chứ không
    cắt giữa từ như bản trước. */
 const TRAN_KY_TU  = 900;
 
-function goiGemini(model, key, contents, tinhCach, dongKhungSuyNghi) {
-  const generationConfig = { temperature: 0.9, maxOutputTokens: MAX_TOKEN };
-  if (dongKhungSuyNghi) generationConfig.thinkingConfig = { thinkingBudget: THINK_TOKEN };
+function goiGemini(model, key, contents, tinhCach, dongKhungSuyNghi, hetGio, tranChu) {
+  const generationConfig = { temperature: 0.9, maxOutputTokens: tranChu || MAX_TOKEN };
+  if (dongKhungSuyNghi && THINK_TOKEN > 0) {
+    generationConfig.thinkingConfig = { thinkingBudget: THINK_TOKEN };
+  }
 
   const stop = new AbortController();
-  const hen = setTimeout(() => stop.abort(), HET_GIO_MS);
+  const hen = setTimeout(() => stop.abort(), hetGio || HET_GIO_MS);
   return fetch(
     'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
     {
@@ -202,22 +249,40 @@ module.exports = async (req, res) => {
   const model = process.env.GEMINI_MODEL || MODEL_MAC_DINH;
 
   const batDau = Date.now();
+  /* Có phải cú ngã do HẾT GIỜ không — phân biệt với mạng đứt hay Google chết.
+     `AbortController` ném ra `AbortError`; tên lỗi mới là thứ chắc chắn, còn
+     câu chữ trong `message` thì mỗi đời Node viết một kiểu. */
+  const laHetGio = e => !!e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
+  let goLai = false;
   try {
-    let r = await goiGemini(model, key, contents, tinhCach, true);
+    let r;
+    try {
+      r = await goiGemini(model, key, contents, tinhCach, true, HET_GIO_MS);
+    } catch (e) {
+      if (!laHetGio(e)) throw e;
+      /* ĐƯỜNG LÙI: lượt đầu bị cắt giữa chừng. Hỏi lại NGAY, lần này bỏ hẳn
+         bước suy nghĩ và xin ngắn hơn — nhanh hơn hẳn vì model viết thẳng
+         không nghĩ. Thà một câu mộc còn hơn một câu báo lỗi đường truyền. */
+      console.log('[CHAT] lượt đầu hết giờ — hỏi lại kiểu mộc, không nghĩ');
+      goLai = true;
+      r = await goiGemini(model, key, contents, tinhCach, false,
+                          HET_GIO_GO, Math.floor(MAX_TOKEN * 0.6));
+    }
     /* Model đời cũ không biết `thinkingConfig` thì Google trả 400 chứ không bỏ
        qua. Gặp đúng 400 thì gọi lại một lần, lần này bỏ khoá đó ra — nhờ vậy
        đổi GEMINI_MODEL sang bản nào cũng chạy, không phải sửa mã.
        (Model cũ vốn không có bước suy nghĩ nên bỏ khoá đi cũng không mất gì.) */
-    if (r && r.status === 400) {
+    if (r && r.status === 400 && !goLai) {
       console.log('[CHAT] model không nhận thinkingConfig — gọi lại kiểu cũ');
-      r = await goiGemini(model, key, contents, tinhCach, false);
+      goLai = true;
+      r = await goiGemini(model, key, contents, tinhCach, false, HET_GIO_GO);
     }
 
     if (!r.ok) {
       const chiTiet = (await r.text()).slice(0, 300);
       console.log('[CHAT] gemini hỏng:', r.status, chiTiet);
       ghiNhatKy({ ok: false, ly_do: 'gemini_hong', http: r.status, model,
-                  ms: Date.now() - batDau, hoi_dai: hoi.length });
+                  ms: Date.now() - batDau, hoi_dai: hoi.length, go_lai: goLai });
       return res.status(200).json({ loi: 'gemini_hong' });
     }
 
@@ -240,14 +305,15 @@ module.exports = async (req, res) => {
 
     const raChu = gonLai(dap);
     ghiNhatKy(Object.assign({
-      ok: true, model, ms: Date.now() - batDau,
+      ok: true, model, ms: Date.now() - batDau, go_lai: goLai,
       hoi_dai: hoi.length, dap_dai: raChu.length,
       luot_su: su.length, token: j.usageMetadata || {}
     }, LOG_NOI_DUNG ? { hoi: hoi, dap: raChu } : {}));
     return res.status(200).json({ dap: raChu });
   } catch (e) {
     console.log('[CHAT] lỗi:', e && e.message);
-    ghiNhatKy({ ok: false, ly_do: 'mang_hong', loi: String((e && e.message) || ''),
+    ghiNhatKy({ ok: false, ly_do: laHetGio(e) ? 'het_gio' : 'mang_hong',
+                loi: String((e && e.message) || ''), go_lai: goLai,
                 ms: Date.now() - batDau, hoi_dai: hoi.length });
     return res.status(200).json({ loi: 'mang_hong' });
   }

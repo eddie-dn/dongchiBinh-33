@@ -1650,6 +1650,25 @@ thái đang hiện, ngay lúc hiện; đóng hộp thì `removeAttribute('src')`
 > Nay hằng `HH` trỏ đúng `HH_4_hello_easter.webp`. Đổi tên file lần nữa thì phải sửa hằng
 > `HH` trong `index.html` cho khớp, nếu không lại rỗng y như vậy.
 
+### `/api/chat` — khu Open World · vì sao có `maxDuration`
+
+Trần thời gian của hàm này phải **nhỏ hơn** trần của nền tảng, để còn kịp trả về
+một câu lỗi tử tế thay vì để Vercel cắt ngang giữa chừng (trang chỉ nhận được
+một cú fetch chết, không hiện được gì).
+
+Mặc định Vercel cắt hàm ở **10 giây**, và đời trước đặt trần chờ 9 giây cho vừa
+mốc đó. Chật quá: đoạn tính cách gửi kèm mỗi lượt hơn hai vạn ký tự, cộng bước
+"suy nghĩ" rồi mới viết chữ — hỏi câu nào cũng bị cắt, log máy chủ ra đúng một
+dòng lặp lại `[CHAT] lỗi: This operation was aborted · ms 9002`.
+
+Nay `vercel.json` khai `maxDuration: 30` cho cả thư mục `api`, nên `api/chat.js`
+mới nới trần chờ ra được (`GEMINI_HET_GIO`, mặc định 16 giây). Quá giờ thì hỏi
+lại **một** nhịp gọn hơn — bỏ bước suy nghĩ, xin ít chữ hơn — rồi mới chịu báo
+lỗi. Hai lượt cộng lại 26 giây, vẫn nằm trong 30.
+
+> Đổi `maxDuration` thì phải kiểm lại `GEMINI_HET_GIO`: **lượt đầu + lượt gỡ
+> phải nhỏ hơn `maxDuration`**, nếu không nền tảng cắt trước và mất câu lỗi.
+
 ### `/api/quote` — câu chào đầu ngày
 
 Endpoint gọi **Gemini phía máy chủ**, khoá lấy từ biến môi trường `GEMINI_KEY`
@@ -2059,7 +2078,8 @@ công khai — trình duyệt không bao giờ tải được.
 |---|---|---|---|
 | `GEMINI_KEY` | có, nếu muốn Gemini chạy | — | khoá lấy ở aistudio.google.com |
 | `GEMINI_MODEL` | không | `gemini-3.7-flash` | model cho khu Open World |
-| `GEMINI_THINK` | không | `512` | trần token cho bước "suy nghĩ". `0` = tắt hẳn |
+| `GEMINI_THINK` | không | `256` | trần token cho bước "suy nghĩ". `0` = tắt hẳn |
+| `GEMINI_HET_GIO` | không | `16000` | trần thời gian chờ Gemini, tính bằng mili giây (3000–25000) |
 | `GEMINI_MODEL_QUOTE` | không | `gemini-flash-lite-latest` | model cho lời chào / quote |
 | `CHAT_LOG_URL` | không | — | có thì đẩy nhật ký chat tới đó (POST JSON) |
 | `CHAT_LOG_NOI_DUNG` | không | tắt | `1` = ghi cả nội dung câu hỏi/trả lời |

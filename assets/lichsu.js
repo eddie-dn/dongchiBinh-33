@@ -242,12 +242,14 @@
         /* V19 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc mở dòng lớn kế
            tiếp — đúng luật ghi ở đầu file. Số 20 không nằm trong mấy nấc bị bỏ
            qua (13, 14, 23) nên đi thẳng. */
-        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V20', so:'03',
+        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V20', so:'05',
           chinh:'Dọn lại chỗ đứng của mấy con số nhỏ và của hai cái nút trong khung Collected',
           chi:[
             { ver:'V20.00', chinh:'Hai nút trong khung Collected về đứng cạnh nhau chia đôi đều thay vì xếp dọc thành hai dải dài, và bỏ hình quả trứng trong nút — chữ đọc là hiểu rồi. Số lần chơi lại nay chỉ nằm ở cuối dòng tem sau số hiệu, thôi chen thêm dòng vào trong hộp. Hai cửa mã trong Box Tổng tư lệnh trước nay gõ sai bao nhiêu lần cũng im lặng, giờ đã lên tiếng' },
             { ver:'V20.01', chinh:'Dọn mấy khối kiểu dáng không thẻ nào còn mang' },
-            { ver:'V20.02', chinh:'Box Tổng tư lệnh gọn lại: bốn lệnh xếp thành lưới hai cột, nhãn ngắn gọn, viền liền thay cho nét đứt. Bỏ lối đi thẳng màn cuối Gate 2 vì đã có sẵn một lối y hệt nằm bên trong chính màn đó. Sửa lỗi mấy nút lẽ ra phải ẩn theo chiến dịch mà vẫn hiện' }
+            { ver:'V20.02', chinh:'Box Tổng tư lệnh gọn lại: bốn lệnh xếp thành lưới hai cột, nhãn ngắn gọn, viền liền thay cho nét đứt. Bỏ lối đi thẳng màn cuối Gate 2 vì đã có sẵn một lối y hệt nằm bên trong chính màn đó. Sửa lỗi mấy nút lẽ ra phải ẩn theo chiến dịch mà vẫn hiện' },
+            { ver:'V20.03', chinh:'Hộp hỏi lại trước khi chơi lại từ đầu nay nói thẳng nó sắp làm gì. Trước đây hộp chỉ hỏi trống không "chắc chưa" mà không nói chắc cái gì, còn nút bỏ qua thì ghi "Xem xét" — đọc như "để tôi xem đã" chứ không ra nghĩa thôi không làm nữa, nên bấm vào là hộp đóng và chẳng có gì xảy ra, y hệt cảnh bấm chơi lại mà không thấy gì reset. Hai ký hiệu trong hộp pí mật giữ nguyên như cũ' },
+            { ver:'V20.04', chinh:'Ô nhập mã: bấm xoá là che ngay. Trước đây nhịp cho kịp nhìn ký tự vừa gõ bị áp cho cả cú xoá, mà xoá thì làm gì có ký tự mới nào để nhìn — nó lôi ký tự cũ ra khoe lại gần một giây, xoá bốn ô là đứng hình hơn ba giây, cảm giác y như máy treo' }
           ] }
       ]
     },
@@ -334,10 +336,11 @@
             { ver:'V19.08', chinh:'Trang Credit ghi công cả đường thư của ô Gửi tâm tư, trước đây bỏ sót' },
             { ver:'V19.09', chinh:'Hai nút trong khung về đứng cạnh nhau chia đôi đều, bỏ hình quả trứng trong nút' }
           ] },
-        { ngay:'2026-08-28', sua:'2026-08-28', ver:'V20', so:'01',
+        { ngay:'2026-08-28', sua:'2026-08-28', ver:'V20', so:'02',
           chinh:'Nút đổi sang viền liền, góc bo vừa',
           chi:[
-            { ver:'V20.00', chinh:'Hai nút trong khung đổi sang viền liền góc bo vừa — viền nét đứt ở cỡ nút to nhìn rối' }
+            { ver:'V20.00', chinh:'Hai nút trong khung đổi sang viền liền góc bo vừa — viền nét đứt ở cỡ nút to nhìn rối' },
+            { ver:'V20.01', chinh:'Tiêu đề trang đảo qua lại giữa Easter Egg và Game On suốt lúc băng rôn sinh nhật còn bay, rồi dừng đúng lúc băng rôn đáp xuống. Trước đây nhịp đảo này chỉ bật ở đúng lần phá đảo bản đồ đầu tiên, nên ghé lại trong bảy ngày, sang ngày mới hay vặn kim tới ngày sinh nhật thì băng rôn vẫn bay mà chữ đứng chết cứng. Chạm quân bài ở cuối dòng khi đã tìm ra Easter Egg nay chỉ còn một câu xác nhận ngắn, thay vì đọc thêm cả số hiệu hồ sơ lẫn lời mời vào' }
           ] }
       ]
     },
@@ -401,11 +404,12 @@
           ] },
         /* V04 kín mười nấc đuôi nên buộc mở dòng lớn. Lần này thì cũng xứng:
            pí danh thôi dính chặt vào một cái máy là đổi hẳn cách chơi. */
-        { ngay:'2026-08-28', sua:'2026-08-28', ver:'V05', so:'02',
+        { ngay:'2026-08-28', sua:'2026-08-28', ver:'V05', so:'03',
           chinh:'Pí danh đi theo người, không còn nằm chết trong một trình duyệt',
           chi:[
             { ver:'V05.00', chinh:'Pí danh nay đi theo người: gõ lại tên cũ ở máy khác — điện thoại, laptop, trình duyệt nào cũng được — là tiến độ tự về. Trước đây bản lưu nằm chết trong đúng một trình duyệt, đổi máy là gõ đúng tên cũng chỉ ra hồ sơ trống trơn. Tìm không thấy hay mạng chậm quá sáu giây thì lặng lẽ chơi kiểu cũ, không bắt ai ngồi chờ' },
-            { ver:'V05.01', chinh:'Luật ô nhập gom về một chỗ dùng chung, thôi chép mỗi trang một bản' }
+            { ver:'V05.01', chinh:'Luật ô nhập gom về một chỗ dùng chung, thôi chép mỗi trang một bản' },
+            { ver:'V05.02', chinh:'Ô nhập mã của cả ba Mission: bấm xoá là che ngay. Trước đây nhịp cho kịp nhìn ký tự vừa gõ bị áp cho cả cú xoá, mà xoá thì làm gì có ký tự mới nào để nhìn — nó lôi ký tự cũ đã nhìn rồi ra khoe lại gần một giây, nên xoá vội để gõ lại cho kịp lượt thì mỗi cú xoá đứng hình một nhịp' }
           ] }
       ]
     },
@@ -464,7 +468,7 @@
         /* V05 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc phải mở dòng lớn
            kế tiếp — đúng luật ghi ở đầu file. Không phải vì đợt này to hơn mấy
            đợt trước, chỉ là hết chỗ. */
-        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V06', so:'06',
+        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V06', so:'07',
           chinh:'Dòng lớn mới vì V05 đã kín mười nấc đuôi. Mở màn bằng đợt dọn lại Khối vận hành',
           chi:[
             { ver:'V06.00', chinh:'Khối vận hành khoe luôn số lần đã chơi lại màn này, và ba cái nút gom vào một khối dọc cùng dáng với mấy bảng điều khiển khác trong bộ — trước đó hai nút nằm chung một hàng rồi nút thứ ba treo riêng bên dưới, nhìn ra thành hai cụm rời' },
@@ -472,7 +476,8 @@
             { ver:'V06.02', chinh:'Cổng bị khoá nay nói gọn đúng một câu thay vì ba dòng kể lể' },
             { ver:'V06.03', chinh:'Số lần chơi lại dời về cuối dòng tem, Khối vận hành thôi nhắc lại' },
             { ver:'V06.04', chinh:'Ghi rõ trong tệp cấu hình rằng có một khoá đáp án không ai đọc — sửa ở đó là không đổi được gì' },
-            { ver:'V06.05', chinh:'Vòng 2 thôi lộ thêm chữ mỗi lần đoán trật — trước đây gõ trật mấy phím là hiện ra gần hết đáp án. Nay chỉ mồi đúng một chữ đầu, một lần cho cả vòng. Nút Khối vận hành đổi sang viền liền' }
+            { ver:'V06.05', chinh:'Vòng 2 thôi lộ thêm chữ mỗi lần đoán trật — trước đây gõ trật mấy phím là hiện ra gần hết đáp án. Nay chỉ mồi đúng một chữ đầu, một lần cho cả vòng. Nút Khối vận hành đổi sang viền liền' },
+            { ver:'V06.06', chinh:'Khu Open World chịu trả lời trở lại. Hỏi câu nào cũng ra một câu báo hỏng đường truyền, mà thật ra bên kia vẫn đang soạn chữ — hạn giờ chờ đặt quá chật so với lượng chữ được phép xin, nên lần nào cũng bị cắt ngang đúng lúc sắp có câu. Nay nới hạn chờ, chỉ xin đúng lượng chữ thật sự hiện ra thay vì xin thừa gấp năm rồi cắt bỏ, và nếu vẫn quá giờ thì hỏi lại một nhịp gọn hơn — thà một câu mộc còn hơn một câu báo lỗi' }
           ] }
       ]
     },
@@ -497,7 +502,7 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
            xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V04', so:'07',
+        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V04', so:'08',
           chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' },
@@ -506,7 +511,8 @@
             { ver:'V04.03', chinh:'Nút trong Khối vận hành xếp dọc và về chung một dáng với mấy bảng điều khiển khác trong bộ' },
             { ver:'V04.04', chinh:'Hai nút Khối vận hành về đứng cạnh nhau chia đôi đều, bỏ ký hiệu trong nút; số lần chơi lại chỉ còn ghi ở tem' },
             { ver:'V04.05', chinh:'Dọn khối kiểu dáng của hàng nút đời cũ, không còn ai dùng' },
-            { ver:'V04.06', chinh:'Luật ô nhập gom về một chỗ dùng chung; nút đổi sang viền liền' }
+            { ver:'V04.06', chinh:'Luật ô nhập gom về một chỗ dùng chung; nút đổi sang viền liền' },
+            { ver:'V04.07', chinh:'Hai nút trong Khối vận hành đổi sang tông sáng theo đúng nền lâu đài. Khuôn nút dùng chung cả bộ vốn đóng đinh một nền xanh đêm — năm trang kia nền tối nên không ai thấy gì, riêng trang này nền trắng-tím nên hai cái nút thành hai mảng xám xịt nằm giữa hộp trắng. Nay nền, chữ và màu lúc rê chuột đều ăn theo màu của từng trang. Ô nhập mã: bấm xoá là che ngay, thôi khoe lại ký tự cũ mỗi lần xoá' }
           ] }
       ]
     },
@@ -528,7 +534,7 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V03', so:'08',
+        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V03', so:'09',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
             { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
@@ -538,7 +544,8 @@
             { ver:'V03.04', chinh:'Ba cái nút trong Khối vận hành gom vào một khối dọc — hết cảnh hai nút nằm một hàng rồi nút thứ ba treo lủng lẳng bên dưới như hai cụm rời nhau' },
             { ver:'V03.05', chinh:'Nút khoá và mở đứng cạnh nhau chia đôi đều, nút vặn kim xuống hàng riêng vì nó làm việc khác hẳn; bỏ ký hiệu trong nút' },
             { ver:'V03.06', chinh:'Dọn khối kiểu dáng của hàng nút đời cũ, không còn ai dùng' },
-            { ver:'V03.07', chinh:'Luật ô nhập gom về một chỗ dùng chung; nút đổi sang viền liền' }
+            { ver:'V03.07', chinh:'Luật ô nhập gom về một chỗ dùng chung; nút đổi sang viền liền' },
+            { ver:'V03.08', chinh:'Hai cửa mã của trang: bấm xoá là che ngay, thôi khoe lại ký tự cũ gần một giây mỗi lần xoá' }
           ] }
       ]
     },
@@ -560,7 +567,7 @@
           chinh:'Màn pháo hoa đầu tiên: bắn tự động, lời chúc hiện dần, thêm chế độ chạm-để-bắn' },
         { ngay:'2026-08-15', ver:'V02', so:null,
           chinh:'Quả trứng và vụ nổ vẽ tay trên canvas, thêm nút bắn lại và lối vào khu Easter Egg' },
-        { ngay:'2026-08-16', sua:'2026-08-27', ver:'V03', so:'08',
+        { ngay:'2026-08-16', sua:'2026-08-28', ver:'V03', so:'09',
           chinh:'Chỉnh khung màn và chỗ đứng của tem phiên bản',
           chi:[
             { ver:'V03.01', chinh:'Màn pháo hoa có tem phiên bản riêng' },
@@ -569,7 +576,8 @@
             { ver:'V03.04', chinh:'Rà lại trang theo đợt sửa chung của cả bộ; trên màn hình không đổi gì' },
             { ver:'V03.05', chinh:'Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V03.06', chinh:'Lần đầu xem thì khoá đường ra cho tới khi pháo bắn được một nhịp — tay còn đang đập từ mười nhịp lúc nãy, bấm hụt một cái là mất luôn màn ăn mừng' },
-            { ver:'V03.07', chinh:'Trang Credit ghi rõ quả trứng nứt lấy ý từ đâu' }
+            { ver:'V03.07', chinh:'Trang Credit ghi rõ quả trứng nứt lấy ý từ đâu' },
+            { ver:'V03.08', chinh:'Ba dòng chữ dưới quả trứng hiện chậm lại một nhịp cho kịp đọc — pha nứt trước đây chỉ được chín phần mười giây, chữ vừa kịp thay đã bị thay tiếp nên mắt chỉ thấy loáng một cái. Nới vừa phải thôi: cả màn trứng vẫn gói trong hơn bốn giây' }
           ] }
       ]
     }
@@ -849,13 +857,28 @@
        MAP-01, dù mã đã ghi `hidden = true`. Trang Gate 2 từng vấp đúng cái này
        và đã vá riêng cho `.ma-go`; bộ nút chung thì chưa. */
     '.ops-btn[hidden]{display:none}',
+    /* Cả ba khuôn xếp nút cũng vướng đúng cái bẫy trên: `display:flex`
+       và `display:grid` đều là luật của CLASS nên đè mất `[hidden]` mặc
+       định. Giấu cả một hàng nút mà nó vẫn hiện — thành một khoảng trống
+       có viền. Khai luôn ở đây cho khỏi phải nhớ. */
+    '.ops-cot[hidden],.ops-hang[hidden],.ops-luoi[hidden]{display:none}',
     /* Viền LIỀN, góc bo vừa — đúng tông mấy khung khác của trang. Bản trước để
        viền NÉT ĐỨT bo tròn hết cỡ; ở cỡ nút to chiếm hết bề ngang hộp thì nét
        đứt nhìn rối và rẻ tiền. Nét đứt hợp với nhãn nhỏ, không hợp với nút. */
+    /* ⚠ NỀN NÚT PHẢI ĐI THEO NỀN TRANG — ĐỪNG KHAI CỨNG MỘT MÀU.
+       BỆNH ĐÃ SỬA: nền nút đóng đinh `rgba(6,16,31,.5)`, một màu xanh đêm.
+       Năm trang kia nền tối nên không ai thấy gì; riêng Zoey's Castle nền
+       TRẮNG-TÍM, thế là bốn cái nút biến thành hai mảng xám xịt nằm giữa hộp
+       trắng — chữ tím trên nền xám, đọc đã khó mà nhìn thì như nút hỏng.
+       Chữ và viền vốn đã ăn theo `--ls-acc` của từng trang, chỉ mỗi cái nền
+       là quên. Nay nền (`--ls-nut`), chữ (`--ls-nutchu`) và nền lúc rê chuột
+       (`--ls-nut-ho`) đều là biến, mặc định giữ nguyên tông tối cho năm trang
+       nền tối, trang nền sáng chỉ việc khai đè ba biến đó ở `:root`. */
     '.ops-btn{display:block;width:100%;margin:0;padding:10px 9px;border-radius:6px;',
       'font-family:"Oswald","Be Vietnam Pro",system-ui,sans-serif;font-size:9.5px;',
       'font-weight:600;letter-spacing:.16em;text-transform:uppercase;text-align:center;',
-      'cursor:pointer;color:var(--ls-acc,#8CE1B4);background:rgba(6,16,31,.5);',
+      'cursor:pointer;color:var(--ls-nutchu,var(--ls-acc,#8CE1B4));',
+      'background:var(--ls-nut,rgba(6,16,31,.5));',
       'border:1px solid var(--ls-line,rgba(234,240,247,.2));',
       'transition:background .18s ease,border-color .18s ease,color .18s ease}',
     '@supports (border-color:color-mix(in srgb,red 30%,transparent)){',
@@ -863,10 +886,10 @@
     '.ops-btn:hover,.ops-btn:focus-visible{outline:none;border-color:var(--ls-acc,#8CE1B4)}',
     '@supports (background:color-mix(in srgb,red 30%,transparent)){',
       '.ops-btn:hover,.ops-btn:focus-visible{',
-        'background:color-mix(in srgb,var(--ls-acc,#8CE1B4) 11%,transparent)}}',
+        'background:var(--ls-nut-ho,color-mix(in srgb,var(--ls-acc,#8CE1B4) 11%,transparent))}}',
     '.ops-btn:active{transform:translateY(1px)}',
     '.ops-btn[disabled]{opacity:.34;cursor:not-allowed;transform:none}',
-    '.ops-btn[disabled]:hover{background:none;',
+    '.ops-btn[disabled]:hover{background:var(--ls-nut,rgba(6,16,31,.5));',
       'border-color:var(--ls-line,rgba(234,240,247,.16))}',
     /* Lệnh phụ (quay lại, bỏ qua, về hiện tại): cùng hình hài, nhạt hơn một
        bậc — để mắt biết ngay đâu là lệnh chính mà không cần đọc hết chữ. */
@@ -1084,6 +1107,16 @@
       else if (!laXoa(e) && !laGoTay(e)) nguyenGo = false;
       var i = go.length - 1;
       if (henChe) { clearTimeout(henChe); henChe = null; }
+      /* ⚠ XOÁ THÌ CHE NGAY, ĐỪNG KHOE LẠI KÝ TỰ CŨ.
+         BỆNH ĐÃ SỬA: "bấm xoá mã, lag một lúc". Nhịp `HIEN_MS` sinh ra để
+         người chơi KỊP NHÌN ký tự VỪA GÕ rồi mới cho nó thành chấm — đúng cho
+         cú gõ, sai hoàn toàn cho cú XOÁ. Xoá thì làm gì có ký tự mới nào để
+         nhìn: nó lôi ký tự CŨ ĐÃ NHÌN RỒI ra khoe lại gần một giây. Đang xoá
+         vội để gõ lại cho kịp lượt thì mỗi cú xoá đứng hình một nhịp, xoá bốn
+         ô là hơn ba giây — cảm giác y như máy treo, mà thật ra nó đang bận
+         khoe. Nay xoá là che sạch ngay và thôi: không hẹn giờ, không tự chấm.
+         Bảy ô nhập của cả bộ đều vá đúng chỗ này. */
+      if (laXoa(e)) { ve(-1); return; }
       ve(i);
       if (i < 0) return;
       var chot = go.length === 4 && go.length === truoc + 1
@@ -1299,17 +1332,17 @@
 
      Đo lại: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào đây. */
   var THOI_GIAN = {
-    MAP:    '32 ngày 12 giờ 19 phút',
-    EGG:    '32 ngày 12 giờ 19 phút',
-    'DAD-A': '16 ngày 19 giờ 46 phút',
-    'DAD-B': '23 ngày 56 phút',
-    'HAN-A': '14 ngày 19 giờ 49 phút',
-    'HAN-B': '14 ngày 19 giờ 49 phút',
+    MAP:    '32 ngày 19 giờ 46 phút',
+    EGG:    '32 ngày 19 giờ 46 phút',
+    'DAD-A': '17 ngày 3 giờ 13 phút',
+    'DAD-B': '23 ngày 8 giờ 23 phút',
+    'HAN-A': '15 ngày 3 giờ 15 phút',
+    'HAN-B': '15 ngày 3 giờ 15 phút',
     FX:     '13 ngày 13 giờ 38 phút',
-    _TONG:  '32 ngày 12 giờ 19 phút',
+    _TONG:  '32 ngày 19 giờ 46 phút',
     _TU:    '26-07-2026',
     _TOI:   '28-08-2026',
-    _COMMIT: 221
+    _COMMIT: 223
   };
 
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số

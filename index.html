@@ -1031,7 +1031,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 28-Aug-2026 · V20.02">Last updated 28-Aug-2026 · V20.02</span>
+        <span class="stamp" id="stamp" data-base="Last updated 28-Aug-2026 · V20.04">Last updated 28-Aug-2026 · V20.04</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1106,10 +1106,19 @@ a.file:active{background:rgba(242,180,65,.07)}
   <div class="cxw" id="askw" aria-hidden="true">
     <div class="cxp" role="dialog" aria-modal="true" aria-label="Xác nhận chơi lại">
       <p class="cred-body wide" style="margin-top:4px">Chú Bình chắc chưaaa?</p>
+      <!-- ⚠ HỘP NÀY PHẢI NÓI RÕ NÓ SẮP LÀM GÌ.
+           Đời trước chỉ có mỗi câu "Chú Bình chắc chưaaa?" — chắc CÁI GÌ thì
+           không nói, mà hai nút thì một cái ghi "1000%", một cái ghi "Xem
+           xét". "Xem xét" đọc như "để tôi xem đã" chứ không ra nghĩa THÔI
+           KHÔNG LÀM NỮA, nên bấm vào là hộp đóng lại và chẳng có gì xảy ra —
+           đúng cảnh "bấm nút chơi lại mà không reset gì cả". Nay thêm một
+           dòng nói thẳng hậu quả, và nút bỏ qua ghi hẳn là bỏ qua. -->
+      <p class="cx-hint" style="margin-top:8px">Bấm <b>1000%</b> là xoá sạch
+        tiến độ bản đồ, chơi lại từ đầu.</p>
       <div class="cx-form" style="margin-top:16px">
         <button id="askYes" style="flex:1">1000%</button>
         <button id="askNo" style="flex:1;background:none;color:rgba(234,240,247,.72);
-          border:1px solid var(--line)">Xem xét</button>
+          border:1px solid var(--line)">Thôi, để sau</button>
       </div>
     </div>
   </div>
@@ -2158,7 +2167,7 @@ function gridFlash(){
   if(full){
     winParty = true; save();
     frame.classList.add('win','cheer');
-    winBanner(); titleSwap(true); bannerFly(22000);
+    winBanner(); bannerFly(22000);   /* bannerFly cầm luôn nhịp đảo tiêu đề */
     winCheer = true; showPz();
     eggFlash('win');
     if(eggOpen()) eggTitleFlash();
@@ -2205,7 +2214,11 @@ function endParty(){
   clearTimeout(partyT); partyT = null;
   frame.classList.remove('win','cheer');
   winCheer = false; showPz();
-  titleMC = true; titleSwap(false);
+  titleMC = true;
+  /* Màn ăn mừng dừng ở 15,1 giây còn băng rôn bay tới 22 — băng rôn còn bay
+     thì để nhịp đảo chạy tiếp, `bannerFly` tự dừng nó đúng lúc đáp xuống.
+     Cắt ở đây là mất đúng bảy giây cuối, đoạn người chơi đang nhìn nhất. */
+  if(!frame.classList.contains('flying')) titleSwap(false);
   moGate1();                     /* ghé trễ hơn 01-09 → bàn giao sang Easter Egg */
 }
 
@@ -2391,11 +2404,28 @@ function eggIntro(force){
 
 /* Cho máy bay bay ra thế chỗ dòng chữ, hết giờ thì trả lại chữ tĩnh */
 let flyT = null;
+/* ⚠ TIÊU ĐỀ ĐẢO QUA LẠI ĐI CÙNG BĂNG RÔN — MỘT ĐỜI SỐNG, KHÔNG PHẢI HAI.
+   BỆNH ĐÃ SỬA: "vặn kim tới 1/9, trước đây Easter Egg nhấp nháy đổi qua lại
+   với Game On cho tới khi băng rôn xong; hiện tại mất rule này".
+   Nhịp đảo tiêu đề (`titleSwap(true)`) chỉ được bật ở ĐÚNG MỘT CHỖ: lần đầu
+   tiên phá đảo bản đồ, trong `gridFlash`. Mọi đường vào màn ăn mừng khác —
+   ghé lại trong bảy ngày, sang ngày mới, vặn kim tới 01-09, bấm huy hiệu —
+   đều đi qua `eggIntro` / `bannerFly`, mà hai chỗ đó chỉ gọi `titleSwap(false)`
+   là bản ĐỨNG IM. Băng rôn vẫn bay, chữ thì chết cứng.
+   Gốc rễ: hai thứ vốn là MỘT màn ăn mừng lại do hai đoạn mã khác nhau bật,
+   nên cứ thêm đường vào mới là quên mất một nửa. Nay `bannerFly` cầm cả hai:
+   bật băng rôn thì bật luôn nhịp đảo, băng rôn đáp xuống thì tiêu đề dừng —
+   dừng ở nửa "Easter Egg" (hoặc "Mission Completed"), không phải nửa kia.
+   Muốn đổi tiếp thì bấm tay vào tiêu đề, y như cũ. */
 function bannerFly(ms){
   if(nSolved() !== NODES.length) return;
   frame.classList.add('flying');
   clearTimeout(flyT);
-  flyT = setTimeout(()=>frame.classList.remove('flying'), ms || 26000);
+  titleSwap(true);
+  flyT = setTimeout(()=>{
+    frame.classList.remove('flying');
+    titleMC = true; titleSwap(false);
+  }, ms || 26000);
 }
 
 /* Mức độ hoàn thành theo số lần đoán sai — dùng cho băng rôn, thay hệ huy chương */
@@ -3234,7 +3264,11 @@ $('lead').addEventListener('click', e=>{
       }
       ping('clue_game_on', 'chạm Q♥ nhịp ' + qCham + ' → thắp tem + nháy');
     }else{
-      flash('Tìm ra Easter Egg rồi mà ✦ Hồ sơ <b>DAD-950901-B</b> đang mở sẵn cho anh');
+      /* Tìm ra rồi thì câu này chỉ còn việc XÁC NHẬN, không phải chỉ đường
+         nữa — nói đúng một vế là xong. Bản trước đọc thêm cả số hiệu hồ sơ
+         với lời mời vào, dài gấp ba mà chẳng thêm được gì: người đã tìm ra
+         thì biết đường vào rồi. */
+      flash('Đã tìm được Easter Egg ✦');
     }
     return;
   }
@@ -4495,6 +4529,9 @@ function pinRoiChe(e){
   else if(!laXoa(e) && !laGoTay(e)) pinNguyenGo = false;
   const i = dai - 1;
   if(pinHenChe){ clearTimeout(pinHenChe); pinHenChe = null; }
+  /* Xoá thì che ngay, không khoe lại ký tự cũ — xem ghi chú đầy đủ ở
+     `veRoiChe` trong /assets/lichsu.js. */
+  if(laXoa(e)){ drawPin(-1); return; }
   drawPin(i);
   if(i < 0) return;
   const chot = dai === need && dai === truoc + 1 && pinNguyenGo && laGoTay(e);

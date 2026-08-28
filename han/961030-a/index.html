@@ -29,6 +29,15 @@
    Xem /assets/lichsu.js. */
 :root{--ls-bg:linear-gradient(180deg,#FFFFFF 0%,#F6EDFB 100%);--ls-fg:#3E2F56;
   --ls-mo:#7A6795;--ls-line:rgba(122,103,149,.24);--ls-acc:#B57ACB;
+  /* NÚT KHỐI VẬN HÀNH — ba biến này chỉ có ở trang nền SÁNG.
+     Khuôn nút chung trong /assets/lichsu.js mặc định nền xanh đêm, hợp với
+     năm trang kia nhưng đặt lên nền trắng-tím ở đây thì thành mảng xám.
+     Nền: một lớp tím rất mỏng, đủ để cái nút tách khỏi hộp trắng mà không
+     nặng mặt. Chữ: tím đậm hơn `--ls-acc` một bậc — tím nhạt của nhãn thì
+     hợp với chữ to, còn chữ nút chỉ 9.5px in hoa nên phải đậm mới đọc nổi.
+     Rê chuột: cùng sắc tím, đậm thêm một nấc để biết là đang trỏ trúng. */
+  --ls-nut:rgba(181,122,203,.12); --ls-nutchu:#7A4A96;
+  --ls-nut-ho:rgba(181,122,203,.26);
   --ls-w:min(330px,92vw)}
 :root{
   --lav:#F4E7FB;    --blush:#F3DCDC;  --coral:#F5BCBA;
@@ -375,7 +384,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V04.06<br>Last updated 28-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V04.07<br>Last updated 28-Aug-2026"></span>
     </span>
   </div>
 
@@ -1249,6 +1258,9 @@ function drawGateA(){
     else if(!laXoa(e) && !laGoTay(e)) nguyenGo = false;
     var i = buf.length - 1;
     if(henChe){ clearTimeout(henChe); henChe = null; }
+    /* Xoá thì che ngay, không khoe lại ký tự cũ — xem ghi chú đầy đủ ở
+       `veRoiChe` trong /assets/lichsu.js. */
+    if(laXoa(e)){ paint(-1); return; }
     paint(i);
     if(i < 0) return;
     var chot = buf.length === len && buf.length === truoc + 1
@@ -1477,6 +1489,9 @@ function hopPin(){
     else if(!laXoa(e) && !laGoTay(e)) nguyenGo = false;
     var i = buf.length - 1;
     if(henChe){ clearTimeout(henChe); henChe = null; }
+    /* Xoá thì che ngay, không khoe lại ký tự cũ — xem ghi chú đầy đủ ở
+       `veRoiChe` trong /assets/lichsu.js. */
+    if(laXoa(e)){ paint(-1); return; }
     paint(i);
     if(i < 0) return;
     var chot = buf.length === len && buf.length === truoc + 1

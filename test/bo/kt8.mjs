@@ -70,13 +70,26 @@ console.log('\n② Sổ "Khu Easter Egg" ở box Collected');
   await go(p,'#credTitle',3); await p.waitForTimeout(350);
   ok('bấm 3 nhịp → ra cửa mã', await p.evaluate(()=>!!document.querySelector('.ls-nen.on')));
   await p.fill('#lsIn','0981'); await p.press('#lsIn','Enter'); await p.waitForTimeout(500);
-  const so=await p.evaluate(()=>({
-    tit:(document.querySelector('.ls-tit')||{}).textContent,
-    dong:document.querySelectorAll('.ls-doi').length,
-    chay:(document.querySelector('.ls-nhom p.d')||{}).textContent }));
+  /* ⚠ SOI THEO CHÍNH CUỐN SỔ, ĐỪNG GHIM SỐ HIỆU VÀO BỘ KIỂM.
+     BỆNH ĐÃ SỬA: hai phép dưới từng ghim cứng "đủ 5 mốc" và "đang chạy V19".
+     Sổ thì mỗi đợt lại dài thêm một dòng — thêm dòng là bộ kiểm đỏ, mà lỗi
+     báo ra trông như trang hỏng chứ không như bộ kiểm hết hạn. Nay hỏi thẳng
+     `LichSu.so` xem cuốn EGG có bao nhiêu mốc và mốc cuối là số mấy, rồi soi
+     màn hình có khớp không: đợt sau bump số hiệu cũng không phải sửa gì. */
+  const so=await p.evaluate(()=>{
+    const cuon = (window.LichSu && LichSu.so && LichSu.so.EGG) || { doi: [] };
+    const cuoi = cuon.doi[cuon.doi.length - 1] || {};
+    return {
+      tit:(document.querySelector('.ls-tit')||{}).textContent,
+      dong:document.querySelectorAll('.ls-doi').length,
+      chay:(document.querySelector('.ls-nhom p.d')||{}).textContent,
+      soMoc: cuon.doi.length, verCuoi: cuoi.ver || '' };
+  });
   ok('vào đúng sổ "Easter Egg · Gate 1"', so.tit==='Easter Egg · Gate 1', so.tit);
-  ok('  có đủ 5 mốc build', so.dong===5, so.dong+' dòng');
-  ok('  đang chạy V19', /V19/.test(so.chay||''), so.chay);
+  ok('  in ra đủ mọi mốc build của sổ', so.dong === so.soMoc && so.soMoc >= 5,
+     so.dong + ' dòng / sổ có ' + so.soMoc);
+  ok('  dòng "đang chạy" khớp mốc cuối của sổ',
+     !!so.verCuoi && (so.chay||'').includes(so.verCuoi), so.chay + ' · sổ: ' + so.verCuoi);
   await ctx.close();
 
   /* sổ bản đồ (mặt cười) KHÔNG bị ảnh hưởng */

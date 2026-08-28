@@ -1553,6 +1553,9 @@ render();
       else if(!laXoa(e) && !laGoTay(e)) nguyenGo = false;
       var i = buf.length - 1;
       if(henChe){ clearTimeout(henChe); henChe = null; }
+      /* Xoá thì che ngay, không khoe lại ký tự cũ — xem ghi chú đầy đủ ở
+         `veRoiChe` trong /assets/lichsu.js. */
+      if(laXoa(e)){ paint(-1); return; }
       paint(i);
       if(i < 0) return;
       var chot = buf.length === len && buf.length === truoc + 1
@@ -2422,7 +2425,7 @@ render();
   });
 })();
 </script>
-<span class="vstamp" id="vstamp">V05.01<br>Last updated 28-Aug-2026</span>
+<span class="vstamp" id="vstamp">V05.02<br>Last updated 28-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->

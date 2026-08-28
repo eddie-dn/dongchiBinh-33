@@ -9,7 +9,8 @@
   ],
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "api/_lib/**"
+      "includeFiles": "api/_lib/**",
+      "maxDuration": 30
     }
   }
 }

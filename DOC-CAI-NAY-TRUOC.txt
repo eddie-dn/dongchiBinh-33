@@ -672,8 +672,24 @@ NAY MỞ MẮT CHO NÓ:
         buoc: "SHEET_URL"        → chưa khai biến, HOẶC khai rồi mà chưa Redeploy
         co_ma_bao_ve: false      → địa chỉ thiếu ?k=<mã>, xem bước 5 tài liệu
         google_tra_ve "sai ma"   → mã trong địa chỉ khác MA_BAO_VE trong Code.gs
-        trang_thai 401/403       → deploy lại với Who has access = Anyone
+        trang_thai 401/403       → Apps Script ĐANG ĐÒI ĐĂNG NHẬP, xem dưới
+        buoc: "duoi_dia_chi"     → SHEET_URL dùng đuôi /dev, phải là /exec
         ok: true                 → chạy được, mở Sheet xem dòng "tu_soi"
+
+DÒNG `[SHEET] 401 <!DOCTYPE html…>` — BỆNH HAY GẶP NHẤT, VÀ HAY BỊ ĐỌC NHẦM
+Thấy trong Logs một dòng lặp lại sau mỗi lượt chơi:
+
+    [SHEET] 401 <!DOCTYPE html><html lang="en">…window['ppConfig'] = …
+
+thì đó KHÔNG phải Code.gs chạy sai. Đó là TRANG ĐĂNG NHẬP của Google: Apps
+Script chặn ngay ở cửa, nên KHÔNG hàm nào trong Code.gs được gọi tới. Sửa
+Code.gs rồi deploy lại bao nhiêu lần cũng không đổi gì — mã chưa từng chạy.
+Chỉ có HAI nguyên nhân, cả hai đều nằm ở chỗ deploy chứ không nằm trong mã:
+  · bản deploy để Who has access = Only myself → sửa thành Anyone;
+  · SHEET_URL dùng đuôi /dev → đuôi đó vĩnh viễn đòi đăng nhập, phải là /exec.
+Kiểm nhanh: dán chuỗi trong SHEET_URL vào trình duyệt ở CỬA SỔ ẨN DANH. Ra
+JSON "So luu dang chay" là đúng; hiện màn hình đăng nhập là trúng một trong
+hai nguyên nhân trên. Từ đợt này log tự dịch sẵn ra tiếng người, khỏi đoán.
 
 HAI CÁI HAY QUÊN NHẤT, cả hai đều im re:
   · khai biến bên Vercel xong KHÔNG Redeploy — bản đang chạy vẫn chưa có biến;

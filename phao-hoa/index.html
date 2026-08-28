@@ -117,7 +117,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
   <button class="x" id="close" type="button" aria-label="Đóng">&#10005;</button>
 
   <p class="eggcap" id="eggCap">Oh?</p>
-  <span class="vstamp">V03.07<br>Last updated 27-Aug-2026</span>
+  <span class="vstamp">V03.08<br>Last updated 28-Aug-2026</span>
 
   <div class="top">
     <h1 class="tit blink" id="tit">Collected: Easter Egg</h1>
@@ -469,7 +469,15 @@ if(!matchMedia('(prefers-reduced-motion: reduce)').matches) ve();
    nhịp mượt y như nhau.
    ═══════════════════════════════════════════════════════════════ */
 var EGG_CAP = ['Oh?', 'Nứt rồi!', 'Bùm ✦'];
-var LAC_MS = 1500, NUT_MS = 900;
+/* ⚠ BA DÒNG CHỮ NÀY LÀ NHỊP ĐỌC, KHÔNG PHẢI NHỊP VẼ.
+   Mỗi pha đổi một dòng chữ dưới quả trứng: lắc → "Oh?", nứt → "Nứt rồi!",
+   nổ → "Bùm ✦". Bản trước để pha NỨT có 900ms — chữ vừa kịp thay đã bị thay
+   tiếp, mắt chỉ thấy loáng một cái. Nới cả hai pha lên cho đọc kịp, nhưng
+   dừng ở mức nới: cả màn trứng vẫn gói trong hơn bốn giây, người xem không
+   phải ngồi đợi một quả trứng lắc mãi mới chịu nứt.
+   Đồng hồ "ngồi xem một chút đã" (KHOA_MS) đếm từ lúc pháo THẬT SỰ bắn nên
+   không dính gì tới hai con số này — xem `hanKhoaRa`. */
+var LAC_MS = 2000, NUT_MS = 1300;
 
 /* ĐƯỜNG BAO QUẢ TRỨNG — theo ĐÚNG tỉ lệ quả trứng Phục sinh mẫu.
    Ảnh mẫu đo được rộng/cao = 0,79. Hai cung bezier của bản trước chỉ ra 0,66 —

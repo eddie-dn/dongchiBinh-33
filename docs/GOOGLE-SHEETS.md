@@ -273,13 +273,38 @@ bảo vệ chưa, Google trả mã gì.
 | `buoc: "SHEET_URL"` | Vercel chưa thấy biến | Khai `SHEET_URL`, rồi **Redeploy** — khai xong không deploy lại thì bản đang chạy vẫn không có biến |
 | `co_ma_bao_ve: false` | Địa chỉ thiếu `?k=…` | Bước 5 ở trên |
 | `google_tra_ve` chứa `sai ma` | Mã trong địa chỉ khác `MA_BAO_VE` trong `Code.gs` | Sửa cho khớp, rồi **Deploy lại Apps Script** |
-| `trang_thai: 401` / `403` | Web app không cho người lạ gọi | Deploy lại với **Who has access = Anyone** |
+| `trang_thai: 401` / `403`, `google_tra_ve` bắt đầu bằng `<!DOCTYPE html` | Apps Script đòi đăng nhập — `Code.gs` chưa hề chạy | **Who has access = Anyone**, và dùng địa chỉ đuôi `/exec` chứ không phải `/dev` — xem mục ngay dưới bảng |
 | `ok: true` | Chạy được | Mở Sheet, tab `Tiến độ` có dòng `tu_soi` |
 
 Ngoài ra **tab Logs của Vercel** nay có một dòng `[SHEET]` cho mỗi lần chép —
 kèm mã trạng thái và câu Google đáp. Trước đây chỗ này nuốt sạch mọi lỗi, nên
 mọi nguyên nhân đều ra cùng một hiện tượng "Telegram kêu mà sổ trống" mà không
 có nửa dòng manh mối.
+
+### Dòng `[SHEET] 401 <!DOCTYPE html…>` — bệnh hay gặp nhất
+
+Nếu trong Logs thấy dòng này lặp lại sau mỗi lượt chơi:
+
+```
+[SHEET] 401 <!DOCTYPE html><html lang="en">…window['ppConfig'] = …
+```
+
+thì đó **không phải** Code.gs chạy sai. Đó là **trang đăng nhập của Google**:
+Apps Script chặn ngay ở cửa và đòi tài khoản, nên **không hàm nào trong
+`Code.gs` được gọi tới cả**. Sửa `Code.gs` rồi deploy lại bao nhiêu lần cũng
+không đổi gì — mã chưa bao giờ chạy.
+
+Chỉ có **hai** nguyên nhân ra đúng cảnh này, và cả hai đều nằm ở chỗ deploy:
+
+1. Bản deploy để **Who has access = Only myself** → sửa thành **Anyone**
+   (Deploy → Manage deployments → bút chì → Who has access).
+2. `SHEET_URL` đang dùng địa chỉ đuôi **`/dev`** → đuôi đó vĩnh viễn đòi đăng
+   nhập, chỉ đuôi **`/exec`** mới gọi được từ ngoài. Sửa biến bên Vercel rồi
+   **Redeploy**.
+
+Kiểm nhanh: dán chính chuỗi trong `SHEET_URL` vào trình duyệt ở **cửa sổ ẩn
+danh**. Ra JSON `"So luu dang chay"` là đúng; hiện màn hình đăng nhập Google
+là trúng một trong hai nguyên nhân trên.
 
 > **⚠ HAI CÁI HAY QUÊN NHẤT, cả hai đều im re:**
 > · khai biến bên Vercel xong **không Redeploy** — bản đang chạy vẫn chưa có biến;

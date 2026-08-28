@@ -31,6 +31,35 @@
    không có nửa dòng manh mối nào. Nay ghi kết quả vào log Vercel: một dòng khi
    xong, một dòng khi hỏng. Vẫn KHÔNG await và vẫn không bao giờ làm hỏng câu
    trả lời — người chơi không phải chờ cái nhật ký này. */
+/* ⚠ ĐỌC HỘ CÁI GOOGLE TRẢ VỀ, ĐỪNG ĐỔ NGUYÊN HTML VÀO LOG.
+   BỆNH ĐÃ SỬA: "đã đổi Code.gs, redeploy mà không thấy record gì về Google
+   Sheets". Đường ghi sổ KHÔNG hề im — nó kêu suốt, mỗi lượt một dòng:
+
+       [SHEET] 401 <!DOCTYPE html><html lang="en">…window['ppConfig'] = …
+
+   Nhưng dòng đó đọc như rác nên không ai nhận ra nó đang nói gì. Nó là TRANG
+   ĐĂNG NHẬP của Google: Apps Script không chạy hàm nào cả, nó chặn ngay ở
+   cửa và đòi tài khoản. Sửa Code.gs bao nhiêu lần cũng vô nghĩa — mã có bao
+   giờ được gọi tới đâu.
+   Chỉ có HAI nguyên nhân ra đúng cảnh này, và cả hai đều nằm ở chỗ DEPLOY,
+   không nằm trong mã:
+     · bản deploy đặt "Who has access" là "Only myself" thay vì "Anyone";
+     · địa chỉ đang dùng là đuôi `/dev` — đuôi đó VĨNH VIỄN đòi đăng nhập,
+       chỉ đuôi `/exec` mới cho gọi từ ngoài.
+   Nay log tự dịch ra tiếng người, khỏi phải đoán lần sau. Xem thêm mục chẩn
+   bệnh trong docs/GOOGLE-SHEETS.md. */
+function docKetQua(ma, noi) {
+  var s = String(noi || '');
+  if (ma === 401 || ma === 403 || /^<!DOCTYPE html/i.test(s)) {
+    return 'Apps Script ĐANG ĐÒI ĐĂNG NHẬP — mã Code.gs chưa hề được gọi. '
+         + 'Deploy lại với "Who has access = Anyone", và dùng địa chỉ đuôi '
+         + '/exec chứ không phải /dev.';
+  }
+  if (/"ok"\s*:\s*true/.test(s)) return 'ghi được';
+  if (/sai ma/i.test(s)) return 'Mã bảo vệ trong địa chỉ khác với mã trong Code.gs.';
+  return s.slice(0, 160);
+}
+
 function chepVeSheet(o) {
   const url = process.env.SHEET_URL;
   if (!url) { console.log('[SHEET] chưa khai SHEET_URL — bỏ qua'); return; }
@@ -42,7 +71,7 @@ function chepVeSheet(o) {
     }).then(async r => {
       let noi = '';
       try { noi = (await r.text()).slice(0, 200); } catch (e) {}
-      console.log('[SHEET]', r.status, noi);
+      console.log('[SHEET]', r.status, docKetQua(r.status, noi));
     }).catch(e => console.log('[SHEET] hỏng:', e && e.message));
   } catch (e) { console.log('[SHEET] hỏng ngay:', e && e.message); }
 }
@@ -60,6 +89,15 @@ async function soiSo(res) {
       vi: 'Chưa khai biến SHEET_URL bên Vercel, hoặc khai rồi mà chưa Redeploy.' });
   }
   const coMa = /[?&]k=/.test(url);
+  /* Đuôi `/dev` là bản ĐANG SỬA của Apps Script — nó vĩnh viễn đòi đăng nhập,
+     gọi từ ngoài vào bao giờ cũng 401. Bắt ngay ở đây, khỏi phải gọi sang
+     Google mới biết: chỉ nhìn cái đuôi là đủ kết luận. */
+  if (/\/dev(\?|$)/.test(url)) {
+    return res.status(200).json({ ok: false, buoc: 'duoi_dia_chi', co_ma_bao_ve: coMa,
+      vi: 'SHEET_URL đang dùng đuôi /dev — đuôi đó luôn đòi đăng nhập nên gọi '
+        + 'từ ngoài vào bao giờ cũng bị chặn. Đổi sang đuôi /exec của bản đã '
+        + 'deploy, rồi Redeploy bên Vercel.' });
+  }
   try {
     const r = await fetch(url, {
       method: 'POST',
@@ -76,8 +114,8 @@ async function soiSo(res) {
       vi: ok ? 'Chạy được — mở Sheet xem dòng "tu_soi" ở tab Tiến độ.'
         : !coMa ? 'Địa chỉ THIẾU phần ?k=<mã bảo vệ> — xem bước 5 của docs/GOOGLE-SHEETS.md.'
         : /sai ma/.test(noi) ? 'Mã bảo vệ trong địa chỉ KHÁC với MA_BAO_VE trong Code.gs.'
-        : r.status === 401 || r.status === 403
-          ? 'Apps Script chặn: deploy lại với "Who has access = Anyone".'
+        : r.status === 401 || r.status === 403 || /^<!DOCTYPE html/i.test(noi)
+          ? docKetQua(r.status, noi)
         : 'Google trả về thứ lạ — xem `google_tra_ve` ở trên.' });
   } catch (e) {
     return res.status(200).json({ ok: false, buoc: 'mang', co_ma_bao_ve: coMa,

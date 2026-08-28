@@ -11,6 +11,18 @@ const T=(n,c,note='')=>{ if(c){ok++;console.log('  ✓ '+n);} else {ng++;console
 const cho=(p,ms)=>p.waitForTimeout(ms);
 const kho = p => p.evaluate(()=>{ try{ return JSON.parse(localStorage.getItem('mtv1')||'{}'); }catch(e){ return {}; } });
 
+/* Chờ hết màn trứng rồi mới soi. HỎI THẲNG TRANG hai con số nhịp thay vì ghi
+   cứng 2800ms như bản trước: đợt nào nới nhịp trứng cho dễ đọc là bộ kiểm gãy
+   oan, mà lỗi báo ra thì trông như trang hỏng chứ không như bộ kiểm hỏng. */
+const choXongTrung = async p => {
+  const ms = await p.evaluate(() => {
+    try{ return (typeof LAC_MS === 'number' ? LAC_MS : 2000)
+              + (typeof NUT_MS === 'number' ? NUT_MS : 1300); }
+    catch(e){ return 3300; }
+  });
+  await cho(p, ms + 1300);        /* cộng nhịp nổ bung rồi mới tới pháo thật */
+};
+
 async function mo(m){
   const ctx = await br.newContext({ viewport:{width:420,height:900} });
   const p = await ctx.newPage();
@@ -22,7 +34,7 @@ async function mo(m){
 console.log('\n① LẦN ĐẦU — ba đường ra đều khoá cho tới khi xem đủ một nhịp');
 {
   const { p, ctx } = await mo({ eggWin:true });
-  await cho(p, 2800);                       /* trứng lắc 1500 + nứt 900 → pháo nổ */
+  await choXongTrung(p);
   const kh = await p.evaluate(()=>document.getElementById('frame').classList.contains('khoa-ra'));
   T('đang khoá ngay sau khi pháo bắt đầu bắn', kh);
   T('hai nút dẫn đi bị mờ và không nhận chạm', await p.evaluate(()=>{
@@ -47,7 +59,7 @@ console.log('\n① LẦN ĐẦU — ba đường ra đều khoá cho tới khi x
 console.log('\n② LẦN SAU — vào là đi lại được ngay, không khoá gì');
 {
   const { p, ctx } = await mo({ eggWin:true, phaoXem:true });
-  await cho(p, 2800);
+  await choXongTrung(p);
   T('không khoá đường ra', !(await p.evaluate(()=>
     document.getElementById('frame').classList.contains('khoa-ra'))));
   T('nút Thoát bấm được', await p.evaluate(()=>
