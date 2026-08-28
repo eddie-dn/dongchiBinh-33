@@ -27,7 +27,12 @@ console.log('\n① Nội dung các sổ');
   }
   ok('KHÔNG sổ nào đả động đo đạc / theo dõi / lưu trữ',
      !Object.values(so).some(v=>cam.test(v.moi)));
-  ok('DAD-A tên "Hồ sơ Phi đoàn", đánh số V04', so['DAD-A'].ten==='Hồ sơ Phi đoàn' && so['DAD-A'].chay==='V04',
+  /* ⚠ ĐỪNG GHIM SỐ HIỆU CỤ THỂ Ở ĐÂY. Bản trước ghim `=== 'V04'`, tới lúc mở
+     dòng lớn V05 là đỏ — mà sản phẩm chẳng sai gì, chỉ là bộ kiểm chép một con
+     số sẽ đổi. Cùng cái bệnh `nguon27` đang chặn ở phía tài liệu.
+     Chỉ kiểm ĐÚNG KHUÔN: chữ V rồi hai chữ số. */
+  ok('DAD-A tên "Hồ sơ Phi đoàn", số hiệu đúng khuôn Vxx',
+     so['DAD-A'].ten==='Hồ sơ Phi đoàn' && /^V\d{2}$/.test(so['DAD-A'].chay),
      so['DAD-A'].ten+' / '+so['DAD-A'].chay);
   ok('EGG tên "Easter Egg · Gate 1"', so.EGG.ten==='Easter Egg · Gate 1', so.EGG.ten);
   ok('EGG có nội dung pháo hoa chi tiết', /chạm-để-bắn/.test(so.EGG.moi) && /quả trứng/i.test(so.EGG.moi));

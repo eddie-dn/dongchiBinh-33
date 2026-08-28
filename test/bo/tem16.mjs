@@ -113,8 +113,12 @@ console.log('\n⑤ HAI CỘT NGÀY — bảng in MỐC GHI NHẬN, tem in NGÀY 
     const dong=[...document.querySelectorAll('.ls-doi')].pop();
     return { bang:(dong?dong.children[1].textContent:'').trim(), moc:t.mocIso, tem:t.iso };
   });
-  T('bảng in mốc ghi nhận (' + d.bang + '), khác ngày tem (' + d.tem + ')',
-    d.bang===d.moc && d.moc!==d.tem, JSON.stringify(d));
+  /* ⚠ CHỈ KIỂM ĐÚNG Ý ĐỊNH: bảng in MỐC GHI NHẬN chứ không in ngày tem.
+     Bản trước còn đòi thêm `moc !== tem`, mà hai ngày đó TRÙNG NHAU là chuyện
+     bình thường — đúng cái ngày mở một dòng lớn mới thì mốc chính là hôm nay,
+     cũng là ngày sửa cuối. Đòi chúng khác nhau là bắt sản phẩm sai theo lịch. */
+  T('bảng in mốc ghi nhận (' + d.bang + ') chứ không in ngày tem',
+    d.bang === d.moc, JSON.stringify(d));
   await ctx.close();
 }
 

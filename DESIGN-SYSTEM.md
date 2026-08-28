@@ -173,7 +173,12 @@ Last updated DD-Mon-YYYY · Vxx.yy
 
 | Đúng | Sai |
 |---|---|
-| `V01` · `V02` · `V04.05` · `V17.09` · `V02.02` | ~~`V1`~~ · ~~`V2`~~ · ~~`V4.5`~~ · ~~`V17.9`~~ · ~~`V2.02`~~ |
+| `V13.05` · `V23.09` · `V13.02` | ~~`V13.5`~~ · ~~`V23.9`~~ · ~~`V13.2`~~ |
+
+> *Ví dụ ở bảng trên cố ý dùng `V13` và `V23` — hai dòng lớn bị **bỏ qua
+> vĩnh viễn** theo luật đánh số. Nhờ vậy chúng KHÔNG BAO GIỜ trùng với số
+> hiệu của một khu đang chạy, nên `nguon27` không đỏ. Ba lần trước dùng số
+> thật thì cả ba lần đều đỏ khi khu đó lên tới đúng số ấy.*
 
 Đời trước để lẫn cả hai kiểu — chỗ ghi `V02.02`, chỗ ghi `V3.02`, cùng một bảng
 mà đọc xuống tưởng hai hệ đánh số khác nhau; sắp theo chuỗi thì `V10` đứng

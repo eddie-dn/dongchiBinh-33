@@ -242,10 +242,11 @@
         /* V19 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc mở dòng lớn kế
            tiếp — đúng luật ghi ở đầu file. Số 20 không nằm trong mấy nấc bị bỏ
            qua (13, 14, 23) nên đi thẳng. */
-        { ngay:'2026-08-27', sua:'2026-08-27', ver:'V20', so:'01',
+        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V20', so:'02',
           chinh:'Dọn lại chỗ đứng của mấy con số nhỏ và của hai cái nút trong khung Collected',
           chi:[
-            { ver:'V20.00', chinh:'Hai nút trong khung Collected về đứng cạnh nhau chia đôi đều thay vì xếp dọc thành hai dải dài, và bỏ hình quả trứng trong nút — chữ đọc là hiểu rồi. Số lần chơi lại nay chỉ nằm ở cuối dòng tem sau số hiệu, thôi chen thêm dòng vào trong hộp. Hai cửa mã trong Box Tổng tư lệnh trước nay gõ sai bao nhiêu lần cũng im lặng, giờ đã lên tiếng' }
+            { ver:'V20.00', chinh:'Hai nút trong khung Collected về đứng cạnh nhau chia đôi đều thay vì xếp dọc thành hai dải dài, và bỏ hình quả trứng trong nút — chữ đọc là hiểu rồi. Số lần chơi lại nay chỉ nằm ở cuối dòng tem sau số hiệu, thôi chen thêm dòng vào trong hộp. Hai cửa mã trong Box Tổng tư lệnh trước nay gõ sai bao nhiêu lần cũng im lặng, giờ đã lên tiếng' },
+            { ver:'V20.01', chinh:'Dọn mấy khối kiểu dáng không thẻ nào còn mang' }
           ] }
       ]
     },
@@ -391,6 +392,13 @@
             { ver:'V04.07', chinh:'Pí danh nay ôm đủ cả ba chặng — trước đây bỏ quên phần Zoey\u2019s Castle nên đổi pí danh là mất trắng bộ câu hỏi đã giải. Mốc trong bảng pí danh cũng đi hết cả hành trình chứ không dừng ở Mission. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V04.08', chinh:'Bấm chơi lại từ đầu nay có nhớ đã chơi lại mấy lần: số hiệu hiện ngay trên tem góc trang và trong thẻ Phá đảo. Trước đây bấm chơi lại là xoá trắng, không còn dấu vết nào của mấy lượt trước' },
             { ver:'V04.09', chinh:'Số lần chơi lại dời về cuối dòng tem, thôi chen một dòng vào giữa thẻ Phá đảo — dòng đó làm vỡ bố cục thẻ' }
+          ] },
+        /* V04 kín mười nấc đuôi nên buộc mở dòng lớn. Lần này thì cũng xứng:
+           pí danh thôi dính chặt vào một cái máy là đổi hẳn cách chơi. */
+        { ngay:'2026-08-28', sua:'2026-08-28', ver:'V05', so:'01',
+          chinh:'Pí danh đi theo người, không còn nằm chết trong một trình duyệt',
+          chi:[
+            { ver:'V05.00', chinh:'Pí danh nay đi theo người: gõ lại tên cũ ở máy khác — điện thoại, laptop, trình duyệt nào cũng được — là tiến độ tự về. Trước đây bản lưu nằm chết trong đúng một trình duyệt, đổi máy là gõ đúng tên cũng chỉ ra hồ sơ trống trơn. Tìm không thấy hay mạng chậm quá sáu giây thì lặng lẽ chơi kiểu cũ, không bắt ai ngồi chờ' }
           ] }
       ]
     },
@@ -449,13 +457,14 @@
         /* V05 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc phải mở dòng lớn
            kế tiếp — đúng luật ghi ở đầu file. Không phải vì đợt này to hơn mấy
            đợt trước, chỉ là hết chỗ. */
-        { ngay:'2026-08-27', sua:'2026-08-27', ver:'V06', so:'04',
+        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V06', so:'05',
           chinh:'Dòng lớn mới vì V05 đã kín mười nấc đuôi. Mở màn bằng đợt dọn lại Khối vận hành',
           chi:[
             { ver:'V06.00', chinh:'Khối vận hành khoe luôn số lần đã chơi lại màn này, và ba cái nút gom vào một khối dọc cùng dáng với mấy bảng điều khiển khác trong bộ — trước đó hai nút nằm chung một hàng rồi nút thứ ba treo riêng bên dưới, nhìn ra thành hai cụm rời' },
             { ver:'V06.01', chinh:'Cổng phòng lab nay đòi phá đảo bản đồ tác chiến trước: vào tới nơi vẫn thấy cửa, nhưng chưa xong bản đồ thì cổng nói còn mấy mật thư và chỉ luôn đường quay về. Thêm mốc vòng — tắt máy giữa chừng rồi quay lại là chơi tiếp đúng vòng đang dở, không phải làm lại từ vòng 1' },
             { ver:'V06.02', chinh:'Cổng bị khoá nay nói gọn đúng một câu thay vì ba dòng kể lể' },
-            { ver:'V06.03', chinh:'Số lần chơi lại dời về cuối dòng tem, Khối vận hành thôi nhắc lại' }
+            { ver:'V06.03', chinh:'Số lần chơi lại dời về cuối dòng tem, Khối vận hành thôi nhắc lại' },
+            { ver:'V06.04', chinh:'Ghi rõ trong tệp cấu hình rằng có một khoá đáp án không ai đọc — sửa ở đó là không đổi được gì' }
           ] }
       ]
     },
@@ -480,14 +489,15 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
            xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V04', so:'05',
+        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V04', so:'06',
           chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' },
             { ver:'V04.01', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô. Ô trả lời câu hỏi vá theo cùng luật — đáp án có dấu cách nên ô này lệch nặng nhất' },
             { ver:'V04.02', chinh:'Tiến độ bộ câu hỏi nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V04.03', chinh:'Nút trong Khối vận hành xếp dọc và về chung một dáng với mấy bảng điều khiển khác trong bộ' },
-            { ver:'V04.04', chinh:'Hai nút Khối vận hành về đứng cạnh nhau chia đôi đều, bỏ ký hiệu trong nút; số lần chơi lại chỉ còn ghi ở tem' }
+            { ver:'V04.04', chinh:'Hai nút Khối vận hành về đứng cạnh nhau chia đôi đều, bỏ ký hiệu trong nút; số lần chơi lại chỉ còn ghi ở tem' },
+            { ver:'V04.05', chinh:'Dọn khối kiểu dáng của hàng nút đời cũ, không còn ai dùng' }
           ] }
       ]
     },
@@ -509,7 +519,7 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-27', ver:'V03', so:'06',
+        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V03', so:'07',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
             { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
@@ -517,7 +527,8 @@
             { ver:'V03.02', chinh:'Ô mã hỏi thẳng trình duyệt xem cú nhập do NGƯỜI gõ hay do máy tự điền, thay vì đoán bằng độ dài: bỏ được nhịp nghỉ 900ms sau mỗi lần sai nên gõ lại nhanh gấp đôi, và tự điền vào rồi sửa một ký tự cũng không còn bị tính là gửi. Ô nhập nay luôn bằng đúng hàng ô nên xoá một cái rụng đúng một ô' },
             { ver:'V03.03', chinh:'Tiến độ wishlist nay theo được pí danh. Trang Credit có thêm mục ngồi làm hết bao lâu, đếm từ chính lịch sử kho mã' },
             { ver:'V03.04', chinh:'Ba cái nút trong Khối vận hành gom vào một khối dọc — hết cảnh hai nút nằm một hàng rồi nút thứ ba treo lủng lẳng bên dưới như hai cụm rời nhau' },
-            { ver:'V03.05', chinh:'Nút khoá và mở đứng cạnh nhau chia đôi đều, nút vặn kim xuống hàng riêng vì nó làm việc khác hẳn; bỏ ký hiệu trong nút' }
+            { ver:'V03.05', chinh:'Nút khoá và mở đứng cạnh nhau chia đôi đều, nút vặn kim xuống hàng riêng vì nó làm việc khác hẳn; bỏ ký hiệu trong nút' },
+            { ver:'V03.06', chinh:'Dọn khối kiểu dáng của hàng nút đời cũ, không còn ai dùng' }
           ] }
       ]
     },
@@ -1267,17 +1278,17 @@
 
      Đo lại: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào đây. */
   var THOI_GIAN = {
-    MAP:    '31 ngày 23 giờ 8 phút',
-    EGG:    '31 ngày 23 giờ 8 phút',
-    'DAD-A': '16 ngày 1 giờ 20 phút',
-    'DAD-B': '22 ngày 11 giờ 45 phút',
-    'HAN-A': '14 ngày 1 giờ 23 phút',
-    'HAN-B': '14 ngày 1 giờ 23 phút',
+    MAP:    '32 ngày 12 giờ 19 phút',
+    EGG:    '32 ngày 12 giờ 19 phút',
+    'DAD-A': '16 ngày 19 giờ 46 phút',
+    'DAD-B': '23 ngày 56 phút',
+    'HAN-A': '14 ngày 19 giờ 49 phút',
+    'HAN-B': '14 ngày 19 giờ 49 phút',
     FX:     '13 ngày 13 giờ 38 phút',
-    _TONG:  '31 ngày 23 giờ 8 phút',
+    _TONG:  '32 ngày 12 giờ 19 phút',
     _TU:    '26-07-2026',
-    _TOI:   '27-08-2026',
-    _COMMIT: 220
+    _TOI:   '28-08-2026',
+    _COMMIT: 221
   };
 
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số

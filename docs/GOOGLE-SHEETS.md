@@ -88,7 +88,28 @@ deploy sau, sửa xong mà không redeploy thì vẫn chạy bản cũ.
 
 ---
 
-## Hai tab ghi gì
+## ⚠ ĐÃ CÓ MÃ CŨ RỒI THÌ PHẢI DÁN LẠI (đợt 29)
+
+Đợt 29 thêm **tab `Pí danh`** và cho `doGet` biết tra cứu. Ai đã dựng sổ từ
+trước thì **mã trong Apps Script vẫn là bản cũ** — dán lại thì mới có:
+
+1. Mở Apps Script của sổ → chọn hết mã cũ → dán đè bản mới trong
+   `docs/apps-script/Code.gs`
+2. Ctrl+S
+3. **Deploy → Manage deployments → bút chì → Version: New version → Deploy**
+
+Bước 3 là bước hay quên nhất: địa chỉ `/exec` phục vụ **bản đã deploy**, không
+phải mã đang mở trong trình soạn. Chỉ Ctrl+S mà không tạo version mới thì mọi
+thứ vẫn chạy bản cũ — im lặng, không báo gì.
+
+Không dán lại cũng **không hỏng gì**: trang vẫn chơi được y như cũ, chỉ là pí
+danh không đi theo người sang máy khác.
+
+**Không phải khai thêm biến nào.** Đường pí danh dùng chung `SHEET_URL` sẵn có.
+
+---
+
+## Ba tab ghi gì
 
 ### Tab `Tiến độ` — do `/api/ping` gửi
 
@@ -178,6 +199,36 @@ Trước đợt 21 lời nhắn **chỉ** đi email + Telegram, không vào sổ
 một lời nhắn cũ thì phải đi lục hòm thư, mà chuông Telegram thì trôi mất theo
 dòng. Nay chép cả khi **quá trần chống spam**: sổ là chỗ LƯU nên phải đủ, cái
 cần lọc cho đỡ ồn là chuông báo.
+
+### Tab `Pí danh` — do `/api/pidanh` gửi
+
+Tab này **khác hẳn ba tab kia**. Ba tab kia chỉ ghi thêm, mỗi lượt một dòng.
+Tab này là một **cuốn danh bạ**: mỗi pí danh đúng **một dòng**, lưu lại thì ghi
+đè chính dòng đó.
+
+| Cột | Là gì |
+|---|---|
+| `ten` | pí danh, đã hạ chữ thường và cắt khoảng trắng — đây là **khoá tra** |
+| `moc` | người chơi đang tới đâu (`M3 ✦`, `HAN ✦✦`…) |
+| `goi` | cả bản chụp tiến độ, đóng thành một chuỗi JSON |
+| `at` | lúc cất |
+| `may` | máy nào cất |
+
+**Vì sao cần:** trước đợt 29, pí danh chỉ nằm trong `localStorage` của đúng một
+trình duyệt. Đổi từ điện thoại sang laptop là gõ lại tên cũ cũng chỉ ra một hồ
+sơ trống trơn. Nay lúc khai một pí danh, trang hỏi cuốn danh bạ này trước; có
+sẵn thì kéo bản lưu về.
+
+**⚠ CÁI TÊN CHÍNH LÀ CHÌA KHOÁ.** Không có mật khẩu nào thêm — ai gõ trúng tên
+là mở được tiến độ của người mang tên đó. Đây là lựa chọn **có cân nhắc** cho
+một trò chơi riêng giữa hai người: bắt nhớ mật khẩu thì hỏng cả cái thú, mà
+thứ bị lộ cũng chỉ là tiến độ chơi. Đừng bê cách này sang chỗ có dữ liệu thật.
+
+**⚠ Cửa tra CÓ kiểm mã bảo vệ.** `doGet` đời trước trả lời cho bất cứ ai; nay
+nó đọc được bản lưu nên bắt buộc phải kèm `?k=`, y như `doPost`.
+
+Hỏng hay chậm quá 6 giây thì trang tự bỏ qua và chơi kiểu cũ — đường này là
+tiện thêm, không phải xương sống.
 
 ### Tab `Chat` — do `/api/chat` gửi
 

@@ -52,8 +52,69 @@ var COT = {
   /* Lời nhắn gửi tổ kỹ thuật. Trước đây `/api/thu` chỉ đi email + Telegram,
      nghĩa là muốn đọc lại lời nhắn cũ thì phải lục hòm thư — mà chuông báo
      Telegram gói Hobby chỉ giữ được một quãng. Nay chép về sổ luôn. */
-  'Thư'    : ['at', 'tu', 'loi', 'da_gui', 'may']
+  'Thư'    : ['at', 'tu', 'loi', 'da_gui', 'may'],
+  /* ── PÍ DANH ────────────────────────────────────────────────────────────
+     Tab này KHÁC HẲN ba tab trên: ba tab kia chỉ GHI THÊM, mỗi lượt một dòng.
+     Tab này là một cuốn danh bạ — mỗi pí danh ĐÚNG MỘT DÒNG, lưu lại thì ghi
+     đè chính dòng đó (xem `luuPiDanh`). Nhờ vậy mở máy khác gõ lại tên là tra
+     ra được bản lưu mới nhất.
+     `goi` là cả bản chụp tiến độ, đóng thành chuỗi JSON. Ô Sheet chứa được
+     50.000 ký tự, bản chụp thật chỉ vài KB nên rộng chán. */
+  'Pí danh': ['ten', 'moc', 'goi', 'at', 'may']
 };
+
+/* Tên dùng làm KHOÁ TRA nên phải chuẩn hoá y hệt ở mọi nơi: bỏ khoảng trắng
+   thừa, đưa về chữ thường. Không thì "Zoey" và "zoey " thành hai người. */
+function chuanTen(t) {
+  return String(t == null ? '' : t).trim().toLowerCase();
+}
+
+/* Ghi đè đúng dòng của pí danh đó; chưa có thì thêm dòng mới. */
+function luuPiDanh(goi) {
+  var sh = layTab('Pí danh');
+  var ten = chuanTen(goi.ten);
+  if (!ten) return { ok: false, ly_do: 'thieu ten' };
+
+  var cot = COT['Pí danh'];
+  var dong = cot.map(function (k) {
+    var v = goi[k];
+    if (v === undefined || v === null) return '';
+    return (typeof v === 'object') ? JSON.stringify(v) : String(v).slice(0, 45000);
+  });
+  dong[0] = ten;                                   /* cột `ten` luôn là bản chuẩn hoá */
+
+  var n = sh.getLastRow();
+  if (n > 1) {
+    var cu = sh.getRange(2, 1, n - 1, 1).getValues();
+    for (var i = 0; i < cu.length; i++) {
+      if (chuanTen(cu[i][0]) === ten) {
+        sh.getRange(i + 2, 1, 1, dong.length).setValues([dong]);
+        return { ok: true, viec: 'ghi de' };
+      }
+    }
+  }
+  sh.appendRow(dong);
+  return { ok: true, viec: 'them moi' };
+}
+
+/* Tra một pí danh. Không thấy thì trả `co: false` chứ KHÔNG coi là lỗi —
+   gõ một cái tên mới toanh là chuyện bình thường. */
+function traPiDanh(ten) {
+  ten = chuanTen(ten);
+  if (!ten) return { ok: false, ly_do: 'thieu ten' };
+  var sh = layTab('Pí danh');
+  var n = sh.getLastRow();
+  if (n < 2) return { ok: true, co: false };
+  var cot = COT['Pí danh'];
+  var bang = sh.getRange(2, 1, n - 1, cot.length).getValues();
+  for (var i = 0; i < bang.length; i++) {
+    if (chuanTen(bang[i][0]) !== ten) continue;
+    var ra = { ok: true, co: true };
+    for (var j = 0; j < cot.length; j++) ra[cot[j]] = bang[i][j];
+    return ra;
+  }
+  return { ok: true, co: false };
+}
 
 function doPost(e) {
   try {
@@ -62,6 +123,9 @@ function doPost(e) {
     }
     var goi = {};
     try { goi = JSON.parse(e.postData.contents) || {}; } catch (loi) { goi = {}; }
+
+    /* Pí danh đi đường RIÊNG: nó ghi đè một dòng chứ không nối thêm dòng. */
+    if (goi.loai === 'pidanh') return traLoi(luuPiDanh(goi));
 
     var tenTab = (goi.loai === 'ping') ? 'Tiến độ'
                : (goi.loai === 'thu')  ? 'Thư'
@@ -92,8 +156,18 @@ function doPost(e) {
 }
 
 /* Mở bằng trình duyệt để thử xem đã deploy đúng chưa — thấy chữ là chạy được. */
-function doGet() {
-  return traLoi({ ok: true, noi: 'So luu dang chay. Gui bang POST nhe.' });
+/* GET dùng cho ĐÚNG MỘT việc: tra pí danh. Mọi việc ghi vẫn đi bằng POST.
+   ⚠ CÓ KIỂM MÃ BẢO VỆ — khác `doGet` đời trước vốn trả lời ai cũng được. Nếu
+   không kiểm thì ai biết địa chỉ Web App là đọc được bản lưu của người khác,
+   mà bản lưu chính là toàn bộ tiến độ. */
+function doGet(e) {
+  var ten = e && e.parameter ? e.parameter.ten : '';
+  if (!ten) return traLoi({ ok: true, noi: 'So luu dang chay. Gui bang POST nhe.' });
+  if (MA_BAO_VE && (!e.parameter || e.parameter.k !== MA_BAO_VE)) {
+    return traLoi({ ok: false, ly_do: 'sai ma' });
+  }
+  try { return traLoi(traPiDanh(ten)); }
+  catch (loi) { return traLoi({ ok: false, ly_do: String(loi) }); }
 }
 
 /* ═══ TAB VÀ DÒNG TIÊU ĐỀ TỰ MỌC ═══════════════════════════════════════════

@@ -71,7 +71,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 27-Aug-2026 · V06.03'
+    version       : 'Last updated 28-Aug-2026 · V06.04'
   }
 };
 
@@ -307,6 +307,9 @@ const GAME_CONFIG = {
 
   /* ── VÒNG 1 · MÃ KHÓA RAZER ────────────────────────────────────────────── */
   round1: {
+    /* ⚠ KHÔNG AI ĐỌC KHOÁ NÀY. Đáp án thật nằm ở `accept` (bản chấp
+       nhận) và `solved` (bản hiện ra). Giữ lại cho khỏi tưởng mất, nhưng
+       SỬA Ở ĐÂY LÀ KHÔNG ĐỔI ĐƯỢC GÌ — phải sửa `accept` và `solved`. */
     password : 'RAZER',
     accept   : ['RAZER'],
     scrambled: 'REZAR',
@@ -373,6 +376,9 @@ const GAME_CONFIG = {
 
   /* ── VÒNG 2 · THẦN LONG TRIỆU VÂN ──────────────────────────────────────── */
   round2: {
+    /* ⚠ KHÔNG AI ĐỌC KHOÁ NÀY. Đáp án thật nằm ở `accept` (bản chấp
+       nhận) và `solved` (bản hiện ra). Giữ lại cho khỏi tưởng mất, nhưng
+       SỬA Ở ĐÂY LÀ KHÔNG ĐỔI ĐƯỢC GÌ — phải sửa `accept` và `solved`. */
     password : 'ZHAO YUN',
     accept   : ['ZHAO YUN','ZHAOYUN'],
     scrambled: 'NUY OAHZ',

@@ -1,4 +1,108 @@
 ════════════════════════════════════════
+ĐỢT 29 — pí danh đi theo người, và một lượt rà lỗi/dọn thừa.
+════════════════════════════════════════
+    api/pidanh.js (MỚI)   docs/apps-script/Code.gs   docs/GOOGLE-SHEETS.md
+    dad/950901-a/index.html   dad/950901-b/config.js
+    index.html   han/961030-a/index.html   han/961030-b/index.html
+    assets/lichsu.js      test/ (thêm 1 bộ)     DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /dad/950901-a  V04.09 → V05.00 (V04 kín mười nấc, và lần này cũng xứng)
+         /  V20.00 → V20.01  ·  /dad/950901-b  V06.03 → V06.04
+         /han/961030-a  V04.04 → V04.05  ·  /han/961030-b  V03.05 → V03.06
+
+⚠⚠ PHẢI DÁN LẠI MÃ APPS SCRIPT RỒI TẠO VERSION MỚI, nếu không thì phần pí danh
+   không chạy. Xem khối cảnh báo đầu docs/GOOGLE-SHEETS.md. Không dán cũng
+   không hỏng gì — trang chơi y như cũ, chỉ là pí danh không đi theo người.
+   KHÔNG phải khai thêm biến nào: dùng chung `SHEET_URL` sẵn có.
+
+
+① PÍ DANH ĐI THEO NGƯỜI
+────────────────────────────────────────
+Trước: pí danh và tiến độ nằm trong `localStorage` của ĐÚNG một trình duyệt.
+Đổi điện thoại sang laptop, hay Chrome sang Safari, là gõ lại đúng tên cũ cũng
+chỉ ra một hồ sơ TRỐNG TRƠN.
+
+Nay có cuốn danh bạ ở tab `Pí danh` trong sổ — mỗi tên ĐÚNG MỘT DÒNG, lưu lại
+thì ghi đè chính dòng đó.
+
+    POST /api/pidanh   { ten, moc, goi }   cất bản chụp
+    GET  /api/pidanh?ten=…                 tra bản chụp
+
+Lúc khai một pí danh, trang HỎI CUỐN DANH BẠ TRƯỚC rồi mới dựng hồ sơ. Có sẵn
+thì kéo bản lưu về và tải lại trang; `profLoad` lo cả việc tính lại pha điều
+hướng từ bản chụp.
+
+BA LUẬT GIỮ CHO NÓ KHÔNG THÀNH GÁNH NẶNG:
+  · HỎNG THÌ IM. Mất mạng, chưa khai biến, Sheets bận — trang chơi y như cũ.
+    `/api/pidanh` chưa có `SHEET_URL` thì trả 200 kèm cờ `chua_bat`, KHÔNG 500.
+  · CÓ HẠN GIỜ. Quá 6 giây coi như không tìm thấy, đi tiếp. Không bao giờ bắt
+    người chơi ngồi chờ một cái mạng chậm.
+  · GỘP CÚ ĐẨY. `profSave` bị gọi cả lúc rời trang lẫn lúc giấu tab; đẩy từng
+    cái là bắn liên hồi vô ích, nên gộp lại chờ 1,2 giây.
+
+TÊN LÀ CHUẨN HOÁ HAI ĐẦU: hạ chữ thường, cắt khoảng trắng, ở CẢ trang lẫn Apps
+Script. Lệch một đầu là "Zoey" với "zoey " thành hai người.
+
+⚠ CÁI TÊN CHÍNH LÀ CHÌA KHOÁ — không có mật khẩu nào thêm. Lựa chọn CÓ CÂN
+NHẮC cho một trò chơi riêng giữa hai người: bắt nhớ mật khẩu thì hỏng cả cái
+thú, mà thứ bị lộ cũng chỉ là tiến độ chơi.
+
+⚠ `doGet` NAY CÓ KIỂM MÃ BẢO VỆ. Đời trước nó trả lời cho bất cứ ai — chấp nhận
+được khi nó chỉ nói "sổ đang chạy", nhưng nay nó ĐỌC ĐƯỢC BẢN LƯU nên bắt buộc
+phải kèm `?k=` y như `doPost`. Có phép kiểm giữ chỗ này.
+
+Đã cho mã THẬT (cả `Code.gs` lẫn `api/pidanh.js`) chạy qua một cuốn sổ giả:
+cất → tra → ghi đè → tra tên lạ → tắt đồng bộ → chặn cửa tra. 24 phép, xanh hết.
+
+
+② RÀ LỖI ẨN — kết quả
+────────────────────────────────────────
+Quét sáu hướng. Ba hướng SẠCH, ba hướng có chuyện:
+
+  ✓ Nhãn tín hiệu     không nhãn nào chết, không sự kiện nào thiếu nhãn
+  ✓ .vercelignore     không sót tài liệu nào
+  ✓ Hàm trùng tên     có trùng, nhưng đều nằm trong hàm cha khác nhau —
+                      không che nhau, chỉ là chép lại (xem ③)
+
+  ✗ 5 khối CSS chết   đã dọn:
+      index.html          .egg-ico (đợt 28 gỡ quả trứng), .hq-back-cu, .pz-txt
+      dad/950901-a        .catlabel
+      han/961030-a + b    .ov-row (đợt 25/28 chuyển sang .ops-hang)
+
+  ✗ khoá cấu hình      `round1.password` và `round2.password` KHÔNG AI ĐỌC —
+    không ai đọc        đáp án thật nằm ở `accept` và `solved`. Đây là cái bẫy:
+                        ai sửa `password` sẽ tưởng mình vừa đổi đáp án mà thật
+                        ra không đổi gì. KHÔNG xoá (giữ cho khỏi tưởng mất) mà
+                        dán cảnh báo ngay trên đầu.
+
+  ✗ ghi ra sổ hơi thừa `ping('giai_dung')` gửi kèm cả đáp án đã giải
+                        (`cxCode + ' → ' + n.plain`). Không phải lỗ hổng — đó là
+                        sổ riêng của người dựng game — nhưng `cxCode` đã đủ nói
+                        là toạ độ nào, phần sau chỉ là chép lại đáp án. Để
+                        nguyên, ghi ra đây để biết mà cân nhắc.
+
+
+③ CHỖ THỪA LỚN NHẤT — chưa động vào, cần chủ trang quyết
+────────────────────────────────────────
+Bộ ba cổng ô nhập (`laGoTay` / `laXoa` / `veRoiChe`) — cái luật phân biệt gõ
+tay với trình duyệt tự điền, dựng ở đợt 18-19 — đang có TÁM BẢN CHÉP:
+
+    assets/lichsu.js          1
+    index.html                1
+    dad/950901-a/index.html   1
+    han/961030-a/index.html   3
+    han/961030-b/index.html   2
+
+Chúng không che nhau (mỗi bản nằm trong một hàm cha riêng) nên KHÔNG phải lỗi.
+Nhưng tám bản là tám chỗ phải sửa mỗi lần luật đổi — mà luật này đã đổi hai lần
+rồi (đợt 18 rồi đợt 19).
+
+Gom về một chỗ trong `lichsu.js` thì đúng bài, giống cách đã làm với bộ nút
+`.ops-btn`. Nhưng nó động vào MỌI cửa nhập của cả bộ, ngay trước ngày sinh nhật.
+Chưa làm — chờ chủ trang quyết.
+
+
+════════════════════════════════════════
 ĐỢT 28 — nút về ngang hàng, R(n) chỉ ở tem, nhập sai ghi cả chuỗi đã gõ.
 ════════════════════════════════════════
     index.html            assets/lichsu.js      api/ping.js

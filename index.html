@@ -126,8 +126,6 @@ a{color:inherit;text-decoration:none}
 .rk:nth-child(2){animation-delay:.45s}.rk:nth-child(3){animation-delay:.9s}
 .rk:nth-child(4){animation-delay:1.35s}
 @keyframes rkblink{0%,100%{opacity:.45}50%{opacity:.85;filter:drop-shadow(0 0 5px rgba(110,205,255,.35))}}
-.pz-txt{font-family:"Oswald";font-size:9.5px;font-weight:700;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--amber);white-space:nowrap}
 .pz.done{border-color:rgba(242,180,65,.5);background:rgba(242,180,65,.08);cursor:pointer}
 
 /* ---------- header ---------- */
@@ -455,9 +453,6 @@ a.file:active{background:rgba(242,180,65,.07)}
 .hq-card.off .hq-state{color:rgba(242,180,65,.62)}
 /* Chỉ còn giữ khoảng cách — hình hài do `.ops-btn.phu` lo (xem lichsu.js). */
 .hq-back{margin-top:12px}
-.hq-back-cu{display:block;margin:12px auto 0;background:none;border:0;padding:4px 8px;
-  font-family:"Oswald";font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(234,240,247,.42);cursor:pointer}
 .hq-back:hover,.hq-back:focus-visible{color:var(--paper)}
 .cx-form button[disabled]{opacity:.34;cursor:not-allowed}
 /* Hộp PIN riêng: bốn gạch, gõ số là hiện, Enter là xong */
@@ -734,12 +729,6 @@ a.file:active{background:rgba(242,180,65,.07)}
 .cx-title.eggfound{cursor:default}
 .cx-title.eggfound.blink{animation:egg 1.8s linear 4}
 /* Quả trứng trên nút Enter Easter Egg — thay cho dấu sao ✦ */
-/* `display:block` là của thời nút này còn là flex-row. Trong nút `.ops-btn`
-   (khối, chữ căn giữa) thì block đẩy quả trứng xuống một dòng riêng — nhìn
-   như hai thứ rời nhau. Cho về inline để nó đi cạnh chữ. */
-.egg-ico{width:13px;height:17px;flex:none;display:inline-block;
-  vertical-align:-3px;margin-left:7px;color:rgba(242,180,65,.9);
-  filter:drop-shadow(0 0 5px rgba(242,180,65,.55))}
 /* nút xem lại pháo hoa — cùng ngôn ngữ với nút cuộn phim trong hộp pí mật */
 /* Icon xem lại đi CHUNG HÀNG với tiêu đề. Trước đây nó absolute ở top:6px nên
    nổi lên cao hơn hẳn dòng chữ, nhìn như bị rơi ra ngoài. */
@@ -1042,7 +1031,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 27-Aug-2026 · V20.00">Last updated 27-Aug-2026 · V20.00</span>
+        <span class="stamp" id="stamp" data-base="Last updated 28-Aug-2026 · V20.01">Last updated 28-Aug-2026 · V20.01</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1422,20 +1411,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V04.04' },
+        credGate:true, pub:'16-Aug 2026', ver:'V04.05' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.05' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.06' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026', ver:'V04.09', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V05.00', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.03',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.04',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',

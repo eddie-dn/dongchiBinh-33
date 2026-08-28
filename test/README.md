@@ -74,6 +74,7 @@ không phải trang web hỏng.
 | `cong26` | cổng Gate 2 đòi phá đảo bản đồ mới cho chơi · cửa hậu 1959 vẫn thông · mốc vòng 1/2 để quay lại chơi tiếp · Credit ghi đúng nguồn đường bờ biển |
 | `nguon27` | kiểm kê đồ đi mượn: phông chữ · dịch vụ · nguồn dữ liệu · ý tưởng — và chặn tài liệu chép lại số hiệu đang chạy |
 | `nut28` | nút hai box về ngang hàng chia đều, không icon · R(n) chỉ ghi ở cuối dòng tem · tín hiệu nhập sai mang theo chuỗi người chơi đã gõ |
+| `pidanh29` | pí danh đi theo người: cất → tra → ghi đè, chuẩn hoá tên, cửa tra có kiểm mã, chưa bật đồng bộ thì trang vẫn sống |
 
 ## Thêm một bộ mới
 
