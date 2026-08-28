@@ -1042,7 +1042,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 27-Aug-2026 · V19.09">Last updated 27-Aug-2026 · V19.09</span>
+        <span class="stamp" id="stamp" data-base="Last updated 27-Aug-2026 · V20.00">Last updated 27-Aug-2026 · V20.00</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -1230,20 +1230,13 @@ a.file:active{background:rgba(242,180,65,.07)}
         </svg>
       </p>
 
-      <div class="cred-acts ops-cot">
+      <!-- Hai nút NGANG HÀNG, chia đôi đều. Xếp dọc thì mỗi nút thành một dải
+           dài hết khung, hai dải chồng nhau nhìn nặng nề — mà đây chỉ là hai
+           lựa chọn ngang vai, không cái nào chính hơn cái nào.
+           KHÔNG icon trong nút: chữ đọc là hiểu rồi, thêm hình chỉ tổ chen. -->
+      <div class="cred-acts ops-hang">
         <button class="ops-btn" id="credKnow" type="button">Get to know me</button>
-        <button class="ops-btn" id="credEgg" type="button">Enter Easter Egg
-          <svg class="egg-ico" viewBox="0 0 20 26" aria-hidden="true">
-            <path d="M10 1.2c4.4 0 8 6.1 8 12.3 0 6-3.6 10.3-8 10.3S2 19.5 2 13.5C2 7.3 5.6 1.2 10 1.2Z"
-                  fill="url(#eggG)" stroke="currentColor" stroke-width="1.3"/>
-            <path d="M7.4 7.1 9.6 9l-1.5 2.3 2.6 1.6-1.2 2.4 2.4 1.3-1.1 2.3"
-                  fill="none" stroke="currentColor" stroke-width="1.1"
-                  stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>
-            <defs><linearGradient id="eggG" x1="0" y1="0" x2=".7" y2="1">
-              <stop offset="0" stop-color="#FBE3B4"/><stop offset="1" stop-color="#E9A63C"/>
-            </linearGradient></defs>
-          </svg>
-        </button>
+        <button class="ops-btn" id="credEgg" type="button">Enter Easter Egg</button>
       </div>
 
       <!-- Gửi tâm tư: chỉ MỘT DÒNG chữ có dấu thư, không phải nút. Bấm vào mở hộp riêng. -->
@@ -1429,20 +1422,20 @@ const NODES = [
          phong" — ba dòng, hai dòng trùng tên, người xem không biết cái nào là
          cái nào. Một toạ độ chỉ nên có những hồ sơ THẬT SỰ dẫn đi đâu đó. */
       { id:'HAN-961030-A', title:'Who’s my kindred spirit?', href:'/han/961030-a?from=map',
-        credGate:true, pub:'16-Aug 2026', ver:'V04.03' },
+        credGate:true, pub:'16-Aug 2026', ver:'V04.04' },
       /* Tên hồ sơ B là TÊN THẬT của nó ở cả hai trạng thái — khoá hay mở cũng
          là "HongHan's Secret Chamber". Chỉ dòng meta bên dưới đổi. */
       { id:'HAN-961030-B', title:'HongHan’s Secret Chamber', href:'/han/961030-b?from=map',
         credGate:true, hanGate:true, unlockAt: HANBOX,
-        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.04' }
+        openTitle:'HongHan’s Secret Chamber', pub:'01-Oct 2026', ver:'V03.05' }
   ]},
   { code:'DAD',  name:'Đà Nẵng',     lat:16.047, lon:108.206, fx:'sea',
     morse:'--- ..- .-. / .... --- -- . - --- .-- -.',
     plain:'OUR HOMETOWN', answers:['ourhometown'], subs:[
       { id:'DAD-950901-A', title:'Phi đoàn sinh nhật', href:'/dad/950901-a',
-        meta:'Published date: 27-Jul 2026', ver:'V04.08', pin:'file' },
+        meta:'Published date: 27-Jul 2026', ver:'V04.09', pin:'file' },
       { id:'DAD-950901-B', title:'Hồ sơ niêm phong',  href:'/dad/950901-b',
-        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.02',
+        openTitle:'Easter Egg · Gate 2', pub:'01-Sep 2026', ver:'V06.03',
         unlockAt: BIRTHDAY, eggGate:true }
   ]},
   { code:'UIH',  name:'Quy Nhơn',    lat:13.782, lon:109.219, fx:'farm',
@@ -2075,6 +2068,17 @@ function save(){ store.write({ lech: LECH, solved, pzOn, morseSeen, channel, unl
        TỔNG là mấy, mà con số đó nằm ở bản đồ — chép sang trang kia là hai nơi
        cùng giữ một sự thật, thêm một toạ độ là lệch ngay mà không ai báo. */
     mapXong: nSolved() === NODES.length, mapTong: NODES.length, visits, season: seasonMark, eggDone, winParty, eggDay, eggMo, eggAn, g2Hack, eggG1, hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt, hhG2, hhHan, g2Done, g2Open, credFound, eggParty, eggWin, coachDone, pinFiles, pinLockUntil, pinFail, pinFailDay, pinHintIdx, eggTitleDay, eggHack, firstAt, clueAt, winAt, owNhacNgay, owNhacDem }); }
+
+/* Chuỗi người chơi vừa gõ SAI, gói lại cho gọn để đi kèm tín hiệu.
+   CHỈ dùng ở nhánh SAI. Nhánh đúng thì tuyệt đối không gọi — làm vậy là đem
+   chính đáp án đi rải khắp nơi.
+   Cắt còn 24 ký tự: đủ để đọc ra người ta đang mò theo hướng nào, mà không
+   làm tràn ô `detail` (máy chủ cắt ở 140). */
+function goSai(v){
+  var t = String(v == null ? '' : v).trim();
+  if(!t) return ' · để trống';
+  return ' · gõ "' + t.slice(0,24) + (t.length > 24 ? '…' : '') + '"';
+}
 
 /* ---- báo tiến độ về /api/ping (im lặng hoàn toàn, hỏng cũng không sao) ---- */
 function pingSent(){ try{ return JSON.parse(localStorage.getItem('mtping')||'[]'); }catch(e){ return []; } }
@@ -3161,7 +3165,8 @@ function guess(){
   const n = nodeOf(cxCode); if(!n || solved[cxCode]) return;
   if(cxCode === LAST_CODE &&
      !NODES.every(x => x.code === LAST_CODE || solved[x.code])) return;
-  const v = norm($('cxInput').value);
+  const goc = $('cxInput').value;          /* giữ bản THÔ để ghi lại, xem goSai */
+  const v = norm(goc);
   const hint = $('cxHint');
   if(!v){ return; }
   if(n.answers.some(a=>norm(a)===v)){
@@ -3177,7 +3182,7 @@ function guess(){
     hint.className = 'cx-hint bad';
     hint.textContent = nextWrong();
     wrongCount++; save();
-    ping('giai_sai', cxCode + ' · lần sai thứ ' + wrongCount);
+    ping('giai_sai', cxCode + ' · lần sai thứ ' + wrongCount + goSai(goc));
     cxp.classList.remove('shake'); void cxp.offsetWidth; cxp.classList.add('shake');
   }
 }
@@ -3386,12 +3391,14 @@ function hqPick(g){
   }
   /* Bộ đếm "mở được Easter Egg mấy lần" — để biết mình đang ở đâu, và để thấy
      ngay rằng bấm Reset là được xem lại toàn bộ hiệu ứng từ đầu. */
+  /* Số lần CHƠI LẠI không hiện ở đây — nó nằm ở cuối dòng tem, đúng một chỗ
+     (xem `stampText`). Dòng này chỉ còn dành cho bộ đếm RIÊNG của MAP-02, thứ
+     không có chỗ nào khác để nói. */
   const hc = $('hqCount');
-  hc.hidden = false;
-  hc.textContent = (g === 'egg')
-    ? 'Đã mở được Easter Egg: ' + eggMo + ' lần'
-      + (eggReset ? ' · đã trả về: ' + eggReset + ' lần' : '')
-    : 'Đã chơi lại bản đồ: ' + resetCount + ' lần';
+  hc.hidden = g !== 'egg';
+  if(g === 'egg')
+    hc.textContent = 'Đã mở được Easter Egg: ' + eggMo + ' lần'
+      + (eggReset ? ' · đã trả về: ' + eggReset + ' lần' : '');
   /* Ghi chú giữ NGẮN — hộp này là bảng điều khiển, không phải trang hướng dẫn. */
   $('hqNote').textContent = g === 'map'
     ? 'Xoá sạch tiến độ, chơi lại từ đầu. Giữ R(n).'
@@ -4586,7 +4593,8 @@ function hackTry(){
       return;
     }
     pinFail++; pinHintIdx++; savePinFail();
-    ping('sai_pin_ho_so', (pinArg || '') + ' · lần sai thứ ' + pinFail + ' trong ngày');
+    ping('sai_pin_ho_so', (pinArg || '') + ' · lần sai thứ ' + pinFail
+         + ' trong ngày' + goSai(v));
     showHint();                          /* nhích sang gợi ý KẾ TIẾP, không random */
     const max = CODES.file.lockAfter;
     if(pinFail > max){                   /* quá 3 lần TRONG NGÀY → khoá 60 phút */
@@ -4614,6 +4622,10 @@ function hackTry(){
       return;
     }
     hackTries++;
+    /* ĐÃ VẤP: hai cửa mã trong Box Tổng tư lệnh (cửa này và cửa Hack Map bên
+       dưới) gõ sai bao nhiêu lần cũng KHÔNG bắn một tín hiệu nào — đọc sổ
+       không thể biết có ai từng mò tới đây. Nay có. */
+    ping('sai_pin_g2', 'lần ' + hackTries + '/' + CODES.g2.tries + goSai(v));
     const conLai = CODES.g2.tries - hackTries;
     if(conLai <= 0){ hackTries = 0; closePin(); closeWipe(); closeCx(); return; }
     msg.className = 'cx-hint bad';
@@ -4649,6 +4661,8 @@ function hackTry(){
     return;
   }
   hackTries++;
+  ping('sai_pin_hack', pinMode + ' · lần ' + hackTries + '/'
+       + CODES[pinMode].tries + goSai(v));
   const left = CODES[pinMode].tries - hackTries;
   if(left <= 0){                         /* hết lượt → trả hẳn về bản đồ */
     hackTries = 0;

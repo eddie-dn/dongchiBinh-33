@@ -77,7 +77,9 @@ console.log('\n③ Ô ĐẾM CHƠI LẠI — hiện ngay trong hộp lúc mở r
   const m1 = await p.evaluate(()=>({ t:document.getElementById('hqCount').textContent,
                                      an:document.getElementById('hqCount').hidden,
                                      mt:getComputedStyle(document.getElementById('hqCount')).marginTop }));
-  T('MAP-01 khoe số lần chơi lại', !m1.an && /3 lần/.test(m1.t), JSON.stringify(m1));
+  /* ⚠ LUẬT ĐÃ ĐỔI Ở ĐỢT 28: số lần chơi lại chỉ ghi ở CUỐI DÒNG TEM, hộp thôi
+     nhắc lại — thêm dòng vào hộp là vỡ bố cục. Bộ `nut28` giữ luật mới. */
+  T('MAP-01 KHÔNG còn khoe số lần chơi lại trong hộp', m1.an, JSON.stringify(m1));
   /* ĐÃ VẤP: dòng này từng mang margin âm, dán sát vào tên box */
   T('dòng đếm KHÔNG còn dán sát tên box', parseFloat(m1.mt) >= 6, m1.mt);
   await p.click('#hqBack',{force:true}); await cho(p,400);
@@ -152,10 +154,12 @@ console.log('\n⑥ RESET BẢN ĐỒ — xoá tiến độ nhưng KHÔNG xoá s�
   T('Hồ sơ Phi đoàn: nút chơi lại thôi xoá trắng khoá',
     !/localStorage\.removeItem\(KEY\)/.test(a) && /JSON\.stringify\(\{ reset:/.test(a));
   T('Hồ sơ Phi đoàn: tem mang số hiệu R(n)', /' · R' \+ r/.test(a));
-  T('Hồ sơ Phi đoàn: hộp Phá đảo khoe số lần chơi lại', /Đã chơi lại: <b>/.test(a));
+  T('Hồ sơ Phi đoàn: hộp Phá đảo THÔI chen dòng đếm (đợt 28)',
+    !/Đã chơi lại: <b>/.test(a));
   const b = readFileSync(GOC + '/dad/950901-b/index.html','utf8');
   T('Gate 2: đếm ở nút chơi lại chứ không ở reset()', /g2Reset: \(Store\.get\(\)\.g2Reset \| 0\) \+ 1/.test(b));
-  T('Gate 2: Khối vận hành khoe số lần chơi lại', /đã chơi lại <b>/.test(b));
+  T('Gate 2: Khối vận hành THÔI nhắc số lần chơi lại (đợt 28)',
+    !/đã chơi lại <b>/.test(b));
 }
 
 await br.close();

@@ -143,7 +143,7 @@ gan('ban-do', `
   gui_tam_tu gui_tam_tu_loi hack_gate2 hackmap hoan_thanh hop_chao
   khoa_pin_ho_so mo_ho_so mo_ho_so_bang_pin mo_hop mo_khoa_morse
   mo_toa_do_niem_phong nhac_goi_y redirect_ho_so reset_easter_egg
-  sai_pin_ho_so unlock_gate1 vao_ho_so xem_lai_phao_hoa
+  sai_pin_ho_so sai_pin_g2 sai_pin_hack unlock_gate1 vao_ho_so xem_lai_phao_hoa
   ghe_tham tai_lai`);      /* hai tên này cũng gọi bằng biểu thức điều kiện */
 
 gan('phao-hoa', 'phao_hoa_che phao_hoa_dong phao_hoa_mo');
@@ -275,6 +275,12 @@ const NHAN = {
   nhay_phan1:           'Nháy nút Phần 1',
   mo_ho_so_bang_pin:    'Mở hồ sơ niêm phong bằng PIN',
   sai_pin_ho_so:        'Nhập sai PIN hồ sơ',
+  /* ⚠ HAI TÊN NÀY BẮT ĐẦU BẰNG `sai_pin` — cùng tiền tố với mã Mission bên
+     Hồ sơ Phi đoàn. Luật đoán trang theo tiền tố sẽ đẩy nhầm chúng về `dad-a`,
+     nên chúng ĐÃ ĐƯỢC KHAI ĐÍCH DANH trong bảng `ban-do` ở trên. Đổi tên hay
+     thêm anh em cùng họ thì nhớ khai kèm. */
+  sai_pin_g2:           'Nhập sai mã cửa MAP-02',
+  sai_pin_hack:         'Nhập sai mã Hack Map',
   khoa_pin_ho_so:       'PIN hồ sơ bị khoá tạm',
   cham_ho_so_niem_phong:'Chạm hồ sơ còn niêm phong',
   mo_toa_do_niem_phong: 'Mở toạ độ trong hồ sơ niêm phong',
@@ -375,7 +381,11 @@ module.exports = async (req, res) => {
   }
 
   const ev = String(d.ev || '').slice(0, 40);
-  const detail = String(d.detail || '').slice(0, 80);
+  /* 80 ký tự đủ cho đời trước, nhưng từ đợt 28 mấy tín hiệu "nhập sai" mang
+     theo cả CHUỖI NGƯỜI CHƠI ĐÃ GÕ — để đọc sổ biết họ đang mò theo hướng nào,
+     chứ chỉ biết "sai lần 3" thì chẳng suy ra được gì. Nới lên 140; chuỗi gõ
+     đã tự cắt còn 24 ký tự ở phía trang nên không có gì tràn. */
+  const detail = String(d.detail || '').slice(0, 140);
   const solved = Array.isArray(d.solved) ? d.solved.slice(0, 8) : [];
   const may = String(d.ua || '').slice(0, 120);
   /* 'bieu-mau' = tín hiệu đi bằng kênh gửi biểu mẫu (form POST vào iframe ẩn),

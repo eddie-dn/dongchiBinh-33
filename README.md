@@ -462,9 +462,13 @@ phiên bản** (§11b) để người chơi mở ra cũng đọc được đúng
 | `index.html` đi `V17.05 → V17.04` rồi lại `V17.05` | số **lùi một nấc** giữa hai lượt push ngày 18-08 — ghi tay nhầm | Đã tự vượt qua từ `V17.06`; chỉ ghi lại cho có sổ |
 | Đợt 1 (`Sửa mục 8-13`) sửa 4 file mà **không bump tem nào** | quên | Ghi vào sổ đúng như vậy, không bịa thêm một số phiên bản không có thật |
 
-Chỗ **đệm số 0 thì ĐÃ NẮN**, không còn để lẫn nữa. Trước đây `V04.04` có đệm mà
-`V2.09`, `V3.03` thì không — cùng một bảng mà đọc xuống tưởng hai hệ đánh số khác
-nhau, sắp theo chuỗi thì `V10` đứng trước `V2`.
+Chỗ **đệm số 0 thì ĐÃ NẮN**, không còn để lẫn nữa. Trước đây có bản ghi kiểu
+`Vxx.xx` (có đệm) đứng ngay cạnh kiểu `Vx.xx` (không đệm) — cùng một bảng mà
+đọc xuống tưởng hai hệ đánh số khác nhau, sắp theo chuỗi thì `V10` đứng trước
+`V2`.
+
+*(Lại một lần nữa: kể chuyện cũ thì đừng chép số hiệu thật — hôm nay là số cũ,
+mai trùng đúng một khu đang chạy và `nguon27` sẽ đỏ. Đã vấp hai lần.)*
 
 **Luật chốt: số phiên bản LUÔN là `Vxx.xx`, cả hai vế đúng hai chữ số.**
 

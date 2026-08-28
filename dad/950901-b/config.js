@@ -71,7 +71,7 @@ const GATE_CONFIG = {
     ve_ban_do     : 'Bản đồ',
     /* MỘT HÀNG: "Last updated … · V04.02". Dòng ký tên `designed_by` nằm TRÊN
        nó — xem temChu() trong index.html. */
-    version       : 'Last updated 27-Aug-2026 · V06.02'
+    version       : 'Last updated 27-Aug-2026 · V06.03'
   }
 };
 

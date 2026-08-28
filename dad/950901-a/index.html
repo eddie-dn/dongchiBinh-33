@@ -774,6 +774,21 @@ render();
            + (v.form ? ' · đã gửi form' : '');
     }catch(e){ return ''; }
   }
+  /* Chuỗi người chơi vừa gõ SAI, gói gọn để đi kèm tín hiệu.
+     ⚠ KHAI Ở ĐÂY, CÙNG TẦNG VỚI `ping` — không nhét vào trong một hàm nào.
+     Đã vấp: đặt nó lồng trong hàm chấm đáp án, thành ra mấy cửa nhập ở hàm
+     KHÁC gọi tới là `goSai is not defined`, mà lỗi chỉ nổ đúng lúc gõ sai.
+     CHỈ dùng ở nhánh SAI — gọi ở nhánh đúng là đem đáp án đi rải. */
+  function goSai(v){
+    var t = String(v == null ? '' : v).trim();
+    if(!t) return ' · để trống';
+    return ' · gõ "' + t.slice(0,24) + (t.length > 24 ? '…' : '') + '"';
+  }
+  /* ⚠ ĐƯA RA TẦNG CHUNG. Trang này chia làm nhiều khối IIFE riêng biệt;
+     khai `goSai` trong một khối là mấy khối KIA gọi tới sẽ nổ
+     "goSai is not defined" — mà lỗi chỉ nổ đúng lúc người chơi gõ sai,
+     tức là đúng lúc không ai đang nhìn. Cùng cái bẫy đã vấp ở `noiHS`. */
+  window.goSai = goSai;
   function ping(ev, detail){
     try{
       if(TRACK.mode === 'telegram' && TRACK.tgToken && TRACK.tgChat){
@@ -1648,8 +1663,8 @@ render();
       if(m2moi) veGoiYM2();
       var w = wget() + 1; wset(w);
       st.dayN = dayN() + 1; save();
-      ping('sai_pin', 'Mission ' + which + ' · lần ' + w + '/' + TRY_S
-        + ' phiên · ' + st.dayN + '/' + TRY_D + ' ngày');
+      ping('sai_pin', 'M' + which + ' · lần ' + w + '/' + TRY_S
+        + ' phiên · ' + st.dayN + '/' + TRY_D + ' ngày' + goSai(buf));
       if(hasNew) hintsPaint();
       cdPaint(); quotaPaint();
       buf = ''; input.value = ''; daiTruoc = 0; nguyenGo = true; paint(-1);
@@ -1811,7 +1826,7 @@ render();
       + '<div class="msn-txt">Chúc đồng chí giữ vững phong độ tiếp tục phá đảo '
       + '<b>Map: Bản đồ tác chiến</b>.</div>'
       + '<div class="msn-sign">--Kí tên: Hội Đồng MeowMeow ฅ^>⩊&lt;^ ฅ</div>'
-      + '<p class="msn-quota">Đã chơi lại: <b>' + (st.reset|0) + '</b> lần</p>'
+
       + '<button class="navbtn wide" id="msnGo" style="margin-top:18px;justify-content:center">Mở khoá Bản đồ tác chiến ✈</button>'
       + '<div class="msn-row">'
       +   '<button class="msn-ghost" id="msnReset" type="button">↻ Chơi lại từ đầu</button>'
@@ -2347,7 +2362,7 @@ render();
   });
 })();
 </script>
-<span class="vstamp" id="vstamp">V04.08<br>Last updated 27-Aug-2026</span>
+<span class="vstamp" id="vstamp">V04.09<br>Last updated 27-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
@@ -2365,8 +2380,11 @@ render();
        thẳng localStorage. Đã vấp đúng kiểu lỗi này ở khối tín hiệu. */
     var r = 0;
     try{ r = (JSON.parse(localStorage.getItem('msn1') || '{}') || {}).reset | 0; }catch(e){}
-    if(n && t) n.innerHTML = t.ver + (r > 0 ? ' · R' + r : '')
-                           + '<br>Last updated ' + t.ngay;
+    /* R(n) nối vào CUỐI CÙNG, sau ngày — cùng chỗ với mấy trang kia (bản đồ,
+       Zoey's Castle, Secret Chamber). Đặt ngay sau số hiệu thì nó nhảy lên
+       dòng trên, mỗi trang một kiểu. */
+    if(n && t) n.innerHTML = t.ver + '<br>Last updated ' + t.ngay
+                           + (r > 0 ? ' · R' + r : '');
   }catch(e){}
 })();
 </script>

@@ -1,4 +1,102 @@
 ════════════════════════════════════════
+ĐỢT 28 — nút về ngang hàng, R(n) chỉ ở tem, nhập sai ghi cả chuỗi đã gõ.
+════════════════════════════════════════
+    index.html            assets/lichsu.js      api/ping.js
+    dad/950901-a/index.html   dad/950901-b/index.html   dad/950901-b/config.js
+    han/961030-a/index.html   han/961030-b/index.html
+    test/ (thêm 1 bộ)     DOC-CAI-NAY-TRUOC.txt
+
+Số tem:  /  V19.09 → V20.00 (V19 kín mười nấc đuôi, buộc mở dòng lớn)
+         /dad/950901-a  V04.08 → V04.09  ·  /dad/950901-b  V06.02 → V06.03
+         /han/961030-a  V04.03 → V04.04  ·  /han/961030-b  V03.04 → V03.05
+         (khu Easter Egg  V19.08 → V19.09)  ·  /phao-hoa giữ nguyên
+
+
+① NÚT VỀ NGANG HÀNG, CHIA ĐÔI ĐỀU, BỎ ICON
+────────────────────────────────────────
+Đợt 25 gom hết nút về một khuôn và xếp DỌC. Khuôn thì đúng, nhưng xếp dọc làm
+mỗi nút thành một dải dài hết khung, hai dải chồng nhau nhìn nặng — mà đây là
+hai lựa chọn NGANG VAI, không cái nào chính hơn cái nào.
+
+NAY dùng `.ops-hang` cho ba chỗ:
+  · khung Collected      Get to know me | Enter Easter Egg
+  · Zoey's Castle        Reset | Hoàn thành
+  · Secret Chamber       Khoá lại | Mở khoá   (nút vặn kim xuống hàng riêng —
+                         nó không khoá cũng không mở, việc khác hẳn)
+
+Bỏ hết ký hiệu trong nút: quả trứng SVG trong "Enter Easter Egg", mấy dấu
+↻ ↺ ⏩ ở đầu chữ. Chữ đọc là hiểu, thêm hình chỉ tổ chen.
+
+Đo trong trình duyệt thật: hai nút cùng mép trên, bề ngang bằng nhau từng pixel.
+
+CÒN LẠI: Box Tổng tư lệnh vẫn xếp dọc — nó có bốn nút chứ không phải hai, nhồi
+ngang là cụt chữ. Nút "⏩ Vào thẳng màn cuối Gate 2" ở đó vẫn còn ký hiệu.
+
+
+② R(n) CHỈ GHI MỘT CHỖ: CUỐI DÒNG TEM
+────────────────────────────────────────
+Đợt 25 thêm số lần chơi lại vào TRONG HỘP ở mấy trang. Sai: hộp là bảng điều
+khiển, chật sẵn — thêm một dòng là vỡ bố cục. Ảnh chụp thẻ "Mission 3 · Phá
+đảo" cho thấy rõ, dòng "ĐÃ CHƠI LẠI: 0 LẦN" chen ngang giữa chữ ký và cái nút.
+
+NAY một con số ghi ĐÚNG MỘT CHỖ — cuối dòng tem, sau số hiệu, đúng khuôn bản đồ
+vẫn làm từ trước:
+
+        Last updated 27-Aug-2026 · V20.00 · R3
+
+Đã gỡ khỏi: thẻ Phá đảo (Hồ sơ Phi đoàn), Khối vận hành (Gate 2 và cả hai trang
+HongHan), Box Tổng tư lệnh nhánh MAP-01. Box Tổng tư lệnh nhánh MAP-02 thì GIỮ —
+bộ đếm "mở được Easter Egg mấy lần" không có chỗ nào khác để nói.
+
+Cả năm trang có trạng thái đều đã nối R(n) vào tem. Gate 2 trước nay chưa có,
+đợt này thêm.
+
+
+③ NHẬP SAI: GHI LUÔN CHUỖI NGƯỜI CHƠI ĐÃ GÕ
+────────────────────────────────────────
+Trước nay tín hiệu chỉ nói "sai lần 3" — đọc sổ không suy ra được người chơi
+đang mò theo hướng nào. Nay kèm cả chuỗi họ gõ.
+
+Bảy cửa nhập đã có, cộng HAI cửa trước nay IM LẶNG HOÀN TOÀN:
+
+    giai_sai        đoán sai mật thư trên bản đồ
+    sai_pin_ho_so   sai mã mở hồ sơ niêm phong
+    sai_pin_g2      ★ MỚI — cửa mã MAP-02 trong Box Tổng tư lệnh
+    sai_pin_hack    ★ MỚI — cửa mã Hack Map
+    sai_pin         sai mã Mission (Hồ sơ Phi đoàn)
+    g2_sai          sai đáp án vòng chơi Gate 2
+    han_sai         trả lời sai câu hỏi Zoey's Castle
+    han_ma_sai      sai mã cửa Zoey's Castle
+    han_pin_sai     sai mã Secret Chamber
+
+Mỗi trang có một hàm `goSai()` gói chuỗi lại: cắt 24 ký tự, rỗng thì ghi
+"để trống". CHỈ gọi ở nhánh SAI — gọi ở nhánh đúng là đem chính đáp án đi rải.
+
+Ô `detail` bên máy chủ nới từ 80 lên 140 ký tự cho vừa.
+
+BẪY ĐÃ NÉ — HAI CÁI:
+  · Gate 2 phải chộp chuỗi ngay ĐẦU hàm `fail()`: mấy nhánh bên dưới gọi
+    `resetOnhap()` dọn sạch ô nhập, lấy sau là lấy phải chuỗi rỗng.
+  · `sai_pin_g2` và `sai_pin_hack` cùng tiền tố `sai_pin` với mã Mission bên
+    Hồ sơ Phi đoàn. Luật đoán trang theo tiền tố sẽ đẩy nhầm chúng về `dad-a`.
+    Đã khai ĐÍCH DANH vào bảng `ban-do`.
+
+
+④ PÍ DANH KHÔNG ĐI THEO NGƯỜI QUA MÁY KHÁC
+────────────────────────────────────────
+Câu hỏi: mở website ở máy khác rồi gõ lại pí danh đã lưu trước đó thì có tải
+lại tiến độ không?
+
+KHÔNG. Pí danh và tiến độ nằm trong `localStorage` của ĐÚNG trình duyệt đó.
+Không có kho nào ngoài máy giữ chúng: `navWrite()` chỉ ghi xuống localStorage,
+và không endpoint nào nhận hay trả lại dữ liệu pí danh. Tên pí danh CÓ đi kèm
+tín hiệu lúc khai danh, nhưng đó là ghi một chiều — không có đường đọc ngược.
+
+Nên gõ lại tên cũ ở máy khác chỉ tạo một pí danh MỚI, trống trơn. Pí danh là
+cái NHÃN trong máy, không phải tài khoản.
+
+
+════════════════════════════════════════
 ĐỢT 27 — kiểm kê đồ đi mượn, tài liệu thôi chép số hiệu, chữ ở cổng gọn lại.
 ════════════════════════════════════════
     assets/lichsu.js      dad/950901-b/index.html   dad/950901-b/config.js

@@ -1546,6 +1546,14 @@ function temChu(){
     var t = window.LichSu && LichSu.tem && LichSu.tem('DAD-B');
     if(t) ver = 'Last updated ' + t.ngay + ' · ' + t.ver;
   }catch(e){}
+  /* Số lần chơi lại nối vào CUỐI dòng tem, sau số hiệu — đúng khuôn bản đồ.
+     Cố ý để ở đây chứ không nhét thành một dòng riêng trong hộp: hộp là bảng
+     điều khiển, thêm dòng vào là vỡ bố cục; còn tem thì vốn đã là chỗ ghi mấy
+     con số nhỏ, ai để ý thì thấy. */
+  try{
+    var r = Store.get().g2Reset | 0;
+    if(r > 0) ver += ' · R' + r;
+  }catch(e){}
   return (T.designed_by ? '<span class="vby">' + T.designed_by + '</span>' : '') + ver;
 }
 
@@ -1650,15 +1658,15 @@ const Kvh = (function(){
        và Secret Chamber ("Trạng thái: đã mở khoá"). Nó nói về màn chơi, không
        nói gì về cửa hậu — ai mò ra thì mò, không thì kệ. */
     const r = Store.get();
+    /* KHÔNG nối số lần chơi lại vào đây — nó đã nằm ở cuối dòng tem. Một con
+       số thì ghi một chỗ; ghi hai chỗ là sớm muộn lệch nhau. */
     const tt = xong ? 'đã phá đảo'
              : (r.g2Xong ? 'đã giải xong hai vòng'
              : (r.g2Vao  ? ('đang giải mã' + ((r.g2Round | 0) ? ' · vòng ' + (r.g2Round | 0) : ''))
              : 'chưa vào màn chơi'));
     let h = '<p class="kvh-lab"><span '
           + (window.LichSu ? LichSu.chu('DAD-B') : '') + '>Khối vận hành</span></p>'
-          + '<p class="kvh-txt">Trạng thái: <b>' + tt + '</b>'
-          + ((r.g2Reset | 0) ? ' · đã chơi lại <b>' + (r.g2Reset | 0) + '</b> lần' : '')
-          + '</p>';
+          + '<p class="kvh-txt">Trạng thái: <b>' + tt + '</b></p>';
     if(man === 'gate' && !xong)
       h += '<button class="kvh-go" id="kvhSkip" type="button">⏭ Bỏ qua · vào thẳng màn cuối</button>';
     than.innerHTML = h;
@@ -2768,7 +2776,16 @@ function resetOnhap(trao_phim){
    Mấy lần trật CHƯA tới ngưỡng chỉ bị nhắc nhẹ: nháy ô nhập, một dòng chữ,
    mở lại ô ngay. Không chạy clip, không tiêu gợi ý, không khoá — nếu không
    thì "nới tay" chỉ là nới trên giấy, chơi vẫn nặng y như cũ. */
+/* Chuỗi vừa gõ SAI, gói gọn cho tín hiệu. CHỈ ở nhánh sai. */
+function goSai(v){
+  var t = String(v == null ? '' : v).trim();
+  if(!t) return ' · để trống';
+  return ' · gõ "' + t.slice(0,24) + (t.length > 24 ? '…' : '') + '"';
+}
 async function fail(le){
+  /* Chộp ngay ĐẦU HÀM: mấy nhánh bên dưới gọi `resetOnhap()` dọn sạch ô nhập,
+     lấy sau là lấy phải chuỗi rỗng. */
+  const daGo = el.input.value;
   S.busy = true;
   setInput(false);
   resetOnhap();
@@ -2794,7 +2811,7 @@ async function fail(le){
 
   /* ── Tính là một lần sai chính thức ───────────────────────────────────── */
   S.wrongs[S.round]++;
-  ping('g2_sai', 'vòng ' + S.round + ' · lần ' + S.wrongs[S.round]);
+  ping('g2_sai', 'vòng ' + S.round + ' · lần ' + S.wrongs[S.round] + goSai(daGo));
   if(cho > 1 && C.dialogues.le_het_luot) await say(C.dialogues.le_het_luot, 'warn');
 
   if(S.round === 1){
