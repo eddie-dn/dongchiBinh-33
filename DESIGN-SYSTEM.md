@@ -119,18 +119,61 @@ Easter Egg** — dùng **chung một khuôn nút**, khai đúng một lần tron
   <button class="ops-btn"     id="…">Vặn kim</button>
   <button class="ops-btn phu" id="…">Về hiện tại</button>
 </div>
+
+<div class="ops-luoi">                          <!-- lưới 2 cột, cho 4 lệnh ngang vai -->
+  <button class="ops-btn" id="…">…</button>      <!-- Box Tổng tư lệnh dùng khuôn này -->
+  …
+</div>
 ```
 
 | Lớp | Việc |
 |---|---|
-| `.ops-btn` | pill bo `999px`, **viền nét đứt**, nền rỗng, chữ Oswald `9.5px` giãn `.18em`, chữ hoa, rộng hết khối |
+| `.ops-btn` | khối chữ nhật bo `6px`, **viền liền 1px**, nền theo tông trang, chữ Oswald `9.5px` giãn `.16em`, chữ hoa, rộng hết khối |
 | `.ops-btn.phu` | cùng hình hài, nhạt hơn một bậc — quay lại / bỏ qua / về hiện tại |
+| `.ops-btn[disabled]` | mờ `.34`, không đổi nền lúc rê chuột, không nhún khi bấm |
 | `.ops-cot` | khối dọc, khoảng cách nằm ở `gap` |
 | `.ops-hang` | hàng ngang, **tối đa hai nút**; ba nút trở lên thì về hàng dọc |
+| `.ops-luoi` | lưới **2 cột**, cho bốn lệnh ngang vai |
 
-**Màu tự đi theo trang.** Nút ăn `--ls-acc` khai ở `:root` của từng trang, nên
-bản đồ ra amber, Zoey's Castle ra tím, Gate 2 ra xanh lá — cùng hình hài, đúng
-tông từng khu. **Không** khai màu ở trang.
+> **Đời trước là pill bo `999px`, viền NÉT ĐỨT, nền rỗng.** Đã bỏ: ở cỡ nút
+> chiếm hết bề ngang hộp thì nét đứt nhìn rối và rẻ tiền — nét đứt hợp với
+> nhãn nhỏ, không hợp với nút. Tài liệu này từng tả bản cũ thêm hai đời nữa;
+> muốn biết hình hài thật thì đọc khối `.ops-btn` trong `assets/lichsu.js`,
+> đó mới là bản gốc.
+
+**Màu tự đi theo trang.** Chữ và viền ăn `--ls-acc` khai ở `:root` của từng
+trang, nên bản đồ ra amber, Zoey's Castle ra tím, Gate 2 ra xanh lá — cùng hình
+hài, đúng tông từng khu. **Không** khai lại kiểu dáng nút ở trang.
+
+**⚠ NGOẠI LỆ DUY NHẤT — TRANG NỀN SÁNG PHẢI KHAI BA BIẾN NỀN.**
+Nền nút từng đóng đinh một màu xanh đêm. Năm trang kia nền tối nên không ai
+thấy gì; riêng Zoey's Castle nền **trắng-tím**, thế là mấy cái nút thành hai
+mảng xám xịt giữa hộp trắng — chữ tím trên nền xám, nhìn như nút hỏng. Nay ba
+thứ đó cũng là biến, mặc định giữ tông tối:
+
+| Biến | Việc | Mặc định |
+|---|---|---|
+| `--ls-nut` | nền nút | `rgba(6,16,31,.5)` |
+| `--ls-nutchu` | màu chữ | rơi về `--ls-acc` |
+| `--ls-nut-ho` | nền lúc rê chuột / focus | `--ls-acc` pha 11% |
+
+Trang nền sáng khai đè ở `:root` — xem `han/961030-a/index.html`:
+
+```css
+:root{ --ls-nut:rgba(181,122,203,.12); --ls-nutchu:#7A4A96;
+       --ls-nut-ho:rgba(181,122,203,.26); }
+```
+
+Đây **không** phải cửa để khai màu tự do: chỉ ba biến này, chỉ ở `:root`, và
+chỉ khi nền trang sáng. Viết thẳng `background` vào `.ops-btn` của trang là
+quay lại đúng cái bệnh vừa chữa.
+
+**⚠ `hidden` KHÔNG TỰ ĂN TRÊN BỐN LỚP NÀY.** `display:block/flex/grid` là luật
+của một *class*, còn `[hidden]{display:none}` chỉ là mặc định của trình duyệt —
+class nặng ký hơn nên nó đè, và nút đã ghi `hidden = true` vẫn nằm chình ình.
+`lichsu.js` khai sẵn `.ops-btn[hidden]` và `.ops-cot/.ops-hang/.ops-luoi[hidden]`
+để trả `hidden` về đúng nghĩa. Dựng khuôn xếp nút mới thì **nhớ khai thêm một
+dòng như thế**, không thì lại vấp.
 
 **⚠ BẪY ĐÃ VẤP — bộ chọn nặng ký hơn đè ngược khuôn chung.** `index.html` từng
 có `.cred-acts button{…}`. Bộ chọn đó là *class + thẻ* (0,1,1), nặng hơn

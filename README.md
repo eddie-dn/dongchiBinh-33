@@ -2146,8 +2146,17 @@ ghi cả nội dung thì bật `CHAT_LOG_NOI_DUNG=1`, cố ý bắt khai riêng 
 | `dad/950901-a/MISSIONS.md` | Luật đầy đủ của hệ **3 Mission** trong hồ sơ DAD-950901-A |
 | `dad/950901-a/README.md` | Cách deploy hồ sơ đó **tách riêng** một domain, và hệ đo đạc bốn tầng |
 | `DESIGN-SYSTEM.md` | **Bộ nút và biểu tượng dùng chung**, quy ước tên gọi, khuôn tem, luật cửa hậu |
+| `dad/950901-b/DIALOGUES.md` | Toàn bộ **lời thoại và ảnh** của mini-game Gate 2, kèm cây thư mục assets |
+| `dad/950901-b/OPEN-WORLD.md` | Luật khu **Open World** — vòng đời một lượt hỏi đáp, giới hạn, đường lùi |
+| `dad/950901-b/OW-LOI-DAN.md` | **Giọng nhân vật** khu Open World: viết gì vào `api/_lib/tinhcach.md` và vì sao |
+| `dad/950901-b/THU-VA-ANH.md` | **Lá thư và bộ ảnh kỷ niệm** — tên file bắt buộc, chú thích, thứ tự |
 | `docs/GOOGLE-SHEETS.md` | Dựng **sổ lưu Google Sheets** trong 10 phút — từng bước, kèm bảng lỗi hay vấp |
+| `docs/BAN-GHI.md` | **Cuốn sổ phiên bản** trong `assets/lichsu.js`: cấu trúc, luật đánh số, cách thêm một dòng |
 | `docs/apps-script/Code.gs` | Mã Apps Script dán vào Sheet (không deploy lên Vercel — xem `.vercelignore`) |
+| `docs/thoi-gian.mjs` | Đo **làm trong bao lâu** từ lịch sử kho mã, in ra khối để chép vào sổ |
+| `docs/mau-so.mjs` | Dựng **bảng mẫu** cho cuốn sổ |
+| `test/README.md` | Cách chạy **bộ kiểm hồi quy**, viết thêm một bộ, và bẫy hay vấp khi viết |
+| `DOC-CAI-NAY-TRUOC.txt` | **Nhật ký từng đợt** — mới nhất trên cùng: hỏng gì, truy ra sao, sửa thế nào |
 
 Quy ước để khỏi tam sao thất bản: **một chuyện chỉ nói ở một file**, chỗ khác thì trỏ
 sang. Ví dụ luật khoá gợi ý Map 3 nằm ở mục 22 của file này, `CHU-MAP3.md` chỉ nhắc lại
@@ -2159,8 +2168,9 @@ sang. Ví dụ luật khoá gợi ý Map 3 nằm ở mục 22 của file này, `
 node test/chay.mjs
 ```
 
-Bộ chạy tự bật máy chủ tĩnh, chạy 28 bộ bằng Chromium headless, in bảng tổng kết rồi tự
-tắt. Có phép hỏng thì mã thoát khác 0. Hướng dẫn đầy đủ ở **`test/README.md`**.
+Bộ chạy tự bật máy chủ tĩnh, chạy **hết** các bộ trong `test/bo/` bằng Chromium headless,
+in bảng tổng kết rồi tự tắt. Có phép hỏng thì mã thoát khác 0. Hướng dẫn đầy đủ ở
+**`test/README.md`**. (Cố ý KHÔNG ghi ở đây có bao nhiêu bộ — xem cảnh báo ngay dưới.)
 
 > **⚠ ĐỜI TRƯỚC BỘ KIỂM NẰM NGOÀI KHO MÃ**, với lý do "nó là công cụ dựng trang, không
 > phải nội dung trang". Nghe hợp lý, mà cái giá thì trả bằng đúng thứ bộ kiểm sinh ra để

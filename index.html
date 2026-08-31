@@ -1031,7 +1031,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 31-Aug-2026 · V20.05">Last updated 31-Aug-2026 · V20.05</span>
+        <span class="stamp" id="stamp" data-base="Last updated 31-Aug-2026 · V20.06">Last updated 31-Aug-2026 · V20.06</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -3330,8 +3330,11 @@ function hardWipe(ev, detail){
   const giuChao = { hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt };
   let g2R = 0;
   try{ g2R = (JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).g2Reset | 0; }catch(e){}
-  /* nav1 (pí danh + pha điều hướng) cố ý KHÔNG đụng — Mission 3 của hồ sơ vẫn
-     xong nên vẫn ở PHA 2, và bản lưu phải sống qua reset (USER-FLOW.md §6) */
+  /* Trong `nav1` (pí danh + pha điều hướng), CỜ PHA và DANH SÁCH pí danh cố ý
+     KHÔNG đụng — Mission 3 của hồ sơ vẫn xong nên vẫn ở PHA 2, và bản lưu phải
+     sống qua reset (USER-FLOW.md §6). Riêng BẢN CHỤP của pí danh đang dùng thì
+     phải hạ theo, không thì nạp lại bản lưu là hoàn tác cả cú reset —
+     `chupLaiHoSo` ngay dưới lo việc đó, và chỉ việc đó. */
   try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
   try{ localStorage.setItem('mtv1', JSON.stringify(
     Object.assign({ resetCount: keepR, g2Reset: g2R }, giuDem, giuChao))); }catch(e){}
@@ -3438,8 +3441,8 @@ function hqPick(g){
       + (eggReset ? ' · đã trả về: ' + eggReset + ' lần' : '');
   /* Ghi chú giữ NGẮN — hộp này là bảng điều khiển, không phải trang hướng dẫn. */
   $('hqNote').textContent = g === 'map'
-    ? 'Xoá sạch tiến độ, chơi lại từ đầu. Giữ R(n).'
-    : (ok ? 'Trả Easter Egg về lúc chưa ai tìm ra. Giữ tiến độ MAP-01 và Map 3; khoá lại Gate 2 tới khi tìm ra lần nữa.'
+    ? 'Xoá sạch tiến độ bản đồ và Gate 2, chơi lại từ đầu. Giữ Map 3 và R(n).'
+    : (ok ? 'Trả Easter Egg về lúc chưa ai tìm ra. GIỮ tiến độ MAP-01 và Map 3; khoá lại cửa vào Gate 2 và Map 3 tới khi tìm ra lần nữa.'
           : 'Cần xong MAP-01 và đồng hồ về 0. Hoặc Hack Map.');
   hqShow(2);
 }

@@ -384,7 +384,7 @@ h1.title b{display:block;font-style:normal;font-family:"Oswald";font-weight:600;
       <button class="flow" id="flow" type="button" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 28 24" aria-hidden="true"><path d="M13.1 11.4 4.6 5.1c-.9-.7-2.1 0-2.1 1.1v11.6c0 1.1 1.2 1.8 2.1 1.1l8.5-6.3a.6.6 0 0 0 0-1.2Z"/><path d="M14.9 11.4l8.5-6.3c.9-.7 2.1 0 2.1 1.1v11.6c0 1.1-1.2 1.8-2.1 1.1l-8.5-6.3a.6.6 0 0 1 0-1.2Z"/><circle cx="14" cy="12" r="2.3"/><path d="M14 14.4c-.5 1.6-.7 3.3-.6 4.9h1.2c.1-1.6-.1-3.3-.6-4.9Z" opacity=".5"/><path d="M6.4 8.2c1.6.5 3 1.3 4.2 2.4M6.4 15.8c1.6-.5 3-1.3 4.2-2.4M21.6 8.2c-1.6.5-3 1.3-4.2 2.4M21.6 15.8c-1.6-.5-3-1.3-4.2-2.4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".55"/></svg>
       </button>
-      <span class="stamp" id="stamp" data-base="V04.08<br>Last updated 31-Aug-2026"></span>
+      <span class="stamp" id="stamp" data-base="V04.09<br>Last updated 31-Aug-2026"></span>
     </span>
   </div>
 
@@ -447,16 +447,12 @@ function ranhTu(ma){
   });
   return g;
 }
-var MO_GOIY_ISO = '2026-10-01T00:00:00+07:00';
-var MO_GOIY  = new Date(MO_GOIY_ISO).getTime();
+/* Trước mốc này thì chơi chay: không SOS, không gợi ý. CỐ Ý không có hàm nào
+   in cái ngày ấy ra màn hình — treo một dòng "gợi ý mở từ ngày X" là tự tố cáo
+   còn thứ đang giấu (luật viết ở han/CHU-MAP3.md mục 1). Đời trước có sẵn một
+   hàm định dạng ngày cho việc đó, khai xong không ai gọi; đã bỏ. */
+var MO_GOIY = new Date('2026-10-01T00:00:00+07:00').getTime();
 function goiYMo(){ return Date.now() >= MO_GOIY; }
-/* BẪY ĐÃ VẤP (y hệt chỗ BIRTHDAY ngoài bản đồ): lấy ngày ra bằng getDate() thì
-   máy đặt ở múi giờ ÂM trả về NGÀY HÔM TRƯỚC — máy UTC hiện "30-09-2026". Cắt
-   thẳng phần ngày của chuỗi ISO rồi đảo lại mới luôn đúng ngày Việt Nam. */
-function ngayMoGoiY(){
-  var d = MO_GOIY_ISO.slice(0, 10).split('-');    /* YYYY-MM-DD */
-  return d[2] + '-' + d[1] + '-' + d[0];
-}
 /* ---- luật lượt sai ----
    Bản cũ: sai 2 lần là câu đó khoá TỚI NỬA ĐÊM và ép reset toàn bộ. Reset lại
    không hoàn lượt, nên xáo xong đi tới đúng câu đã cháy là tắc — hôm đó không
@@ -549,7 +545,6 @@ function save(){
   s.firstAt=st.firstAt; s.doneAt=st.doneAt;
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
 }
-function Q(){ return HOI[st.order[st.pos]]; }           /* câu con trỏ đang trỏ vào */
 function conSai(q){ return SAI_PHIEN - (st.sai[q.id]|0); }
 function nghiDen(q){ return st.nghi[q.id] || 0; }
 function dangNghi(q){ return nghiDen(q) > Date.now(); }

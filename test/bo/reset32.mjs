@@ -57,8 +57,13 @@ ok('BẢN CHỤP trong hồ sơ cũng sạch theo',
 ok('cờ Easter Egg trong hồ sơ cũng hạ', !(snap.mtv1||{}).credFound);
 ok('chặng Mission KHÔNG bị đụng tới', !!(snap.msn1 && snap.msn1.m3),
    'reset bản đồ không được xoá tiến độ hồ sơ');
-ok('mốc cũ được gỡ cho lần lưu sau tính lại',
-   ((await doc('nav1')).profiles[0].moc || '') === '');
+/* ĐỢT 33 SỬA LẠI PHÉP NÀY. Bản đợt 32 đòi `moc` phải RỖNG, với lý do "lần
+   sau ghé trang hồ sơ thì profSave tự tính lại". Sai: chỗ hiện mốc có luật lùi
+   `moc || '—'`, mà dấu gạch nghĩa là CHƯA LÀM GÌ CẢ — trong khi ba Mission vẫn
+   còn nguyên. Nay chụp lại là tính lại luôn, và mốc đúng phải là "M3 ✓". */
+ok('mốc tính lại đúng chặng còn lại, không để rỗng',
+   ((await doc('nav1')).profiles[0].moc || '') === 'M3 ✓',
+   JSON.stringify((await doc('nav1')).profiles[0].moc));
 
 console.log('\n④ Nhưng nhịp hộp chào thì phải SỐNG SÓT');
 ok('vẫn nhớ hôm nay đã chào khung nào',

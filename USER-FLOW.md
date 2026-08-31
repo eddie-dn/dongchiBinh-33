@@ -6,8 +6,8 @@
 >
 > **File này chỉ nói về ĐIỀU HƯỚNG và PÍ DANH** (`nav1`, hai pha, redirect guard). Luật
 > chơi của từng map nằm ở `README.md`; câu chữ của Map 3 nằm ở `han/CHU-MAP3.md`.
-> Bộ kiểm thử đầu-cuối (Chromium headless) không nằm trong repo — kết quả mới nhất ghi ở
-> cuối README.
+> Bộ kiểm thử đầu-cuối (Chromium headless) **nay nằm trong kho mã** ở `test/` — chạy
+> `node test/chay.mjs`. Luồng của file này được `pfsave20`, `pidanh29` và `reset32` giữ.
 
 Liên quan trực tiếp tới hai file:
 
@@ -84,11 +84,24 @@ Quy tắc:
 
 1. **Chỉ hai điểm ghi `mapUnlocked`**: điểm bật ở mục 4, điểm tắt ở mục 6.7. Không ai
    khác được đụng.
-2. Cả hai trang đọc `nav1` qua đúng một cặp hàm `navRead()` / `navWrite()` (mỗi trang
-   một bản chép, giống cách `TRACK` đang được nhân bản) — luôn `try/catch` và luôn có
-   giá trị mặc định, đúng luật "dữ liệu mùa cũ không làm vỡ mùa mới" của README §8.
-3. Thêm trường mới thì thêm vào cả hai bản `navRead()`/`navWrite()` và tăng `v` nếu đổi
-   nghĩa trường cũ.
+2. **Ba nơi được ghi `nav1`, không hơn**, và mỗi nơi chỉ đụng đúng phần của mình:
+
+   | Nơi | Ghi gì | Không đụng |
+   |---|---|---|
+   | `navWrite()` — `dad/950901-a/index.html` | tất cả (chủ khoá) | — |
+   | script guard đầu `index.html` | **không ghi**, chỉ đọc `mapUnlocked` | mọi thứ |
+   | `chupLaiHoSo()` — `assets/lichsu.js` | `snap` + `moc` của pí danh ĐANG dùng | cờ pha, danh sách pí danh |
+
+   `chupLaiHoSo` là đường mà năm nút *chơi lại* của bộ dùng để hạ bản chụp ngay lúc
+   xoá (xem mục 6.8). Nó cố tình không có `navRead()/navWrite()` riêng: chép thêm một
+   cặp hàm nữa là chép thêm một chỗ để lệch.
+
+   Trang bản đồ **không** có bản `navRead()/navWrite()` nào — nó chỉ cần đọc một cờ
+   trong guard, dựng cả một cặp hàm cho việc đó là thừa. Đời trước file này ghi là "mỗi
+   trang một bản chép"; không đúng, đã sửa.
+3. Thêm trường mới thì sửa `navRead()`/`navWrite()` và tăng `v` nếu đổi nghĩa trường cũ.
+   Mọi nơi đọc `nav1` đều phải `try/catch` và có giá trị mặc định, đúng luật "dữ liệu
+   mùa cũ không làm vỡ mùa mới" của README §8.
 
 ---
 
@@ -431,16 +444,34 @@ Khôi phục / đổi hồ sơ đều đi qua `profLoad(nav, i)`:
 3. `location.reload()` — đúng quy tắc "muốn về một trạng thái trọn vẹn thì reload, đừng
    gỡ từng biến".
 
-Ma trận sống/chết của từng khoá qua các đường xoá:
+Ma trận sống/chết của từng khoá qua **năm** đường xoá của bộ:
 
-| Đường xoá | `mtv1` | `msn1` | `nav1.mapUnlocked` | `nav1.profiles` |
-|---|---|---|---|---|
-| `hardWipe` — reset MAP-01 (lá cờ, hộp pí mật, Tổng tư lệnh) | xoá (giữ `resetCount`) | giữ | **giữ `true`** — M3 hồ sơ vẫn xong | **giữ** |
-| `reset_msn` — Chơi lại từ đầu trong hộp M3 của hồ sơ | giữ | xoá | **hạ về `false`** — về pha 1 | **giữ** |
-| Người chơi tự xoá dữ liệu trang / ẩn danh | mất | mất | mất | mất — chấp nhận, README §17 |
+| Đường xoá | `mtv1` | `msn1` | `hanv1` | `mapUnlocked` | `profiles` | `profiles[].snap` |
+|---|---|---|---|---|---|---|
+| `hardWipe` — reset MAP-01 (lá cờ, hộp pí mật, Tổng tư lệnh) | xoá (giữ bộ đếm + nhịp chào) | giữ | giữ | **giữ `true`** — M3 hồ sơ vẫn xong | **giữ** | hạ lát `mtv1` |
+| `eggReplay` — trả Easter Egg về lúc chưa ai tìm ra | hạ phần Easter Egg + Gate 2 | giữ | giữ | giữ | **giữ** | hạ lát `mtv1` |
+| `lamLai` — xáo lại bộ câu hỏi Zoey's Castle | giữ | giữ | hạ | giữ | **giữ** | hạ lát `hanv1` |
+| `cLock` — khoá lại cửa mã Secret Chamber | giữ | giữ | hạ `bOpen` | giữ | **giữ** | hạ lát `hanv1` |
+| `reset_msn` — Chơi lại từ đầu trong hộp M3 của hồ sơ | giữ | xoá | giữ | **hạ về `false`** — về pha 1 | **giữ** | — |
+| Người chơi tự xoá dữ liệu trang / ẩn danh | mất | mất | mất | mất | mất | mất — chấp nhận, README §17 |
 
-Pí danh sống qua **cả hai** đường reset — đó là toàn bộ giá trị của tính năng. `hardWipe`
-**không được đụng `nav1`** (đã ghi rõ trong code, cạnh dòng giữ `resetCount`).
+Pí danh sống qua **mọi** đường reset — đó là toàn bộ giá trị của tính năng.
+
+**⚠ CỘT CUỐI LÀ BỆNH ĐÃ SỬA, ĐỌC KỸ.** Bốn đường xoá đầu tiên đều phải gọi
+`chupLaiHoSo(<khoá>)` ngay sau khi ghi kho, nếu không thì cú reset **tự hoàn tác**:
+
+- bản chụp trong hồ sơ vẫn giữ tiến độ cũ, nạp lại bản lưu là bản đồ đã giải quay về
+  nguyên vẹn — "bấm reset xong thấy như chưa bấm";
+- tệ hơn, `profSave` có luật chống tụt hạng (không cho lưu đè bằng tiến độ THẤP hơn).
+  Bản chụp cũ cao hơn thực tế nên nó chốt cứng ở mốc cũ, về sau **không bao giờ** hạ
+  xuống được nữa.
+
+`chupLaiHoSo` hạ **đúng một lát** của bản chụp — lát của kho vừa xoá — rồi tính lại
+`moc` bằng `LichSu.moc`. Không xoá trắng cả bản chụp: một kho có thể chứa nhiều chặng
+(Gate 2 ở nhờ trong kho của bản đồ), xoá cả lát là bay luôn chặng không liên quan.
+Cờ pha và danh sách pí danh thì nó **không đụng**.
+
+`reset_msn` không cần gọi: nó nằm ngay trong trang hồ sơ, nơi `profSave` chạy sẵn.
 
 Trường hợp biên đã soi:
 
@@ -455,7 +486,9 @@ Trường hợp biên đã soi:
 ## 7. Đo đạc — sự kiện mới
 
 Đi qua hệ `ping` sẵn có của từng trang (endpoint `/api/ping` + `/api/note`, các tầng dự
-phòng giữ nguyên). Nhãn tiếng Việt khai trong `NHAN` của **cả hai** bản `api/ping.js`.
+phòng giữ nguyên). Nhãn tiếng Việt khai trong `NHAN` của `api/ping.js` — **một bản duy
+nhất** ở gốc kho mã (bản chép trong `dad/950901-a/api/` đã bỏ, lý do ghi ở
+`dad/950901-a/README.md`).
 
 | Sự kiện | Trang | Khi nào | Gửi mấy lần |
 |---|---|---|---|
@@ -606,5 +639,5 @@ Hai kênh chạy song song, kênh nào khai biến môi trường thì kênh đ�
 
 Chưa khai gì thì endpoint **vẫn trả 200** và ghi `console.log` — người gửi không nhìn
 thấy lỗi cấu hình, nội dung nằm ở tab Logs của Vercel. Trần chống spam: 6 lời nhắn mỗi
-10 phút cho mỗi instance. Nhớ deploy **cả hai bản** `api/thu.js` và
-`dad/950901-a/api/thu.js`, đúng luật nhân bản của README §14.
+10 phút cho mỗi instance. Chỉ còn **một bản** `api/thu.js` ở gốc kho mã — bản chép
+trong `dad/950901-a/api/` đã bỏ (lý do ở `dad/950901-a/README.md`).

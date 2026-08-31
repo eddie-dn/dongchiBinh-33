@@ -35,8 +35,9 @@ Ba bước, **làm đủ cả ba** thì bản ghi mới khớp với thứ đang
 
 > **⚠ TEM NAY LẤY TỪ SỔ, KHÔNG GÕ TAY NỮA.**
 > Số hiệu và ngày của một trang chỉ khai **một nơi**: chính cuốn sổ này.
-> `LichSu.tem('<mã sổ>')` trả `{ver, ngay}` — số là nấc đuôi mới nhất của dòng
-> mới nhất, ngày là cột `sua` của dòng đó. Tem ngoài trang và thẻ toạ độ ngoài
+> `LichSu.tem('<mã sổ>')` trả `{ver, ngay, iso, moc, mocIso}` — `ver` là nấc đuôi
+> mới nhất của dòng mới nhất, `ngay` là cột `sua` của dòng đó (đã định dạng),
+> `moc` là cột `ngay` tức lúc build bắt đầu. Tem ngoài trang và thẻ toạ độ ngoài
 > bản đồ đều gọi hàm đó.
 > Chuỗi cứng trong HTML vẫn còn nhưng chỉ là **bản lùi**, và phải khớp sổ —
 > có bộ kiểm (`tem16.mjs`) bắt lệch. Luật đầy đủ ở `DESIGN-SYSTEM.md` §4.1.
@@ -89,15 +90,15 @@ khuôn của trang này sang trang kia là tem hiện sai hoặc mất hẳn:
 
 ### Bước 2 — Ghi vào `assets/lichsu.js`
 
-Mở bảng `SO`, tìm đúng khoá của trang (`MAP` · `DAD-A` · `DAD-B` · `HAN-A` · `HAN-B` ·
-`FX`), rồi:
+Mở bảng `SO`, tìm đúng khoá của trang (`MAP` · `EGG` · `DAD-A` · `DAD-B` · `HAN-A` ·
+`HAN-B` · `FX`), rồi:
 
 - **Bản nhỏ trong cùng build lớn** (V04.05 → V04.06): giữ nguyên dòng, **tăng `so`** lên
   một, và thêm một mục vào mảng `chi`.
 - **Sang build lớn mới** (V04.09 → V05): thêm một dòng mới ở CUỐI mảng `doi`.
 
 ```js
-{ ngay:'2026-08-20', ver:'V04', so:'07',
+{ ngay:'2026-08-20', sua:'2026-08-31', ver:'V04', so:'07',
   chinh:'Câu tóm tắt chung chung của cả build lớn',
   chi:[
     { ver:'V04.05', chinh:'Bản nhỏ này làm gì' },
@@ -109,9 +110,10 @@ Các trường:
 
 | Trường | Nghĩa |
 |---|---|
-| `ngay` | `YYYY-MM-DD`. Không biết thì `'no info'` — bảng tự in **N/A** |
+| `ngay` | `YYYY-MM-DD`, **mốc ghi nhận** — ngày của bản `.00`, tức lúc build BẮT ĐẦU. Không biết thì `'no info'` — bảng tự in **N/A** |
+| `sua` | `YYYY-MM-DD`, **ngày sờ tới lần cuối**. `LichSu.tem()` lấy CỘT NÀY cho dòng "Last updated", không lấy `ngay`. Bỏ trống thì coi như build gọn trong một ngày và lấy `ngay`. **Đây là cột hay quên nhất** — bump `so` mà quên `sua` thì tem ngoài trang đứng im ngày cũ |
 | `ver` | Số build lớn. **Luôn giữ** kể cả khi không biết nó sửa gì |
-| `so` | Số bản nhỏ ghi lại được (V04.06 → `'07'` vì đếm cả .00). `null` → **N/A** |
+| `so` | Số bản nhỏ ghi lại được (V04.06 → `'07'` vì đếm cả .00). Dòng gộp nhiều nấc thì đếm đủ số nấc nó gộp, không đếm số phần tử `chi`. `null` → **N/A** |
 | `chinh` | Tóm tắt cả build lớn, một câu |
 | `chi` | *(tuỳ chọn)* mảng từng bản nhỏ. Dòng nào có `chi` thì **bấm được**, mở ra bảng chi tiết riêng. **Từ V17 trở đi build nào cũng nên ghi** |
 
@@ -168,12 +170,24 @@ pháo hoa nổ"*, *"chỉnh khung màn"*, *"chỉnh luật chơi"*, *"chỉnh lu
 
 Luật chung của cả bộ: **mở bảng vận hành của trang → bấm 3 nhịp vào nút tròn → gõ mã**.
 
-| Trang | Cách mở bảng vận hành |
-|---|---|
-| Bản đồ mật thư | Box Tổng tư lệnh (cửa hậu sẵn có) |
-| Zoey's Castle | 5 nhịp vào cụm hoa + tem → Khối vận hành |
-| Easter Egg · Gate 2 | **10 nhịp vào tem ở chân màn hình** → Khối vận hành. Chạy ở **cả màn cổng lẫn màn cuối** |
-| Màn pháo hoa | Chưa có bảng nào để giấu cửa — dữ liệu đã sẵn ở khoá `FX`, hôm nào trang đó có bảng thì gắn `LichSu.nut('FX')` là xong |
+Cửa vào luôn là **một dòng chữ đã có sẵn** — tên của bảng, hoặc tên của hộp — chứ không
+bao giờ là một biểu tượng mới. Đứng yên thì không có dấu hiệu gì; trỏ vào mới đổi màu.
+Đẻ thêm icon là mỗi trang một kiểu, mò ra chỗ này không giúp gì cho việc mò ra chỗ kia.
+
+| Cuốn | Trang | Đường tới cửa (rồi 3 nhịp vào dòng chữ → gõ mã) |
+|---|---|---|
+| `MAP` | Bản đồ mật thư | Box Tổng tư lệnh → mặt cười `ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧` |
+| `EGG` | Bản đồ mật thư | khung **Collected: Easter Egg** → chính dòng tiêu đề của khung |
+| `DAD-A` | Hồ sơ DAD-950901-A | mở hộp Mission 3 → dòng tiêu đề của hộp |
+| `DAD-B` | Easter Egg · Gate 2 | **10 nhịp vào tem ở chân màn hình** → Khối vận hành → dòng chữ "Khối vận hành". Chạy ở **cả màn cổng lẫn màn cuối** |
+| `HAN-A` | Zoey's Castle | **5 nhịp vào cụm hoa + tem** → Khối vận hành → dòng chữ "Khối vận hành" |
+| `HAN-B` | Secret Chamber | **5 nhịp vào cụm hoa + tem** → Khối vận hành → dòng chữ "Khối vận hành" |
+| `FX` | Màn pháo hoa | **Chưa có cửa.** Trang đó còn không nạp `lichsu.js`. Dữ liệu vẫn sẵn ở khoá `FX`; hôm nào trang có một bảng để giấu cửa thì gắn `LichSu.chu('FX')` vào dòng tên bảng là xong |
+
+`MAP` và `EGG` là **hai cuốn riêng** tuy cùng nằm trên trang bản đồ: một cuốn kể chuyện
+bản đồ mật thư, một cuốn kể chuyện khu Easter Egg. Đừng gộp.
+
+Số nhịp mở cửa (`NHIP`) khai **một chỗ** trong `lichsu.js`, dùng chung cho mọi cuốn.
 
 Mã vào: `0981`. Sai **5 lần** được **đúng một** câu gợi ý (bộ đếm tính theo phiên; thấy
 gợi ý rồi thì lần sau hiện sẵn).

@@ -7,13 +7,25 @@ Gói này chạy được một mình, không cần trang bản đồ.
 ```
 /
 ├── index.html      ← hồ sơ (deck 5 trang, mọi ảnh và thư viện đã nhúng sẵn)
-├── vercel.json
+├── vercel.json     ← { "cleanUrls": true }
 ├── MISSIONS.md     ← luật chơi đầy đủ của hệ 3 Mission
-└── api/
+└── api/            ← CHÉP TỪ `/api` Ở GỐC KHO MÃ lúc deploy (xem ghi chú dưới)
     ├── ping.js     ← endpoint nhận tín hiệu, bắn về Telegram/Discord
     ├── note.js     ← bí danh của ping.js (bắt buộc có — xem "Chống mất tín hiệu")
+    ├── pidanh.js   ← cuốn danh bạ pí danh (thiếu file này thì pí danh không qua máy khác được)
     └── thu.js      ← endpoint nhận lời nhắn (bên bản đồ hiện KHÔNG còn nút gọi tới)
 ```
+
+> **⚠ THƯ MỤC `api/` KHÔNG CÒN NẰM SẴN TRONG FOLDER NÀY — CỐ Ý.**
+> Đời trước có một bản chép của `ping.js` · `note.js` · `thu.js` để ngay đây cho
+> tiện. Bản chép đó **không ai sửa theo** trong khi bản gốc ở `/api` đi tiếp:
+> tới lúc kiểm lại thì `ping.js` bên này chỉ còn bằng **một phần ba** bản gốc,
+> và `pidanh.js` — thứ trang này gọi tới mỗi lần lưu pí danh — thì chưa từng
+> có. Ai làm theo hướng dẫn cũ sẽ deploy ra một bản **im lặng mất pí danh**,
+> mà không có gì báo lỗi.
+>
+> Nên nay chỉ có **một bản duy nhất** ở `/api` gốc; tách domain thì chép nguyên
+> thư mục đó sang lúc deploy. Chép chứ đừng lưu bản thứ hai trong kho mã.
 
 > **Deploy chung với bản đồ** (cách đang dùng) thì gói này còn hai việc nữa: giữ cờ điều
 > hướng hai pha và **pí danh** ở khoá `localStorage.nav1`, dùng chung với trang bản đồ.
@@ -22,8 +34,11 @@ Gói này chạy được một mình, không cần trang bản đồ.
 
 ## Deploy
 
-1. Đẩy nguyên thư mục này lên một repo GitHub — `index.html` phải nằm ở **gốc repo**,
-   và thư mục `api/` phải có **đủ hai file** `ping.js` và `note.js`.
+1. Đẩy nguyên thư mục này lên một repo GitHub — `index.html` phải nằm ở **gốc repo**.
+   Chép `/api` ở gốc kho mã sang cạnh nó: phải có **đủ** `ping.js`, `note.js` (xem
+   "Chống mất tín hiệu") và `pidanh.js` (pí danh). Thêm `vercel.json` một dòng
+   `{ "cleanUrls": true }` — Vercel chỉ đọc `vercel.json` ở GỐC dự án, nên file
+   nằm trong thư mục con là file chết.
 2. Vercel → Add New Project → Import repo → Framework **Other**, Build Command và Output
    Directory **để trống** → Deploy.
 3. Settings → Environment Variables: `NOTIFY_KIND=telegram`, `TG_TOKEN`, `TG_CHAT`.

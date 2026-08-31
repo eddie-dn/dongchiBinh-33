@@ -1,4 +1,304 @@
 ════════════════════════════════════════
+ĐỢT 33 — finalize: tài liệu về khớp luồng, dọn mã chết, một luật một chỗ.
+════════════════════════════════════════
+    assets/lichsu.js      index.html            .vercelignore
+    dad/950901-a/index.html   dad/950901-a/README.md
+    han/961030-a/index.html   han/CHU-MAP3.md
+    README.md   USER-FLOW.md   DESIGN-SYSTEM.md   DOC-CAI-NAY-TRUOC.txt
+    test/bo/dong33.mjs (mới)   test/chay.mjs
+    XOÁ: dad/950901-a/api/ (3 file)   dad/950901-a/vercel.json
+         dad/950901-b/pixelminigame.patch
+
+Số tem:  /  V20.05 → V20.06  ·  /dad/950901-a  V05.02 → V05.03
+         /han/961030-a  V04.08 → V04.09
+
+Đợt này không thêm tính năng nào. Cả đợt là đi soi hai câu hỏi: mã của các màn
+có còn khớp nhau không, và tài liệu có còn kể đúng cái mã đang làm không.
+
+
+MỘT LỖI TỰ MÌNH GÂY RA Ở ĐỢT TRƯỚC, BẮT ĐƯỢC Ở ĐÂY
+
+Đợt 32 dựng `chupLaiHoSo` để reset xong thì hạ bản chụp của pí danh theo. Trong
+đó có một dòng `p.moc = ''` với lý do "để rỗng, lần sau ghé trang hồ sơ thì
+`profSave` tự tính lại".
+
+Chỗ hiện `moc` có luật lùi `moc || '—'`. Mà dấu gạch trong bảng pí danh KHÔNG
+phải "chưa biết" — nó là mốc thấp nhất, nghĩa là CHƯA LÀM ĐƯỢC GÌ CẢ. Reset bản
+đồ thì ba Mission vẫn còn nguyên, chip lẽ ra phải đọc `M3 ✓`. Để rỗng là chip
+tự khai lùi hẳn một chặng, và nó khai sai như thế cho tới lần ghé trang hồ sơ
+kế tiếp — có thể là mấy ngày sau.
+
+NAY: chụp lại xong thì TÍNH LẠI mốc ngay từ chính bản chụp vừa hạ.
+
+
+VÀ ĐỂ TÍNH LẠI ĐƯỢC THÌ LUẬT MỐC PHẢI VỀ MỘT CHỖ
+
+Luật tính mốc (`—` · `M1` · `M2` · `M3 ✓` · `TAC n/4` · `EGG ✦` · `HAN n/3` ·
+`HAN ✦` · `HAN ✦✦`) vốn nằm trong `mocNow()` bên `/dad/950901-a`, đọc thẳng
+`localStorage`. Nhưng `chupLaiHoSo` chạy ở lichsu.js, lúc trang hồ sơ KHÔNG hề
+được nạp — nên nó không gọi `mocNow()` được.
+
+Chép luật sang một bản thứ hai là cách chắc chắn để hai bên lệch nhau về sau —
+đúng cái bẫy đã vấp với luật cổng ô nhập (đợt 30, tám bản chép). Nên làm ngược
+lại: luật dọn về `lichsu.js` thành `mocTuSnap(snap)`, nhận NGUYÊN một bản chụp
+`{msn1, mtv1, hanv1}`; `mocNow()` bên trang hồ sơ rút còn một dòng gọi nhờ.
+Hai hàm `mapTien()` / `hanTien()` chỉ phục vụ nó nên bỏ luôn.
+
+⚠ BẪY THỨ HAI, LỘ RA NGAY LÚC GOM — THỨ TỰ NẠP.
+Thẻ `<script src="/assets/lichsu.js">` nằm SAU khối script của trang hồ sơ
+(cuối trang). Mà trang hồ sơ có một cú tự lưu chạy NGAY lúc parse:
+`if(profCur()) profSave(mocNow());`. Lúc đó `window.mocTuSnap` chưa tồn tại →
+`mocNow()` rơi vào nhánh lùi và ghi mốc `'—'` ĐÈ LÊN mốc thật. Tức là bản vá
+vừa chữa cái chip nói sai thì lại làm nó nói sai theo đường khác, còn nặng hơn
+vì chạm vào mọi lần mở trang chứ không riêng lúc reset.
+
+Không chữa bằng cách kéo thẻ script lên trước: lichsu.js còn chèn cả CSS, đổi
+thứ tự là đổi luôn bên nào thắng bên nào ở mấy chỗ chọi độ ưu tiên — đúng loại
+hỏng lan ra sáu trang. Nay cú tự lưu ĐẦU TIÊN đợi `load` nếu helper chưa có;
+mọi chỗ gọi khác đều là trình xử lý sự kiện nên vốn đã chạy sau.
+
+Bắt được nhờ viết bộ kiểm TRƯỚC khi tin là xong. Đọc mã thì không thấy: dòng
+gọi và dòng khai cách nhau bốn trăm dòng, ở hai file khác nhau.
+
+
+BA ĐOẠN MÃ KHAI RỒI KHÔNG AI GỌI
+
+  · `openMsg()` — `/dad/950901-a`, một dòng bọc `openOv`.
+  · `Q()` — `/han/961030-a`, trả về câu đang trỏ tới; chỗ dùng thật là biến `q`.
+  · `ngayMoGoiY()` — `/han/961030-a`, định dạng ngày mở gợi ý ra `DD-MM-YYYY`.
+
+Cái thứ ba đáng nói: nó được viết để in một dòng "gợi ý mở từ ngày X", mà luật
+của chính trang đó (`han/CHU-MAP3.md` mục 1) lại cấm hiện dòng ấy — treo lên là
+tự tố cáo còn thứ đang giấu. Hàm sống sót qua mấy đợt chỉ vì không ai đọc lại.
+Bỏ nó thì hằng `MO_GOIY` gộp lại được thành một dòng, và đoạn mã chép trong
+`CHU-MAP3.md` tự nhiên khớp lại với dòng thật.
+
+
+HAI FILE CHẾT — MỘT CÁI LÀ CÁI BẪY
+
+`dad/950901-b/pixelminigame.patch` (76 KB): bản vá của lượt dựng mini-game Gate
+2 hồi 17-08, đã áp từ đời nào, còn trỏ vào đường dẫn `dad/dad-950901-b/` không
+còn tồn tại. Kho mã đã giữ nguyên lịch sử rồi, không cần giữ thêm bản vá.
+
+`dad/950901-a/api/` thì nguy hơn. Nó là BẢN CHÉP của `/api` gốc, để dành cho
+trường hợp tách Gate 1 thành một dự án Vercel riêng. Chép xong không ai sửa
+theo: `ping.js` bên đó còn 9 KB trong khi bản gốc đã 27 KB, và `pidanh.js` —
+thứ trang Gate 1 gọi tới MỖI LẦN lưu pí danh — thì chưa từng có mặt. Ai làm
+theo hướng dẫn cũ mà deploy sẽ ra một bản im lặng mất pí danh, không lỗi, không
+cảnh báo, nhìn vẫn chạy bình thường.
+
+Kèm theo là `dad/950901-a/vercel.json`: Vercel chỉ đọc `vercel.json` ở GỐC dự
+án, nên file nằm trong thư mục con là file chết — mà nó không bị `.vercelignore`
+chặn nên vẫn phục vụ công khai.
+
+NAY: bỏ cả hai, giữ đúng MỘT bản `/api` ở gốc; `dad/950901-a/README.md` viết
+lại phần deploy tách domain thành "chép `/api` gốc sang lúc deploy", kèm đủ bốn
+file cần và lý do vì sao không giữ bản chép thứ hai trong kho.
+
+
+TÀI LIỆU: TÁM CHỖ ĐÃ TRÔI KHỎI MÃ
+
+ 1. `DOC-CAI-NAY-TRUOC.txt` — mục mới nhất còn dừng ở ĐỢT 30. Hai đợt gần nhất
+    (31 và 32) chưa có mục nào. Đã bổ sung ngay dưới đây.
+ 2. `README.md` mục 23 — bảng "Bản đồ tài liệu" thiếu 8 file: bốn tài liệu của
+    Gate 2, `docs/BAN-GHI.md`, hai script trong `docs/`, `test/README.md`, và
+    chính `DOC-CAI-NAY-TRUOC.txt`.
+ 3. `README.md` — ghi "chạy 28 bộ" (thật ra 41). Chua ở chỗ đoạn ngay bên dưới
+    nó là lời hứa "không tài liệu nào chép số nữa — muốn biết thì chạy". Nay bỏ
+    hẳn con số.
+ 4. `USER-FLOW.md` đầu file — "bộ kiểm không nằm trong repo". Nằm từ lâu rồi.
+ 5. `USER-FLOW.md` mục 2 — "cả hai trang đọc `nav1` qua một cặp `navRead()` /
+    `navWrite()`, mỗi trang một bản chép". Sai: trang bản đồ không có bản nào,
+    nó chỉ đọc một cờ trong guard. Và từ đợt 32 `nav1` có thêm người ghi thứ ba
+    là `chupLaiHoSo`. Nay thay bằng bảng ba-nơi-được-ghi, ghi rõ nơi nào đụng gì.
+ 6. `USER-FLOW.md` mục 6.8 — ma trận reset chỉ có 2 đường xoá và 4 cột, không
+    có `hanv1`, không có `profiles[].snap`, lại còn ghi "hardWipe không được
+    đụng `nav1`" (đợt 32 đã đổi). Nay đủ 5 đường xoá × 6 cột, kèm lý do vì sao
+    cột cuối bắt buộc.
+ 7. `DESIGN-SYSTEM.md` mục 2.1 — tả `.ops-btn` là "pill bo 999px, viền nét đứt,
+    nền rỗng, giãn .18em". Thật ra đã là góc bo 6px, viền liền, nền theo tông
+    trang, giãn .16em từ hai đời trước. Thiếu luôn `.ops-luoi`, và thiếu hẳn ba
+    biến nền (`--ls-nut` · `--ls-nutchu` · `--ls-nut-ho`) mà trang nền sáng
+    BẮT BUỘC phải khai — thứ vừa dựng ở đợt 31 để chữa mấy nút xám ở Zoey's
+    Castle. Nay tả đúng, kèm bảng ba biến và mẫu khai.
+ 8. `han/CHU-MAP3.md` — bảo mã phần thưởng nằm ở "biến `MA` trong
+    `dad/950901-b/index.html`". Sai cả tên lẫn file: là trường `ma` trong
+    `dad/950901-b/config.js`.
+
+
+BỘ KIỂM MỚI `dong33` — GIỮ CHO TÀI LIỆU KHÔNG TRÔI TIẾP
+
+Mấy lỗi trên không làm trang trắng, không ném lỗi, không ai thấy — nên chúng
+sống rất dai. Bộ này soi bằng máy:
+
+  ① luật mốc chỉ có một bản, và chụp lại thì tính lại mốc (kèm cả thứ tự nạp);
+  ② ba hàm chết và năm file chết đã bỏ, chỉ còn một bản `api/ping.js`;
+  ③ MỌI file `.md`/`.txt` của kho đều bị `.vercelignore` chặn, hai file ruột
+     `api/_lib/*.md` thì KHÔNG được chặn nhầm, và mọi file tài liệu đều có tên
+     trong bảng mục 23 của README — thêm tài liệu mà quên hai chỗ đó là lộ đáp
+     án lên bản chạy thật;
+  ④ mọi đường dẫn file mà tài liệu nhắc tới đều có thật; ba cặp mã (cửa lâu
+     đài, Secret Chamber, bảng điều phối) khớp hai đầu;
+  ⑤ năm nút chơi lại đều gọi `chupLaiHoSo`;
+  ⑥ chạy thật trên trình duyệt: giải hết bản đồ → ghé hồ sơ cho nó chụp → bấm
+     Reset → chip phải đọc `M3 ✓`, không phải `—`.
+
+
+CÒN LẠI — HAI THỨ KHÔNG SỬA, CHỈ GHI
+
+`config.js` của Gate 2 vẫn khai `photos: ['photo_1.jpg' … 'photo_5.jpg']` mà
+thư mục `assets/` không có file nào tên vậy. KHÔNG PHẢI LỖI: `buildSlides` có
+sẵn `onerror` vẽ ảnh pixel tạm, và cả ba tài liệu liên quan đều ghi rõ "CHƯA
+CÓ — game tự vẽ ảnh thay thế". Nghĩa là lớp phim dựng ở đợt 32 hiện đang phủ
+lên ẢNH VẼ TẠM; thả năm file ảnh thật vào là nó phủ lên ảnh thật, không phải
+sửa gì thêm.
+
+`anim_unlock.webp` (23 MB) · `bg_r1.png` · `bg_r2.png` vẫn nằm trong kho dù
+trang chỉ dùng bản `_clean`. Cố ý giữ: `config.js` khai chúng làm đường lùi,
+có ghi chú hẳn hoi. Không đụng.
+
+
+════════════════════════════════════════
+ĐỢT 32 — reset xoá tới đáy, chat về sổ, ảnh thư lên phim, chào hỏi thôi dồn dập.
+════════════════════════════════════════
+    assets/lichsu.js      index.html            api/chat.js
+    dad/950901-b/index.html   dad/950901-b/config.js
+    han/961030-a/index.html   han/961030-b/index.html
+    docs/apps-script/Code.gs  docs/GOOGLE-SHEETS.md  README.md
+    test/bo/reset32.mjs (mới)  test/bo/so32.mjs (mới)  test/chay.mjs
+
+Số tem:  /  V20.04 → V20.05  ·  /dad/950901-b  V06.06 → V06.08
+         /han/961030-a  V04.07 → V04.08  ·  /han/961030-b  V03.08 → V03.09
+         (khu Easter Egg  V20.01 → V20.02)
+
+
+① BẤM RESET XONG THẤY NHƯ CHƯA BẤM
+
+Người chơi báo: "bấm reset ở hộp pí mật, đáng lẽ phải đưa về toàn bộ trạng thái
+như khi chưa giải được".
+
+TRUY RA: nút reset xoá đúng kho của màn nó (`mtv1` cho bản đồ, `hanv1` cho lâu
+đài). Nhưng pí danh giữ RIÊNG một bản chụp của mấy kho đó trong `nav1`, chụp
+lúc lưu tiến trình để đổi máy vẫn chơi tiếp được. Bản chụp ấy không ai đụng tới.
+Hệ quả:
+  · mở bảng pí danh nạp lại bản lưu là mọi thứ vừa xoá quay về nguyên vẹn;
+  · tệ hơn, `profSave` có luật KHÔNG cho lưu đè bằng tiến độ THẤP hơn (chống lỡ
+    tay tụt hạng). Bản chụp cũ cao hơn thực tế nên nó CHỐT CỨNG ở mốc cũ, về
+    sau không bao giờ hạ xuống được nữa.
+
+NAY: thêm `chupLaiHoSo(khoá)` ở `lichsu.js`, gọi ngay sau mỗi lần ghi kho. Nó
+chép giá trị kho ĐANG CÓ vào đúng một lát của bản chụp — chụp lại chứ không xoá
+trắng, vì một kho có thể chứa nhiều chặng (Gate 2 ở nhờ trong kho của bản đồ),
+xoá cả lát là bay luôn chặng không liên quan. Cờ pha và danh sách pí danh không
+đụng. Năm nút chơi lại của bộ đều đã nối vào: hai ở bản đồ, một ở cổng thư, hai
+bên lâu đài.
+
+
+② CHAT KHÔNG VỀ SỔ, TRONG KHI TIẾN ĐỘ VÀ PÍ DANH VẪN VỀ ĐỀU
+
+`/api/chat` đi bằng một biến KHÁC (`CHAT_LOG_URL`), chưa ai khai, nên nó ghi
+vào hư không; mà tab `Chat` bên Google thì vẫn nằm sẵn đó với đủ cột, nhìn như
+đường đã nối rồi. Hai cái tên gần giống nhau là chỗ dễ trượt nhất. Nay mỗi lượt
+gửi song song về cả `SHEET_URL` lẫn `CHAT_LOG_URL`; `CHAT_LOG_URL` chỉ còn là
+đường phụ.
+
+⚠ BẪY THỨ HAI, SUÝT SHIP: `COT` bên `Code.gs` là danh sách cột TRẮNG — khoá nào
+không có trong đó thì rơi im lặng, không lỗi, không cảnh báo. Hai trường `finish`
+và `go_lai` chưa có cột nên vẫn sẽ mất dù đường đã nối. Đã bổ sung.
+
+⚠ BẪY THỨ BA, BẮT ĐƯỢC LÚC ĐANG VIẾT: mình trải phẳng `token` bên `api/chat.js`
+rồi xoá bản gốc — mà `Code.gs` đã tự trải rồi, nên nó sẽ ghi đè lại bằng
+`undefined`. Đã bỏ phần trải bên trang.
+
+
+③ ẢNH TRONG THƯ Ở CỔNG HAI — MỘT LỚP PHIM
+
+Yêu cầu: "làm 1 lớp film leica tone neutral to cool, nhìn hơi cũ xíu nhưng
+không bị ám xanh/vàng". Làm bằng ba lớp chồng lên `.slidebox`: hạ độ rực và
+nâng nhẹ tương phản trên chính ảnh; một lớp `mix-blend-mode:screen` màu xám
+hơi lạnh để nâng vùng tối (đúng cách phim mất độ đen); một lớp tối bốn góc kèm
+hạt mịn dựng bằng `feTurbulence` nhúng thẳng dạng data-URI. Máy không hiểu
+`mix-blend-mode` thì lớp nâng vùng tối tự tắt, ảnh vẫn bình thường.
+
+
+④ HỘP CHÀO VÀ DAILY QUOTE HIỆN LIÊN TỤC TRONG 10 PHÚT
+
+TRUY RA: đây là hệ quả của ①. Bốn mốc giữ nhịp chào (`hhNgay`, `hhKhungDa`,
+`hhChaoAt`, `hhQuoteAt`) ở NHỜ trong `mtv1` — mà `mtv1` thì reset xoá sạch. Nên
+mỗi lần bấm reset là cả bộ hộp chào lên đạn lại từ đầu. Ai đang thử đi thử lại
+nút reset sẽ bị chào liên tục, tưởng luật giãn cách hỏng.
+
+Nhịp chào là SỔ GHI ĐÃ NÓI GÌ VỚI NGƯỜI NÀY, cùng loại với mấy ô đếm R(n) —
+reset tiến độ không được xoá nó. Nay bốn mốc đó sống sót qua `hardWipe`. Luật
+cũ không đổi một chữ: hộp mỗi ngày một lần một ngày, hộp chào theo ba khung giờ.
+
+
+════════════════════════════════════════
+ĐỢT 31 — Open World nói lại được, xoá là che ngay, tiêu đề đảo theo băng rôn.
+════════════════════════════════════════
+    assets/lichsu.js      index.html            api/chat.js   api/ping.js
+    dad/950901-a/index.html   dad/950901-b/config.js
+    han/961030-a/index.html   han/961030-b/index.html
+    phao-hoa/index.html   vercel.json   README.md   docs/GOOGLE-SHEETS.md
+    test/bo/xoa31.mjs (mới)  test/bo/kt8.mjs  test/bo/phao24.mjs  test/chay.mjs
+
+Số tem:  /  V20.02 → V20.04  ·  /dad/950901-a  V05.01 → V05.02
+         /dad/950901-b  V06.05 → V06.06
+         /han/961030-a  V04.06 → V04.07  ·  /han/961030-b  V03.07 → V03.08
+         /phao-hoa  V03.07 → V03.08   ·  (khu Easter Egg  V20.00 → V20.01)
+
+
+KHU OPEN WORLD: CÂU NÀO CŨNG RA "LỖI ĐƯỜNG TRUYỀN"
+
+Người chơi báo "ver trước vẫn bình thường". Log máy chủ chỉ có một dòng, lặp y
+hệt sau mọi câu hỏi: `[CHAT] lỗi: This operation was aborted` kèm `ms: 9002`.
+
+Con số 9002 dính sát 9000 tuyệt đối — tức là CHÍNH MÌNH cắt máy đang nói dở,
+không phải bên kia hỏng. Trần thời gian 9 giây đặt nép ngay dưới mốc 10 giây mà
+nền tảng cắt hàm, trong khi mỗi lượt phải gánh đoạn tính cách hơn hai vạn ký
+tự, một bước suy nghĩ, rồi mới viết tới 1600 token — mà trang thì chỉ hiện 900
+ký tự.
+
+NAY ba việc: nới trần hàm lên 30 giây (`maxDuration` trong `vercel.json`) rồi
+mới nới trần chờ; xin đúng lượng chữ dùng tới; và quá giờ thì HỎI LẠI một nhịp
+mộc (bỏ bước suy nghĩ, xin ít chữ hơn) thay vì báo lỗi.
+
+⚠ Nới `maxDuration` chỉ ăn từ lần deploy sau — phải Redeploy.
+
+
+Ô NHẬP MÃ: BẤM XOÁ THÌ LAG RỒI KHOÁ
+
+Nhịp "cho kịp nhìn ký tự vừa gõ" đang áp cho cả cú XOÁ, mà xoá thì không có ký
+tự mới nào để nhìn — nó lôi ký tự CŨ ra khoe lại gần một giây. Xoá bốn ô là
+đứng hình hơn ba giây, cảm giác y như máy treo. Nay bảy cửa nhập của cả bộ đều
+dùng chung một cổng `laXoa`: xoá là che ngay.
+
+
+TIÊU ĐỀ THÔI ĐẢO EASTER EGG ↔ GAME ON
+
+Luật đảo chỉ được bật ở đúng lần phá đảo ĐẦU TIÊN, nên ghé lại trong bảy ngày,
+sang ngày mới, hay vặn kim tới 01-09 thì băng rôn vẫn bay mà chữ chết cứng. Nay
+BĂNG RÔN cầm luôn nhịp đảo — nó bay thì chữ đảo, nó đáp xuống thì chữ dừng.
+Một nguồn, hết lệch.
+
+
+CÒN LẠI
+
+ · Chữ lúc trứng lắc chạy quá nhanh, đọc không kịp — giãn nhịp ra.
+ · Chữ báo đã tìm ra Easter Egg sớm: rút còn một dòng.
+ · Nút Khối vận hành ở Zoey's Castle: nền nút đóng đinh một màu xanh đêm nên
+   đặt trên nền trắng-tím thành hai mảng xám. Nền, chữ, màu rê chuột nay đều ăn
+   theo màu của từng trang qua ba biến mới.
+ · Hộp hỏi lại trước khi chơi lại từ đầu nay nói thẳng nó sắp xoá gì; nút bỏ
+   qua thôi ghi "Xem xét" — chữ đó đọc như "để tôi xem đã".
+ · Sheets vẫn 401: log trả về nguyên trang đăng nhập của Google. KHÔNG phải lỗi
+   `Code.gs` — bản triển khai Apps Script đang đòi đăng nhập. Nay thông điệp
+   nói thẳng ra thế, và thêm một cửa chặn địa chỉ đuôi `/dev`.
+ · Bộ kiểm: thêm `xoa31`; bỏ hai chỗ ghim cứng số hiệu trong `kt8` và nhịp
+   trứng trong `phao24` — ghim vào là đợt sau đỏ oan.
+
+
+════════════════════════════════════════
 ĐỢT 30 — vòng 2 thôi cho không đáp án, luật ô nhập về một chỗ, Box gọn lại.
 ════════════════════════════════════════
     assets/lichsu.js      index.html            api/ping.js
@@ -273,6 +573,11 @@ tín hiệu lúc khai danh, nhưng đó là ghi một chiều — không có đ�
 
 Nên gõ lại tên cũ ở máy khác chỉ tạo một pí danh MỚI, trống trơn. Pí danh là
 cái NHÃN trong máy, không phải tài khoản.
+
+⚠ CÂU TRẢ LỜI NÀY HẾT HẠN Ở ĐỢT 29 — đọc lại mục đó. Từ đợt 29 pí danh CÓ đi
+theo người: mỗi lần lưu thì đẩy một bản chụp lên cuốn danh bạ ngoài máy, gõ lại
+tên cũ ở máy khác là kéo được về. Giữ nguyên mục này ở đây vì nó là ảnh chụp
+đúng lúc bấy giờ, và vì chính nó là lý do đợt 29 làm.
 
 
 ════════════════════════════════════════

@@ -86,8 +86,9 @@ Trang này có **cửa mã riêng ngay đầu**, mã lấy ở màn **Easter Egg
 var PIN_A = 'HO CHI MINH';
 ```
 
-Đổi mã thì phải sửa **hai chỗ cho khớp**: hằng `PIN_A` ở đây, và biến `MA` trong khối
-phát mã bên `dad/950901-b/index.html`.
+Đổi mã thì phải sửa **hai chỗ cho khớp**: hằng `PIN_A` ở đây, và trường `ma` trong
+`dad/950901-b/config.js` (khối phát mã của Gate 2 đọc từ đó ra). Tài liệu đời trước ghi
+là biến `MA` nằm trong `dad/950901-b/index.html` — sai cả tên lẫn file, đã sửa.
 
 | Câu | Nằm ở |
 |---|---|

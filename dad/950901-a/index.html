@@ -1448,7 +1448,6 @@ render();
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && ov.classList.contains('show')) closeOv();
   });
-  function openMsg(lab, html){ openOv(lab, '<div class="msn-txt">'+html+'</div>'); }
   function lockNote(){
     var con = fmtCd(st.lockUntil - Date.now());
     return (dayOut() ? 'Hết <b>12 lượt</b> của hôm nay ⏳' : 'Hết <b>3 lượt</b> của phiên này ⏳')
@@ -1973,41 +1972,22 @@ render();
     return true;
   }
   function profCur(){ var n = navRead(); return n.active >= 0 ? n.profiles[n.active] : null; }
-  /* Đọc tiến độ BẢN ĐỒ (mtv1) — bản ghi phải kể được cả chặng Tactical/Easter Egg,
-     không chỉ ba Mission. Bản đồ không tự ghi hồ sơ nữa: về đây mới lưu. */
-  function mapTien(){
-    var t = null; try{ t = JSON.parse(localStorage.getItem('mtv1')||'null'); }catch(e){}
-    var n = 0;
-    if(t && t.solved) for(var k in t.solved) if(t.solved.hasOwnProperty(k)) n++;
-    return { n: n, egg: !!(t && (t.credFound || t.eggHack || t.eggDone)) };
-  }
   /* Nhãn mốc của tiến độ ĐANG chơi — đi hết cả BA chặng, chặng xa nhất thắng.
      Đây là dòng chữ người chơi thấy trong bảng pí danh, nên nó phải nói được
      "mình đang ở đâu trong cả hành trình", không chỉ "xong mấy Mission".
-       —  ·  M1  ·  M2         Hồ sơ Phi đoàn
-       M3 ✓ · TAC n/4          Bản đồ tác chiến
-       EGG ✦                   phá đảo Easter Egg · Gate 2
-       HAN n/3 · HAN ✦         Zoey's Castle · thêm ✦ nữa là mở được wishlist */
-  function hanTien(){
-    var h = {};
-    try{ h = JSON.parse(localStorage.getItem('hanv1') || '{}') || {}; }catch(e){}
-    var n = 0;
-    if(h.dung) for(var k in h.dung) if(h.dung.hasOwnProperty(k) && h.dung[k]) n++;
-    return { n: n, xong: !!h.done, wish: !!h.bOpen };
-  }
-  function mocNow(){
-    if(!st.m3) return st.m2 ? 'M2' : st.m1 ? 'M1' : '—';
-    var g = hanTien();
-    if(g.xong) return g.wish ? 'HAN ✦✦' : 'HAN ✦';
-    if(g.n > 0) return 'HAN ' + g.n + '/3';
-    var m = mapTien();
-    if(m.n >= 4) return m.egg ? 'EGG ✦' : 'TAC 4/4';
-    return m.n > 0 ? 'TAC ' + m.n + '/4' : 'M3 ✓';
-  }
-  /* Hạng tiến độ — chỉ dùng để KHÔNG ghi đè bản lưu bằng một trạng thái lùi hơn
-     (vd vừa Reset bản đồ xong mới ghé lại hồ sơ). Muốn ghi đè thật thì có lệnh
-     "Lưu tiến trình" trong bảng xổ. */
-  /* Hạng tiến độ — chỉ để KHÔNG ghi đè bản lưu bằng một trạng thái lùi hơn.
+
+     LUẬT NẰM Ở `lichsu.js` (`LichSu.moc`), KHÔNG chép lại ở đây. Lý do: mấy
+     nút reset của năm màn cũng phải điền lại dòng mốc này ngay lúc xoá, mà
+     lúc đó trang hồ sơ không hề được nạp. Hai nơi cùng viết một luật là kiểu
+     gì cũng lệch — đã vấp đúng thế với luật cổng ô nhập. Bên kia nhận NGUYÊN
+     một bản chụp `{msn1, mtv1, hanv1}`, nên ở đây chỉ việc đưa `profSnap()`.
+
+     `profSnap()` đọc thẳng `localStorage`, mà `st` thì `save()` ngay mỗi lần
+     đổi (xem `st.m1/m2/m3 = true; save();`), nên bản chụp luôn khớp `st`. */
+  function mocNow(){ return window.mocTuSnap ? window.mocTuSnap(profSnap()) : '—'; }
+  /* Hạng tiến độ — chỉ để KHÔNG ghi đè bản lưu bằng một trạng thái lùi hơn
+     (vd vừa Reset bản đồ xong mới ghé lại hồ sơ). Muốn ghi đè thật thì có
+     lệnh "Lưu tiến trình" trong bảng xổ.
      Xếp theo thứ tự chặng của cả hành trình, chặng sau nặng hơn chặng trước:
 
        Mission ×1000  ·  toạ độ đã giải ×100  ·  phá đảo Easter Egg ×10
@@ -2015,8 +1995,7 @@ render();
 
      Nhận NGUYÊN cả bản chụp chứ không nhận từng khoá rời: thêm chặng mới thì
      chỉ phải sửa đúng hàm này, khỏi đi sửa mọi chỗ gọi. */
-  function hang(sn){
-    sn = sn || {};
+  function hang(sn){    sn = sn || {};
     var m = sn.msn1 || {}, mt = sn.mtv1 || {}, h = sn.hanv1 || {};
     var r = (m.m3 ? 3 : m.m2 ? 2 : m.m1 ? 1 : 0);
     var n = 0;
@@ -2389,7 +2368,16 @@ render();
      tiến độ hiện tại được chốt vào pí danh đang dùng — nhưng CHỈ khi tiến lên,
      để vừa Reset bản đồ xong ghé qua không xoá mất bản lưu tốt. Muốn ghi đè thật
      thì dùng lệnh "Lưu tiến trình" trong bảng xổ. */
-  if(profCur()) profSave(mocNow());
+  /* ⚠ ĐỢI `lichsu.js` RỒI MỚI LƯU LẦN ĐẦU.
+     Thẻ <script src="/assets/lichsu.js"> nằm SAU khối này (cuối trang), mà
+     luật tính mốc thì ở bên đó (`LichSu.moc` — xem `mocNow`). Gọi ngay tại
+     đây là gọi lúc helper chưa có: `mocNow()` rơi vào nhánh lùi và ghi mốc
+     '—' đè lên mốc thật, tức là chip pí danh tự khai "chưa làm gì cả".
+     Đừng chữa bằng cách kéo thẻ script lên trước — nó còn chèn cả CSS, đổi
+     thứ tự là đổi luôn bên nào thắng bên nào ở mấy chỗ chọi độ ưu tiên. */
+  function luuLanDau(){ if(profCur()) profSave(mocNow()); }
+  if(window.mocTuSnap) luuLanDau();
+  else addEventListener('load', luuLanDau);
 
   /* ═══ TỰ LƯU · NGƯỜI CHƠI KHÔNG PHẢI NHỚ BẤM LƯU ═══════════════════════
      Người chơi hỏi thẳng: "chơi tới đâu có tự lưu theo pí danh chưa, hay phải
@@ -2407,7 +2395,7 @@ render();
      lý do lệnh đó vẫn phải giữ, chứ không phải vì máy không biết tự lưu.
 
      ⚠ TIẾN ĐỘ BẢN ĐỒ VẪN CHỈ THEO VỀ KHI GHÉ LẠI TRANG NÀY. Bản đồ cố ý không
-     tự ghi vào pí danh (xem ghi chú ở `mapTien`), nên chơi bản đồ xong phải
+     tự ghi vào pí danh (xem `profSave` và luật hạng ở `hang`), nên chơi bản đồ xong phải
      quay về đây một nhịp thì pí danh mới biết. Đừng "sửa" bằng cách cho bản đồ
      ghi thẳng — đã bỏ lối đó một lần rồi.
 
@@ -2425,7 +2413,7 @@ render();
   });
 })();
 </script>
-<span class="vstamp" id="vstamp">V05.02<br>Last updated 28-Aug-2026</span>
+<span class="vstamp" id="vstamp">V05.03<br>Last updated 31-Aug-2026</span>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- Vercel Speed Insights -->
