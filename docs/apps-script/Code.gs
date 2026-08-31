@@ -46,9 +46,13 @@ var COT = {
      lệch mà nhìn vẫn ra dữ liệu, không có gì báo. Đã trả về cuối. */
   'Tiến độ': ['at', 'ev', 'nhan', 'detail', 'solved', 'so_giai', 'kenh', 'may',
               'trang', 'noi', 'tt'],
+  /* `finish` và `go_lai` thêm từ đợt 32. Cột nào KHÔNG có tên ở đây thì bị bỏ
+     lặng lẽ — bảng này là danh sách trắng, không phải gợi ý. Hai cột này mới
+     là thứ trả lời được câu "vì sao lượt đó không ra chữ": `finish` là lý do
+     Google dừng, `go_lai` cho biết lượt đó có phải hỏi lại lần hai không. */
   'Chat'   : ['luc', 'nguon', 'ok', 'ly_do', 'model', 'ms', 'hoi_dai', 'dap_dai',
-              'luot_su', 'token_vao', 'token_ra', 'token_nghi', 'block', 'loi',
-              'hoi', 'dap'],
+              'luot_su', 'token_vao', 'token_ra', 'token_nghi', 'finish', 'block',
+              'go_lai', 'loi', 'hoi', 'dap'],
   /* Lời nhắn gửi tổ kỹ thuật. Trước đây `/api/thu` chỉ đi email + Telegram,
      nghĩa là muốn đọc lại lời nhắn cũ thì phải lục hòm thư — mà chuông báo
      Telegram gói Hobby chỉ giữ được một quãng. Nay chép về sổ luôn. */

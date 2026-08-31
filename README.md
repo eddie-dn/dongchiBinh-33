@@ -2081,9 +2081,9 @@ công khai — trình duyệt không bao giờ tải được.
 | `GEMINI_THINK` | không | `256` | trần token cho bước "suy nghĩ". `0` = tắt hẳn |
 | `GEMINI_HET_GIO` | không | `16000` | trần thời gian chờ Gemini, tính bằng mili giây (3000–25000) |
 | `GEMINI_MODEL_QUOTE` | không | `gemini-flash-lite-latest` | model cho lời chào / quote |
-| `CHAT_LOG_URL` | không | — | có thì đẩy nhật ký chat tới đó (POST JSON) |
+| `CHAT_LOG_URL` | không | — | đường **phụ**: có thì đẩy thêm một bản nhật ký chat tới đó nữa. Đường chính là `SHEET_URL`, khai hay không cũng đã chạy |
 | `CHAT_LOG_NOI_DUNG` | không | tắt | `1` = ghi cả nội dung câu hỏi/trả lời |
-| `SHEET_URL` | không | — | có thì chép **mọi tín hiệu tiến độ** sang Google Sheets |
+| `SHEET_URL` | không | — | có thì chép **mọi thứ** sang Google Sheets: tiến độ, lời nhắn, pí danh, và cả nhịp chat khu Open World |
 | `NOTIFY_KIND` | không | — | `telegram` \| `discord` \| `off` |
 | `TG_TOKEN`, `TG_CHAT` | nếu telegram | — | bot và đoạn chat nhận tin |
 | `NOTIFY_URL` | nếu discord | — | webhook của kênh |
@@ -2105,12 +2105,22 @@ khoảng 10 phút, làm một lần). Không cần GCP, không cần thẻ, khô
 không có gì phải bảo trì — Apps Script chạy trong tài khoản Google bình thường,
 hạn mức miễn phí 20.000 lượt/ngày.
 
-Một địa chỉ Web App dùng cho **cả hai** biến, và tự chia hai tab:
+**Một địa chỉ Web App duy nhất** cho tất cả, tự chia ra bốn tab theo trường
+`loai` trong gói gửi lên — xem `doPost` trong `Code.gs`:
 
-| Biến | Tab | Ai gửi |
+| Ai gửi | Tab | Ghi gì |
 |---|---|---|
-| `SHEET_URL` | **Tiến độ** | `/api/ping` — mọi tín hiệu, kể cả sự kiện chưa khai nhãn |
-| `CHAT_LOG_URL` | **Chat** | `/api/chat` — mỗi lượt hỏi Open World một dòng |
+| `/api/ping` | **Tiến độ** | mọi tín hiệu, kể cả sự kiện chưa khai nhãn |
+| `/api/chat` | **Chat** | mỗi lượt hỏi Open World một dòng |
+| `/api/thu` | **Thư** | lời nhắn gửi tổ kỹ thuật |
+| `/api/pidanh` | **Pí danh** | mỗi pí danh đúng một dòng, lưu lại thì ghi đè |
+
+> ⚠ **Cả bốn đều đi bằng `SHEET_URL`.** Đã có lúc `/api/chat` dùng riêng
+> `CHAT_LOG_URL` — một biến khác, chưa ai khai — nên tiến độ với pí danh về sổ
+> đều đặn mà chat thì mất hút, trong khi tab `Chat` bên Google vẫn nằm đó
+> trống trơn. Hai cái tên gần giống nhau, nhìn lướt tưởng đã nối rồi.
+> `CHAT_LOG_URL` nay chỉ còn là đường **phụ** cho ai muốn đẩy thêm một bản
+> sang chỗ khác.
 
 Sheets là **sổ lưu**, Telegram là **chuông báo**: sổ ghi đủ mọi thứ (nên `chepVeSheet()`
 gọi TRƯỚC hai cái chốt nhãn và chống trùng), chuông thì lọc cho đỡ ồn.

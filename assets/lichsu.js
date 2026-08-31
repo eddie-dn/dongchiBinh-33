@@ -242,14 +242,15 @@
         /* V19 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc mở dòng lớn kế
            tiếp — đúng luật ghi ở đầu file. Số 20 không nằm trong mấy nấc bị bỏ
            qua (13, 14, 23) nên đi thẳng. */
-        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V20', so:'05',
+        { ngay:'2026-08-27', sua:'2026-08-31', ver:'V20', so:'06',
           chinh:'Dọn lại chỗ đứng của mấy con số nhỏ và của hai cái nút trong khung Collected',
           chi:[
             { ver:'V20.00', chinh:'Hai nút trong khung Collected về đứng cạnh nhau chia đôi đều thay vì xếp dọc thành hai dải dài, và bỏ hình quả trứng trong nút — chữ đọc là hiểu rồi. Số lần chơi lại nay chỉ nằm ở cuối dòng tem sau số hiệu, thôi chen thêm dòng vào trong hộp. Hai cửa mã trong Box Tổng tư lệnh trước nay gõ sai bao nhiêu lần cũng im lặng, giờ đã lên tiếng' },
             { ver:'V20.01', chinh:'Dọn mấy khối kiểu dáng không thẻ nào còn mang' },
             { ver:'V20.02', chinh:'Box Tổng tư lệnh gọn lại: bốn lệnh xếp thành lưới hai cột, nhãn ngắn gọn, viền liền thay cho nét đứt. Bỏ lối đi thẳng màn cuối Gate 2 vì đã có sẵn một lối y hệt nằm bên trong chính màn đó. Sửa lỗi mấy nút lẽ ra phải ẩn theo chiến dịch mà vẫn hiện' },
             { ver:'V20.03', chinh:'Hộp hỏi lại trước khi chơi lại từ đầu nay nói thẳng nó sắp làm gì. Trước đây hộp chỉ hỏi trống không "chắc chưa" mà không nói chắc cái gì, còn nút bỏ qua thì ghi "Xem xét" — đọc như "để tôi xem đã" chứ không ra nghĩa thôi không làm nữa, nên bấm vào là hộp đóng và chẳng có gì xảy ra, y hệt cảnh bấm chơi lại mà không thấy gì reset. Hai ký hiệu trong hộp pí mật giữ nguyên như cũ' },
-            { ver:'V20.04', chinh:'Ô nhập mã: bấm xoá là che ngay. Trước đây nhịp cho kịp nhìn ký tự vừa gõ bị áp cho cả cú xoá, mà xoá thì làm gì có ký tự mới nào để nhìn — nó lôi ký tự cũ ra khoe lại gần một giây, xoá bốn ô là đứng hình hơn ba giây, cảm giác y như máy treo' }
+            { ver:'V20.04', chinh:'Ô nhập mã: bấm xoá là che ngay. Trước đây nhịp cho kịp nhìn ký tự vừa gõ bị áp cho cả cú xoá, mà xoá thì làm gì có ký tự mới nào để nhìn — nó lôi ký tự cũ ra khoe lại gần một giây, xoá bốn ô là đứng hình hơn ba giây, cảm giác y như máy treo' },
+            { ver:'V20.05', chinh:'Bấm Reset nay trả màn chơi về ĐÚNG lúc chưa giải gì. Trước đây nút chỉ xoá kho tiến độ của màn, mà pí danh còn giữ RIÊNG một bản chụp — chụp lúc lưu tiến trình để đổi máy vẫn chơi tiếp được. Bản chụp ấy không ai đụng tới, nên mở bảng pí danh nạp lại bản lưu là mọi thứ vừa xoá quay về nguyên vẹn; tệ hơn, luật chống lưu đè bằng tiến độ thấp hơn khiến mốc cũ chốt cứng luôn, về sau không bao giờ hạ xuống được nữa. Nay reset xong là chụp lại ngay, bản lưu hạ theo đúng thực tế. Ngược lại, NHỊP HỘP CHÀO thì thôi bị cuốn đi theo: hôm nay đã chào những khung nào, xem lời chào và câu danh ngôn gần nhất lúc mấy giờ — mấy mốc đó ở nhờ chung kho với tiến độ nên trước đây reset một cái là cả bộ hộp chào lên đạn lại, ai thử đi thử lại nút reset sẽ bị chào liên tục tưởng luật giãn cách hỏng' }
           ] }
       ]
     },
@@ -336,11 +337,12 @@
             { ver:'V19.08', chinh:'Trang Credit ghi công cả đường thư của ô Gửi tâm tư, trước đây bỏ sót' },
             { ver:'V19.09', chinh:'Hai nút trong khung về đứng cạnh nhau chia đôi đều, bỏ hình quả trứng trong nút' }
           ] },
-        { ngay:'2026-08-28', sua:'2026-08-28', ver:'V20', so:'02',
+        { ngay:'2026-08-28', sua:'2026-08-31', ver:'V20', so:'03',
           chinh:'Nút đổi sang viền liền, góc bo vừa',
           chi:[
             { ver:'V20.00', chinh:'Hai nút trong khung đổi sang viền liền góc bo vừa — viền nét đứt ở cỡ nút to nhìn rối' },
-            { ver:'V20.01', chinh:'Tiêu đề trang đảo qua lại giữa Easter Egg và Game On suốt lúc băng rôn sinh nhật còn bay, rồi dừng đúng lúc băng rôn đáp xuống. Trước đây nhịp đảo này chỉ bật ở đúng lần phá đảo bản đồ đầu tiên, nên ghé lại trong bảy ngày, sang ngày mới hay vặn kim tới ngày sinh nhật thì băng rôn vẫn bay mà chữ đứng chết cứng. Chạm quân bài ở cuối dòng khi đã tìm ra Easter Egg nay chỉ còn một câu xác nhận ngắn, thay vì đọc thêm cả số hiệu hồ sơ lẫn lời mời vào' }
+            { ver:'V20.01', chinh:'Tiêu đề trang đảo qua lại giữa Easter Egg và Game On suốt lúc băng rôn sinh nhật còn bay, rồi dừng đúng lúc băng rôn đáp xuống. Trước đây nhịp đảo này chỉ bật ở đúng lần phá đảo bản đồ đầu tiên, nên ghé lại trong bảy ngày, sang ngày mới hay vặn kim tới ngày sinh nhật thì băng rôn vẫn bay mà chữ đứng chết cứng. Chạm quân bài ở cuối dòng khi đã tìm ra Easter Egg nay chỉ còn một câu xác nhận ngắn, thay vì đọc thêm cả số hiệu hồ sơ lẫn lời mời vào' },
+            { ver:'V20.02', chinh:'Lệnh trả Easter Egg về lúc chưa ai tìm ra nay báo lại cho pí danh, không thì nạp bản lưu là khung Collected mở toang trở lại' }
           ] }
       ]
     },
@@ -468,7 +470,7 @@
         /* V05 đã dùng hết mười nấc đuôi (.00 → .09) nên buộc phải mở dòng lớn
            kế tiếp — đúng luật ghi ở đầu file. Không phải vì đợt này to hơn mấy
            đợt trước, chỉ là hết chỗ. */
-        { ngay:'2026-08-27', sua:'2026-08-28', ver:'V06', so:'07',
+        { ngay:'2026-08-27', sua:'2026-08-31', ver:'V06', so:'09',
           chinh:'Dòng lớn mới vì V05 đã kín mười nấc đuôi. Mở màn bằng đợt dọn lại Khối vận hành',
           chi:[
             { ver:'V06.00', chinh:'Khối vận hành khoe luôn số lần đã chơi lại màn này, và ba cái nút gom vào một khối dọc cùng dáng với mấy bảng điều khiển khác trong bộ — trước đó hai nút nằm chung một hàng rồi nút thứ ba treo riêng bên dưới, nhìn ra thành hai cụm rời' },
@@ -477,7 +479,9 @@
             { ver:'V06.03', chinh:'Số lần chơi lại dời về cuối dòng tem, Khối vận hành thôi nhắc lại' },
             { ver:'V06.04', chinh:'Ghi rõ trong tệp cấu hình rằng có một khoá đáp án không ai đọc — sửa ở đó là không đổi được gì' },
             { ver:'V06.05', chinh:'Vòng 2 thôi lộ thêm chữ mỗi lần đoán trật — trước đây gõ trật mấy phím là hiện ra gần hết đáp án. Nay chỉ mồi đúng một chữ đầu, một lần cho cả vòng. Nút Khối vận hành đổi sang viền liền' },
-            { ver:'V06.06', chinh:'Khu Open World chịu trả lời trở lại. Hỏi câu nào cũng ra một câu báo hỏng đường truyền, mà thật ra bên kia vẫn đang soạn chữ — hạn giờ chờ đặt quá chật so với lượng chữ được phép xin, nên lần nào cũng bị cắt ngang đúng lúc sắp có câu. Nay nới hạn chờ, chỉ xin đúng lượng chữ thật sự hiện ra thay vì xin thừa gấp năm rồi cắt bỏ, và nếu vẫn quá giờ thì hỏi lại một nhịp gọn hơn — thà một câu mộc còn hơn một câu báo lỗi' }
+            { ver:'V06.06', chinh:'Khu Open World chịu trả lời trở lại. Hỏi câu nào cũng ra một câu báo hỏng đường truyền, mà thật ra bên kia vẫn đang soạn chữ — hạn giờ chờ đặt quá chật so với lượng chữ được phép xin, nên lần nào cũng bị cắt ngang đúng lúc sắp có câu. Nay nới hạn chờ, chỉ xin đúng lượng chữ thật sự hiện ra thay vì xin thừa gấp năm rồi cắt bỏ, và nếu vẫn quá giờ thì hỏi lại một nhịp gọn hơn — thà một câu mộc còn hơn một câu báo lỗi' },
+            { ver:'V06.07', chinh:'Nút chơi lại màn này nay báo lại cho pí danh, không thì nạp bản lưu là vòng chơi cũ quay về' },
+            { ver:'V06.08', chinh:'Ảnh trong khung xem thư nay phủ một lớp phim: tông trung tính ngả lạnh, hơi cũ, có hạt và viền tối bo quanh. Ảnh chụp máy đời nay sáng đều màu no, thả nguyên vào giữa màn hình pixel thì nổi lên như cửa sổ của một ứng dụng khác mở đè lên game; lớp này kéo nó về đúng tông của màn chơi mà không ám xanh cũng không ám vàng' }
           ] }
       ]
     },
@@ -502,7 +506,7 @@
           ] },
         /* V03 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên lần sửa sau mở thẳng dòng V04 —
            xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V04', so:'08',
+        { ngay:'2026-08-25', sua:'2026-08-31', ver:'V04', so:'09',
           chinh:'Cửa mã và ô trả lời chặn được cú tự điền của trình duyệt',
           chi:[
             { ver:'V04.00', chinh:'Ô mã không còn bị trình duyệt tự điền nuốt lượt: chỉ tính là gõ khi mỗi nhịp dài thêm đúng một ký tự, còn vừa sai xong thì cửa nghỉ một nhịp rồi mới nhận tiếp. Ô trả lời câu hỏi dùng chung ô nhập với cửa mã nên cũng dính — nay chặn luôn, khỏi bay lượt rồi bị gác câu ba mươi phút' },
@@ -512,7 +516,8 @@
             { ver:'V04.04', chinh:'Hai nút Khối vận hành về đứng cạnh nhau chia đôi đều, bỏ ký hiệu trong nút; số lần chơi lại chỉ còn ghi ở tem' },
             { ver:'V04.05', chinh:'Dọn khối kiểu dáng của hàng nút đời cũ, không còn ai dùng' },
             { ver:'V04.06', chinh:'Luật ô nhập gom về một chỗ dùng chung; nút đổi sang viền liền' },
-            { ver:'V04.07', chinh:'Hai nút trong Khối vận hành đổi sang tông sáng theo đúng nền lâu đài. Khuôn nút dùng chung cả bộ vốn đóng đinh một nền xanh đêm — năm trang kia nền tối nên không ai thấy gì, riêng trang này nền trắng-tím nên hai cái nút thành hai mảng xám xịt nằm giữa hộp trắng. Nay nền, chữ và màu lúc rê chuột đều ăn theo màu của từng trang. Ô nhập mã: bấm xoá là che ngay, thôi khoe lại ký tự cũ mỗi lần xoá' }
+            { ver:'V04.07', chinh:'Hai nút trong Khối vận hành đổi sang tông sáng theo đúng nền lâu đài. Khuôn nút dùng chung cả bộ vốn đóng đinh một nền xanh đêm — năm trang kia nền tối nên không ai thấy gì, riêng trang này nền trắng-tím nên hai cái nút thành hai mảng xám xịt nằm giữa hộp trắng. Nay nền, chữ và màu lúc rê chuột đều ăn theo màu của từng trang. Ô nhập mã: bấm xoá là che ngay, thôi khoe lại ký tự cũ mỗi lần xoá' },
+            { ver:'V04.08', chinh:'Bấm Reset nay trả màn chơi về ĐÚNG lúc chưa giải gì. Trước đây nút chỉ xoá kho tiến độ của màn, mà pí danh còn giữ RIÊNG một bản chụp — chụp lúc lưu tiến trình để đổi máy vẫn chơi tiếp được. Bản chụp ấy không ai đụng tới, nên mở bảng pí danh nạp lại bản lưu là mọi thứ vừa xoá quay về nguyên vẹn; tệ hơn, luật chống lưu đè bằng tiến độ thấp hơn khiến mốc cũ chốt cứng luôn, về sau không bao giờ hạ xuống được nữa. Nay reset xong là chụp lại ngay, bản lưu hạ theo đúng thực tế' }
           ] }
       ]
     },
@@ -534,7 +539,7 @@
             { ver:'V02.09', chinh:'Tem "Last updated" và số hiệu nay lấy thẳng từ chính cuốn sổ này, khai một chỗ thay vì hai — trước đó bump số mà ngày đứng im ba đợt liền; thẻ toạ độ ngoài bản đồ cũng lấy số hiệu từ sổ nên hết cảnh ghi số đời cũ' }
           ] },
         /* V02 ĐÃ DÙNG HẾT NẤC ĐUÔI (.09) nên mở dòng V03 — xem luật ở đầu file. */
-        { ngay:'2026-08-25', sua:'2026-08-28', ver:'V03', so:'09',
+        { ngay:'2026-08-25', sua:'2026-08-31', ver:'V03', so:'10',
           chinh:'Đổi cách ghi mốc ngày trong sổ',
           chi:[
             { ver:'V03.00', chinh:'Cột ngày trong sổ đổi sang MỐC GHI NHẬN — ngày của bản đuôi .00 đầu tiên, tức lúc build mở màn; ngày sửa cuối tách sang cột riêng cho tem ngoài trang' },
@@ -545,7 +550,8 @@
             { ver:'V03.05', chinh:'Nút khoá và mở đứng cạnh nhau chia đôi đều, nút vặn kim xuống hàng riêng vì nó làm việc khác hẳn; bỏ ký hiệu trong nút' },
             { ver:'V03.06', chinh:'Dọn khối kiểu dáng của hàng nút đời cũ, không còn ai dùng' },
             { ver:'V03.07', chinh:'Luật ô nhập gom về một chỗ dùng chung; nút đổi sang viền liền' },
-            { ver:'V03.08', chinh:'Hai cửa mã của trang: bấm xoá là che ngay, thôi khoe lại ký tự cũ gần một giây mỗi lần xoá' }
+            { ver:'V03.08', chinh:'Hai cửa mã của trang: bấm xoá là che ngay, thôi khoe lại ký tự cũ gần một giây mỗi lần xoá' },
+            { ver:'V03.09', chinh:'Bấm Reset nay trả màn chơi về ĐÚNG lúc chưa giải gì. Trước đây nút chỉ xoá kho tiến độ của màn, mà pí danh còn giữ RIÊNG một bản chụp — chụp lúc lưu tiến trình để đổi máy vẫn chơi tiếp được. Bản chụp ấy không ai đụng tới, nên mở bảng pí danh nạp lại bản lưu là mọi thứ vừa xoá quay về nguyên vẹn; tệ hơn, luật chống lưu đè bằng tiến độ thấp hơn khiến mốc cũ chốt cứng luôn, về sau không bao giờ hạ xuống được nữa. Nay reset xong là chụp lại ngay, bản lưu hạ theo đúng thực tế' }
           ] }
       ]
     },
@@ -1332,17 +1338,17 @@
 
      Đo lại: `node docs/thoi-gian.mjs` — nó in sẵn khối để chép vào đây. */
   var THOI_GIAN = {
-    MAP:    '32 ngày 19 giờ 46 phút',
-    EGG:    '32 ngày 19 giờ 46 phút',
-    'DAD-A': '17 ngày 3 giờ 13 phút',
-    'DAD-B': '23 ngày 8 giờ 23 phút',
-    'HAN-A': '15 ngày 3 giờ 15 phút',
-    'HAN-B': '15 ngày 3 giờ 15 phút',
-    FX:     '13 ngày 13 giờ 38 phút',
-    _TONG:  '32 ngày 19 giờ 46 phút',
+    MAP:    '33 ngày 28 phút',
+    EGG:    '33 ngày 28 phút',   /* khu Easter Egg nằm trong chính bản đồ */
+    'DAD-A': '17 ngày 7 giờ 55 phút',
+    'DAD-B': '23 ngày 13 giờ 5 phút',
+    'HAN-A': '15 ngày 7 giờ 57 phút',
+    'HAN-B': '15 ngày 7 giờ 57 phút',
+    FX:     '14 ngày 14 giờ 58 phút',
+    _TONG:  '33 ngày 28 phút',
     _TU:    '26-07-2026',
     _TOI:   '28-08-2026',
-    _COMMIT: 223
+    _COMMIT: 224
   };
 
   /* Chỗ nào không có số liệu thì ghi N/A — một chữ, dùng chung cho cả cột số
@@ -1597,9 +1603,48 @@
      not defined", và cú ném đó cắt luôn cả `window.LichSu` bên dưới. Cả sáu
      trang mất sổ, mất tem, mất bộ nút, mất luôn ô nhập. Nay khai ở TẦNG NGOÀI
      ngay trên khối này; `veCuaMa` gọi nhờ qua chuỗi phạm vi. */
+  /* ═══ RESET XONG PHẢI BÁO LẠI CHO HỒ SƠ ═══════════════════════════════
+     ⚠ BỆNH ĐÃ SỬA: "bấm reset ở hộp pí mật, đáng lẽ phải đưa về toàn bộ
+     trạng thái như khi chưa giải".
+
+     Nút reset xoá đúng cái kho của màn nó (`mtv1` cho bản đồ, `hanv1` cho
+     lâu đài / hộp bí mật). Nhưng pí danh còn giữ RIÊNG một BẢN CHỤP của mấy
+     kho đó — chụp lúc lưu tiến trình, để đổi máy vẫn chơi tiếp được. Bản
+     chụp ấy không ai đụng tới, nên:
+       · mở bảng pí danh nạp lại bản lưu là bản đồ đã giải quay về nguyên vẹn
+         — công reset thành công cốc;
+       · tệ hơn, `profSave` có luật KHÔNG cho lưu đè bằng tiến độ THẤP hơn
+         (chống lỡ tay tụt hạng). Bản chụp cũ cao hơn thực tế nên nó chốt
+         cứng luôn ở mốc cũ, về sau không bao giờ hạ xuống được nữa.
+
+     Nay reset xong thì CHỤP LẠI: chép đúng giá trị kho ĐANG CÓ vào bản chụp
+     (kho trống thì bỏ hẳn lát đó ra). Chụp lại chứ không phải xoá trắng — vì
+     một kho có thể chứa nhiều chặng (Gate 2 ở nhờ trong kho của bản đồ), xoá
+     cả lát là bay luôn chặng không liên quan. Bản chụp hạ theo thì luật chống
+     tụt hạng cũng tự nhả ra.
+
+     `moc` (dòng chữ mốc trên chip pí danh) xoá đi cho khỏi nói sai; lần sau
+     ghé trang hồ sơ là `profSave` tự tính lại và điền đúng. */
+  function chupLaiHoSo(khoa) {
+    var nav = null;
+    try { nav = JSON.parse(localStorage.getItem('nav1') || 'null'); } catch (e) {}
+    if (!nav || !nav.profiles || !(nav.active >= 0)) return false;  /* ẩn danh thì thôi */
+    var p = nav.profiles[nav.active];
+    if (!p || !p.snap) return false;
+    var tho = null, v = null;
+    try { tho = localStorage.getItem(khoa); } catch (e) {}
+    if (tho != null) { try { v = JSON.parse(tho); } catch (e) { v = null; } }
+    if (v && typeof v === 'object') p.snap[khoa] = v;
+    else delete p.snap[khoa];
+    p.moc = '';
+    try { localStorage.setItem('nav1', JSON.stringify(nav)); } catch (e) { return false; }
+    return true;
+  }
+
+  window.chupLaiHoSo = chupLaiHoSo;
   window.laGoTay = laGoTay;
   window.laXoa   = laXoa;
 
   window.LichSu = { chu: chu, mo: mo, so: SO, tem: tem,
-                    goTay: laGoTay, xoa: laXoa };
+                    goTay: laGoTay, xoa: laXoa, chupLai: chupLaiHoSo };
 })();

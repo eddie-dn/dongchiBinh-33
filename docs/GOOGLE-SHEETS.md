@@ -78,13 +78,20 @@ Vercel → dự án → **Settings → Environment Variables** → thêm **hai**
 
 | Tên biến | Ghi gì | Ghi lại việc gì |
 |---|---|---|
-| `SHEET_URL` | địa chỉ bước 5 | mọi tín hiệu tiến độ → tab **Tiến độ** |
-| `CHAT_LOG_URL` | địa chỉ bước 5 | mọi lượt hỏi Open World → tab **Chat** |
+| `SHEET_URL` | địa chỉ bước 5 | **tất cả**: tiến độ → tab `Tiến độ`, chat Open World → `Chat`, lời nhắn → `Thư`, pí danh → `Pí danh` |
+| `CHAT_LOG_URL` | *(không cần)* | đường phụ, chỉ khai khi muốn đẩy thêm một bản nhật ký chat sang chỗ khác nữa |
+
+> ⚠ **Chỉ cần khai một biến.** Trước đây `/api/chat` đi bằng `CHAT_LOG_URL`
+> riêng, nên ai chỉ khai `SHEET_URL` sẽ thấy tiến độ và pí danh về đều mà
+> tab `Chat` trống trơn — mà tab đó vẫn nằm sẵn đó, nhìn như đường đã nối
+> rồi. Nay cả bốn thứ đi chung `SHEET_URL`; Apps Script tự chia tab theo
+> trường `loai` trong gói gửi lên.
 
 Rồi **Deployments → … → Redeploy**. Biến môi trường chỉ có hiệu lực từ lần
 deploy sau, sửa xong mà không redeploy thì vẫn chạy bản cũ.
 
-**Xong.** Vào chơi thử một vòng rồi mở Sheet ra xem — hai tab tự hiện.
+**Xong.** Vào chơi thử một vòng rồi mở Sheet ra xem — tab nào có việc thì tự
+hiện, không phải tạo tay tab nào.
 
 ---
 
@@ -230,7 +237,7 @@ nó đọc được bản lưu nên bắt buộc phải kèm `?k=`, y như `doPo
 Hỏng hay chậm quá 6 giây thì trang tự bỏ qua và chơi kiểu cũ — đường này là
 tiện thêm, không phải xương sống.
 
-### Tab `Chat` — do `/api/chat` gửi
+### Tab `Chat` — do `/api/chat` gửi (qua `SHEET_URL`, không phải biến riêng)
 
 | Cột | Nghĩa |
 |---|---|

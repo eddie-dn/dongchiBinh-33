@@ -105,20 +105,62 @@ function quaTay() {
    dẫn kèm theo bản sửa này. */
 const LOG_URL     = process.env.CHAT_LOG_URL || '';
 const LOG_NOI_DUNG = process.env.CHAT_LOG_NOI_DUNG === '1';
+/* ⚠ CHAT PHẢI ĐI CHUNG MỘT ĐƯỜNG VỀ SỔ VỚI MẤY THỨ CÒN LẠI.
+   BỆNH ĐÃ SỬA: "ping của tiến độ, pí danh record được rồi, riêng chat là
+   không thấy về trên sheet".
+   Sổ bên Google KHÔNG thiếu gì cả — tab `Chat` với đủ mười sáu cột đã dựng
+   sẵn từ lâu, `doPost` cũng đã biết lái đúng thứ không phải ping/thư/pí danh
+   vào tab đó. Khuyết nằm ở PHÍA NÀY: hàm chat chỉ biết bắn tới `CHAT_LOG_URL`
+   — một biến riêng, chưa ai khai — nên nó ghi vào hư không, trong khi ba
+   đường kia đều dùng `SHEET_URL`. Hai cái tên gần giống nhau, nhìn qua tưởng
+   đã nối rồi.
+   Nay chat đi CHUNG `SHEET_URL` với ping / thư / pí danh. `CHAT_LOG_URL` giữ
+   lại làm đường phụ cho ai muốn đẩy sang chỗ khác nữa, khai thì chạy, không
+   khai thì thôi. */
+const SHEET_URL   = process.env.SHEET_URL || '';
 
 function ghiNhatKy(o) {
   const dong = Object.assign({ luc: new Date().toISOString(), nguon: 'open-world' }, o);
   /* Một dòng JSON — đừng xuống dòng, bộ thu log nào cũng gom theo dòng */
   console.log('[CHAT_LOG]', JSON.stringify(dong));
-  if (!LOG_URL) return;
-  try {
-    /* KHÔNG await: người chơi không phải chờ cái nhật ký này */
-    fetch(LOG_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(dong)
-    }).catch(() => {});
-  } catch (e) {}
+  /* Gửi NGUYÊN cục `token` sang, đừng trải phẳng ở đây: `Code.gs` đã tự trải
+     `token` thành ba cột rồi. Trải hai lần thì lần sau ghi đè lần trước bằng
+     `undefined` và ba cột token trắng trơn — đúng kiểu lỗi tự tay gây ra rồi
+     ngồi tìm. Một việc, một chỗ làm. */
+  const raSo = Object.assign({ loai: 'chat' }, dong);
+  /* KHÔNG await và KHÔNG bao giờ để nó làm hỏng câu trả lời: người chơi hỏi
+     một câu, không phải chờ cái sổ. Hỏng thì ghi một dòng rồi thôi. */
+  for (const dich of [SHEET_URL, LOG_URL]) {
+    if (!dich) continue;
+    try {
+      fetch(dich, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(raSo)
+      }).then(async r => {
+        if (dich !== SHEET_URL) return;
+        let noi = '';
+        try { noi = (await r.text()).slice(0, 160); } catch (e) {}
+        console.log('[CHAT_SO]', r.status, docKetQua(r.status, noi));
+      }).catch(e => console.log('[CHAT_SO] hỏng:', e && e.message));
+    } catch (e) { console.log('[CHAT_SO] hỏng ngay:', e && e.message); }
+  }
+}
+
+/* Đọc hộ câu Google đáp — CÙNG MỘT CÁCH ĐỌC với `api/ping.js`, vì cùng nói
+   chuyện với đúng một Web App. Bệnh hay gặp nhất là Apps Script đòi đăng nhập
+   (401 kèm nguyên trang HTML); giải thích đầy đủ nằm ở `docKetQua` bên đó và
+   ở docs/GOOGLE-SHEETS.md. */
+function docKetQua(ma, noi) {
+  const s = String(noi || '');
+  if (ma === 401 || ma === 403 || /^<!DOCTYPE html/i.test(s)) {
+    return 'Apps Script ĐANG ĐÒI ĐĂNG NHẬP — mã Code.gs chưa hề được gọi. '
+         + 'Deploy lại với "Who has access = Anyone", và dùng địa chỉ đuôi '
+         + '/exec chứ không phải /dev.';
+  }
+  if (/"ok"\s*:\s*true/.test(s)) return 'ghi được';
+  if (/sai ma/i.test(s)) return 'Mã bảo vệ trong địa chỉ khác với mã trong Code.gs.';
+  return s.slice(0, 120);
 }
 
 /* ⚠ VÌ SAO KHU OPEN WORLD IM BẶT — VÀ VÌ SAO BẢN TRƯỚC THÌ KHÔNG.

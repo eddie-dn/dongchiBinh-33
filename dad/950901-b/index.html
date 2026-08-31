@@ -1156,6 +1156,50 @@ body{background:#040b18;overflow:hidden;overscroll-behavior:none;
    xong — muộn nhất có thể. Nay ảnh thật để trình duyệt tự lo. */
 #scene-game .slidebox img.ph{image-rendering:pixelated}
 #scene-game .slidebox img.on{opacity:1;transform:scale(1)}
+/* ═══ LỚP FILM CHO KHUNG ẢNH ═══════════════════════════════════════════════
+   Ảnh chụp bằng máy đời nay ra rất SẠCH: sáng đều, màu no, đen thì đen kịt.
+   Thả nguyên vào giữa một màn hình pixel xanh lơ thì nó nổi bật lên như cửa
+   sổ của một ứng dụng khác mở đè lên game. Lớp này kéo ảnh về đúng chất
+   phim: neutral ngả LẠNH một chút, hơi cũ, và tuyệt đối không ám xanh cũng
+   không ám vàng — ám màu là hỏng cả tông, mà mắt bắt được ngay.
+
+   Ba tầng, mỗi tầng làm đúng một việc, cộng lại mới ra chất phim:
+     1. `filter` trên chính tấm ảnh — hạ bão hoà một nấc, thêm chút tương
+        phản, và tối đi 4%. Chỉ ba con số nhỏ; mạnh tay hơn là thành bộ lọc
+        điện thoại chứ không còn ra phim.
+     2. `::before` — VẦNG SÁNG NÂNG ĐEN. Đây mới là nét đặc trưng nhất của
+        phim: vùng tối không bao giờ đen tuyệt đối mà xám nhẹ. Dùng màu xám
+        ngả lạnh ở 5,5% với `screen` để nâng đáy lên. Vì rất nhạt và vì
+        `screen` gần như không đụng tới vùng sáng, nên nó KHÔNG tạo ám màu —
+        chỉ vùng tối ngả xám, đúng thứ cần.
+     3. `::after` — HẠT PHIM và VIỀN TỐI. Hạt vẽ bằng nhiễu SVG nhúng thẳng
+        vào CSS, không tải thêm tệp nào; `overlay` cho hạt ăn theo độ sáng
+        từng vùng thay vì rải đều như một tấm lưới. Viền tối bo quanh khung
+        kéo mắt vào giữa ảnh.
+
+   Cả hai tầng phủ đều `pointer-events:none` — chúng nằm TRÊN ảnh, không cẩn
+   thận là nuốt mất cú chạm của hai nút lật ảnh nằm ngay dưới. */
+#scene-game .slidebox img{filter:saturate(.86) contrast(1.06) brightness(.96)}
+#scene-game .slidebox::before,
+#scene-game .slidebox::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+}
+#scene-game .slidebox::before{
+  background:#96a0ac;opacity:.075;mix-blend-mode:screen;
+}
+#scene-game .slidebox::after{
+  background-image:
+    radial-gradient(ellipse at center, rgba(4,10,18,0) 54%, rgba(4,10,18,.38) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  background-size:cover, 140px 140px;
+  background-blend-mode:normal, overlay;
+  opacity:.5;
+}
+/* Máy nào không hiểu `mix-blend-mode` thì hai tầng trên hoá ra hai tấm màn
+   đục che mất ảnh. Chỉ bật khi trình duyệt nói là làm được. */
+@supports not (mix-blend-mode: screen){
+  #scene-game .slidebox::before{display:none}
+}
 #scene-game .navrow{display:flex;align-items:center;justify-content:space-between;
   gap:8px;flex:0 0 auto}
 #scene-game .navbtn{
@@ -1919,6 +1963,9 @@ const Code = (function(){
        gọi mỗi lần vào chế độ xem lại — nhét ô đếm vào đó thì chỉ ngắm lại ảnh
        cũng bị tính thành một lần chơi lại, con số thành vô nghĩa. */
     try{ Store.patch({ g2Reset: (Store.get().g2Reset | 0) + 1, g2Round:0 }); }catch(e){}
+    /* Tiến độ màn này ở NHỜ trong kho của bản đồ, nên chụp lại đúng kho đó —
+       chụp chứ không xoá, xoá là bay luôn tiến độ bản đồ. */
+    try{ if(window.chupLaiHoSo) chupLaiHoSo('mtv1'); }catch(e){}
     show('game'); Game.start(true);
   });
   el.review.addEventListener('click', ()=>{ show('game'); Game.review(1); });

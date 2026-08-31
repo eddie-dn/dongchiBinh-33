@@ -1031,7 +1031,7 @@ a.file:active{background:rgba(242,180,65,.07)}
       </svg>
 
       <button class="stampzone" id="stampZone" aria-label="Thông tin phiên bản">
-        <span class="stamp" id="stamp" data-base="Last updated 28-Aug-2026 · V20.04">Last updated 28-Aug-2026 · V20.04</span>
+        <span class="stamp" id="stamp" data-base="Last updated 31-Aug-2026 · V20.05">Last updated 31-Aug-2026 · V20.05</span>
       </button>
       <button class="beacon" data-bcn="HAN" data-locked="1" style="animation-delay:1.15s">
         <span class="tag" style="animation-delay:1.35s"><span class="code"><svg class="lk"><use href="#lockIco"/></svg>HAN</span><span class="city">Hà Nội</span></span>
@@ -3318,13 +3318,26 @@ function hardWipe(ev, detail){
      xoá sổ. Bốn con số này đi tiếp, mọi thứ khác vẫn xoá sạch như cũ. */
   const keepR = resetCount + 1;
   const giuDem = { eggMo, eggReset };
+  /* ⚠ NHỊP CHÀO CŨNG PHẢI SỐNG SÓT — NÓ KHÔNG PHẢI TIẾN ĐỘ.
+     BỆNH ĐÃ SỬA: "trong 10 phút mà thấy hiện liên tục daily box, greeting".
+     Ba mốc dưới đây là thứ giữ cho hộp chào và Daily Quote không lải nhải:
+     hôm nay đã chào những khung nào, xem lời chào lúc mấy giờ, câu quote gần
+     nhất lúc mấy giờ. Cả ba ở nhờ trong `mtv1`, mà `mtv1` thì reset xoá sạch
+     — nên mỗi lần bấm Reset là cả bộ hộp chào lên đạn lại từ đầu. Ai đang
+     thử đi thử lại nút reset sẽ bị chào liên tục, tưởng luật giãn cách hỏng.
+     Nhịp chào là SỔ GHI ĐÃ NÓI GÌ VỚI NGƯỜI NÀY, cùng loại với mấy ô đếm ở
+     trên: reset tiến độ không được xoá nó. */
+  const giuChao = { hhNgay, hhKhungDa, hhChaoAt, hhQuoteAt };
   let g2R = 0;
   try{ g2R = (JSON.parse(localStorage.getItem('mtv1') || '{}') || {}).g2Reset | 0; }catch(e){}
   /* nav1 (pí danh + pha điều hướng) cố ý KHÔNG đụng — Mission 3 của hồ sơ vẫn
      xong nên vẫn ở PHA 2, và bản lưu phải sống qua reset (USER-FLOW.md §6) */
   try{ ['mtv1','mtping'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
   try{ localStorage.setItem('mtv1', JSON.stringify(
-    Object.assign({ resetCount: keepR, g2Reset: g2R }, giuDem))); }catch(e){}
+    Object.assign({ resetCount: keepR, g2Reset: g2R }, giuDem, giuChao))); }catch(e){}
+  /* Reset xong phải báo lại cho hồ sơ, không thì bản chụp của pí danh còn
+     giữ tiến độ cũ và nạp lại là hoàn tác hết — xem `chupLaiHoSo`. */
+  try{ if(window.chupLaiHoSo) chupLaiHoSo('mtv1'); }catch(e){}
   try{ ['mtseen','mtload','mtvisit','mtpf'].forEach(k=>sessionStorage.removeItem(k)); }catch(e){}
   setTimeout(()=>location.reload(), 240);
 }
@@ -3456,6 +3469,9 @@ function eggReplay(){
   clearTimeout(partyT); clearTimeout(gridT); clearTimeout(flyT);
   frame.classList.remove('win','cheer','flying');
   winCheer = false; save();
+  /* Reset xong phải báo lại cho hồ sơ, không thì bản chụp của pí danh còn
+     giữ tiến độ cũ và nạp lại là hoàn tác hết — xem `chupLaiHoSo`. */
+  try{ if(window.chupLaiHoSo) chupLaiHoSo('mtv1'); }catch(e){}
   closeWipe();
   cxw.classList.remove('on'); cxw.setAttribute('aria-hidden','true');
   if(current) close();

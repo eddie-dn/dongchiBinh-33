@@ -676,6 +676,14 @@ NAY MỞ MẮT CHO NÓ:
         buoc: "duoi_dia_chi"     → SHEET_URL dùng đuôi /dev, phải là /exec
         ok: true                 → chạy được, mở Sheet xem dòng "tu_soi"
 
+CHAT KHÔNG VỀ SỔ, TRONG KHI TIẾN ĐỘ VÀ PÍ DANH VẪN VỀ ĐỀU
+Chỉ cần khai ĐÚNG MỘT biến `SHEET_URL` là cả bốn thứ đều về sổ: tiến độ, chat
+khu Open World, lời nhắn, pí danh — Apps Script tự chia tab theo trường `loai`
+trong gói gửi lên. Trước đây riêng `/api/chat` đi bằng một biến KHÁC
+(`CHAT_LOG_URL`), chưa ai khai, nên nó ghi vào hư không; mà tab `Chat` bên
+Google thì vẫn nằm sẵn đó với đủ cột, nhìn như đường đã nối rồi. Hai cái tên
+gần giống nhau là chỗ dễ trượt nhất. `CHAT_LOG_URL` nay chỉ còn là đường phụ.
+
 DÒNG `[SHEET] 401 <!DOCTYPE html…>` — BỆNH HAY GẶP NHẤT, VÀ HAY BỊ ĐỌC NHẦM
 Thấy trong Logs một dòng lặp lại sau mỗi lượt chơi:
 
